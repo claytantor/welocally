@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="BusinessAttribute" table="business_attribute">
+
+		<id name="id" unsaved-value="null" type="long">
+            <column name="id" not-null="true"/>             
+            <generator class="identity"/>           
+		</id>
+		
+		<property name="name" column="name" type="java.lang.String"/>
+		<property name="value"  type="java.lang.String" length="32000">
+			<column name="value" sql-type="longtext"/>
+		</property>		
+		
+														
+	</class>
+</hibernate-mapping>

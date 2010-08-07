@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<!-- 
+
+CREATE TABLE  `rater_20100210`.`business` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `user_principal_id` bigint(20) NOT NULL,
+  `status` varchar(15) DEFAULT NULL,
+  `description` longtext,
+  `website` longtext,
+  `version` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+ -->
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="Business" table="business">
+	
+		<cache usage="read-write"/>
+		
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+				
+		<version name="version" column="version" />	
+		
+		<property name="name" column="name" type="java.lang.String"/>
+		<property name="userName" column="username" type="java.lang.String"/>
+		<property name="status" column="status" type="java.lang.String"/>
+		<property name="guid" column="guid" type="java.lang.String"/>
+		
+		
+		<property name="description"  type="java.lang.String" length="32000">
+			<column name="description" sql-type="longtext"/>
+		</property>			
+
+		<property name="website"  type="java.lang.String" length="32000">
+			<column name="website" sql-type="longtext"/>
+		</property>		
+		
+		<property name="timeCreated" column="time_created" type="java.util.Date"/>	
+							
+	 	<set name="locations" 
+	 		lazy="extra"
+			fetch="select"
+			cascade="all">
+	        <key column="business_id"/>
+	        <one-to-many class="BusinessLocation"/>
+	    </set>
+	    
+	 	<set name="attributes" 
+	 		lazy="extra"
+			fetch="select"
+			cascade="all">
+	        <key column="business_id"/>
+	        <one-to-many class="BusinessAttribute"/>
+	    </set>
+	    
+	    <set name="images" 
+	 		lazy="extra"
+			fetch="select"
+			cascade="all">
+	        <key column="business_id"/>
+	        <one-to-many class="BusinessImage"/>
+	    </set>		
+	    
+
+														
+	</class>
+</hibernate-mapping>

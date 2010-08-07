@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost/rater_trunk</property>
+		<property name="connection.username">rater</property>
+		<property name="connection.password">Biggy12Mouth</property>
+		<property name="connection.pool_size">3</property>
+		<property name="cache.use_second_level_cache">true</property>
+		<property name="cache.use_query_cache">true</property>
+		<property name="cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="current_session_context_class">thread</property>
+		<property name="show_sql">false</property>
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hbm2ddl.auto">update</property>
+
+		<mapping resource="com/noi/rater/model/Rating.hbm.xml" />
+		<mapping resource="com/noi/rater/model/Rater.hbm.xml" />
+		<mapping resource="com/noi/rater/model/RatingAttribute.hbm.xml" />
+		<mapping resource="com/noi/rater/model/PlaceCityState.hbm.xml" />
+		<mapping resource="com/noi/rater/model/Place.hbm.xml" />
+		<mapping resource="com/noi/rater/model/PlaceAttribute.hbm.xml" />
+		<mapping resource="com/noi/rater/model/PlaceRating.hbm.xml" />
+		<mapping resource="com/noi/rater/model/AwardType.hbm.xml" />
+		<mapping resource="com/noi/rater/model/Award.hbm.xml" />
+		<mapping resource="com/noi/rater/model/AwardOffer.hbm.xml" />
+		<mapping resource="com/noi/rater/model/Compliment.hbm.xml" />
+
+		<!-- new business entities -->
+		<mapping resource="com/noi/rater/model/Business.hbm.xml" />
+		<mapping resource="com/noi/rater/model/BusinessLocation.hbm.xml" />
+		<mapping resource="com/noi/rater/model/BusinessLocationImage.hbm.xml" />
+		<mapping resource="com/noi/rater/model/BusinessImage.hbm.xml" />
+		<mapping resource="com/noi/rater/model/BusinessAttribute.hbm.xml" />
+		<mapping resource="com/noi/rater/model/BusinessMetrics.hbm.xml" />
+
+		<mapping resource="com/noi/utility/spring/Role.hbm.xml" />
+		<mapping resource="com/noi/utility/spring/UserPrincipal.hbm.xml" />
+		<mapping resource="com/noi/utility/hibernate/ImageValue.hbm.xml" />
+
+
+
+	</session-factory>
+</hibernate-configuration>

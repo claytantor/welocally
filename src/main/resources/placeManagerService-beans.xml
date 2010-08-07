@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.1.xsd">
+           
+	
+	<bean id="PlaceManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
+		<property name="target"><ref local="PlaceManagerServiceTarget"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly, -RaterBLServiceException</prop>
+				<prop key="save*">PROPAGATION_REQUIRED, -RaterBLServiceException</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED, -RaterBLServiceException</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="PlaceManagerServiceTarget" class="com.sightlyinc.ratecred.service.PlaceManagerServiceImpl">
+		<property name="placeCityStateDao"><ref bean="PlaceCityStateDao"/></property>
+		<property name="placeDao"><ref bean="PlaceDao"/></property>	
+		<property name="placeAttributeDao"><ref bean="PlaceAttributeDao"/></property>					
+		<property name="placeRatingDao"><ref bean="PlaceRatingDao"/></property>	
+		<property name="placeDirectoryIndexer"><ref bean="PlaceDirectoryIndexer"/></property>
+		<property name="placeSearchDirectory"><ref bean="PlaceDirectory"/></property>							
+	</bean>
+	
+
+</beans>

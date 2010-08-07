@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- 
+CREATE TABLE  `award_offer` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `time_created` datetime DEFAULT NULL,
+  `version` int(11) NOT NULL,
+  `name` varchar(255),
+  `description` longtext,
+  `type` varchar(45),
+  `status` varchar(45),
+  `business_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2161 DEFAULT CHARSET=utf8;
+
+
+ -->
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="AwardOffer" table="award_offer">
+	
+		<cache usage="read-write"/>
+		
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+				
+		<version name="version" column="version" />	
+		<property name="timeCreated" column="time_created" type="java.util.Date"/> 
+		
+		<property name="name" column="name" type="java.lang.String"/> 
+		
+		<property name="description"  type="java.lang.String" length="32000">
+			<column name="description" sql-type="longtext"/>
+		</property>	
+		
+		
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="awardType"
+			class="AwardType"
+			column="award_type_id"/>
+		
+		<property name="status" column="status" type="java.lang.String"/>
+				
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="business"
+			class="Business"
+			column="business_id"/>
+														
+	</class>
+</hibernate-mapping>

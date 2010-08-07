@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>	
+
+        
+	<bean id="HibernateDatabaseProperties" class="com.noi.utility.hibernate.HibernateDatabaseProperties" >
+		
+		<property name="creationMode">
+			<value>${rating-services.HibernateDatabaseProperties.creationMode}</value>
+		</property>	
+		<property name="dialect">
+			<value>${rating-services.HibernateDatabaseProperties.dialect}</value>
+		</property>	
+		<property name="showSql">
+			<value>${rating-services.HibernateDatabaseProperties.showSql}</value>
+		</property>
+		<property name="cacheProvider">
+			<value>${rating-services.HibernateDatabaseProperties.cacheProvider}</value>
+		</property>	
+		
+	</bean>			
+</beans>

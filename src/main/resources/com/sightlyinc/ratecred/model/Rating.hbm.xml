@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+	
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="Rating" table="rating">
+	
+		<cache usage="read-write"/>
+		
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+		
+		<version name="version" column="version" />	
+		
+		<property name="type" column="type" type="java.lang.String"/>
+		
+		<property name="notes"  type="java.lang.String" length="32000">
+			<column name="notes" sql-type="longtext"/>
+		</property>	
+		
+		<property name="timeCreated" column="time_created" type="java.util.Date"/>	
+		<property name="timeCreatedMills" column="time_mills" type="java.lang.Long"/>
+		<property name="timeCreatedGmt" column="time_gmt" type="java.lang.String"/>
+		
+		<property name="raterRating" column="rater_rating" type="java.lang.Float"/>
+		<property name="userRating" column="user_rating" type="java.lang.Float"/>
+		
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="owner"
+			class="Rater"
+			column="rater_id"/>	
+			
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="place"
+			class="Place"
+			column="place_id"/>		
+							
+
+	 	<set name="attributes" 
+	 		table="attribute" 
+	 		lazy="extra"
+			fetch="select"
+			cascade="all">
+	        <key column="rating_id"/>
+	        <one-to-many class="RatingAttribute"/>
+	    </set>
+	    
+	    <set name="compliments" 
+	 		table="compliment" 
+	 		lazy="extra"
+	 		order-by="time_mills desc"
+			fetch="select"
+			cascade="all">
+	        <key column="rating_id"/>
+	        <one-to-many class="Compliment"/>
+	    </set>
+   
+
+														
+	</class>
+</hibernate-mapping>

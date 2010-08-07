@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sightlyinc</groupId>
+  <artifactId>sightly-ratecred-service</artifactId>
+  <name>Sightly Inc. : RateCred : Services Module</name>
+  <version>0.7.0</version>
+  <!-- foo -->
+  <description>The services tier for the ratecred project.</description>
+	<properties>
+		<org.springframework.version>3.0.1.RELEASE</org.springframework.version>
+	</properties>   
+	<build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+	  <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <skip>true</skip>
+      </configuration>
+    </plugin>      
+    </plugins>
+  </build>  
+  <dependencies>
+    <dependency>
+      <groupId>com.newobjectivity</groupId>
+      <artifactId>noi-utility</artifactId>
+      <version>2.2.4</version>
+      <exclusions>
+      	<exclusion>
+      		<artifactId>cglib-full</artifactId>
+      		<groupId>cglib</groupId>
+      	</exclusion>
+      	<exclusion>
+      		<artifactId>spring-hibernate3</artifactId>
+      		<groupId>org.springframework</groupId>
+      	</exclusion>
+      	<exclusion>
+      		<artifactId>spring-dao</artifactId>
+      		<groupId>org.springframework</groupId>
+      	</exclusion>
+      	<exclusion>
+      		<artifactId>spring-jdbc</artifactId>
+      		<groupId>org.springframework</groupId>
+      	</exclusion>
+      	<exclusion>
+      		<artifactId>commons-collections</artifactId>
+      		<groupId>commons-collections</groupId>
+      	</exclusion>      	
+      	</exclusions>
+    </dependency>
+    
+    <dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-aop</artifactId>
+    	<version>${org.springframework.version}</version>
+    	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-jdbc</artifactId>
+    	<version>${org.springframework.version}</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-orm</artifactId>
+    	<version>${org.springframework.version}</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
+    
+    <!-- data -->
+    <dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-core</artifactId>
+  		<version>3.3.2.GA</version>
+  	</dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.6</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>0.9.1.2</version>
+    </dependency>
+    
+    
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-validator</artifactId>
+		<version>4.0.2.GA</version>
+	</dependency>
+		       
+    <!-- general third party -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.3.2</version>
+    </dependency> 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>1.5.3</version>
+    </dependency>
+ 	<dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jcl</artifactId>
+      <version>1.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+     <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.3.2</version>
+    </dependency> 
+    
+
+    <dependency>
+    	<groupId>cglib</groupId>
+    	<artifactId>cglib-nodep</artifactId>
+    	<version>2.1_3</version>
+    </dependency>
+    <dependency>
+    	<groupId>asm</groupId>
+    	<artifactId>asm</artifactId>
+    	<version>3.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>opensymphony</groupId>
+    	<artifactId>quartz</artifactId>
+    	<version>1.6.2</version>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- 
+
+CREATE TABLE  `rater_20100210`.`business_image` (
+  `id` varchar(255) NOT NULL,
+  `version` int(11) DEFAULT NULL,
+  `imagevalue_id` bigint(20) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `time_created` datetime DEFAULT NULL,
+  `business_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK5ECDEFDCE45292DA` (`business_id`),
+  KEY `FK5ECDEFDCFE4A8C89` (`imagevalue_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+ -->
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="BusinessImage" table="business_image">
+
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="assigned" />
+		</id>
+		
+		<property name="version" column="version" type="java.lang.Integer"/>
+		<property name="imageValueId" column="imagevalue_id" 
+			type="java.lang.Long" insert="false"
+			update="false"/>
+		
+		<property name="name" column="name" type="java.lang.String"/>	
+		<property name="description" column="description" type="java.lang.String"/>
+		<property name="timeCreated" column="time_created" type="java.util.Date"/>
+		
+		<many-to-one
+			lazy="no-proxy"
+			fetch="select"
+			name="image"
+			class="com.noi.utility.hibernate.ImageValue"
+			column="imagevalue_id"
+			cascade="all"/> 
+			
+		<many-to-one
+			lazy="no-proxy"
+			fetch="select"
+			name="owner"
+			class="Business"
+			column="business_id"
+			cascade="none"/>		
+		
+														
+	</class>
+</hibernate-mapping>

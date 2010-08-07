@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- 	private Long id;
+	private Integer version;
+	private String type;
+	private String placeInfo;
+	private Date timeCreated;
+	private Set<Timer> timers;
+	private Set<RateAttribute> attributes; -->
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="RatingAttribute" table="rating_attribute">
+
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+		
+		<property name="name" column="name" type="java.lang.String"/>
+		<property name="type" column="type" type="java.lang.String"/>
+		
+														
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="RaterBusinessMetricsDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateRaterBusinessMetricsDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+
+	<bean id="BusinessMetricsDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateBusinessMetricsDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="BusinessDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateBusinessDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+	
+	<bean id="BusinessLocationDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateBusinessLocationDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="AwardDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateAwardDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="AwardTypeDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateAwardTypeDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="AwardOfferDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateAwardOfferDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="ComplimentDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateComplimentDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="RatingDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateRatingDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+	
+	<bean id="RaterDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateRaterDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+	
+	<bean id="PlaceCityStateDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernatePlaceCityStateDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="RaterMetricsDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateRaterMetricsDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="PlaceDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernatePlaceDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="PlaceAttributeDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernatePlaceAttributeDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="PlaceRatingDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernatePlaceRatingDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+
+</beans>

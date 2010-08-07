@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.1.xsd">
+	
+	<bean id="RatingManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
+		<property name="target"><ref local="RatingManagerServiceTarget"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly, -BLServiceException</prop>
+				<prop key="save*">PROPAGATION_REQUIRED, -BLServiceException</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED, -BLServiceException</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="RatingManagerServiceTarget" class="com.sightlyinc.ratecred.service.RatingManagerServiceImpl">
+		<property name="ratingDao"><ref bean="RatingDao"/></property>
+		<property name="raterDao"><ref bean="RaterDao"/></property>
+		<property name="raterMetricsDao"><ref bean="RaterMetricsDao"/></property>		
+		<property name="placeDao"><ref bean="PlaceDao"/></property>		
+		<property name="complimentDao"><ref bean="ComplimentDao"/></property>						
+		<property name="awardTypeDao"><ref bean="AwardTypeDao"/></property>
+		<property name="awardDao"><ref bean="AwardDao"/></property>
+		<property name="placeCityStateDao"><ref bean="PlaceCityStateDao"/></property>
+		<property name="ratingDirectoryIndexer"><ref bean="RatingDirectoryIndexer"/></property>
+		<property name="ratingSearchDirectory"><ref bean="RatingDirectory"/></property>	
+		<!-- <property name="ratingsPerPage" value="${rating-services.RatingManagerService.ratingsPerPage}"/> -->	
+	</bean>
+	
+
+</beans>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean name="PlaceDirectoryIndexer"
+		class="com.sightlyinc.ratecred.index.DefaultPlaceDirectoryIndexer"
+		singleton="true"
+		init-method="initIndex">
+		<property name="indexWriter"><ref bean="PlaceIndexWriter"/></property>
+		<property name="directory"><ref bean="PlaceDirectory"/></property>
+		<property name="placeDao"><ref bean="PlaceDao"/></property> 
+	</bean>	
+
+	<bean name="PlaceDirectory"
+		class="org.apache.lucene.store.RAMDirectory"
+		singleton="true"/>
+
+	<bean name="PlaceAnalyzer"
+		class="org.apache.lucene.analysis.standard.StandardAnalyzer"
+		singleton="true"/>
+		
+	<bean name="KeepOnlyLastCommitDeletionPolicy"
+		class="org.apache.lucene.index.KeepOnlyLastCommitDeletionPolicy"
+		singleton="true"/>
+		
+		
+	<bean name="PlaceIndexWriter"
+          class="org.apache.lucene.index.IndexWriter" 
+          singleton="true">
+          <constructor-arg>
+               <ref bean="PlaceDirectory"/>
+          </constructor-arg>  
+          <constructor-arg>
+               <value>true</value>
+          </constructor-arg>            
+          <constructor-arg>
+               <ref bean="PlaceAnalyzer"/>
+          </constructor-arg>    
+          <constructor-arg>
+               <ref bean="KeepOnlyLastCommitDeletionPolicy"/>
+          </constructor-arg>              
+     </bean>
+     
+
+
+
+</beans>

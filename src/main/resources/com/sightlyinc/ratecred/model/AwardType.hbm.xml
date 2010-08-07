@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+	
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="AwardType" table="award_type">
+	
+		<cache usage="read-write"/>
+		
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+				
+		<version name="version" column="version" />	
+		<property name="timeCreated" column="time_created" type="java.util.Date"/>
+		
+		<property name="name" column="name" type="java.lang.String"/>
+		<property name="description"  type="java.lang.String" length="32000">
+			<column name="description" sql-type="longtext"/>
+		</property>	
+		
+		<property name="type" column="type" type="java.lang.String"/>
+		<property name="keyname" column="keyname" type="java.lang.String"/>
+
+														
+	</class>
+</hibernate-mapping>

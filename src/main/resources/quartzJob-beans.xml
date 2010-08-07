@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- <bean name="processBusinessMetricsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="com.sightlyinc.ratecred.job.BusinessMetricsJob" />
+	  <property name="jobDataAsMap">
+	    <map>
+	      <entry key="message" value="Welcome at JavaRanch" />
+	      <entry key="businessManagerService">
+	      		<ref bean="BusinessManagerService" />
+	      </entry>      
+	      <entry key="sessionFactory">
+	      		<ref bean="ApplicationSessionFactory" />
+	      </entry> 
+	    </map>
+	  </property>
+	</bean>
+
+	<bean id="processBusinessMetricsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+	    <property name="jobDetail" ref="processBusinessMetricsJob" />
+	    <property name="startDelay" value="${rater-jobs.processBusinessMetricsTrigger.delay}" />
+	    <property name="repeatInterval" value="${rater-jobs.processBusinessMetricsTrigger.repeatInterval}" />
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	            <ref bean="processBusinessMetricsTrigger" />
+	        </list>
+	    </property>
+	</bean>	 -->
+	
+</beans>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>	
+
+	<bean id="DBCPLocalDS" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.driverClass}</value>
+		</property>
+		<property name="url">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.url}</value>
+		</property>
+		<property name="username">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.username}</value>
+		</property>
+		<property name="password">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.password}</value>
+		</property>
+	</bean>	
+
+	<bean id="LocalDS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.driverClass}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.url}</value>
+		</property>
+		<property name="user">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.username}</value>
+		</property>
+		<property name="password">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.password}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.poolSizeMax}</value>
+		</property>		
+		<property name="minPoolSize">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.poolSizeMin}</value>
+		</property>		
+		<property name="acquireIncrement">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.aquireIncrement}</value>
+		</property>		
+		<property name="idleConnectionTestPeriod">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.idleTestPeriod}</value>
+		</property>		
+		<property name="checkoutTimeout">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.timeout}</value>
+		</property>	
+
+		
+	</bean>	
+		
+</beans>
