@@ -11,6 +11,8 @@ public interface RaterDao {
 	public Rater findByPrimaryKey(Long id);	
 	public List<Rater> findByPrimaryKeys( Long[] ids);
 	
+	//public Rater findByTwitterScreenName(String twitterScreenName);	
+	
 	public Rater findByUserName(String userName);	
 	
 	public Rater findBySecretKey(String secretKey);	

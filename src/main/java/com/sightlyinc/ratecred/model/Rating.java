@@ -14,17 +14,17 @@ public class Rating {
 	private Integer version = new Integer(0);
 	private String type;
 	private String notes;
-	private String city;
-	private String state;
-	private String placeInfo;
+	//private String city;
+	//private String state;
+	//private String placeInfo;
 	private Date timeCreated;
 	private Long timeCreatedMills;
 	private String timeCreatedGmt;	
 	private Float raterRating;
 	private Float userRating;
-	private Float billTotal;
-	private Float tipRatio;
-	private Integer numberSplits;
+	//private Float billTotal;
+	//private Float tipRatio;
+	//private Integer numberSplits;
 
 	
 	// relations

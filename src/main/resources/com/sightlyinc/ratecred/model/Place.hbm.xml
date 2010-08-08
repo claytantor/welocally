@@ -21,6 +21,9 @@
 		<property name="city" column="city" type="java.lang.String"/>
 		<property name="state" column="state" type="java.lang.String"/>
 		<property name="zip" column="zip" type="java.lang.String"/>
+		
+		<property name="twitterId" column="twitter_id" type="java.lang.String"/>
+		
 		<property name="phone" column="phone" type="java.lang.String"/>
 		<property name="flag" column="flag" type="java.lang.String"/>
 		

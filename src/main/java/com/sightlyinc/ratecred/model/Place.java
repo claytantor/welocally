@@ -12,6 +12,7 @@ public class Place {
 	private String city;
 	private String state;
 	private String zip;
+	private String twitterId;
 	private String phone;
 	private String name;
 	private Double latitude;
@@ -28,6 +29,14 @@ public class Place {
 	
 	private BusinessLocation businessLocation;
 		
+	
+	
+	public String getTwitterId() {
+		return twitterId;
+	}
+	public void setTwitterId(String twitterId) {
+		this.twitterId = twitterId;
+	}
 	public Set<PlaceRating> getPlaceRatings() {
 		return placeRatings;
 	}

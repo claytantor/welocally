@@ -48,7 +48,8 @@ public interface RatingManagerService {
 			boolean b) throws BLServiceException;
 	
 	public void deleteRate(Rating entity) throws BLServiceException;
-	public void saveRate(Rating entity) throws BLServiceException;
+	public void saveRating(Rating entity) throws BLServiceException;
+	
 	
 	//compliment
 	public void saveCompliment(Compliment c, Rating twords, Rater complementor) throws BLServiceException;
@@ -66,7 +67,9 @@ public interface RatingManagerService {
 	//rater functions
 	public Rater findRaterByPrimaryKey(Long string) throws BLServiceException;			
 	public List<Rater> findRatersByPrimaryKeys(final Long[] ids) throws BLServiceException;	
-	public Rater findRaterByUsername(String userName) throws BLServiceException;			
+	public Rater findRaterByUsername(String userName) throws BLServiceException;
+	//public Rater findRaterByTwitterScreenName(String twitterScreenName) throws BLServiceException;
+	
 	public Rater findRaterByAuthId(String authId) throws BLServiceException;	
 	
 	//create anonymous rater, must be saved

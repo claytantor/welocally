@@ -40,6 +40,30 @@ public class HibernateRaterDao
     
     
     	    
+	/*@Override
+	public Rater findByTwitterScreenName(final String twitterScreenName) {
+		Rater result = (Rater)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+	
+				Query query = session.createQuery(
+					"select entityimpl from "+Rater.class.getName()+
+					" as entityimpl where entityimpl.userName = :userName");
+				
+				query.setString("twitterScreenName", twitterScreenName);
+				Object oTat = query.uniqueResult();
+	
+				return oTat;
+	
+			}
+		});
+		return result;	
+	}*/
+
+
+
+
 	@Override
 	public List<Rater> findByBusinessDateRange(
 			final Business b, 

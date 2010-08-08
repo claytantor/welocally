@@ -40,8 +40,16 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 	private Directory placeSearchDirectory;	
 	private PlaceDirectoryIndexer placeDirectoryIndexer;
+
 	
 	
+	
+	@Override
+	public Place findByTwitterId(String twitterId) throws BLServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	@Override
 	public Place findPlaceByNameAddressCityState(String name, String address,
@@ -92,51 +100,6 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		return placeCityStateDao.findMostRatedOrdered(0,pagesize);
 	}
 
-	
-
-	/*@Override
-	public PlacePage findPlacesByCityStateRatedByType(
-			PlaceCityState cs, 
-			String type, 
-			Integer pageNum, 
-			Integer pageSize, 
-			String sortField, boolean isAcending)
-			throws RaterBLServiceException 
-	{
-		
-		PlacePage tp = new PlacePage(); 
-		tp.setPageSize(pageSize);
-		tp.setSortField(sortField);
-		tp.setAscending(isAcending);
-		
-		Long totalPlaces = placeDao.findByCityStateCount(cs.getCity(), cs.getState());
-		tp.setTotalResults(totalPlaces);
-	
-		
-		Float pagesAll = 
-			totalPlaces.floatValue()
-			/ pageSize.floatValue();
-		
-		Float pages = 
-			Rounding.roundFloat(pagesAll,0); 
-		
-		if(pagesAll>pages)
-			pages=pages+1.0f;
-		
-		tp.setPageNumber(pageNum);			
-		tp.setTotalPages(pages.intValue());	
-		
-		List<PlaceRating> ratings = placeRatingDao.findByCityStateTypePaged(
-				cs.getCity(), cs.getState(), type,
-				pageNum, pageSize, sortField, isAcending);
-		for (PlaceRating placeRating : ratings) {
-			tp.getPlaces().add(placeRating.getPlace());
-		}
-			
-		return tp;
-
-	}*/
-	
 	
 
 

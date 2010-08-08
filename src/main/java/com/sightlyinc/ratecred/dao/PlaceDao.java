@@ -5,6 +5,7 @@ import java.util.List;
 import com.sightlyinc.ratecred.model.Place;
 
 public interface PlaceDao {
+	public Place findByTwitterId(String id);	
 	
 	public List<Place> findByNamePrefix(String namePrefix);
 	

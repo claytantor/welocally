@@ -12,6 +12,7 @@ public class Rater {
 	private Long id;
 	private Integer version = new Integer(0);
 	private String userName;
+	//private String twitterScreenName;
 	private String secretKey;
 	private Date timeCreated;
 	private Long score;
@@ -25,6 +26,14 @@ public class Rater {
 	
 	
 			
+/*	public String getTwitterScreenName() {
+		return twitterScreenName;
+	}
+
+	public void setTwitterScreenName(String twitterScreenName) {
+		this.twitterScreenName = twitterScreenName;
+	}*/
+
 	public java.lang.Long getImageValueId() {
 		return imageValueId;
 	}

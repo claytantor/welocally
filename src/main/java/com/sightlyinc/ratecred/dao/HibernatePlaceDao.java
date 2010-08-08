@@ -34,6 +34,31 @@ public class HibernatePlaceDao
     
     
 	@Override
+	public Place findByTwitterId(final String twitterId) {
+		return (Place)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+					"select distinct entityimpl from "+Place.class.getName()+
+					" as entityimpl where entityimpl.twitterId = :twitterId");
+				
+				query.setString("twitterId", twitterId);
+				
+				Place t = (Place)query.uniqueResult();
+				
+			
+				return t;
+	
+			}
+		});		
+	}
+
+
+
+
+	@Override
 	public List<Place> findBySimillarNameCityState(String name, String city,
 			String state) {
 		return null;

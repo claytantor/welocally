@@ -23,6 +23,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.http.AccessToken;
+
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparitor;
@@ -71,6 +75,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	public Rating findRateByTime(Long time) {
 		return ratingDao.findByTime(time);
 	}
+
+/*	@Override
+	public Rater findRaterByTwitterScreenName(String twitterScreenName)
+			throws BLServiceException {
+		Rater t = raterDao.findByUserName(userName);
+		return t;
+	}*/
 
 	@Override
 	public List<Rater> findRatersByPrimaryKeys(Long[] ids)
@@ -512,7 +523,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public void saveRate(Rating entity) 
+	public void saveRating(Rating entity) 
 	throws BLServiceException
 	{
 		
@@ -529,7 +540,23 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 			//1. if there is lat long get places close to here
 			List<Place> places = null;
-			if(entity.getPlace().getLatitude() != null
+			if(entity.getPlace().getTwitterId() != null)
+			{
+				places = new ArrayList<Place>();
+				//Place p = placeDao.f
+				/*AccessToken accessToken = 
+					new AccessToken(
+							owner.getTwitterToken(), 
+							owner.getTwitterTokenSecret());
+
+				Twitter twitter = 
+					new TwitterFactory().getOAuthAuthorizedInstance(
+							appConsumerKey, appSecretKey, accessToken);	 
+				
+				//get the place
+				Place p = twitter.getGeoDetails(r.getTwitterPlaceId());*/
+			}
+			else if(entity.getPlace().getLatitude() != null
 					&& entity.getPlace().getLongitude() != null)
 				places = 
 					placeDao.findByGeoBounding(
