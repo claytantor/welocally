@@ -32,7 +32,8 @@
 		<property name="awardDao"><ref bean="AwardDao"/></property>
 		<property name="placeCityStateDao"><ref bean="PlaceCityStateDao"/></property>
 		<property name="ratingDirectoryIndexer"><ref bean="RatingDirectoryIndexer"/></property>
-		<property name="ratingSearchDirectory"><ref bean="RatingDirectory"/></property>	
+		<property name="ratingSearchDirectory"><ref bean="RatingDirectory"/></property>				
+			
 		<!-- <property name="ratingsPerPage" value="${rating-services.RatingManagerService.ratingsPerPage}"/> -->	
 	</bean>
 	

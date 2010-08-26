@@ -29,9 +29,7 @@ public class HibernatePlaceDao
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         return template;
     }
-
-    
-    
+  
     
 	@Override
 	public Place findByTwitterId(final String twitterId) {

@@ -16,7 +16,7 @@
 		<property name="target"><ref local="PlaceManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
 			<props>
-				<prop key="find*">PROPAGATION_REQUIRED,readOnly, -RaterBLServiceException</prop>
+				<prop key="find*">PROPAGATION_REQUIRED, readOnly, -RaterBLServiceException</prop>
 				<prop key="save*">PROPAGATION_REQUIRED, -RaterBLServiceException</prop>
 				<prop key="delete*">PROPAGATION_REQUIRED, -RaterBLServiceException</prop>
 			</props>
@@ -29,7 +29,7 @@
 		<property name="placeAttributeDao"><ref bean="PlaceAttributeDao"/></property>					
 		<property name="placeRatingDao"><ref bean="PlaceRatingDao"/></property>	
 		<property name="placeDirectoryIndexer"><ref bean="PlaceDirectoryIndexer"/></property>
-		<property name="placeSearchDirectory"><ref bean="PlaceDirectory"/></property>							
+		<property name="placeSearchDirectory"><ref bean="PlaceDirectory"/></property>					
 	</bean>
 	
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Compliment;
+import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;

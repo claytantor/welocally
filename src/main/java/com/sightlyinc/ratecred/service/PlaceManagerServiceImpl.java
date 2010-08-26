@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -31,7 +32,11 @@ import com.sightlyinc.ratecred.model.PlacePage;
 import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rating;
 
+
 public class PlaceManagerServiceImpl implements PlaceManagerService {
+	
+	static Logger logger = 
+		Logger.getLogger(PlaceManagerServiceImpl.class);
 	
 	private PlaceCityStateDao placeCityStateDao;
 	private PlaceDao placeDao;
@@ -40,15 +45,84 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 	private Directory placeSearchDirectory;	
 	private PlaceDirectoryIndexer placeDirectoryIndexer;
+	
+/*	private String appConsumerKey;
+	private String appSecretKey;*/
 
 	
 	
-	
+	/**
+	 * will attempt to find in the database, if its there then dont go to twitter
+	 * otherwise go to twitter, get it using the user's auth token, and save it to the data
+	 * base so its bounded. If neither exists return null;
+	 * 
+	 * @TODO should check if access token is actually required for this, if not it would 
+	 * be a cleaner approach, secondly this should be asynchronous because we dont want a 
+	 * call like this blocking
+	 * 
+	 */
 	@Override
-	public Place findByTwitterId(String twitterId) throws BLServiceException {
-		// TODO Auto-generated method stub
-		return null;
+	public com.sightlyinc.ratecred.model.Place findByTwitterId(
+			String twitterId) throws BLServiceException {
+		
+		
+		//get the place
+		//try to find in in the store
+		com.sightlyinc.ratecred.model.Place place = 
+			placeDao.findByTwitterId(twitterId);
+		
+		/*if(place == null)
+		{
+		
+			try {
+				AccessToken accessToken = 
+					new AccessToken(
+							accessUserToken, 
+							accessSecret);
+	
+				Twitter twitter = 
+					new TwitterFactory().getOAuthAuthorizedInstance(
+							appConsumerKey, appSecretKey, accessToken);	 
+				
+				//make the place
+				place = new com.sightlyinc.ratecred.model.Place();
+				twitter4j.Place p = twitter.getGeoDetails(twitterId);
+				
+				for (int i = 0; i < p.getContainedWithIn().length; i++) {
+					twitter4j.Place wrapper = p.getContainedWithIn()[i];
+					
+					if(wrapper.getPlaceType().equals("city"))
+					{
+						String[] cs = wrapper.getFullName().split(",");						
+						place.setCity(cs[0]);
+						place.setState(cs[1].replace(" ",""));
+					}
+					
+				}
+								
+				place.setTwitterId(p.getId());
+				place.setAddress(p.getStreetAddress());
+				place.setName(p.getName());
+				place.setPhone(p.getPhone());
+				place.setZip(p.getPostalCode());
+				place.setLatitude(p.getGeometryCoordinates()[1]);
+				place.setLongitude(p.getGeometryCoordinates()[0]);
+				place.setTimeCreated(Calendar.getInstance().getTime());
+				
+				placeDao.save(place);
+				
+				
+			} catch (TwitterException e) {
+				logger.error("cannot find place with id:"+twitterId, e);
+				
+			}
+		}*/
+		
+		return place;
 	}
+
+
+
 
 
 	@Override
@@ -304,5 +378,21 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	public void setPlaceDirectoryIndexer(PlaceDirectoryIndexer placeDirectoryIndexer) {
 		this.placeDirectoryIndexer = placeDirectoryIndexer;
 	}
+
+
+
+
+
+/*	public void setAppConsumerKey(String appConsumerKey) {
+		this.appConsumerKey = appConsumerKey;
+	}
+
+
+
+
+
+	public void setAppSecretKey(String appSecretKey) {
+		this.appSecretKey = appSecretKey;
+	}*/
 	
 }

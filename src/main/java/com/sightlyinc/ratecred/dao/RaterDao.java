@@ -6,6 +6,7 @@ import java.util.List;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Rater;
 
 public interface RaterDao {
 	public Rater findByPrimaryKey(Long id);	

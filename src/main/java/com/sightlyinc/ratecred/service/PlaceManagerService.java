@@ -10,7 +10,8 @@ import com.sightlyinc.ratecred.model.PlacePage;
 
 public interface PlaceManagerService {
 	
-	public Place findByTwitterId(String twitterId) throws BLServiceException;
+	public com.sightlyinc.ratecred.model.Place findByTwitterId(
+			String twitterId) throws BLServiceException;
 		
 	public List<Place> findAllPlacesForCity(PlaceCityState cs) throws BLServiceException;
 	

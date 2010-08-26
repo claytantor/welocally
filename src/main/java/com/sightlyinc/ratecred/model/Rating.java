@@ -1,34 +1,21 @@
 package com.sightlyinc.ratecred.model;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanUtils;
-
-import com.noi.utility.string.StringUtils;
 
 public class Rating {
 	private Long id;
 	private Integer version = new Integer(0);
 	private String type;
 	private String notes;
-	//private String city;
-	//private String state;
-	//private String placeInfo;
 	private Date timeCreated;
 	private Long timeCreatedMills;
+	private Long twitterStatusId;
 	private String timeCreatedGmt;	
 	private Float raterRating;
 	private Float userRating;
-	//private Float billTotal;
-	//private Float tipRatio;
-	//private Integer numberSplits;
 
-	
-	// relations
-	//private Set<Timer> timers;
 	private Set<RatingAttribute> attributes;
 	
 	private Set<Compliment> compliments;
@@ -144,6 +131,16 @@ public class Rating {
 	public void setCompliments(Set<Compliment> compliments) {
 		this.compliments = compliments;
 	}
+
+	public Long getTwitterStatusId() {
+		return twitterStatusId;
+	}
+
+	public void setTwitterStatusId(Long twitterStatusId) {
+		this.twitterStatusId = twitterStatusId;
+	}
+	
+	
 
 	/*@Override
 	public String toString() {

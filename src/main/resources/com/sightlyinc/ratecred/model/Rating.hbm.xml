@@ -29,6 +29,7 @@
 		
 		<property name="raterRating" column="rater_rating" type="java.lang.Float"/>
 		<property name="userRating" column="user_rating" type="java.lang.Float"/>
+		<property name="twitterStatusId" column="twitter_status_id" type="java.lang.Long"/>
 		
 		<many-to-one
 			lazy="no-proxy" 

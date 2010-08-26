@@ -3,13 +3,13 @@ package com.sightlyinc.ratecred.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SimpleTimeZone;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,13 +23,9 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.http.AccessToken;
-
+import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparitor;
 import com.sightlyinc.ratecred.dao.AwardDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.ComplimentDao;
@@ -42,6 +38,7 @@ import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
+import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.PlaceRating;
@@ -64,8 +61,14 @@ public class RatingManagerServiceImpl implements RatingManagerService {
     private PlaceCityStateDao placeCityStateDao;
 	private PlaceDao placeDao;
 	
+	private String appConsumerKey;
+	private String appSecretKey;
+	private String ratingUrlPrefix;
+	
 	private Directory ratingDirectory;	
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
+	
+	
 	
 	
 	//private Integer ratingsPerPage = 10;
@@ -440,6 +443,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				award.setNotes("Network Top Ten");
 				award.setMetadata("imageUrl=/images/awards/award_star.png");
 				award.setOwner(t);
+				award.setStatus("ACTIVE");
 				award.setTimeCreated(gmtCreated);
 				award.setTimeCreatedMills(gmtCreated.getTime());
 				all.add(award);
@@ -522,8 +526,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return t;
 	}
 
-	@Override
-	public void saveRating(Rating entity) 
+	/*public void saveRatingHold(Rating entity) 
 	throws BLServiceException
 	{
 		
@@ -544,7 +547,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			{
 				places = new ArrayList<Place>();
 				//Place p = placeDao.f
-				/*AccessToken accessToken = 
+				AccessToken accessToken = 
 					new AccessToken(
 							owner.getTwitterToken(), 
 							owner.getTwitterTokenSecret());
@@ -554,7 +557,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 							appConsumerKey, appSecretKey, accessToken);	 
 				
 				//get the place
-				Place p = twitter.getGeoDetails(r.getTwitterPlaceId());*/
+				Place p = twitter.getGeoDetails(r.getTwitterPlaceId());
 			}
 			else if(entity.getPlace().getLatitude() != null
 					&& entity.getPlace().getLongitude() != null)
@@ -646,6 +649,58 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			raterDao.save(owner);
 			
 			ratingDirectoryIndexer.indexRate(entity);
+		} catch (Exception e) {
+			logger.error("problem", e);
+			throw new BLServiceException(e);
+		}
+	}*/
+
+	
+	@Override
+	public void saveRating(Rating entity) throws BLServiceException {
+
+		try {
+			Rater owner = entity.getOwner();
+			Place p = entity.getPlace();
+
+			Set<PlaceRating> ratings = p.getPlaceRatings();
+			
+			PlaceRating ratingForType = RatingHelper.computeNewRatingAdd(
+					new ArrayList<PlaceRating>(ratings), new ArrayList<Rating>(
+							p.getRatings()), entity.getType(), entity
+							.getRaterRating());
+
+			// this needs to be tested
+			ratings.add(ratingForType);
+			p.setPlaceRatings(ratings);
+
+			RaterMetrics tmcomp = findMetricsByRater(owner);
+			if (tmcomp != null)
+				owner.setScore(tmcomp.getScore());
+
+			raterDao.save(owner);
+			entity.setOwner(owner);
+			
+			
+			//make sure timestamp if new
+			if(entity.getId()==null)
+			{
+				String gmtTime = DateUtils.dateToString(
+						Calendar.getInstance().getTime(), 
+						DateUtils.NOSPACE_TIMESTAMP_FORMAT, 
+						new SimpleTimeZone(0, "GMT"))+"-0000";
+				entity.setTimeCreatedGmt(gmtTime);
+				entity.setTimeCreated(Calendar.getInstance().getTime());
+				entity.setTimeCreatedMills(Calendar.getInstance().getTimeInMillis());
+			}
+			
+			//save it
+			ratingDao.save(entity);
+
+			//index it
+			ratingDirectoryIndexer.indexRate(entity);
+			
+			
 		} catch (Exception e) {
 			logger.error("problem", e);
 			throw new BLServiceException(e);
@@ -813,6 +868,18 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	public void setAwardDao(AwardDao awardDao) {
 		this.awardDao = awardDao;
+	}
+
+	public void setAppConsumerKey(String appConsumerKey) {
+		this.appConsumerKey = appConsumerKey;
+	}
+
+	public void setAppSecretKey(String appSecretKey) {
+		this.appSecretKey = appSecretKey;
+	}
+
+	public void setRatingUrlPrefix(String ratingUrlPrefix) {
+		this.ratingUrlPrefix = ratingUrlPrefix;
 	}
 	
 	
