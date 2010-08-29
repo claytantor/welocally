@@ -103,7 +103,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public Long findCountByOwnerBetweenTimes(Rater towards, Date startTime,
+	public Long findAwardCountByOwnerBetweenTimes(Rater towards, Date startTime,
 			Date endTime) throws BLServiceException {
 		return awardDao.findCountByOwnerBetweenTimes(towards, startTime, endTime);
 	}
@@ -407,7 +407,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public Rating findRateByPrimaryKey(Long id) {
+	public Rating findRatingByPrimaryKey(Long id) {
 		return ratingDao.findByPrimaryKey(id);
 	}
 

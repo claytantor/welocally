@@ -16,7 +16,7 @@ import com.sightlyinc.ratecred.model.RatingPage;
 
 public interface RatingManagerService {
 	
-	public Rating findRateByPrimaryKey(Long id) throws BLServiceException;	
+	public Rating findRatingByPrimaryKey(Long id) throws BLServiceException;	
 	
 	public Rating findRateByTime(Long time);
 	public List<Rating> findAllRates() throws BLServiceException;	
@@ -61,7 +61,7 @@ public interface RatingManagerService {
 	//awards given
 	public List<Award> findBusinessAwardsByRaterBetweenTimes(
 			Rater towards, Date startTime, Date endTime) throws BLServiceException;
-	public Long findCountByOwnerBetweenTimes(
+	public Long findAwardCountByOwnerBetweenTimes(
 			Rater towards, Date startTime, Date endTime) throws BLServiceException;
 		
 	
