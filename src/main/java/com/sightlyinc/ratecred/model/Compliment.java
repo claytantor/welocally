@@ -19,10 +19,6 @@ public class Compliment {
 	private Rater owner;
 	private Rating towards;
 	
-
-	
-	
-	
 	public Long getTimeCreatedMills() {
 		return timeCreatedMills;
 	}
