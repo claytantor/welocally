@@ -16,6 +16,8 @@ public interface RaterDao {
 	
 	public Rater findByUserName(String userName);	
 	
+	public List<Rater> findByUserNames(String[] userNames);	
+	
 	public Rater findBySecretKey(String secretKey);	
 	
 	public Rater findByAuthId(String authId);	

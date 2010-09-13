@@ -18,12 +18,10 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-
 import com.noi.utility.hibernate.ImageValue;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.BusinessMetrics;
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Rater;
 
 public class HibernateRaterDao 
@@ -282,7 +280,31 @@ public class HibernateRaterDao
 	
 	
     
-    public List<Rater> findByPrimaryKeys(final Long[] ids)
+    @Override
+	public List<Rater> findByUserNames(final String[] userNames) {
+    	List executeFind = getHibernateTemplateOverride().executeFind(
+    	new HibernateCallback<List<Rater>>() {
+			@SuppressWarnings("unchecked")
+			public List<Rater> doInHibernate(final Session session)
+				throws HibernateException, SQLException 
+				{
+					final Query query = session.createQuery(
+						"select entityimpl from "+Rater.class.getName()+
+						" as entityimpl where entityimpl.userName in (:userNames)");
+					
+					query.setParameterList("userNames", userNames);
+					return query.list();
+				}
+    	});
+		List<Rater> result = executeFind;
+		
+		return result;
+	}
+
+
+
+
+	public List<Rater> findByPrimaryKeys(final Long[] ids)
     {
     	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)

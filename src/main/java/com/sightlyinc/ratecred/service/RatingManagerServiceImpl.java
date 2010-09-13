@@ -85,11 +85,21 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		Rater t = raterDao.findByUserName(userName);
 		return t;
 	}*/
+	
+	
 
 	@Override
 	public List<Rater> findRatersByPrimaryKeys(Long[] ids)
 			throws BLServiceException {
 		return raterDao.findByPrimaryKeys(ids);
+	}
+
+	@Override
+	public List<Rater> findRatersByScreenNames(String[] screenNames)
+			throws BLServiceException {
+		if(screenNames != null && screenNames.length>0)
+			return raterDao.findByUserNames(screenNames);
+		else return new ArrayList<Rater>();
 	}
 
 	@Override
@@ -404,6 +414,36 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 						rater.getId(), pageNum, ratingsPerPage, sortField, isAcending));
 		
 		return tp;
+	}
+	
+	
+	@Override
+	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage, String sortField,
+			boolean isAcending, List<Rater> raters)
+			throws BLServiceException {
+		
+		logger.debug("pagenum:"+pageNum);
+		RatingPage tp = new RatingPage(); 
+		tp.setPageSize(ratingsPerPage);
+		tp.setSortField(sortField);
+		tp.setAscending(isAcending);		
+		if(raters != null && raters.size()>0)
+		{
+			Long[] ownerIds = new Long[raters.size()];
+			int i=0;
+			for (Rater rater : raters) 
+				ownerIds[i] = rater.getId();
+	
+			tp.setRatings(ratingDao.findByOwners(
+					ownerIds, pageNum, ratingsPerPage, sortField, isAcending));
+		
+		}
+		else
+			tp.setRatings(new ArrayList<Rating>());
+		
+		return tp;
+
+		
 	}
 
 	@Override

@@ -294,6 +294,34 @@ public class HibernateRatingDao
 		return result;
 	}
 	
+	@Override
+	public List<Rating> findByOwners(
+			final Long[] ownerIds, final int pageNum, final int pageSize,
+			final String sortField, final boolean isAscending) {
+		final int index = (pageNum-1)*pageSize;
+		logger.debug("pagenum:"+pageNum+" index:"+index);
+		
+		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+					Criteria criteria=session.createCriteria(Rating.class)					
+					.add( Restrictions.in("owner.id", ownerIds) );
+
+					if(isAscending)
+						criteria.addOrder(Order.asc(sortField));
+					else
+						criteria.addOrder(Order.desc(sortField));
+					
+					criteria.setFirstResult(index);
+					criteria.setMaxResults(pageSize);
+					return criteria.list();				
+				}
+		});
+		
+		return result;
+	}
+	
 	
 
 	@Override

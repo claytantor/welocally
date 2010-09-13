@@ -26,6 +26,7 @@ public interface RatingDao {
 	public Long findByCityStateCount(String city, String state);
 	public List<Rating> findByCityStatePaged(String city, String state, int pageNum, final int pageSize, String sortField, boolean isAscending);
 	public List<Rating> findByOwner(Long ownerId, int pageNum, final int pageSize, String sortField, boolean isAscending);
+	public List<Rating> findByOwners(Long[] ownerIds, int pageNum, final int pageSize, String sortField, boolean isAscending);
 	public Long findByOwnerCount(Long ownerId);
 	
 	public List<Rating> findByCityStatePlaceInfo(String city, String state, String placeInfo);

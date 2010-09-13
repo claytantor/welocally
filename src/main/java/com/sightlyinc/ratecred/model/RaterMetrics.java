@@ -8,6 +8,7 @@ public class RaterMetrics {
 	private Integer received;
 	private Integer given;
 	private Long score;
+	private Integer rank;
 
 	
 	public Long getId() {
@@ -54,6 +55,12 @@ public class RaterMetrics {
 	}
 	public void setGiven(Integer given) {
 		this.given = given;
+	}
+	public Integer getRank() {
+		return rank;
+	}
+	public void setRank(Integer rank) {
+		this.rank = rank;
 	}
 
 	

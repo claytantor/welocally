@@ -34,6 +34,7 @@ public interface RatingManagerService {
 	public RatingPage findRatingsByCityStatePlaceInfo(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, PlaceCityState cs, Place tp) throws BLServiceException;
 	
 	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, Rater rater) throws BLServiceException;
+	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, List<Rater> raters) throws BLServiceException;
 
 	//awards
 	public List<Award> findAwardsLocalByRater(Rater t) throws BLServiceException;
@@ -77,6 +78,8 @@ public interface RatingManagerService {
 	public Rater createAnonymousRater();
 	
 	public List<Rater> findAllRaters() throws BLServiceException;	
+	
+	public List<Rater> findRatersByScreenNames(String[] screenNames) throws BLServiceException;
 				
 	public void deleteRater(Rater entity) throws BLServiceException;
 	

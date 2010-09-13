@@ -69,6 +69,25 @@ public class HibernateRaterMetricsDao
 					tm.setReceived(Integer.parseInt(oTat[5].toString()));
 				}
 				
+				
+				//now get the rank
+				String sql2 = "SELECT r1.id as id, r1.username as username, r1.score as score, count(r2.id) as rank " +
+						"FROM ratecred_trunk.rater r1, ratecred_trunk.rater r2 " +
+						"WHERE (r1.score <= r2.score OR (r1.score=r2.score and r1.id = r2.id)) " +
+						"AND r1.id = :id " +
+						"GROUP BY r1.id order by r1.score desc";
+				
+				Query query2 =  
+					session.createSQLQuery(sql2); 
+				query2.setLong("id", t.getId());
+				List oTatList2 = query2.list();
+				if(oTatList2 != null && oTatList2.size()>0)
+				{	
+					Object[] oTat = (Object[])oTatList2.get(0);
+					tm.setScore(Long.parseLong(oTat[2].toString()));
+					tm.setRank(Integer.parseInt(oTat[3].toString()));
+				}
+				
 				return tm;
 	
 			}
