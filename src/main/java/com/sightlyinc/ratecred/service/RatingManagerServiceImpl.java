@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,7 +39,6 @@ import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.PlaceRating;
@@ -185,6 +185,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	@Override
 	public Long findComplimentCountByRaterBetweenTimes(Rater towards, Date startTime,
 			Date endTime) throws BLServiceException {
+		if(startTime == null)
+			startTime = DateUtils.stringToDate("2010-01-01", DateUtils.DESC_SIMPLE_FORMAT);
+		if(endTime == null)
+			endTime = Calendar.getInstance().getTime();
 		return complimentDao.findCountByRaterBetweenTimes(towards, startTime, endTime);
 	}
 
@@ -703,16 +707,23 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			Rater owner = entity.getOwner();
 			Place p = entity.getPlace();
 
-			Set<PlaceRating> ratings = p.getPlaceRatings();
+			//Set<PlaceRating> ratings = p.getPlaceRatings();
+			
+			if(p.getPlaceRatings() == null)
+				p.setPlaceRatings(new HashSet<PlaceRating>());
+			
+			if(p.getRatings() == null)
+				p.setRatings(new HashSet<Rating>());
 			
 			PlaceRating ratingForType = RatingHelper.computeNewRatingAdd(
-					new ArrayList<PlaceRating>(ratings), new ArrayList<Rating>(
-							p.getRatings()), entity.getType(), entity
-							.getRaterRating());
+					new ArrayList<PlaceRating>(p.getPlaceRatings()), 
+					new ArrayList<Rating>(p.getRatings()), 
+					entity.getType(), 
+					entity.getRaterRating());
 
 			// this needs to be tested
-			ratings.add(ratingForType);
-			p.setPlaceRatings(ratings);
+			p.getPlaceRatings().add(ratingForType);
+			p.setPlaceRatings(p.getPlaceRatings());
 
 			RaterMetrics tmcomp = findMetricsByRater(owner);
 			if (tmcomp != null)

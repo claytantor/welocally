@@ -2,6 +2,7 @@
 package com.sightlyinc.ratecred.dao;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import com.noi.utility.date.DateUtils;
 import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Rater;
 
@@ -108,7 +110,14 @@ public class HibernateComplimentDao
 
 	@Override
 	public Long findCountByRaterBetweenTimes(final Rater towards,
-			final Date startTime, final Date endTime) {
+			 Date startTime,  Date endTime) {
+		
+		if(startTime == null)
+			startTime = 
+				DateUtils.stringToDate("2010-01-01", DateUtils.DESC_SIMPLE_FORMAT);
+		if(endTime == null)
+			endTime = 
+				Calendar.getInstance().getTime();
 		
 		final Long startTimeMills = startTime.getTime();
 		final Long endTimeMills = endTime.getTime();
