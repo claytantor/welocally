@@ -68,7 +68,12 @@ public interface RatingManagerService {
 	
 	//rater functions
 	public Rater findRaterByPrimaryKey(Long string) throws BLServiceException;			
-	public List<Rater> findRatersByPrimaryKeys(final Long[] ids) throws BLServiceException;	
+	public List<Rater> findRatersByPrimaryKeys(final Long[] ids) throws BLServiceException;
+	public List<Rater> findRatersByStatus(String status) throws BLServiceException;
+	
+	public void saveConvertRater(Rater fromRater, Rater toRater) throws BLServiceException;
+
+	
 	public Rater findRaterByUsername(String userName) throws BLServiceException;
 	//public Rater findRaterByTwitterScreenName(String twitterScreenName) throws BLServiceException;
 	

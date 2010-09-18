@@ -302,7 +302,23 @@ public class HibernateRaterDao
 	}
 
 
-
+    public List<Rater> findByStatus(final String status)
+    {
+    	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+					final Query query = session.createQuery(
+						"select entityimpl from "+Rater.class.getName()+
+						" as entityimpl where status = :status" );
+					
+					query.setString("status", status);
+					return query.list();					
+				}
+		});
+		
+		return result;
+    }
 
 	public List<Rater> findByPrimaryKeys(final Long[] ids)
     {

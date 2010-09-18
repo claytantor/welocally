@@ -28,6 +28,15 @@ public class HibernateRaterMetricsDao
         return template;
     }
 
+    
+    /**
+     * SELECT r1.id as id, r1.username as username, r1.score as score, count(r2.id) as rank 
+						FROM rater r1, rater r2
+						WHERE (r1.score <= r2.score OR (r1.score=r2.score and r1.id = r2.id)) 
+						AND r1.id = :id 
+						GROUP BY r1.id order by r1.score desc
+     * 
+     */
 	@Override
 	public RaterMetrics findByRater(final Rater t) {
 		RaterMetrics result = (RaterMetrics)getHibernateTemplateOverride().execute(new HibernateCallback() {
@@ -72,10 +81,10 @@ public class HibernateRaterMetricsDao
 				
 				//now get the rank
 				String sql2 = "SELECT r1.id as id, r1.username as username, r1.score as score, count(r2.id) as rank " +
-						"FROM ratecred_trunk.rater r1, ratecred_trunk.rater r2 " +
+						"FROM rater r1, rater r2 " +
 						"WHERE (r1.score <= r2.score OR (r1.score=r2.score and r1.id = r2.id)) " +
 						"AND r1.id = :id " +
-						"GROUP BY r1.id order by r1.score desc";
+						"GROUP BY r1.id order by r1.score desc, r1.time_created desc";
 				
 				Query query2 =  
 					session.createSQLQuery(sql2); 

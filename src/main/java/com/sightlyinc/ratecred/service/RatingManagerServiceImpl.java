@@ -101,6 +101,40 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			return raterDao.findByUserNames(screenNames);
 		else return new ArrayList<Rater>();
 	}
+	
+	
+
+	@Override
+	public void saveConvertRater(Rater fromRater, Rater toRater)
+			throws BLServiceException {
+		
+		//ratings
+		Set<Rating> ratings = fromRater.getRatings();
+		for (Rating ratingFrom : ratings) {
+			ratingFrom.setOwner(toRater);
+		}		
+		fromRater.setRatings(new HashSet<Rating>());
+		
+		//awards
+		Set<Award> awards = fromRater.getAwards();
+		for (Award awardFrom : awards) {
+			awardFrom.setOwner(toRater);
+		}
+		fromRater.setAwards(new HashSet<Award>());
+		
+		toRater.setScore(toRater.getScore()+fromRater.getScore());
+		toRater.setTimeCreated(fromRater.getTimeCreated());
+		
+		raterDao.save(fromRater);
+		raterDao.save(toRater);
+		
+	}
+
+	@Override
+	public List<Rater> findRatersByStatus(String status)
+			throws BLServiceException {
+		return raterDao.findByStatus(status);
+	}
 
 	@Override
 	public Award findAwardById(Long awardId) throws BLServiceException {
@@ -129,16 +163,28 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return findMetricsByRater(t, null);
 	}
 	
+	/**
+	 * the business logic here is a little wonky and has
+	 * some legacy to it
+	 * 
+	 * @param t
+	 * @param currentStatus
+	 * @return
+	 */
 	private RaterMetrics findMetricsByRater(Rater t, String currentStatus) {
 		
 		RaterMetrics tm = raterMetricsDao.findByRater(t);
-		Long score = null;
 		
-		//when we have a user that is being created 
+		if(tm == null)
+			return null;
+		
+		Long score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
+		
+		/*//when we have a user that is being created 
 		if(StringUtils.isEmpty(currentStatus))
 		{
 			score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
-			if(tm.getStatus().equals("USER"))
+			if(t.getStatus().equals("USER"))
 				score=score+100;
 		}
 		else
@@ -146,7 +192,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
 			if(currentStatus.equals("USER"))
 				score=score+100;
-		}
+		}*/
 		
 		tm.setScore(score);
 		return tm;
