@@ -29,6 +29,80 @@ public class HibernatePlaceRatingDao
 
 	
 	@Override
+	public List<PlaceRating> findAllPaged(final int pageNum, final int pageSize,
+			final boolean isAscending) {
+		final int index = (pageNum-1)*pageSize;
+		logger.debug("pagenum:"+pageNum+" index:"+index);
+
+		
+		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+	
+				String order = "desc";
+				if(isAscending)
+					order="asc";
+				
+				Query query = session.createQuery(
+					"select entityimpl from "+PlaceRating.class.getName()+" as entityimpl " +
+					" order by entityimpl.rating "+order
+					);
+
+				//query.setString("ratingType", type);
+				
+				query.setMaxResults(pageSize);
+				query.setFirstResult(index);
+
+				
+				List list = query.list();
+	
+				return list;
+	
+			}
+		});
+		   
+		return result;
+	}
+
+
+	@Override
+	public List<PlaceRating> findByCityStatePaged(final String city, final String state,
+			final int pageNum, final int pageSize, final boolean isAscending) {
+		final int index = (pageNum-1)*pageSize;
+		logger.debug("pagenum:"+pageNum+" index:"+index);
+		
+		
+		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+	
+				Query query = session.createQuery(
+					"select entityimpl from "+PlaceRating.class.getName()+" as entityimpl " +
+					" where entityimpl.place.city = :city"+
+					" and entityimpl.place.state = :state"+
+					" order by entityimpl.rating desc"
+					);
+				query.setString("city", city);
+				query.setString("state", state);
+				
+				query.setMaxResults(pageSize);
+				query.setFirstResult(index);
+
+				
+				List list = query.list();
+	
+				return list;
+	
+			}
+		});
+		   
+		return result;
+	}
+
+
+	@Override
 	public List<PlaceRating> findByTypePaged(
 			final String type, final int pageNum,
 			final int pageSize, final boolean isAscending) {

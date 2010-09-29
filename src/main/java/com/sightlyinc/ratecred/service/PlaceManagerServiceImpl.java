@@ -202,7 +202,24 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 
 	}
 	
-	
+
+	@Override
+	public PlacePage findPlacesRated(Integer pageNum, Integer pageSize,
+			boolean isAcending) throws BLServiceException {
+		PlacePage tp = new PlacePage(); 
+		tp.setPageSize(pageSize);
+		tp.setAscending(isAcending);
+				
+		List<PlaceRating> ratings = placeRatingDao.findAllPaged(
+				pageNum, pageSize, isAcending);
+				
+		for (PlaceRating placeRating : ratings) {
+			tp.getPlaces().add(placeRating.getPlace());
+		}
+		
+		return tp;
+	}
+
 
 	@Override
 	public PlacePage findPlacesByText(String text, Integer pageNum,
@@ -299,6 +316,48 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			
 		return tp;
 	}
+
+
+	
+	
+	@Override
+	public PlacePage findCityStatePlacesRated(PlaceCityState cs,
+			Integer pageNum, Integer pageSize, boolean isAscending)
+			throws BLServiceException {
+		PlacePage tp = new PlacePage(); 
+		tp.setPageSize(pageSize);
+		tp.setAscending(isAscending);
+		
+		Long totalPlaces = placeDao.findByCityStateCount(cs.getCity(), cs.getState());
+		tp.setTotalResults(totalPlaces);
+	
+		
+		Float pagesAll = 
+			totalPlaces.floatValue()
+			/ pageSize.floatValue();
+		
+		Float pages = 
+			Rounding.roundFloat(pagesAll,0); 
+		
+		if(pagesAll>pages)
+			pages=pages+1.0f;
+		
+		tp.setPageNumber(pageNum);			
+		tp.setTotalPages(pages.intValue());	
+		
+		List<PlaceRating> ratings = placeRatingDao.findByCityStatePaged(
+				cs.getCity(), cs.getState(), 
+				pageNum, pageSize, isAscending);
+		
+		for (PlaceRating placeRating : ratings) {
+			tp.getPlaces().add(placeRating.getPlace());
+		}
+			
+		return tp;
+	}
+
+
+
 
 
 	/**

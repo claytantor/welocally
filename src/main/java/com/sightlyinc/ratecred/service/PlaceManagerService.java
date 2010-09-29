@@ -30,9 +30,20 @@ public interface PlaceManagerService {
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
 	
+	public PlacePage findPlacesRated(
+			Integer pageNum, 
+			Integer pageSize, 
+			boolean b) throws BLServiceException;
+	
 	public PlacePage findCityStatePlacesRatedByType(
 			PlaceCityState cs,
 			String type, 
+			Integer pageNum, 
+			Integer pageSize, 
+			boolean b) throws BLServiceException;
+
+	public PlacePage findCityStatePlacesRated(
+			PlaceCityState cs,
 			Integer pageNum, 
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
