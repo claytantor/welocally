@@ -327,7 +327,7 @@ DROP TABLE IF EXISTS `place_rating`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `place_rating` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` varchar(16) NOT NULL,
+  `type` varchar(100) NOT NULL,
   `place_id` bigint(20) DEFAULT NULL,
   `rating_avg` float DEFAULT NULL,
   PRIMARY KEY (`id`),
