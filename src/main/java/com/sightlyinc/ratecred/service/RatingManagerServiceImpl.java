@@ -122,6 +122,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		}
 		fromRater.setAwards(new HashSet<Award>());
 		
+		//compliments
+		Set<Compliment> compliments = fromRater.getCompliments();
+		for (Compliment complimentFrom : compliments) {
+			complimentFrom.setOwner(toRater);
+		}
+		fromRater.setCompliments(new HashSet<Compliment>());
+		
 		toRater.setScore(toRater.getScore()+fromRater.getScore());
 		toRater.setTimeCreated(fromRater.getTimeCreated());
 		

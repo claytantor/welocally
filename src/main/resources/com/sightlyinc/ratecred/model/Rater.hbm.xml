@@ -45,6 +45,14 @@
 	        <one-to-many class="Award"/>
 	    </set>
 	    
+	    <set name="compliments" 
+	 		lazy="extra"
+			fetch="select"
+			cascade="all">
+	        <key column="rater_id"/>
+	        <one-to-many class="Compliment"/>
+	    </set>
+	    
 	    <many-to-one
 			lazy="no-proxy" 
 			fetch="select"

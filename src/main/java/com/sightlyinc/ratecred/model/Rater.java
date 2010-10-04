@@ -24,6 +24,8 @@ public class Rater {
 	
 	protected Set<Award> awards = new HashSet<Award>();
 	
+	protected Set<Compliment> compliments = new HashSet<Compliment>();
+	
 	protected RaterMetrics metrics;
 	
 
@@ -46,6 +48,16 @@ public class Rater {
 	 */
 	public ImageValue getRaterImage() {
 		return raterImage;
+	}
+	
+	
+
+	public Set<Compliment> getCompliments() {
+		return compliments;
+	}
+
+	public void setCompliments(Set<Compliment> compliments) {
+		this.compliments = compliments;
 	}
 
 	/* (non-Javadoc)
