@@ -422,7 +422,7 @@ public class HibernateRaterDao
 			final int pageNum, final int pageSize, final boolean isAscending) 
 	{
 		final int index = (pageNum-1)*pageSize;
-		logger.debug("pagenum:"+pageNum+" index:"+index);
+		//logger.debug("pagenum:"+pageNum+" index:"+index);
 		
 		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)

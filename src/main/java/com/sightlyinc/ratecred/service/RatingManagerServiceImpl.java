@@ -479,7 +479,6 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			boolean isAcending, List<Rater> raters)
 			throws BLServiceException {
 		
-		logger.debug("pagenum:"+pageNum);
 		RatingPage tp = new RatingPage(); 
 		tp.setPageSize(ratingsPerPage);
 		tp.setSortField(sortField);
@@ -489,7 +488,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			Long[] ownerIds = new Long[raters.size()];
 			int i=0;
 			for (Rater rater : raters) 
+			{
 				ownerIds[i] = rater.getId();
+				i++;
+			}
 	
 			tp.setRatings(ratingDao.findByOwners(
 					ownerIds, pageNum, ratingsPerPage, sortField, isAcending));
