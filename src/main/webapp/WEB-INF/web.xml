@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+ 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+ 	version="2.4">
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+		WEB-INF/dispatcher-servlet.xml,
+		classpath:applicationSessionFactory-beans.xml,	
+		classpath:hibernateProperties-beans.xml,		
+		classpath:businessManagerService-beans.xml,	
+		classpath:awardManagerService-beans.xml,	
+		classpath:placeSearchEngine-beans.xml,		
+		classpath:ratingSearchEngine-beans.xml,		
+		classpath:localDataSource-beans.xml,		
+		classpath:quartzJob-beans.xml,			
+		classpath:springDao-beans.xml,
+		classpath:imageValueDao-beans.xml,
+		classpath:placeManagerService-beans.xml,		
+		classpath:ratingManagerService-beans.xml,
+		classpath:security-config-beans.xml,
+		classpath:service-beans.xml
+		</param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+
+	
+
+	
+	<filter>
+		<filter-name>hibernateFilter</filter-name>
+		<filter-class>
+			org.springframework.orm.hibernate3.support.OpenSessionInViewFilter
+		</filter-class>
+		<init-param>
+		<param-name>sessionFactoryBeanName</param-name>
+		<param-value>ApplicationSessionFactory</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>hibernateFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>	
+	
+
+	<filter>
+	  <filter-name>springSecurityFilterChain</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	
+	<filter-mapping>
+	  <filter-name>springSecurityFilterChain</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping> 
+
+	<!-- Enables clean URLs with JSP views e.g. /welcome instead of /app/welcome
+-->
+
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>	
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/do/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/index.html</url-pattern>
+	</servlet-mapping>
+	
+ 	<welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+    
+	
+
+</web-app>
