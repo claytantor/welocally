@@ -24,6 +24,7 @@
 		</property>	
 		
 		<property name="type" column="type" type="java.lang.String"/>
+		<property name="value" column="value" type="java.lang.Integer"/>
 		<property name="keyname" column="keyname" type="java.lang.String"/>
 
 														

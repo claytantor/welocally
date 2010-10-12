@@ -25,7 +25,6 @@ public class Award {
 	
 	private AwardType awardType;
 	
-	
 
 	public String getStatus() {
 		return status;

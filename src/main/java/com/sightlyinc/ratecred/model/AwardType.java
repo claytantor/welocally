@@ -7,7 +7,7 @@ public class AwardType {
 	private Long id;
 	private Integer version = new Integer(0);
 	private Date timeCreated;
-	
+	private Integer value;
 	private String name;
 	private String description;
 	private String type;
@@ -54,6 +54,12 @@ public class AwardType {
 	}
 	public void setKeyname(String keyname) {
 		this.keyname = keyname;
+	}
+	public Integer getValue() {
+		return value;
+	}
+	public void setValue(Integer value) {
+		this.value = value;
 	}
 	
 	

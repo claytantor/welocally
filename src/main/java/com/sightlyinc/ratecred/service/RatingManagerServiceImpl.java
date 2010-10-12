@@ -79,14 +79,6 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return ratingDao.findByTime(time);
 	}
 
-/*	@Override
-	public Rater findRaterByTwitterScreenName(String twitterScreenName)
-			throws BLServiceException {
-		Rater t = raterDao.findByUserName(userName);
-		return t;
-	}*/
-	
-	
 
 	@Override
 	public List<Rater> findRatersByPrimaryKeys(Long[] ids)
