@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- user -->    
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="User" table="user_principal">
+
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+				
+		<version name="version" column="version" />	
+		<property name="userName" column="user_name" type="string"/>
+		<property name="password" column="password" type="string"/>
+		<property name="twitterScreenName" column="twitter_username" type="string"/>	
+		<property name="twitterId" column="twitter_id" type="long"/>			
+		<property name="twitterToken" column="twitter_token" type="string"/>
+		<property name="twitterTokenSecret" column="twitter_secret" type="string"/>
+		<property name="twitterProfileImage" column="twitter_profile_img" type="string"/>
+		<property name="twitterVerify" column="twitter_verify" type="string"/>
+		<property name="timeCreatedMills" column="time_created_mills" type="long"/>
+
+				
+	</class>
+</hibernate-mapping>
