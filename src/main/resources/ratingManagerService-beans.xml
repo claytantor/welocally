@@ -30,6 +30,7 @@
 		<property name="complimentDao"><ref bean="ComplimentDao"/></property>						
 		<property name="awardTypeDao"><ref bean="AwardTypeDao"/></property>
 		<property name="awardDao"><ref bean="AwardDao"/></property>
+		<property name="awardOfferDao"><ref bean="AwardOfferDao"/></property>
 		<property name="placeCityStateDao"><ref bean="PlaceCityStateDao"/></property>
 		<property name="ratingDirectoryIndexer"><ref bean="RatingDirectoryIndexer"/></property>
 		<property name="ratingSearchDirectory"><ref bean="RatingDirectory"/></property>				

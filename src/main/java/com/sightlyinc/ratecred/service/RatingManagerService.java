@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.Compliment;
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
@@ -36,11 +36,12 @@ public interface RatingManagerService {
 	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, Rater rater) throws BLServiceException;
 	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, List<Rater> raters) throws BLServiceException;
 
-	//awards
+	//awards THESE SHOULD MOVE
 	public List<Award> findAwardsLocalByRater(Rater t) throws BLServiceException;
 	public List<Award> findAwardsByOwner(Rater t) throws BLServiceException;
 	public Award findAwardById(Long awardId) throws BLServiceException;
 	public void saveAward(Award entity) throws BLServiceException;
+	//public void saveAwardOffer(AwardOffer entity) throws BLServiceException;
 	
 	//search functions
 	public List<Rating> findRatesByText(String text) throws BLServiceException;

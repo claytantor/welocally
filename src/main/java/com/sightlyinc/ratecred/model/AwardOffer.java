@@ -3,13 +3,23 @@ package com.sightlyinc.ratecred.model;
 import java.util.Date;
 
 public class AwardOffer {
-
+	
 	private Long id;
 	private Integer version = new Integer(0);
 	private Date timeCreated;
 	
+	private String externalId;
+	private String externalSource;
+	private String programId;
+	private String programName;
 	private String name;
+	private String couponCode;
 	private String description;
+	private String url;
+	private Long beginDateMillis;
+	private Long expireDateMillis;
+	
+	
 	private String status;
 	private AwardType awardType;
 	
@@ -64,6 +74,57 @@ public class AwardOffer {
 	public void setAwardType(AwardType awardType) {
 		this.awardType = awardType;
 	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+	public String getExternalSource() {
+		return externalSource;
+	}
+	public void setExternalSource(String externalSource) {
+		this.externalSource = externalSource;
+	}
+	
+	public String getProgramId() {
+		return programId;
+	}
+	public void setProgramId(String programId) {
+		this.programId = programId;
+	}
+	public String getProgramName() {
+		return programName;
+	}
+	public void setProgramName(String programName) {
+		this.programName = programName;
+	}
+	public String getCouponCode() {
+		return couponCode;
+	}
+	public void setCouponCode(String couponCode) {
+		this.couponCode = couponCode;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public Long getBeginDateMillis() {
+		return beginDateMillis;
+	}
+	public void setBeginDateMillis(Long beginDateMillis) {
+		this.beginDateMillis = beginDateMillis;
+	}
+	public Long getExpireDateMillis() {
+		return expireDateMillis;
+	}
+	public void setExpireDateMillis(Long expireDateMillis) {
+		this.expireDateMillis = expireDateMillis;
+	}
+
 
 	
 	

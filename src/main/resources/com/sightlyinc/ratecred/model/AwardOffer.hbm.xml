@@ -30,14 +30,23 @@ CREATE TABLE  `award_offer` (
 				
 		<version name="version" column="version" />	
 		<property name="timeCreated" column="time_created" type="java.util.Date"/> 
-		
-		<property name="name" column="name" type="java.lang.String"/> 
-		
+		<property name="name" column="name" type="java.lang.String"/> 		
 		<property name="description"  type="java.lang.String" length="32000">
 			<column name="description" sql-type="longtext"/>
 		</property>	
+
+		<property name="externalId" column="external_id" type="java.lang.String"/>
+		<property name="externalSource" column="external_source" type="java.lang.String"/>
+		<property name="programId" column="program_id" type="java.lang.String"/>
+		<property name="programName" column="program_name" type="java.lang.String"/>
+		<property name="couponCode" column="code" type="java.lang.String"/>
+		<property name="url"  type="java.lang.String" length="32000">
+			<column name="url" sql-type="longtext"/>
+		</property>
 		
-		
+		<property name="beginDateMillis" column="begin_millis" type="java.lang.Long"/>
+		<property name="expireDateMillis" column="expire_millis" type="java.lang.Long"/>
+				
 		<many-to-one
 			lazy="no-proxy" 
 			fetch="select"

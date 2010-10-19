@@ -28,6 +28,7 @@ import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;
+import com.sightlyinc.ratecred.dao.AwardOfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.ComplimentDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
@@ -37,6 +38,7 @@ import com.sightlyinc.ratecred.dao.RaterMetricsDao;
 import com.sightlyinc.ratecred.dao.RatingDao;
 import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Place;
@@ -56,6 +58,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private RaterMetricsDao raterMetricsDao;
 	private AwardTypeDao awardTypeDao; 
 	private AwardDao awardDao;
+	private AwardOfferDao awardOfferDao;
 	private RaterDao raterDao;
     private ComplimentDao complimentDao;
     private PlaceCityStateDao placeCityStateDao;
@@ -144,6 +147,12 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	public void saveAward(Award entity) throws BLServiceException {
 		awardDao.save(entity);	
 	}
+	
+/*	@Override
+	public void saveAwardOffer(AwardOffer entity) throws BLServiceException {
+		awardOfferDao.save(entity);
+	}*/
+
 
 	@Override
 	public Long findAwardCountByOwnerBetweenTimes(Rater towards, Date startTime,
@@ -978,6 +987,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	public void setRatingUrlPrefix(String ratingUrlPrefix) {
 		this.ratingUrlPrefix = ratingUrlPrefix;
+	}
+
+
+	public void setAwardOfferDao(AwardOfferDao awardOfferDao) {
+		this.awardOfferDao = awardOfferDao;
 	}
 	
 	

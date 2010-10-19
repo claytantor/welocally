@@ -90,6 +90,12 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	public List<AwardType> findBusinessAwardTypes() {
 		return awardTypeDao.findByType("business");
 	}
+	
+	
+	@Override
+	public void saveAwardOffer(AwardOffer entity) throws BLServiceException {
+		awardOfferDao.save(entity);
+	}	
 
 	public void setAwardTypeDao(AwardTypeDao awardTypeDao) {
 		this.awardTypeDao = awardTypeDao;

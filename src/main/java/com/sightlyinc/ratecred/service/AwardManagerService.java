@@ -19,6 +19,8 @@ public interface AwardManagerService {
 	public AwardOffer findAwardOfferByPrimaryKey(Long awardOfferId) throws BLServiceException;	
 	public AwardType findAwardTypeByKey(String key) throws BLServiceException;
 	
+	
 	public Long saveAward(Award award)  throws BLServiceException;
+	public void saveAwardOffer(AwardOffer entity) throws BLServiceException;
 
 }
