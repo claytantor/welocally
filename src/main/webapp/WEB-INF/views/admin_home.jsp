@@ -15,7 +15,8 @@
 <div class="container">
 	<div class="span-24">
 		<h2>admin home</h2>
-		<a href="<c:url value='/do/admin/award'/>">give award</a>
+		<div><a href="<c:url value='/do/admin/award'/>">give award</a></div>
+		<div><a href="<c:url value='/do/admin/rater/status/USER'/>">users</a></div>
 	</div>
 </div>
 
