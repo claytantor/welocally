@@ -54,11 +54,9 @@
       	<exclusion>
       		<artifactId>commons-collections</artifactId>
       		<groupId>commons-collections</groupId>
-      	</exclusion>      	
+      	</exclusion>      	     	
       	</exclusions>
     </dependency>
-    
-
     
     <dependency>
     	<groupId>org.springframework</groupId>
@@ -166,9 +164,9 @@
     	<version>3.2</version>
     </dependency>
     <dependency>
-    	<groupId>opensymphony</groupId>
+    	<groupId>org.opensymphony.quartz</groupId>
     	<artifactId>quartz</artifactId>
-    	<version>1.6.2</version>
+    	<version>1.6.1</version>
     </dependency>
 
 	<dependency>
