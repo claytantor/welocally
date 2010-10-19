@@ -19,17 +19,23 @@
 $(document).ready(function(){
 	var dataUserNames = "${users}".split(",");
 	var dataAwardTypes = "${awardTypes}".split(",");
+	var dataOfferIds = "${offerIds}".split(",");
 	$("#username").autocomplete({
 	    source: dataUserNames
 	});
 	$("#type").autocomplete({
 	    source: dataAwardTypes
 	});
+	$("#offerId").autocomplete({
+	    source: dataOfferIds
+	});
 });
 </script>
 <body>
 <div class="container">
-	<div class="span-12 last">
+	<div class="span-24 last">
+		<div class="span-6">.</div>
+		<div class="span-12">
 		<h2>Give Award</h2>	
 		<c:url value='/do/admin/award' var="awardAction"/>		
 		<form:form modelAttribute="awardForm" action="${awardAction}" method="post">
@@ -44,18 +50,37 @@ $(document).ready(function(){
 					<form:input path="type" id="type"/> <form:errors path="type" class="error" />			
 				</p>
 				<p>
+					<form:label	for="offerId" path="offerId" cssErrorClass="error">Offer Id</form:label><br/>
+					<form:input path="offerId" id="offerId"/> <form:errors path="offerId" class="error" />			
+				</p>				
+				<p>
 					<form:label	for="note" path="note" cssErrorClass="error">Note</form:label><br/>
-					<form:textarea path="note" rows="3" cols="20" /> <form:errors path="note" class="error" />			
-				</p>
-					
-							
+					<form:textarea path="note" rows="1" cols="10" /> <form:errors path="note" class="error" />			
+				</p>												
 				<p>	
 					<input type="submit" />
 				</p>
 			</fieldset>
 		</form:form>
+		</div>
+		<div class="span-6">.</div>
 	</div>	
-	
+	<div class="span-24 last">
+	<c:forEach var="offer" items="${offers}">
+		<c:if test="${not empty offer.couponCode}">
+		<div class="span-24 last">
+			<div class="strong-16 span-2">${offer.externalId}</div>
+			<div class="strong-12 span-4">${offer.couponCode}</div>
+			<div class="strong-8 span-4">${offer.programName}</div>
+			<div class="span-10">
+				<div class="span-10"><a href="${offer.url}">${offer.name}</a></div>
+				<div class="span-10">${offer.description}</div>				
+			</div>
+			<div class="span-2 last">${offer.expireDateString}</div>	
+		</div>
+		</c:if>
+	</c:forEach>
+	</div>	
 </div>
 
 </body>

@@ -21,6 +21,7 @@
 		classpath:placeManagerService-beans.xml,		
 		classpath:ratingManagerService-beans.xml,
 		classpath:security-config-beans.xml,
+		classpath:offerPoolService-beans.xml,
 		classpath:service-beans.xml
 		</param-value>
 	</context-param>

@@ -103,7 +103,15 @@ a:active            { color:#5a9147; text-decoration:underline; }
 }
 
 .strong-12 {
-	font: bold 1.4em verdana, arial, helvetica, sans-serif;
+	font: bold 1.2em verdana, arial, helvetica, sans-serif;
+}
+
+.strong-10 {
+	font: bold 1.2em verdana, arial, helvetica, sans-serif;
+}
+
+.strong-8 {
+	font: bold 0.8em verdana, arial, helvetica, sans-serif;
 }
 
 .dash-text-20 {

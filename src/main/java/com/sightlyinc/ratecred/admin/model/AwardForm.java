@@ -5,6 +5,7 @@ public class AwardForm {
 	private String username;
 	private String type;
 	private String note;
+	private String offerId;
 
 
 	public String getType() {
@@ -29,6 +30,14 @@ public class AwardForm {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public String getOfferId() {
+		return offerId;
+	}
+
+	public void setOfferId(String offerId) {
+		this.offerId = offerId;
 	}
 	
 
