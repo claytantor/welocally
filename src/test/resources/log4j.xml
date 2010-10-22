@@ -13,6 +13,9 @@
   <category name="com.noi">
     <priority value="debug"/>
   </category> 
+  <category name="com.sightlyinc">
+    <priority value="debug"/>
+  </category>   
   <category name="net.sourceforge.pebble">
     <priority value="debug"/>
   </category>  

@@ -1,5 +1,7 @@
 package com.sightlyinc.ratecred.client.offers;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Date;
 
 import com.noi.utility.date.DateUtils;
@@ -16,6 +18,12 @@ public class Offer {
 	private String url;
 	private String beginDateString;
 	private String expireDateString;
+	private String city;
+	private String state;
+	
+	private boolean visible = true;
+	
+	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
 	
 	public Long getId() {
 		return id;
@@ -95,7 +103,37 @@ public class Offer {
 	{
 		return DateUtils.stringToDate(beginDateString, DateUtils.DESC_SIMPLE_FORMAT);
 	}
+
+	public boolean isVisible() {
+		return visible;
+	}
 	
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public void setVisible(boolean newvisible) {
+		
+		boolean oldvisible = visible;
+		visible = newvisible;
+        changes.firePropertyChange("visible", oldvisible, newvisible);
+	}
+	
+	public void addPropertyChangeListener( PropertyChangeListener l ) {
+        changes.addPropertyChangeListener( l );
+    }
+    
+    public void removePropertyChangeListener( PropertyChangeListener l ) {
+        changes.removePropertyChangeListener( l ); 
+    }	
 	
 	@Override
 	public String toString() {

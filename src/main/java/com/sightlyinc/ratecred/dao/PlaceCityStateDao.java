@@ -2,8 +2,8 @@ package com.sightlyinc.ratecred.dao;
 
 import java.util.List;
 
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Rater;
 
 public interface PlaceCityStateDao {
 	public List<PlaceCityState> findAll();	

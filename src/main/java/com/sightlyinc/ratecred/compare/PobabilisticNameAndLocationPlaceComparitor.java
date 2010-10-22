@@ -3,7 +3,6 @@ package com.sightlyinc.ratecred.compare;
 import java.util.Comparator;
 
 import com.noi.utility.string.StringUtils;
-import com.sightlyinc.ratecred.model.BusinessMetrics;
 import com.sightlyinc.ratecred.model.Place;
 
 public class PobabilisticNameAndLocationPlaceComparitor implements Comparator<Place> {

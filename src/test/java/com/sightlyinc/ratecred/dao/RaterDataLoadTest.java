@@ -20,12 +20,11 @@ import org.hibernate.cfg.Configuration;
 import com.noi.utility.random.RandomMaker;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceRating;
+import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingAttribute;
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.service.RatingHelper;
 
 

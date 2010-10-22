@@ -10,10 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
@@ -38,7 +36,6 @@ import com.sightlyinc.ratecred.dao.RaterMetricsDao;
 import com.sightlyinc.ratecred.dao.RatingDao;
 import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Place;

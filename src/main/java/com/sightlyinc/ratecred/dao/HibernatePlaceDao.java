@@ -16,7 +16,6 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.model.Rating;
 
 public class HibernatePlaceDao 
 	extends HibernateDaoSupport 

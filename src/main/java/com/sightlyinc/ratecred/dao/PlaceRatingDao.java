@@ -2,7 +2,6 @@ package com.sightlyinc.ratecred.dao;
 
 import java.util.List;
 
-import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceRating;
 
 public interface PlaceRatingDao {

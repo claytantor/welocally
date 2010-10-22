@@ -4,12 +4,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.quartz.JobExecutionException;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.noi.utility.spring.test.AbstractBeanFactoryTestCase;
-import com.sightlyinc.ratecred.job.BusinessMetricsJob;
 import com.sightlyinc.ratecred.service.BusinessManagerService;
 
 public class BusinessMetricsJobTest extends AbstractBeanFactoryTestCase {

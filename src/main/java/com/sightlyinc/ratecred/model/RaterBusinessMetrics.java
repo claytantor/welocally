@@ -2,8 +2,6 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
 
-import com.noi.utility.reflection.ReflectionUtils;
-
 public class RaterBusinessMetrics {
 	
 	private Long id;

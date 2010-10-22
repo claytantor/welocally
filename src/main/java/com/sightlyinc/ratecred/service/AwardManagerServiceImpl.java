@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;

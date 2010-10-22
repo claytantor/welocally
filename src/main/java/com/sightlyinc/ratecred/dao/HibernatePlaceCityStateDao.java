@@ -12,8 +12,8 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Rater;
 
 public class HibernatePlaceCityStateDao 
 	extends HibernateDaoSupport 

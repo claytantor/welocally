@@ -16,7 +16,6 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Business;
-import com.sightlyinc.ratecred.model.Rater;
 
 public class HibernateBusinessDao 
 	extends HibernateDaoSupport 

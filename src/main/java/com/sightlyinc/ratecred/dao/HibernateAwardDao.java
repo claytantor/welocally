@@ -15,7 +15,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Business;
-import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Rater;
 
 

@@ -1,11 +1,5 @@
 package com.sightlyinc.ratecred.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
-
-import com.noi.utility.string.StringUtils;
 
 public class PlaceAttribute {
 	
