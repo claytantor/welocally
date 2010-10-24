@@ -11,13 +11,13 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
 	
 	<bean id="offerPoolService" 
-		init-method="refresh"
 		class="com.sightlyinc.ratecred.service.DefaultOfferPoolService">
 		<property name="clients">
 			<list>
 			  <ref bean="pepperJamOfferClient"/>
 			</list>
-		</property>							
+		</property>	
+		<property name="fetchDisabled" value="${offerPoolService.fetchDisabled}"/>						
 	</bean>
 	
 	<bean id="pepperJamOfferClient" 

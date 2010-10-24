@@ -11,14 +11,15 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
 	
 	<bean id="linkManagerService" 
-		class="com.sightlyinc.ratecred.service.DefaultLinkManagerService">
+		class="com.sightlyinc.ratecred.service.DefaultLinkManagerService"
+		init-method="initLinkCache">
 		<property name="linkClient" ref="linkClient"/>
+		<property name="webLinksRequest" ref="webLinksRequestModel"/>
+		<property name="maxLinks" value="${linkManagerService.maxLinks}"/>
+		<property name="fetchDisabled" value="${linkManagerService.fetchDisabled}"/>	
 	</bean>
 	
-	<bean id="linkClient" 
-		class="com.sightlyinc.ratecred.client.link.CommisionJunctionLinkClient"
-		init-method="initClient">
-		<property name="advertiserIds" value="2991426"/>
-	</bean>
+
+	 
 
 </beans>

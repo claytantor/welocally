@@ -1,5 +1,6 @@
-package com.sightlyinc.ratecred.client.link;
+package com.sightlyinc.ratecred.model;
 
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -46,9 +47,16 @@ import java.util.List;
 <seven-day-epc>N/A</seven-day-epc>
 <three-month-epc>N/A</three-month-epc>	*/
 
-public class Link {
+public class AffiliateLink {
+	
+	private Long id;
+	private Integer version = new Integer(0);
+	private Long timeCreatedMills;
+	
 	private String advertiserId;
 	private String advertiserName;
+	private String categoryString;
+	
 	private List<String> category;
 	private String linkCodeHtml;
 	private String description;
@@ -57,6 +65,25 @@ public class Link {
 	private String linkName;
 	private String startDateString;
 	private String endDateString;
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	public Long getTimeCreatedMills() {
+		return timeCreatedMills;
+	}
+	public void setTimeCreatedMills(Long timeCreatedMills) {
+		this.timeCreatedMills = timeCreatedMills;
+	}
 	public String getAdvertiserId() {
 		return advertiserId;
 	}
@@ -118,6 +145,14 @@ public class Link {
 	}
 	public void setEndDateString(String endDateString) {
 		this.endDateString = endDateString;
+	}
+	
+	
+	public String getCategoryString() {
+		return categoryString;
+	}
+	public void setCategoryString(String categoryString) {
+		this.categoryString = categoryString;
 	}
 	@Override
 	public String toString() {

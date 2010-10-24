@@ -19,22 +19,27 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	
 	private List<Offer> offerPool = new ArrayList<Offer>();
 	
+	private Boolean fetchDisabled = false;
+	
 	public DefaultOfferPoolService() {
 		super();
 		logger.debug("constructor");
 	}	
 	
 	public void refresh() {
-		offerPool.clear();
-		for (OfferClient client : clients) {			
-			try {
-				List<Offer> o = client.getOffers();
-				logger.debug("offer count:"+o.size());
-				offerPool.addAll(o);
-			} catch (OfferFeedException e) {
-				logger.error("OfferFeedException", e);
+		if(!fetchDisabled)
+		{
+			offerPool.clear();
+			for (OfferClient client : clients) {			
+				try {
+					List<Offer> o = client.getOffers();
+					logger.debug("offer count:"+o.size());
+					offerPool.addAll(o);
+				} catch (OfferFeedException e) {
+					logger.error("OfferFeedException", e);
+				}
 			}
-		}		
+		}
 	}
 
 	/* (non-Javadoc)
@@ -61,6 +66,10 @@ public class DefaultOfferPoolService implements OfferPoolService {
 				return offer;
 		}
 		return null;
+	}
+
+	public void setFetchDisabled(Boolean fetchDisabled) {
+		this.fetchDisabled = fetchDisabled;
 	}
 	
 	
