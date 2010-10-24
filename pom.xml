@@ -8,6 +8,7 @@
 		<web.war>rcadmin</web.war>
 		<org.springframework.version>3.0.3.RELEASE</org.springframework.version>
 		<org.springframework.security.version>2.0.4</org.springframework.security.version>
+		<org.drools.version>2.1</org.drools.version>
 	</properties>
 	<dependencies>
 
@@ -115,7 +116,56 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.5.8</version>
-		</dependency>     
+		</dependency>   
+		
+		
+		<!-- drools  -->  
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-base</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-core</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>   
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-io</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>  
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-java</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>    
+
+
 
 		<!-- other third party -->
 		<dependency>

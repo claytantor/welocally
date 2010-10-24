@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<rule-set name="offer01"
+          xmlns="http://drools.org/rules"
+          xmlns:java="http://drools.org/semantics/java"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:schemaLocation="http://drools.org/rules rules.xsd
+                             http://drools.org/semantics/java java.xsd">
+
+    <import>com.sightlyinc.ratecred.client.offers.Offer</import>
+    
+    <rule name="filter_Gay">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+        <java:condition>offer.getDescription().contains("Gay") || offer.getCouponCode().contains("GAY")</java:condition>
+        <java:consequence>
+            offer.setVisible(false);
+        </java:consequence>
+    </rule>
+    
+	<rule name="filter_Lesbian">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+        <java:condition>offer.getCouponCode().contains("Lesbian") || offer.getCouponCode().contains("LESBIAN")</java:condition>
+        <java:consequence>
+            offer.setVisible(false);
+        </java:consequence>
+    </rule>
+
+	<rule name="filter_No_Code">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+        <java:condition>offer.getCouponCode().contains("No") || offer.getCouponCode().contains("NO")</java:condition>
+        <java:consequence>
+            offer.setVisible(false);
+        </java:consequence>
+    </rule>
+
+	<rule name="filter_Code_NULL">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+        <java:condition>offer.getCouponCode() == null</java:condition>
+        <java:consequence>
+            offer.setVisible(false);
+        </java:consequence>
+    </rule>
+	
+
+  </rule-set>
