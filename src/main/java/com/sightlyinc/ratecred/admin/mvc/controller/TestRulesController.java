@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.xml.sax.SAXException;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.client.offers.Offer;
 import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.RaterMetrics;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
+import com.sightlyinc.ratecred.service.RaterAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Controller
@@ -44,6 +47,9 @@ public class TestRulesController {
 	
 	@Autowired
 	private AwardManagerService awardManagerService;
+	
+	@Autowired
+	RaterAwardsService raterAwardsService;
 	
 	@RequestMapping(value="/test", method=RequestMethod.GET)
 	public String getAward(Model model) {
@@ -83,22 +89,25 @@ public class TestRulesController {
 		try {
 			RuleBase ruleBase = 
 				RuleBaseLoader.loadFromInputStream(
-						TestRulesController.class.getResourceAsStream("/rules/rater.java.drl"));
+						TestRulesController.class.getResourceAsStream("/rules/rater_awards.java.drl"));
 			
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
 			boolean dynamic = true;
 			
 			Rater r = ratingManagerService.findRaterByUsername(rater);
-			workingMemory.assertObject( r, dynamic );
-			
-			List<Offer> offersRaw = offerPoolService.getOfferPool();
-			
-			for (Offer offer : offersRaw) {
-				workingMemory.assertObject( offer, dynamic );
-			}
+			RaterMetrics rm = ratingManagerService.findMetricsByRater(r);
+			r.setMetrics(rm);
+			RaterAwards ra = new RaterAwards(r);
+			workingMemory.assertObject( ra, true );
 			
 			workingMemory.fireAllRules( );
-			model.addAttribute("offers", offersRaw);
+			
+			raterAwardsService.proccessAwardsForRater(ra, r);
+			
+			model.addAttribute("raterAwards",ra);
+			model.addAttribute("rater",r);
+			
+			
 			
 		} catch (IntegrationException e) {
 			logger.error("IntegrationException", e);
@@ -112,7 +121,7 @@ public class TestRulesController {
 			logger.error("BLServiceException", e);
 		}
 		
-		return "offers";
+		return "rater_awards";
 	}
 	
 	

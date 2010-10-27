@@ -12,7 +12,6 @@
     <import>com.sightlyinc.ratecred.model.Rater</import>
     <import>com.sightlyinc.ratecred.admin.model.RaterOfferEvaluator</import>
     
-    
     <rule name="OfferInRaterMostReviewedCityState">
     	<parameter identifier="evaluator">
                <class>RaterOfferEvaluator</class>

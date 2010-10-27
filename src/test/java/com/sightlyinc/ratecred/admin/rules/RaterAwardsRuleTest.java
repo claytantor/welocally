@@ -1,0 +1,134 @@
+package com.sightlyinc.ratecred.admin.rules;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import junit.framework.TestCase;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.drools.FactException;
+import org.drools.IntegrationException;
+import org.drools.RuleBase;
+import org.drools.WorkingMemory;
+import org.drools.io.RuleBaseLoader;
+import org.xml.sax.SAXException;
+
+import com.sightlyinc.ratecred.admin.model.CityStateEvaluator;
+import com.sightlyinc.ratecred.admin.model.RaterAwards;
+import com.sightlyinc.ratecred.admin.mvc.controller.TestRulesController;
+import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Rating;
+
+
+public class RaterAwardsRuleTest extends TestCase{
+	
+	static Logger logger = Logger.getLogger(RaterAwardsRuleTest.class);
+	
+	public void testRaterAwards() {
+		logger.debug("testRaterAwards");
+		try {
+			
+			RuleBase ruleBase = 
+				RuleBaseLoader.loadFromInputStream(
+						TestRulesController.class.getResourceAsStream("/rules/rater_awards.java.drl"));
+			
+			WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
+			boolean dynamic = true;
+			
+			RaterAwards raclaytantor = new RaterAwards(
+					getRaterByName("/com/sightlyinc/ratecred/admin/rules/claytantor.json"));
+			RaterAwards rashowymilkweed = new RaterAwards(
+					getRaterByName("/com/sightlyinc/ratecred/admin/rules/showymilkweed.json"));			
+			List<Rater> allRaters = new ArrayList<Rater>();
+			allRaters.add(raclaytantor.getRater());
+			allRaters.add(rashowymilkweed.getRater());
+			
+			Map<String,PlaceCityState> allcs = new HashMap<String,PlaceCityState>();
+						
+			//now get a set of all cities
+			addCitiesToMap(getCitiesRated(raclaytantor.getRater()), allcs);
+			addCitiesToMap(getCitiesRated(rashowymilkweed.getRater()), allcs);
+						
+			for (PlaceCityState placeCityState : allcs.values()) {
+				CityStateEvaluator cseval = new CityStateEvaluator(placeCityState, allRaters);
+				workingMemory.assertObject( cseval, dynamic );
+			}
+									
+			workingMemory.assertObject( raclaytantor, dynamic );
+			workingMemory.assertObject( rashowymilkweed, dynamic );
+						
+			workingMemory.fireAllRules( );	
+			logger.debug("claytantor");
+			logAwards(raclaytantor);
+			logger.debug("showymilkweed");
+			logAwards(rashowymilkweed);
+						
+			assertEquals(17, raclaytantor.getAwards().size());
+			assertEquals(16, rashowymilkweed.getAwards().size());
+			
+			
+		} catch (IntegrationException e) {
+			logger.error("IntegrationException", e);
+			fail("IntegrationException");
+		} catch (FactException e) {
+			logger.error("FactException", e);
+			fail("FactException");
+		} catch (SAXException e) {
+			logger.error("SAXException", e);
+			fail("SAXException");
+		} catch (IOException e) {
+			logger.error("IOException", e);
+			fail("IOException");
+		} 
+	}
+	
+	private void logAwards(RaterAwards ra)
+	{
+		for (Award a : ra.getAwards()) {
+			logger.debug(a.toString());
+		}
+	}
+	
+	private Rater getRaterByName(String name) 
+	throws JsonParseException, JsonMappingException, IOException
+	{
+		ObjectMapper mapper = new ObjectMapper();		
+		Rater r = mapper.readValue(RaterAwardsRuleTest.class.getResourceAsStream(name), Rater.class);
+		return r;
+
+	}
+	
+	private void addCitiesToMap(List<PlaceCityState> cities, Map<String, PlaceCityState> maplookup)
+	{
+		for (PlaceCityState placeCityState : cities) {
+			maplookup.put(
+					placeCityState.getCity().toLowerCase()+placeCityState.getState().toLowerCase(), 
+					placeCityState);
+		}
+	}
+	
+	private List<PlaceCityState> getCitiesRated(Rater r)
+	{
+		List<PlaceCityState> allcs = new ArrayList<PlaceCityState>();
+		for (Rating rating : r.getRatings()) {
+			allcs.add(
+					new PlaceCityState(
+							rating.getPlace().getCity(), 
+							rating.getPlace().getState(),
+							null));
+		}
+			
+		return allcs;
+	}
+
+}

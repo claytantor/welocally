@@ -22,7 +22,7 @@
 		<c:if test="${not empty raters}">
 		<div class="padding-5 span-12">
 			<c:forEach items="${raters}" var="rater" varStatus="status" begin="0">
-				<div class="green-box padding-5 span-7">
+				<div class="green-box padding-5 span-10">
 					<div class="span-1">
 						${rater.score}
 					</div>	
@@ -39,9 +39,13 @@
 				                    </c:otherwise>
 								</c:choose>
 					</div>
-					<div class="span-5 last">
+					<div class="span-3">
 						<span><a href="http://ratecred.com/rater/profile/${rater.id}">${rater.userName}</a></span>
-					</div>	
+					</div>
+					<div class="span-3 last">
+						<c:url var="awardsUrl" value="/do/admin/rules/target/${rater.userName}" />
+						<span><a class="button" href="${awardsUrl}"/>proc awards</a></span>
+					</div>						
 				</div>
 			</c:forEach>
 		</div>

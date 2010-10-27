@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+
+<rule-set name="award01"
+          xmlns="http://drools.org/rules"
+          xmlns:java="http://drools.org/semantics/java"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:schemaLocation="http://drools.org/rules rules.xsd
+                             http://drools.org/semantics/java java.xsd">
+
+	<import>java.util.*</import>
+	<import>com.sightlyinc.ratecred.model.*</import>
+    <import>com.sightlyinc.ratecred.admin.model.RaterAwards</import>
+    <import>com.sightlyinc.ratecred.admin.model.CityStateEvaluator</import>
+    <import>java.net.URLEncoder</import>
+    
+    <rule name="RatingStarter" salience="40">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 1
+        </java:condition>
+        <java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt;= 10
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>       
+
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("starter");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule>
+    
+    
+    <rule name="RatingNovice" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 10
+        </java:condition>
+        <java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt;= 20
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>         
+ 
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("novice");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule>   
+
+    <rule name="RatingAdvisor" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 20
+        </java:condition>
+        <java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 40
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>         
+ 
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("advisor");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule>   
+
+    <rule name="RatingLeader" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 40
+        </java:condition>
+        <java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 80
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>         
+ 
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("leader");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule> 
+
+    <rule name="RatingExpert" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 100
+        </java:condition>
+        <java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 150
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>         
+ 
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("expert");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule> 
+
+    <rule name="RatingElite" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 150
+        </java:condition>
+        <java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 200
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>         
+ 
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("elite");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule> 
+
+    <rule name="Raterati" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 200
+        </java:condition>
+ 		<java:condition>
+            rater_awards.getRater().getStatus().equals("USER")
+        </java:condition>           
+
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("raterati");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule>  
+    
+    <rule name="CityStar" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+    	<parameter identifier="city_state">
+               <class>CityStateEvaluator</class>
+        </parameter>        
+                 	
+		<java:condition>
+            city_state.isRated(rater_awards.getRater())
+		</java:condition>
+		<java:condition>
+            city_state.isLeadRater(rater_awards.getRater())
+        </java:condition>        
+
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("citykey");
+			awardGiven.setMetadata("imageUrl=/images/awards/award_citykey.png&amp;city="+java.net.URLEncoder.encode(city_state.getPlaceCityState().getCity(), "ISO-8859-1")+"&amp;state="+java.net.URLEncoder.encode(city_state.getPlaceCityState().getState(), "ISO-8859-1"));
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+        </java:consequence>
+        
+    </rule>   
+       
+    
+  </rule-set>

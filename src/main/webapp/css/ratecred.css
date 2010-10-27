@@ -156,6 +156,8 @@ a:active            { color:#5a9147; text-decoration:underline; }
 
 .green-box { background-color:#D0F5D0; color:olive; border: 1px; border-color: green; }
 
+.grey-box { background-color:#D0D0D0; color:#666666; border: 2px solid; border-color: #AAAAAA;}
+
 /*.align-right { float:right; margin: 0 0 15px 15px; }
 .align-left { float:left; margin: 0 15px 15px 0; }
 
