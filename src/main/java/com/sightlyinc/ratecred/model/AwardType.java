@@ -12,6 +12,10 @@ public class AwardType {
 	private String description;
 	private String type;
 	private String keyname;
+	private String previous;
+	private String next;
+	
+	
 	
 	public Long getId() {
 		return id;
@@ -60,6 +64,27 @@ public class AwardType {
 	}
 	public void setValue(Integer value) {
 		this.value = value;
+	}
+	public String getPrevious() {
+		return previous;
+	}
+	public void setPrevious(String previous) {
+		this.previous = previous;
+	}
+	public String getNext() {
+		return next;
+	}
+	public void setNext(String next) {
+		this.next = next;
+	}
+	
+	@Override
+	public String toString() {
+		return "AwardType [description=" + description + ", id=" + id
+				+ ", keyname=" + keyname + ", name=" + name + ", next=" + next
+				+ ", previous=" + previous + ", timeCreated=" + timeCreated
+				+ ", type=" + type + ", value=" + value + ", version="
+				+ version + "]";
 	}
 	
 	

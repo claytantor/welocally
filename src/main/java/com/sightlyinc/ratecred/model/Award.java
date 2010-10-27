@@ -110,6 +110,16 @@ public class Award {
 	public void setOffer(AwardOffer offer) {
 		this.offer = offer;
 	}
+	@Override
+	public String toString() {
+		return "Award [awardType=" + awardType + ", expires=" + expires
+				+ ", expiresGmt=" + expiresGmt + ", expiresMills="
+				+ expiresMills + ", id=" + id + ", metadata=" + metadata
+				+ ", notes=" + notes + ", offer=" + offer + ", owner=" + owner
+				+ ", status=" + status + ", timeCreated=" + timeCreated
+				+ ", timeCreatedGmt=" + timeCreatedGmt + ", timeCreatedMills="
+				+ timeCreatedMills + ", version=" + version + "]";
+	}
 
 	
 

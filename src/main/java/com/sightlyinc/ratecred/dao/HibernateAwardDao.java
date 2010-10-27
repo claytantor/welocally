@@ -14,6 +14,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.Rater;
 
@@ -32,6 +33,31 @@ public class HibernateAwardDao
 
     
     @Override
+	public List<Award> findByOwnerAwardType(final Rater towards, final AwardType at) {
+    	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+	
+				Query query = session.createQuery(
+					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+							"where entityimpl.owner = :towards and " +
+							"entityimpl.awardType = :awardType");
+	
+					query.setEntity("towards", towards);
+					query.setEntity("awardType", at);
+				
+				List list = query.list();
+	
+				return list;
+	
+			}
+		});
+		return result;
+	}
+
+
+	@Override
 	public Long findCountByOwnerBetweenTimes(final Rater towards,
 			final Date startTime, final Date endTime) {
 		

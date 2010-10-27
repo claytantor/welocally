@@ -50,7 +50,6 @@ public class Rater {
 		return raterImage;
 	}
 	
-	
 
 	public Set<Compliment> getCompliments() {
 		return compliments;
@@ -227,6 +226,19 @@ public class Rater {
 	 */
 	public void setMetrics(RaterMetrics metrics) {
 		this.metrics = metrics;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Rater)
+		{
+			Rater inst = (Rater)obj;
+			return inst.getId().equals(this.id);
+			
+		} else 
+			return false;
+
+
 	}
 	
 	

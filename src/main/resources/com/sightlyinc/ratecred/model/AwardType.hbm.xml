@@ -26,6 +26,8 @@
 		<property name="type" column="type" type="java.lang.String"/>
 		<property name="value" column="value" type="java.lang.Integer"/>
 		<property name="keyname" column="keyname" type="java.lang.String"/>
+		<property name="previous" column="previous" type="java.lang.String"/>
+		<property name="next" column="next" type="java.lang.String"/>
 
 														
 	</class>

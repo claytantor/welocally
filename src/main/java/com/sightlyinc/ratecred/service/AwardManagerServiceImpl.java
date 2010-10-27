@@ -14,6 +14,7 @@ import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
+import com.sightlyinc.ratecred.model.Rater;
 
 
 public class AwardManagerServiceImpl implements AwardManagerService {
@@ -31,6 +32,19 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	private AwardOfferDao awardOfferDao; 
 	
 	
+	@Override
+	public void deleteAward(Award award) throws BLServiceException {
+		awardDao.delete(award);
+	}
+
+
+	@Override
+	public List<Award> findAwardByRaterAwardType(Rater r, AwardType at)
+			throws BLServiceException {
+		return awardDao.findByOwnerAwardType(r, at);
+	}
+
+
 	@Override
 	public Long saveAward(Award award) throws BLServiceException {
 		if(award.getId()==null)
@@ -88,10 +102,13 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 		return awardTypeDao.findByType("business");
 	}
 	
+
+	//------------ injection -----------------//
 	
 	@Override
-	public void saveAwardOffer(AwardOffer entity) throws BLServiceException {
+	public Long saveAwardOffer(AwardOffer entity) throws BLServiceException {
 		awardOfferDao.save(entity);
+		return entity.getId();
 	}	
 
 	public void setAwardTypeDao(AwardTypeDao awardTypeDao) {
@@ -108,6 +125,7 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 		this.awardOfferDao = awardOfferDao;
 	}
 
+	
 
 
 }

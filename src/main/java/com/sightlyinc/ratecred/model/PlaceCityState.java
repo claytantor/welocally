@@ -15,6 +15,7 @@ public class PlaceCityState {
 		this.state = state;
 		this.count = count;
 	}
+	
 	public PlaceCityState() {
 		super();
 	}
@@ -43,6 +44,24 @@ public class PlaceCityState {
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof PlaceCityState)
+		{
+			String s1 = ((PlaceCityState)obj).getCity()+((PlaceCityState)obj).getState();
+			String s2 = this.city+this.state;
+			return s1.equals(s2);
+
+		}
+		else return false;
+	}
+
+	@Override
+	public String toString() {
+		return "PlaceCityState [city=" + city + ", count=" + count + ", id="
+				+ id + ", state=" + state + "]";
 	}
 	
 	
