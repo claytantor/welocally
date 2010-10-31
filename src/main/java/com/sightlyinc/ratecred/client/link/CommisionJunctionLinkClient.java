@@ -43,35 +43,55 @@ public class CommisionJunctionLinkClient implements LinkClient {
 
 	@Override
 	public NetworkResponse getNetworkResponse(LinkClientRequest requestModel) 
-	throws MalformedURLException, IOException {
+	{
 		//get the network response for the first page
 		requestModel.getLinkRequestModel().put("page-number", "1");
-		NetworkResponse result = getNetworkResponseImpl(requestModel);
+		NetworkResponse result = null;
 		
-		//setup the page size
-		Integer pageSize = 10;
-		String pageSizeString = requestModel.getLinkRequestModel().get("records-per-page");
-		if(pageSize != null)
-			pageSize = Integer.parseInt(pageSizeString);
-		else
-			requestModel.getLinkRequestModel().put("records-per-page", pageSize.toString());
-		
-		if(result.getLinks().getRecordsReturned() == result.getLinks().getTotalMatched())
-			return result;
-		else //if results > pagesize get all results
-		{
-			int pages = result.getLinks().getTotalMatched()/pageSize;
-			int remainder = (pages*pageSize)%result.getLinks().getTotalMatched();
-			if(remainder>0)
-				pages++;
+		try {
+			result = getNetworkResponseImpl(requestModel);
 			
-			//start on pagnum 2
-			for (int i = 2; i < pages-1; i++) {
-				requestModel.getLinkRequestModel().put("page-number", ""+i);
-				result.getLinks().getLinks().addAll(getNetworkResponseImpl(requestModel).getLinks().getLinks());
+			
+			//setup the page size
+			Integer pageSize = 10;
+			String pageSizeString = requestModel.getLinkRequestModel().get("records-per-page");
+			if(pageSize != null)
+				pageSize = Integer.parseInt(pageSizeString);
+			else
+				requestModel.getLinkRequestModel().put("records-per-page", pageSize.toString());
+			
+			if(result.getLinks().getRecordsReturned() == result.getLinks().getTotalMatched())
+				return result;
+			else //if results > pagesize get all results
+			{
+				int pages = result.getLinks().getTotalMatched()/pageSize;
+				int remainder = (pages*pageSize)%result.getLinks().getTotalMatched();
+				if(remainder>0)
+					pages++;
+				
+				//start on pagnum 2
+				for (int i = 2; i < pages-1; i++) {
+					requestModel.getLinkRequestModel().put("page-number", ""+i);
+
+					try {
+						result.getLinks().getLinks().addAll(getNetworkResponseImpl(requestModel).getLinks().getLinks());
+					} catch (Exception e) {
+						logger.error("problem getting page:"+i, e);
+					}
+				}
+				return result;
 			}
-			return result;
+		} catch (NumberFormatException e) {
+			logger.error("NumberFormatException", e);
+		} catch (MalformedURLException e) {
+			logger.error("NumberFormatException", e);
+		} catch (IOException e) {
+			logger.error("NumberFormatException", e);
 		}
+		
+		//always return result (may be null)
+		return result;
+		
 		
 	}
 

@@ -37,16 +37,10 @@ public class CommisionJunctionLinkClientTest extends AbstractBeanFactoryTestCase
 			for (AffiliateLink link : links) {
 				logger.debug(link.toString());
 			}
-		} catch (BeansException e) {
+		} catch (Exception e) {
 			logger.error("fail", e);
 			fail(e.getMessage());
-		} catch (MalformedURLException e) {
-			logger.error("fail", e);
-			fail(e.getMessage());
-		} catch (IOException e) {
-			logger.error("fail", e);
-			fail(e.getMessage());
-		}
+		} 
 	}
 
 }

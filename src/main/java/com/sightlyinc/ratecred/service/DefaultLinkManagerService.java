@@ -45,18 +45,19 @@ public class DefaultLinkManagerService implements LinkManagerService {
 	public void initLinkCache() {
 		if(!fetchDisabled)
 		{
-			try {
+
 				NetworkResponse response = linkClient.getNetworkResponse(webLinksRequest);
-				logger.debug("total matched:"+response.getLinks().getTotalMatched());
+				if(response != null)
+				{
+					logger.debug("total matched:"+response.getLinks().getTotalMatched());
+					
+					this.linksCache = 
+							response.getLinks().getLinks();
+				}
+				else
+					logger.debug("no linkes fetched!");
 				
-				this.linksCache = 
-						response.getLinks().getLinks();
-				
-			} catch (MalformedURLException e) {
-				logger.error("MalformedURLException", e);
-			} catch (IOException e) {
-				logger.error("IOException", e);
-			}
+			
 		}
 	}
 

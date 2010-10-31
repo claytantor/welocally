@@ -7,7 +7,6 @@ import java.util.Map;
 public interface LinkClient {
 	
 	//public List<Link> getLinks();
-	public NetworkResponse getNetworkResponse(LinkClientRequest requestModel) 
-		throws MalformedURLException, IOException;
+	public NetworkResponse getNetworkResponse(LinkClientRequest requestModel);
 
 }
