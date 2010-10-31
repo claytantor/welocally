@@ -16,6 +16,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
 
 
@@ -33,6 +34,38 @@ public class HibernateAwardDao
 
     
     @Override
+	public List<Award> findByOwnerTypePlaceCityState(
+			final Rater towards,
+			final AwardType at,
+			final PlaceCityState pcs) {
+    	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+	
+				Query query = session.createQuery(
+					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+							"where entityimpl.owner = :towards and " +
+							"entityimpl.awardType = :awardType and " +
+							"entityimpl.metadata like %:city% and " +
+							"entityimpl.metadata like %:state%");
+	
+					query.setEntity("towards", towards);
+					query.setEntity("awardType", at);
+					query.setEntity("city", pcs.getCity());
+					query.setEntity("state", pcs.getState());
+				
+				List list = query.list();
+	
+				return list;
+	
+			}
+		});
+		return result;
+	}
+
+
+	@Override
 	public List<Award> findByOwnerAwardType(final Rater towards, final AwardType at) {
     	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)

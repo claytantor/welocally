@@ -14,7 +14,9 @@ import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
+
 
 
 public class AwardManagerServiceImpl implements AwardManagerService {
@@ -42,6 +44,16 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	public List<Award> findAwardByRaterAwardType(Rater r, AwardType at)
 			throws BLServiceException {
 		return awardDao.findByOwnerAwardType(r, at);
+	}
+
+
+	@Override
+	public List<Award> findAwardByRaterTypeCity(
+			Rater towards, 
+			AwardType at, 
+			PlaceCityState pcs)
+			throws BLServiceException {
+		return awardDao.findByOwnerTypePlaceCityState(towards, at, pcs);
 	}
 
 

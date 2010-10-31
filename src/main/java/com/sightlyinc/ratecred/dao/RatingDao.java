@@ -21,6 +21,7 @@ public interface RatingDao {
 	public List<Rating> findAllPaged(int pageNum, int pageSize, String sortField, boolean isAscending);
 	
 	public Rating findByTime(Long time);
+	public List<Rating> findSince(Long time);
 	
 	public List<Rating> findByCityState(String city, String state);
 	public Long findByCityStateCount(String city, String state);

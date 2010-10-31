@@ -2,6 +2,7 @@
 package com.sightlyinc.ratecred.dao;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +38,29 @@ public class HibernateRatingDao
     	return null;
     }
     
-    
+    @Override
+	public List<Rating> findSince(final Long time) {
+
+		
+		return (List<Rating>)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+				Long since = Calendar.getInstance().getTimeInMillis()-time;
+				Query query = session.createQuery(
+						"select entityimpl from "+Rating.class.getName()+
+						" as entityimpl where entityimpl.timeCreatedMills > :since");
+				
+					query.setLong("since", since);
+					
+					List<Rating> t = (List<Rating>)query.list();
+			
+				return t;
+	
+			}
+		});		
+		
+	}    
     
 	@Override
 	public Rating findByTime(final Long time) {

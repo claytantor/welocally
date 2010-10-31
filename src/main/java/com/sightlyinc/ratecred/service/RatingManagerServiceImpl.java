@@ -69,11 +69,25 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
 	
 	
-	
-	
-	//private Integer ratingsPerPage = 10;
-	
-	
+	@Override
+	public List<Rating> findRatingsSince(Long millis) throws BLServiceException {
+		return ratingDao.findSince(millis);
+	}
+
+
+	@Override
+	public List<Rater> findRatersRatedSince(Long millis)
+			throws BLServiceException {
+		Set<Rater> since = new HashSet<Rater>();
+		List<Rating> ratingSince = ratingDao.findSince(millis);
+		for (Rating rating : ratingSince) {
+			since.add(rating.getOwner());
+		}
+		return new ArrayList<Rater>(since);
+		
+	}
+
+
 	@Override
 	public Rating findRateByTime(Long time) {
 		return ratingDao.findByTime(time);

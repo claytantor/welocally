@@ -14,6 +14,7 @@ public class AwardType {
 	private String keyname;
 	private String previous;
 	private String next;
+	private String category;
 	
 	
 	
@@ -76,6 +77,13 @@ public class AwardType {
 	}
 	public void setNext(String next) {
 		this.next = next;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Date;
 
 import com.noi.utility.date.DateUtils;
+import com.noi.utility.string.StringUtils;
 
 public class Offer {
 	private Long id;
@@ -24,6 +25,14 @@ public class Offer {
 	private boolean visible = true;
 	
 	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
+	
+	public boolean fieldsEmpty()
+	{
+		if(StringUtils.isEmpty(couponCode) || StringUtils.isEmpty(name) || StringUtils.isEmpty(description))
+			return true;
+		else
+			return false;
+	}
 	
 	public Long getId() {
 		return id;

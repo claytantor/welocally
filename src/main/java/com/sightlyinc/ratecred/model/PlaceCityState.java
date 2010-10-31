@@ -50,9 +50,19 @@ public class PlaceCityState {
 	public boolean equals(Object obj) {
 		if(obj instanceof PlaceCityState)
 		{
-			String s1 = ((PlaceCityState)obj).getCity()+((PlaceCityState)obj).getState();
-			String s2 = this.city+this.state;
-			return s1.equals(s2);
+			StringBuffer s1 = new StringBuffer();
+			if(((PlaceCityState)obj).getCity() != null)
+				s1.append(((PlaceCityState)obj).getCity());
+			if(((PlaceCityState)obj).getState() != null)
+				s1.append(((PlaceCityState)obj).getState());
+			
+			StringBuffer s2 = new StringBuffer();
+			if(this.city != null)
+				s2.append(this.city);
+			if(this.state != null)
+				s2.append(this.state);
+
+			return s1.toString().toLowerCase().equals(s2.toString().toLowerCase());
 
 		}
 		else return false;

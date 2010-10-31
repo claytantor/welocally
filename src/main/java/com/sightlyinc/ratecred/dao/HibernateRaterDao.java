@@ -226,7 +226,7 @@ public class HibernateRaterDao
 
 	public void save(Rater entity) {
 		getHibernateTemplateOverride().save(entity);				
-		logger.debug("image id:"+entity.getImageValueId());
+		//logger.debug("image id:"+entity.getImageValueId());
 	}   
 
 	public void delete(Rater entity) {

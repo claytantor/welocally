@@ -7,6 +7,7 @@ import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
 
 public interface AwardManagerService {
@@ -19,6 +20,7 @@ public interface AwardManagerService {
 	public Award findAwardByPrimaryKey(Long awardId) throws BLServiceException;
 	
 	public List<Award> findAwardByRaterAwardType(Rater r, AwardType at) throws BLServiceException;
+	public List<Award> findAwardByRaterTypeCity(Rater r, AwardType at, PlaceCityState pcs) throws BLServiceException;
 	
 	public AwardOffer findAwardOfferByPrimaryKey(Long awardOfferId) throws BLServiceException;	
 	public AwardType findAwardTypeByKey(String key) throws BLServiceException;
