@@ -27,7 +27,7 @@
 	<bean id="raterAwardsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="raterAwardsJob" />
 	    <!-- run at 15m every hour -->
-	    <property name="cronExpression" value="0 15 * * * ?" />
+	    <property name="cronExpression" value="${raterAwardsTrigger.cronExpression}" />
 	</bean>
 	
 	
