@@ -66,7 +66,7 @@ public class CommisionJunctionLinkClient implements LinkClient {
 				pages++;
 			
 			//start on pagnum 2
-			for (int i = 2; i < pages; i++) {
+			for (int i = 2; i < pages-1; i++) {
 				requestModel.getLinkRequestModel().put("page-number", ""+i);
 				result.getLinks().getLinks().addAll(getNetworkResponseImpl(requestModel).getLinks().getLinks());
 			}
