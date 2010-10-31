@@ -6,7 +6,7 @@ import com.sightlyinc.ratecred.model.Rater;
 
 public interface RaterAwardsService {
 
-	public abstract void proccessAwardsForRater(RaterAwards ra, Rater r)
+	public abstract void proccessAwardsForRater(RaterAwards ra)
 			throws BLServiceException;
 
 }

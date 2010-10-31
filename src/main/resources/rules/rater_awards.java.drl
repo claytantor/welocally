@@ -27,8 +27,12 @@
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
         </java:condition>       
+ 		<java:condition>
+            !rater_awards.hasAwardKey("starter")
+        </java:condition>     
 
         <java:consequence>
+        	rater_awards.setGiveOffer(false);
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("starter");
@@ -52,14 +56,25 @@
         </java:condition>
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
-        </java:condition>         
+        </java:condition> 
+ 		<java:condition>
+            !rater_awards.hasAwardKey("novice")
+        </java:condition>                   
  
         <java:consequence>
+        
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("novice");
 			awardGiven.setAwardType(at);
            	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("starter");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);
+           	
         </java:consequence>
         
     </rule>   
@@ -77,7 +92,10 @@
         </java:condition>
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
-        </java:condition>         
+        </java:condition>
+ 		<java:condition>
+            !rater_awards.hasAwardKey("advisor")
+        </java:condition>                  
  
         <java:consequence>
         	Award awardGiven = new Award();
@@ -85,6 +103,12 @@
 			at.setKeyname("advisor");
 			awardGiven.setAwardType(at);
            	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("novice");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);
         </java:consequence>
         
     </rule>   
@@ -103,13 +127,23 @@
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
         </java:condition>         
- 
+ 		<java:condition>
+            !rater_awards.hasAwardKey("leader")
+        </java:condition> 
+         
         <java:consequence>
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("leader");
 			awardGiven.setAwardType(at);
            	rater_awards.addAward(awardGiven);
+           	
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("advisor");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);           	
         </java:consequence>
         
     </rule> 
@@ -120,21 +154,30 @@
         </parameter>
                  	
 		<java:condition>
-            rater_awards.getRater().getMetrics().getRatings().intValue() >= 100
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 80
         </java:condition>
         <java:condition>
-            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 150
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 130
         </java:condition>
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
         </java:condition>         
- 
+ 		<java:condition>
+            !rater_awards.hasAwardKey("expert")
+        </java:condition> 
+         
         <java:consequence>
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("expert");
 			awardGiven.setAwardType(at);
            	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("leader");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);            	
         </java:consequence>
         
     </rule> 
@@ -145,7 +188,7 @@
         </parameter>
                  	
 		<java:condition>
-            rater_awards.getRater().getMetrics().getRatings().intValue() >= 150
+            rater_awards.getRater().getMetrics().getRatings().intValue() >= 130
         </java:condition>
         <java:condition>
             rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 200
@@ -153,13 +196,22 @@
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
         </java:condition>         
- 
+ 		<java:condition>
+            !rater_awards.hasAwardKey("elite")
+        </java:condition> 
+         
         <java:consequence>
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("elite");
 			awardGiven.setAwardType(at);
            	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("expert");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);
         </java:consequence>
         
     </rule> 
@@ -175,13 +227,23 @@
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
         </java:condition>           
-
+ 		<java:condition>
+            !rater_awards.hasAwardKey("raterati")
+        </java:condition> 
+        
         <java:consequence>
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("raterati");
 			awardGiven.setAwardType(at);
            	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("elite");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);
+           	           	
         </java:consequence>
         
     </rule>  
@@ -199,7 +261,10 @@
 		</java:condition>
 		<java:condition>
             city_state.isLeadRater(rater_awards.getRater())
-        </java:condition>        
+        </java:condition> 
+		<java:condition>
+            !rater_awards.hasAwardCityStar(city_state.getPlaceCityState().getCity(),city_state.getPlaceCityState().getState())
+        </java:condition>                 
 
         <java:consequence>
         	Award awardGiven = new Award();
@@ -211,6 +276,85 @@
         </java:consequence>
         
     </rule>   
-       
+    
+     <rule name="NetworkStar" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRank().intValue() &lt; 11
+		</java:condition>
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRank().intValue() != 1
+		</java:condition>	
+ 		<java:condition>
+            !rater_awards.hasAwardKey("star")
+        </java:condition>			
+               
+
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("star");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("superstar");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);           	
+        </java:consequence>
+        
+    </rule>     
+ 
+    <rule name="NetworkSuperStar" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRank().intValue() == 1
+		</java:condition>
+ 		<java:condition>
+            !rater_awards.hasAwardKey("superstar")
+        </java:condition> 		
+               
+
+        <java:consequence>
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("superstar");
+			awardGiven.setAwardType(at);
+           	rater_awards.addAward(awardGiven);
+           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("star");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);
+        </java:consequence>
+        
+    </rule> 
+    
+      <rule name="NotNetworkLeader" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+                 	
+		<java:condition>
+            rater_awards.getRater().getMetrics().getRank().intValue() &gt; 10
+		</java:condition>
+	          
+        <java:consequence>           	
+           	Award awardTaken = new Award();
+           	AwardType rat = new AwardType();
+			rat.setKeyname("star");
+			awardTaken.setAwardType(rat);
+           	rater_awards.removeAward(awardTaken);            	            	          	          	
+        </java:consequence>
+        
+    </rule>          
     
   </rule-set>

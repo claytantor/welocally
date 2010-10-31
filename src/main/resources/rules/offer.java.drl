@@ -39,15 +39,15 @@
         </java:consequence>
     </rule>
 
-	<rule name="filter_Code_NULL">
+	<rule name="filter_Code_Empty">
         <parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
-        <java:condition>offer.getCouponCode() == null</java:condition>
+        <java:condition>offer.fieldsEmpty()</java:condition>
         <java:consequence>
             offer.setVisible(false);
         </java:consequence>
     </rule>
 	
-
+	
   </rule-set>

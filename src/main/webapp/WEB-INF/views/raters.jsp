@@ -18,7 +18,8 @@
 
 <div class="container">
 	<div class="span-12 last">
-		<h2>users</h2>	
+		<h2>users: ${delta}</h2>
+		<c:if test="${not empty delta}">${delta}</c:if>	
 		<c:if test="${not empty raters}">
 		<div class="padding-5 span-12">
 			<c:forEach items="${raters}" var="rater" varStatus="status" begin="0">

@@ -14,14 +14,16 @@
 		classpath:awardManagerService-beans.xml,	
 		classpath:placeSearchEngine-beans.xml,		
 		classpath:ratingSearchEngine-beans.xml,		
-		classpath:localDataSource-beans.xml,		
-		classpath:quartzJob-beans.xml,			
+		classpath:localDataSource-beans.xml,				
 		classpath:springDao-beans.xml,
 		classpath:imageValueDao-beans.xml,
 		classpath:placeManagerService-beans.xml,		
 		classpath:ratingManagerService-beans.xml,
 		classpath:security-config-beans.xml,
 		classpath:offerPoolService-beans.xml,
+		classpath:quartzScheduler-beans.xml,
+		classpath:raterAwardsJob-beans.xml,
+		classpath:offerPoolJob-beans.xml,
 		classpath:service-beans.xml
 		</param-value>
 	</context-param>

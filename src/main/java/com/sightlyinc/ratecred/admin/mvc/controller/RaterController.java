@@ -100,8 +100,8 @@ public class RaterController {
 			model.addAttribute("ratings", ModelSort.getInstance().sortRating(
 					rater.getRatings()));
 
-			rater.getAwards().addAll(
-					ratingManagerService.findAwardsLocalByRater(rater));
+			/*rater.getAwards().addAll(
+					ratingManagerService.findAwardsLocalByRater(rater));*/
 
 			model.addAttribute("rater", rater);
 			model.addAttribute("raterMetrics", ratingManagerService.findMetricsByRater(rater));
@@ -128,8 +128,8 @@ public class RaterController {
 			Rater rater = ratingManagerService
 					.findRaterByUsername(twitterScreenName);
 
-			rater.getAwards().addAll(
-			  ratingManagerService.findAwardsLocalByRater(rater));
+			/*rater.getAwards().addAll(
+			  ratingManagerService.findAwardsLocalByRater(rater));*/
 			
 			model.addAttribute("itool", new IteratorTool());
 			model.addAttribute("encoder", JsonEncoder.getInstance());

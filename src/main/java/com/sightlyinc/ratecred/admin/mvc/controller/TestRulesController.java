@@ -1,7 +1,13 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,11 +27,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.xml.sax.SAXException;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.admin.model.CityStateEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.RaterMetrics;
+import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardManagerService;
+import com.sightlyinc.ratecred.service.AwardsRulesUtils;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.RaterAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
@@ -50,6 +60,11 @@ public class TestRulesController {
 	
 	@Autowired
 	RaterAwardsService raterAwardsService;
+	
+	@RequestMapping(value="/home", method=RequestMethod.GET)
+	public String getHome(Model model) {
+		return "rules_home";
+	}
 	
 	@RequestMapping(value="/test", method=RequestMethod.GET)
 	public String getAward(Model model) {
@@ -102,7 +117,7 @@ public class TestRulesController {
 			
 			workingMemory.fireAllRules( );
 			
-			raterAwardsService.proccessAwardsForRater(ra, r);
+			raterAwardsService.proccessAwardsForRater(ra);
 			
 			model.addAttribute("raterAwards",ra);
 			model.addAttribute("rater",r);
@@ -126,7 +141,7 @@ public class TestRulesController {
 	
 	
 	@RequestMapping(value = "/status/{status}", method = RequestMethod.GET)
-	public String getAllRaters(@PathVariable("status") String status, Model model, HttpServletRequest request) {
+	public String getRatersByStatus(@PathVariable("status") String status, Model model, HttpServletRequest request) {
 		try {
 			
 			RuleBase ruleBase = 
@@ -170,6 +185,187 @@ public class TestRulesController {
 		return "raters";
 			
 	}
+		
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	public String getRaters(Model model, HttpServletRequest request) {
+		try {
+			Long t1 = Calendar.getInstance().getTimeInMillis();
+			RuleBase ruleBase = RuleBaseLoader
+					.loadFromInputStream(TestRulesController.class
+							.getResourceAsStream("/rules/rater_awards.java.drl"));
+
+			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+			boolean dynamic = true;
+
+			List<Rater> allRaters = ratingManagerService.findAllRaters();
+			Map<String, PlaceCityState> allcs = new HashMap<String, PlaceCityState>();
+			List<RaterAwards> raList = new ArrayList<RaterAwards>();
+			
+			
+			for (Rater rater : allRaters) {
+				RaterMetrics rm = ratingManagerService.findMetricsByRater(rater);
+				rater.setMetrics(rm);
+				RaterAwards ra = new RaterAwards(rater);
+				List<PlaceCityState> cities = AwardsRulesUtils.getCitiesRated(rater);
+				AwardsRulesUtils.addCitiesToMap(cities, allcs);
+				raList.add(ra);
+			}
+			
+			
+			for (RaterAwards raterAwards : raList) {
+				workingMemory.assertObject( raterAwards, dynamic );
+			}
+
+			//
+
+			for (PlaceCityState placeCityState : allcs.values()) {
+				CityStateEvaluator cseval = new CityStateEvaluator(
+						placeCityState, allRaters);
+				workingMemory.assertObject(cseval, dynamic);
+			}
+
+			workingMemory.fireAllRules();
+			
+			//save those awards for everyone
+			for (RaterAwards raterAwards : raList) {
+				raterAwardsService.proccessAwardsForRater(raterAwards);
+			}
+			
+			List<Rater> raters = ratingManagerService.findRatersByStatus("USER");
+			model.addAttribute("raters", raters);
+			
+			Long t2 = Calendar.getInstance().getTimeInMillis();
+			
+			Long delta = t2-t1;
+			model.addAttribute("delta", delta);
+			return "raters";
+			
+
+		} catch (IntegrationException e) {
+			logger.error("IntegrationException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (FactException e) {
+			logger.error("FactException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (SAXException e) {
+			logger.error("SAXException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (IOException e) {
+			logger.error("IOException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (com.noi.utility.spring.service.BLServiceException e) {
+			logger.error("problem getting rater", e);
+			model.addAttribute("error", e);
+			return "error";
+		}
+
+	}
+	
+	@RequestMapping(value = "/since/{millis}", method = RequestMethod.GET)
+	public String getRatersSince(
+			@PathVariable("millis") Long millis, 
+			Model model, 
+			HttpServletRequest request) {
+		
+		try {
+			Long t1 = Calendar.getInstance().getTimeInMillis();
+			RuleBase ruleBase = RuleBaseLoader
+					.loadFromInputStream(TestRulesController.class
+							.getResourceAsStream("/rules/rater_awards.java.drl"));
+
+			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+			boolean dynamic = true;
+			
+			Set<Rater> allRaters = new HashSet<Rater>();
+			
+			List<Rating> ratingsSince = 
+				ratingManagerService.findRatingsSince(millis);
+			
+			//what we are doing here is getting the top ten raters
+			//in all rated areas for the period
+			for (Rating rating : ratingsSince) {
+				allRaters.add(rating.getOwner());
+				PlaceCityState pcs = 
+					new PlaceCityState(
+							rating.getPlace().getCity(), 
+							rating.getPlace().getState(), 
+							null);
+				
+				allRaters.addAll(
+						ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10));
+			}
+						
+			Map<String, PlaceCityState> allcs = new HashMap<String, PlaceCityState>();
+			List<RaterAwards> raList = new ArrayList<RaterAwards>();
+						
+			for (Rater rater : allRaters) {
+				RaterMetrics rm = ratingManagerService.findMetricsByRater(rater);
+				rater.setMetrics(rm);
+				RaterAwards ra = new RaterAwards(rater);
+				List<PlaceCityState> cities = AwardsRulesUtils.getCitiesRated(rater);
+				AwardsRulesUtils.addCitiesToMap(cities, allcs);
+				raList.add(ra);
+			}
+			
+			
+			for (RaterAwards raterAwards : raList) {
+				workingMemory.assertObject( raterAwards, dynamic );
+			}
+
+			for (PlaceCityState placeCityState : allcs.values()) {
+				CityStateEvaluator cseval = new CityStateEvaluator(
+						placeCityState, new ArrayList<Rater>(allRaters));
+				workingMemory.assertObject(cseval, dynamic);
+			}
+
+			workingMemory.fireAllRules();
+			
+			//save those awards for everyone
+			for (RaterAwards raterAwards : raList) {
+				raterAwardsService.proccessAwardsForRater(raterAwards);
+			}
+			
+			List<Rater> raters = ratingManagerService.findRatersByStatus("USER");
+			model.addAttribute("raters", raters);
+			
+			Long t2 = Calendar.getInstance().getTimeInMillis();
+			
+			Long delta = t2-t1;
+			model.addAttribute("delta", delta);
+			return "raters";
+			
+
+		} catch (IntegrationException e) {
+			logger.error("IntegrationException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (FactException e) {
+			logger.error("FactException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (SAXException e) {
+			logger.error("SAXException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (IOException e) {
+			logger.error("IOException", e);
+			model.addAttribute("error", e);
+			return "error";
+		} catch (com.noi.utility.spring.service.BLServiceException e) {
+			logger.error("problem getting rater", e);
+			model.addAttribute("error", e);
+			return "error";
+		}
+
+	}
+	
+	
+	
+	
 
 	public void setOfferPoolService(OfferPoolService offerPoolService) {
 		this.offerPoolService = offerPoolService;
