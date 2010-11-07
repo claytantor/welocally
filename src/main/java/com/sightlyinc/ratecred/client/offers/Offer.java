@@ -9,9 +9,9 @@ import com.noi.utility.string.StringUtils;
 
 public class Offer {
 	private Long id;
-	private Long externalId;
+	private String externalId;
 	private String externalSource;
-	private Long programId;
+	private String programId;
 	private String programName;
 	private String name;
 	private String couponCode;
@@ -40,26 +40,31 @@ public class Offer {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	
-	public Long getExternalId() {
+		
+
+	public String getExternalId() {
 		return externalId;
 	}
-	public void setExternalId(Long externalId) {
+
+	public void setExternalId(String externalId) {
 		this.externalId = externalId;
 	}
+
 	public String getExternalSource() {
 		return externalSource;
 	}
 	public void setExternalSource(String externalSource) {
 		this.externalSource = externalSource;
 	}
-	public Long getProgramId() {
+
+	public String getProgramId() {
 		return programId;
 	}
-	public void setProgramId(Long programId) {
+
+	public void setProgramId(String programId) {
 		this.programId = programId;
 	}
+
 	public String getProgramName() {
 		return programName;
 	}

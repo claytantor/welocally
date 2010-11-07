@@ -58,11 +58,12 @@ public class DefaultOfferPoolService implements OfferPoolService {
 
 	@Override
 	public Offer getOfferByExternalIdSource(String externalId, String sourceName) {
-		Long extLong = Long.parseLong(externalId);
+		//Long extLong = Long.parseLong(externalId);
 		for (Offer offer : offerPool) {
 			
 			logger.debug(offer.getExternalId()+":"+offer.getExternalSource());
-			if(offer.getExternalSource().equals(sourceName) && extLong.equals(offer.getExternalId()))
+			logger.debug(externalId+":"+sourceName);
+			if(offer.getExternalSource().equals(sourceName) && offer.getExternalId().equals(externalId))
 				return offer;
 		}
 		return null;

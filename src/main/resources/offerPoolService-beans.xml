@@ -15,7 +15,7 @@
 		init-method="refresh">
 		<property name="clients">
 			<list>
-			  <ref bean="pepperJamOfferClient"/>
+			  <ref bean="comissionJunctionOfferClient"/>
 			</list>
 		</property>	
 		<property name="fetchDisabled" value="${offerPoolService.fetchDisabled}"/>						
@@ -29,5 +29,50 @@
 		<property name="endpoint" value="/coupon/download/?affiliate_id=59161&amp;program_ids=259-1687-1801-2110-2708-2803-3456-4750-4826-5173"/>
 		<property name="sourceName" value="PEPPERJAM"/>
 	</bean>
+	
+	<bean id="comissionJunctionOfferClient" 
+		class="com.sightlyinc.ratecred.client.offers.ComissionJunctionOfferClient">
+		<property name="sourceName" value="CJ"/>
+		<property name="webLinksRequest"><ref bean="offerLinksRequestModel"/></property>
+		<property name="linkClient"><ref bean="linkClient"/></property>
+	</bean>
+		
+	<bean id="offerLinksRequestModel" 
+		class="com.sightlyinc.ratecred.client.link.LinkClientRequest">
+		<property name="linkRequestModel">
+			<map> 
+		        <entry> 
+		            <key> 
+		                <value>advertiser-ids</value>
+		            </key> 
+		            <value>${offerlinkClient.advertiserIds}</value> 
+		        </entry>			
+		        <entry> 
+		            <key> 
+		                <value>website-id</value>
+		            </key> 
+		            <value>${offerlinkClient.websiteId}</value> 
+		        </entry> 
+		        <entry> 
+		            <key> 
+		                <value>link-type</value>
+		            </key> 
+		            <value>${offerlinkClient.linkType}</value> 
+		        </entry> 
+		        <entry> 
+		            <key> 
+		                <value>promotion-type</value>
+		            </key> 
+		            <value>${offerlinkClient.promotionType}</value> 
+		        </entry>		        
+		        <entry> 
+		            <key> 
+		                <value>records-per-page</value>
+		            </key> 
+		            <value>${offerlinkClient.pageSize}</value> 
+		        </entry> 		        
+		   </map>		
+		</property>
+	</bean>	
 
 </beans>

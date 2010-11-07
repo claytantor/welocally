@@ -134,8 +134,10 @@ public class CommisionJunctionLinkClient implements LinkClient {
 		xstream.aliasField("link-code-html", AffiliateLink.class, "linkCodeHtml");
 		xstream.aliasField("description", AffiliateLink.class, "description");
 		xstream.aliasField("destination", AffiliateLink.class, "destination");
-		xstream.aliasField("link-id", AffiliateLink.class, "linkId");
+		xstream.aliasField("link-id", AffiliateLink.class, "linkId");		
 		xstream.aliasField("link-name", AffiliateLink.class, "linkName");
+		xstream.aliasField("promotion-start-date", AffiliateLink.class, "startDateString");
+		xstream.aliasField("promotion-end-date", AffiliateLink.class, "endDateString");
 				
 		//ignore
 		xstream.omitField(AffiliateLink.class, "click-commission");
@@ -146,8 +148,8 @@ public class CommisionJunctionLinkClient implements LinkClient {
 		xstream.omitField(AffiliateLink.class, "link-type");
 		xstream.omitField(AffiliateLink.class, "link-code-javascript");
 		xstream.omitField(AffiliateLink.class, "performance-incentive");
-		xstream.omitField(AffiliateLink.class, "promotion-end-date");
-		xstream.omitField(AffiliateLink.class, "promotion-start-date");
+		//xstream.omitField(AffiliateLink.class, "promotion-end-date");
+		//xstream.omitField(AffiliateLink.class, "promotion-start-date");
 		xstream.omitField(AffiliateLink.class, "promotion-type");
 		xstream.omitField(AffiliateLink.class, "relationship-status");
 		xstream.omitField(AffiliateLink.class, "sale-commission");
