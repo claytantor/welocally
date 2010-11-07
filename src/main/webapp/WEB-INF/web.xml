@@ -24,6 +24,8 @@
 		classpath:quartzScheduler-beans.xml,
 		classpath:raterAwardsJob-beans.xml,
 		classpath:offerPoolJob-beans.xml,
+		classpath:userDao-beans.xml,
+		classpath:linkClient-beans.xml,
 		classpath:service-beans.xml
 		</param-value>
 	</context-param>

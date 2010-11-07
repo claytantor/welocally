@@ -69,7 +69,7 @@ $(document).ready(function(){
 	<c:forEach var="offer" items="${offers}">
 		<c:if test="${not empty offer.couponCode}">
 		<div class="span-24 last">
-			<div class="strong-16 span-2">${offer.externalId}</div>
+			<div class="strong-12 span-4">${offer.externalId}</div>
 			<div class="strong-12 span-4">${offer.couponCode}</div>
 			<div class="strong-8 span-4">${offer.programName}</div>
 			<div class="span-10">

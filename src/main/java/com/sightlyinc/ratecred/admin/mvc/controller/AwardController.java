@@ -25,6 +25,7 @@ import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
+import com.sightlyinc.ratecred.service.RaterAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Controller
@@ -45,6 +46,8 @@ public class AwardController {
 	@Autowired
 	private AwardManagerService awardManagerService;
 	
+	@Autowired
+	RaterAwardsService raterAwardsService;
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(Model model) {
@@ -118,30 +121,32 @@ public class AwardController {
 			//offer stuff
 			Offer offer = offerPoolService.getOfferByExternalIdSource(offerInfo[0], offerInfo[1]);
 			
-			AwardOffer aoffer = new AwardOffer();
-			aoffer.setAwardType(awardType);
-			aoffer.setCouponCode(offer.getCouponCode());
-			aoffer.setBeginDateMillis(offer.getBegin().getTime());
-			aoffer.setDescription(offer.getDescription());
-			aoffer.setExpireDateMillis(offer.getExpire().getTime());
-			aoffer.setExternalId(offer.getExternalId().toString());
-			aoffer.setExternalSource(offer.getExternalSource());
-			aoffer.setName(offer.getName());
-			aoffer.setProgramId(offer.getProgramId().toString());
-			aoffer.setProgramName(offer.getProgramName());
-			aoffer.setStatus("GIVEN");
-			aoffer.setTimeCreated(Calendar.getInstance().getTime());
-			aoffer.setUrl(offer.getUrl());
-			awardManagerService.saveAwardOffer(aoffer);
-			
-			award.setOffer(aoffer);
-			
-			Long id = awardManagerService.saveAward(award);
-			
-			if(award.getId() != null)		
+			if(offer != null)
+			{
+				AwardOffer aoffer = new AwardOffer();
+				aoffer.setAwardType(awardType);
+				aoffer.setCouponCode(offer.getCouponCode());
+				aoffer.setBeginDateMillis(offer.getBegin().getTime());
+				aoffer.setDescription(offer.getDescription());
+				aoffer.setExpireDateMillis(offer.getExpire().getTime());
+				aoffer.setExternalId(offer.getExternalId().toString());
+				aoffer.setExternalSource(offer.getExternalSource());
+				aoffer.setName(offer.getName());
+				aoffer.setProgramId(offer.getProgramId().toString());
+				aoffer.setProgramName(offer.getProgramName());
+				aoffer.setStatus("GIVEN");
+				aoffer.setTimeCreated(Calendar.getInstance().getTime());
+				aoffer.setUrl(offer.getUrl());
+				awardManagerService.saveAwardOffer(aoffer);
+				
+				award.setOffer(aoffer);
+				
+				Long id = raterAwardsService.saveNewAward(award, awardType, r, null, true);
 				return "redirect:/do/admin/award/" + id;
-			else
-				return "error";
+			}
+			
+
+			return "error";
 			
 		} catch (BLServiceException e) {
 			logger.error("problem saving award", e);

@@ -24,9 +24,6 @@ public class User implements Serializable {
 		this.id = id;
 	}
 	
-	
-	
-	
 	public String getPassword() {
 		return password;
 	}
