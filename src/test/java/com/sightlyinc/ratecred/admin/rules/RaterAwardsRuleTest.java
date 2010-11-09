@@ -51,15 +51,19 @@ public class RaterAwardsRuleTest extends TestCase{
 					getRaterByName("/com/sightlyinc/ratecred/admin/rules/claytantor.json"));
 			RaterAwards rashowymilkweed = new RaterAwards(
 					getRaterByName("/com/sightlyinc/ratecred/admin/rules/showymilkweed.json"));			
+			RaterAwards r3 = new RaterAwards(
+					getRaterByName("/com/sightlyinc/ratecred/admin/rules/ElijahIsMe.json"));			
 			List<Rater> allRaters = new ArrayList<Rater>();
 			allRaters.add(raclaytantor.getRater());
 			allRaters.add(rashowymilkweed.getRater());
+			allRaters.add(r3.getRater());
 			
 			Map<String,PlaceCityState> allcs = new HashMap<String,PlaceCityState>();
 						
 			//now get a set of all cities
 			addCitiesToMap(getCitiesRated(raclaytantor.getRater()), allcs);
 			addCitiesToMap(getCitiesRated(rashowymilkweed.getRater()), allcs);
+			addCitiesToMap(getCitiesRated(r3.getRater()), allcs);
 						
 			for (PlaceCityState placeCityState : allcs.values()) {
 				CityStateEvaluator cseval = new CityStateEvaluator(placeCityState, allRaters);
@@ -68,15 +72,19 @@ public class RaterAwardsRuleTest extends TestCase{
 									
 			workingMemory.assertObject( raclaytantor, dynamic );
 			workingMemory.assertObject( rashowymilkweed, dynamic );
+			workingMemory.assertObject( r3, dynamic );
 						
 			workingMemory.fireAllRules( );	
 			logger.debug("claytantor");
 			logAwards(raclaytantor);
 			logger.debug("showymilkweed");
 			logAwards(rashowymilkweed);
+			logger.debug("ElijahIsMe");
+			logAwards(r3);
 						
 			//assertEquals(17, raclaytantor.getAwards().size());
 			//assertEquals(16, rashowymilkweed.getAwards().size());
+			assertEquals(2, r3.getAwards().size());
 			
 			
 		} catch (IntegrationException e) {

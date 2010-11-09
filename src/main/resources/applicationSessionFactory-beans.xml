@@ -52,5 +52,7 @@
 		<property name="sessionFactory"><ref local="ApplicationSessionFactory"/></property>
 	</bean>	
 	
+
+	
 	
 </beans>

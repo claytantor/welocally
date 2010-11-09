@@ -7,6 +7,9 @@
 	  <property name="jobClass" value="com.sightlyinc.ratecred.admin.job.RaterAwardsJob" />
 	  <property name="jobDataAsMap">
 	    <map>
+	      <entry key="sessionFactory">
+	      		<ref bean="ApplicationSessionFactory" />
+	      </entry>	    
 	      <entry key="offerPoolService">
 	      		<ref bean="offerPoolService" />
 	      </entry> 
@@ -18,7 +21,10 @@
 	      </entry>
 	      <entry key="raterAwardsService">
 	      		<ref bean="raterAwardsService" />
-	      </entry>	      	      	       	       	          
+	      </entry>
+	      <entry key="millisSince">
+	      		<value>${raterAwardsJob.millisSince}</value>
+	      </entry>		      	      	      	       	       	          
 	    </map>
 	  </property>
 	</bean>
