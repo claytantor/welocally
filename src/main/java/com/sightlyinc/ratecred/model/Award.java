@@ -25,7 +25,15 @@ public class Award {
 	
 	private AwardType awardType;
 	
+	private Boolean giveOffer = true;
+	
 
+	public Boolean getGiveOffer() {
+		return giveOffer;
+	}
+	public void setGiveOffer(boolean giveOffer) {
+		this.giveOffer = giveOffer;
+	}
 	public String getStatus() {
 		return status;
 	}
