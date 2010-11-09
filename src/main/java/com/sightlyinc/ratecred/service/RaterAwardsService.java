@@ -13,6 +13,6 @@ public interface RaterAwardsService {
 			throws BLServiceException;
 	
 	public Long saveNewAward(Award award, AwardType awardType, Rater r,
-			PlaceCityState pcs, Boolean giveOffer) throws BLServiceException; 
+			PlaceCityState pcs) throws BLServiceException; 
 
 }

@@ -104,8 +104,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				pcs = AwardsRulesUtils.getPlaceCityStateFromMetaData(award
 						.getMetadata());
 
-			saveNewAward(award, awardType, ra.getRater(), pcs, ra
-					.getGiveOffer());
+			saveNewAward(award, awardType, ra.getRater(), pcs);
 
 		}
 
@@ -150,7 +149,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 
 	@Override
 	public Long saveNewAward(Award award, AwardType awardType, Rater r,
-			PlaceCityState pcs, Boolean giveOffer) throws BLServiceException {
+			PlaceCityState pcs) throws BLServiceException {
 
 		if (pcs != null) // this is a place award, there can be more than one
 			award.setNotes("Ranked First " + pcs.getCity());
@@ -167,7 +166,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		award.setExpiresMills(0l);
 
 		// we should use rule based targeting for this
-		if (giveOffer) {
+		if (award.getGiveOffer()) {
 			Offer offer = targetOfferForRater(r);
 
 			AwardOffer aoffer = new AwardOffer();

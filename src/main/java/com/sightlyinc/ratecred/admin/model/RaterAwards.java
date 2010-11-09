@@ -23,7 +23,7 @@ public class RaterAwards {
 	private Rater rater;
 	private List<Award> awards = new ArrayList<Award>();
 	private List<Award> removeAwards = new ArrayList<Award>();
-	private Boolean giveOffer = true;
+	//private Boolean giveOffer = true;
 	private Set<String> keys = new HashSet<String>();
 	private Set<String> citykeys = new HashSet<String>();
 	
@@ -111,14 +111,14 @@ public class RaterAwards {
 	}
 	
 
-	public Boolean getGiveOffer() {
+/*	public Boolean getGiveOffer() {
 		return giveOffer;
 	}
 
 
 	public void setGiveOffer(boolean giveOffer) {
 		this.giveOffer = giveOffer;
-	}
+	}*/
 
 
 	public List<Award> getAwards() {

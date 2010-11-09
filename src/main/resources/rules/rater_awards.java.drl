@@ -32,11 +32,11 @@
         </java:condition>     
 
         <java:consequence>
-        	rater_awards.setGiveOffer(false);
         	Award awardGiven = new Award();
 			AwardType at = new AwardType();
 			at.setKeyname("starter");
 			awardGiven.setAwardType(at);
+			awardGiven.setGiveOffer(false);
            	rater_awards.addAward(awardGiven);
         </java:consequence>
         
