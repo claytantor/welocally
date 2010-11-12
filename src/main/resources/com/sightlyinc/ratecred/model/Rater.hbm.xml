@@ -37,11 +37,8 @@
 	        <one-to-many class="Rating"/>
 	    </set>
 
-	 	<set name="awards" 
-	 		lazy="extra"
-			fetch="select"
-			cascade="all">
-	        <key column="rater_id"/>
+	 	<set name="awards">
+	        <key column="rater_id" not-null="false"/>
 	        <one-to-many class="Award"/>
 	    </set>
 	    
