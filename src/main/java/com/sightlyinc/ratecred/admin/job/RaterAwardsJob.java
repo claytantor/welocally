@@ -89,6 +89,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 			logger.debug("finding ratings since:"+new Date(since));
 			List<Rating> ratingsSince = 
 				ratingManagerService.findRatingsSince(millisSince);
+			Map<String,CityStateEvaluator> allCityStates = new HashMap<String,CityStateEvaluator>();
 			
 			logger.debug("number found:"+ratingsSince.size());
 			
@@ -111,8 +112,14 @@ public class RaterAwardsJob extends QuartzJobBean {
 							rating.getPlace().getState(), 
 							null);
 				
-				allRaters.addAll(
-						ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10));
+				logger.debug("adding cs:"+pcs.getCity()+pcs.getState());
+				List<Rater> topCsRaters = ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10);
+				CityStateEvaluator cseval = new CityStateEvaluator(
+						pcs, new ArrayList<Rater>(topCsRaters));
+				allCityStates.put(pcs.getCity()+pcs.getState(),cseval);
+				
+				//top ten raters in city state
+				allRaters.addAll(topCsRaters);
 			}
 						
 			Map<String, PlaceCityState> allcs = new HashMap<String, PlaceCityState>();
@@ -133,19 +140,19 @@ public class RaterAwardsJob extends QuartzJobBean {
 				workingMemory.assertObject( raterAwards, dynamic );
 			}
 
-			for (PlaceCityState placeCityState : allcs.values()) {
-				logger.debug("adding cs:"+placeCityState.getCity()+placeCityState.getState());
-				CityStateEvaluator cseval = new CityStateEvaluator(
-						placeCityState, new ArrayList<Rater>(allRaters));
+			for (CityStateEvaluator cseval : allCityStates.values()) 
 				workingMemory.assertObject(cseval, dynamic);
-			}
 
 			workingMemory.fireAllRules();
 			
 			//save those awards for everyone
 			for (RaterAwards raterAwards : raList) {
-				logger.debug("processing rater:"+raterAwards.getRater().getUserName()+" add:"+raterAwards.getAwards().size()+" remove:"+raterAwards.getRemoveAwards().size());
-				raterAwardsService.proccessAwardsForRater(raterAwards);
+				try {
+					logger.debug("processing rater:"+raterAwards.getRater().getUserName()+" add:"+raterAwards.getAwards().size()+" remove:"+raterAwards.getRemoveAwards().size());
+					raterAwardsService.proccessAwardsForRater(raterAwards);
+				} catch (Exception e) {
+					logger.error("error",e);
+				}
 			}
 			
 			//unbind

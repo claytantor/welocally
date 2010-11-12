@@ -22,7 +22,7 @@
             rater_awards.getRater().getMetrics().getRatings().intValue() >= 1
         </java:condition>
         <java:condition>
-            rater_awards.getRater().getMetrics().getRatings().intValue() &lt;= 10
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 10
         </java:condition>
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
@@ -52,7 +52,7 @@
             rater_awards.getRater().getMetrics().getRatings().intValue() >= 10
         </java:condition>
         <java:condition>
-            rater_awards.getRater().getMetrics().getRatings().intValue() &lt;= 20
+            rater_awards.getRater().getMetrics().getRatings().intValue() &lt; 20
         </java:condition>
  		<java:condition>
             rater_awards.getRater().getStatus().equals("USER")
@@ -77,7 +77,8 @@
            	
         </java:consequence>
         
-    </rule>   
+    </rule> 
+ 
 
     <rule name="RatingAdvisor" salience="10">
     	<parameter identifier="rater_awards">
@@ -255,16 +256,16 @@
     	<parameter identifier="city_state">
                <class>CityStateEvaluator</class>
         </parameter>        
-                 	
+
 		<java:condition>
-            city_state.isRated(rater_awards.getRater())
-		</java:condition>
+            city_state.isValid()
+        </java:condition>                 	
 		<java:condition>
             city_state.isLeadRater(rater_awards.getRater())
         </java:condition> 
 		<java:condition>
             !rater_awards.hasAwardCityStar(city_state.getPlaceCityState().getCity(),city_state.getPlaceCityState().getState())
-        </java:condition>                 
+        </java:condition>                
 
         <java:consequence>
         	Award awardGiven = new Award();
@@ -275,7 +276,33 @@
            	rater_awards.addAward(awardGiven);
         </java:consequence>
         
+    </rule>  
+     
+    <rule name="NotCityStar" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+    	<parameter identifier="city_state">
+               <class>CityStateEvaluator</class>
+        </parameter>        
+
+		<java:condition>
+            city_state.isValid()
+        </java:condition>                  	
+		<java:condition>
+            !city_state.isLeadRater(rater_awards.getRater())
+        </java:condition> 
+               
+
+        <java:consequence>
+        	Award awardTaken = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("citykey");
+			awardTaken.setMetadata("imageUrl=/images/awards/award_citykey.png&amp;city="+java.net.URLEncoder.encode(city_state.getPlaceCityState().getCity(), "ISO-8859-1")+"&amp;state="+java.net.URLEncoder.encode(city_state.getPlaceCityState().getState(), "ISO-8859-1"));
+        </java:consequence>
+        
     </rule>   
+    
     
      <rule name="NetworkStar" salience="10">
     	<parameter identifier="rater_awards">

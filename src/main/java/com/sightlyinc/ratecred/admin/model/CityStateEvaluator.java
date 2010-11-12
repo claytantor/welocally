@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.compare.DescendingRateMapStringComparitor;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
@@ -22,65 +23,36 @@ public class CityStateEvaluator {
 	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
 	
 	private PlaceCityState placeCityState;
-	private Map<Long,Integer> raterMap = new HashMap<Long,Integer>(); 
+	private Rater[] topRaters;
 	
-	private List<String> raterMapNew = new ArrayList<String>();
-
+	
 	//heavy lifting in constructor this may be served better by
 	//sending all ratings for the city state
-	public CityStateEvaluator(PlaceCityState placeCityState, List<Rater> allRaters) {
-		
+	public CityStateEvaluator(PlaceCityState placeCityState, List<Rater> topRatersList) {
+		this.topRaters = (Rater[])topRatersList.toArray(new Rater[topRatersList.size()]); 
 		this.placeCityState = placeCityState;
-		//this.allRaters = allRaters;
-		for (Rater rater : allRaters) {
-			for (Rating rating : rater.getRatings())			
-			{
-				PlaceCityState cs = 
-					new PlaceCityState(rating.getPlace().getCity(), rating.getPlace().getState(), null);
-					
-				if(cs.equals(this.placeCityState))
-				{					
-					Integer count = raterMap.get(rater.getId());
-					if(count == null)
-						raterMap.put(rater.getId(), new Integer(1));
-					else
-					{
-						count = count+1;
-						raterMap.put(rater.getId(), count);
-					}
-				}
-			}
-		}
-		
-		for (Map.Entry<Long,Integer> raterCount : raterMap.entrySet()) {
-			raterMapNew.add(raterCount.getValue()+","+raterCount.getKey());
-		}
-		
-		Collections.sort(raterMapNew,new DescendingRateMapStringComparitor());
-		
 	}
 	
-	public boolean isRated(Rater r)
+	public boolean isValid()
 	{
-		if(raterMap.get(r.getId()) == null)
-			return false;
+		if(!StringUtils.isEmpty(placeCityState.getCity()) && !StringUtils.isEmpty(placeCityState.getState()) )
+				return true;
 		else
-			return true;
+			return false;
 	}
 	
 	public boolean isLeadRater(Rater r)
 	{
 		
-		String[] raterlist = (String[])raterMapNew.toArray(new String[raterMapNew.size()]); 
-		String[] leader = raterlist[0].split(",");
+		/*logger.debug("rater:"+r.getUserName()+" isLeadRater:"+topRaters[0].getUserName()+
+				" pcs:"+this.placeCityState.getCity()+","+placeCityState.getState());*/
 		
-		if(r.getUserName().equals("sampento"))
-			logger.debug("sams lead in:"+this.getPlaceCityState().toString());
-				
-		if(leader[1].equals(r.getId().toString()))
+		if(topRaters[0].getUserName().equals(r.getUserName())) {
 			return true;
-		else
+		} else {
 			return false;
+		}
+		
 	}
 	
 	

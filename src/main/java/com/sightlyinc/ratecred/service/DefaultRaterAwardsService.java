@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
 import twitter4j.Status;
@@ -41,6 +43,7 @@ import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.User;
 
 @Service("raterAwardsService")
+@Transactional(readOnly = true)
 public class DefaultRaterAwardsService implements RaterAwardsService {
 
 	static Logger logger = Logger.getLogger(DefaultRaterAwardsService.class);
@@ -74,6 +77,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Value("${rateCredService.raterUrlPrefix}")
 	private String raterProfilePrefix;
 	
+	@Value("${RatingController.supressTwitterPublish}")
+	private Boolean supressTwitterPublish;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -83,6 +89,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	 * (com.sightlyinc.ratecred.admin.model.RaterAwards,
 	 * com.sightlyinc.ratecred.model.Rater)
 	 */
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void proccessAwardsForRater(RaterAwards ra)
 			throws BLServiceException {
 		
@@ -108,42 +115,47 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 
 		}
 
-		// remove
-		for (Award awardToRemove : ra.getRemoveAwards()) {
-			logger.debug("removing type:"+awardToRemove.getAwardType().getKeyname()+
-					" "+awardToRemove.getMetadata());
-			
-			List<Award> awardsFound = new ArrayList<Award>();
-			AwardType awardTypeToRemove = awardManagerService.findAwardTypeByKey(
-					awardToRemove.getAwardType()
-					.getKeyname());
-			
-			if (awardToRemove.getAwardType().getKeyname().equals("citykey")) {
+		// remove (if there are any)
+		if(ra.getRater().getAwards().size()>0)
+		{
+			for (Award awardToRemove : ra.getRemoveAwards()) {
+				logger.debug("removing type:"+awardToRemove.getAwardType().getKeyname()+
+						" "+awardToRemove.getMetadata());
 				
-				PlaceCityState pcs = AwardsRulesUtils
-						.getPlaceCityStateFromMetaData(awardToRemove
-								.getMetadata());
+				List<Award> awardsFound = new ArrayList<Award>();
+				AwardType awardTypeToRemove = awardManagerService.findAwardTypeByKey(
+						awardToRemove.getAwardType()
+						.getKeyname());
 				
-				awardsFound = awardManagerService.findAwardByRaterTypeCity(
-						ra.getRater(),
-						awardTypeToRemove,
-						pcs);
+				if (awardToRemove.getAwardType().getKeyname().equals("citykey")) {
+					
+					PlaceCityState pcs = AwardsRulesUtils
+							.getPlaceCityStateFromMetaData(awardToRemove
+									.getMetadata());
+					
+					awardsFound = awardManagerService.findAwardByRaterTypeCity(
+							ra.getRater(),
+							awardTypeToRemove,
+							pcs);
+					
+				} else {
+					if(ra.hasAward(awardTypeToRemove.getKeyname()))
+					{
+ 						awardsFound = awardManagerService
+								.findAwardByRaterAwardType(ra.getRater(),
+										awardTypeToRemove);
+					}
+				}
 				
-			} else {
-				awardsFound = awardManagerService
-						.findAwardByRaterAwardType(ra.getRater(),
-								awardTypeToRemove);
+				for (Award awardR : awardsFound) {
+					awardR.setOwner(null);
+					ra.getRater().getAwards().remove(awardR);
+					awardManagerService.deleteAward(awardR);
+				}
+				
 			}
-			
-			for (Award awardR : awardsFound) {
-				ra.getRater().getAwards().remove(awardR);
-				awardManagerService.deleteAward(awardR);
-			}
-			
 		}
 
-		// now the rater
-		ratingManagerService.saveRater(ra.getRater());
 
 	}
 
@@ -192,7 +204,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 		//now tweet the award, if you can
 		try {
-			sendAwardStatusUpdate(award, userDao.findByUsername(r.getUserName()));
+			if(!supressTwitterPublish)
+				sendAwardStatusUpdate(award, userDao.findByUsername(r.getUserName()));
 		} catch (Exception e) {
 			logger.error("problem tweeting award", e);
 			//throw new BLServiceException(e);

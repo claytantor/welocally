@@ -57,6 +57,7 @@ public class RaterAwards {
 	public boolean hasAwardKey(String key)
 	{
 		boolean contains = keys.contains(key);
+		logger.debug("rater:"+rater.getUserName()+" has key:"+key+" ="+contains);
 		return contains;
 	}
 	
