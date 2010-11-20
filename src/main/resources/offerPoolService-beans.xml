@@ -16,6 +16,7 @@
 		<property name="clients">
 			<list>
 			  <ref bean="comissionJunctionOfferClient"/>
+			  <ref bean="ratecredOfferClient"/>
 			</list>
 		</property>	
 		<property name="fetchDisabled" value="${offerPoolService.fetchDisabled}"/>						
@@ -29,6 +30,16 @@
 		<property name="endpoint" value="/coupon/download/?affiliate_id=59161&amp;program_ids=259-1687-1801-2110-2708-2803-3456-4750-4826-5173"/>
 		<property name="sourceName" value="PEPPERJAM"/>
 	</bean>
+	
+	<!-- http://media.ratecred.com.s3.amazonaws.com/dev/data/ratecred-offers.csv -->
+	<bean id="ratecredOfferClient" 
+		class="com.sightlyinc.ratecred.client.offers.RatecredOfferClient">
+		<property name="protocol" value="http"/>
+		<property name="port" value="80"/>
+		<property name="host" value="media.ratecred.com.s3.amazonaws.com"/>
+		<property name="endpoint" value="/dev/data/ratecred-offers.csv"/>
+		<property name="sourceName" value="RATECRED"/>
+	</bean>	
 	
 	<bean id="comissionJunctionOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.ComissionJunctionOfferClient">

@@ -14,6 +14,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.PlaceCityState;
@@ -32,8 +33,35 @@ public class HibernateAwardDao
         return template;
     }
 
+ 
+    
     
     @Override
+	public Award findByOffer(final AwardOffer offer) {
+    	return (Award)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+					"select distinct entityimpl from "+Award.class.getName()+
+					" as entityimpl where entityimpl.offer = :offer");
+				
+				query.setEntity("offer", offer);
+				
+				Award t = (Award)query.uniqueResult();
+				
+			
+				return t;
+	
+			}
+		});		
+	}
+
+
+
+
+	@Override
 	public List<Award> findByOwnerTypePlaceCityState(
 			final Rater towards,
 			final AwardType at,

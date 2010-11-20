@@ -13,6 +13,8 @@ public class Place {
 	private String state;
 	private String zip;
 	private String twitterId;
+	private String email;
+	private String businessServices;	
 	private String phone;
 	private String name;
 	private Double latitude;
@@ -20,6 +22,7 @@ public class Place {
 	private String description;
 	private String website;
 	private String flag;
+	
 	private Date timeCreated;
 
 	// relations
@@ -152,8 +155,19 @@ public class Place {
 	public void setBusinessLocation(BusinessLocation businessLocation) {
 		this.businessLocation = businessLocation;
 	}
-	
-	
+
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getBusinessServices() {
+		return businessServices;
+	}
+	public void setBusinessServices(String businessServices) {
+		this.businessServices = businessServices;
+	}
 	/**
 	 * 
 	 * 	

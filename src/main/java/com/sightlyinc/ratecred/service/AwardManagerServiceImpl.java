@@ -33,7 +33,14 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	@Autowired
 	private AwardOfferDao awardOfferDao; 
 	
+
 	
+	@Override
+	public Award findAwardByOffer(AwardOffer offer) throws BLServiceException {
+		return awardDao.findByOffer(offer);
+	}
+
+
 	@Override
 	public void deleteAward(Award award) throws BLServiceException {
 		awardDao.delete(award);
@@ -114,14 +121,21 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 		return awardTypeDao.findByType("business");
 	}
 	
-
-	//------------ injection -----------------//
-	
+	/**
+	 * determine if this is a place award, and that the
+	 * business is still active, if it is then 
+	 * you should send out an email that the offer was used
+	 * 
+	 */
 	@Override
 	public Long saveAwardOffer(AwardOffer entity) throws BLServiceException {
 		awardOfferDao.save(entity);
 		return entity.getId();
 	}	
+	
+	//------------ injection -----------------//
+	
+
 
 	public void setAwardTypeDao(AwardTypeDao awardTypeDao) {
 		this.awardTypeDao = awardTypeDao;

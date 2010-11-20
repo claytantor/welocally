@@ -55,6 +55,8 @@ CREATE TABLE  `award_offer` (
 			column="award_type_id"/>
 		
 		<property name="status" column="status" type="java.lang.String"/>
+		
+			
 				
 		<many-to-one
 			lazy="no-proxy" 

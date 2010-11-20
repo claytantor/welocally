@@ -23,6 +23,8 @@
 		<property name="zip" column="zip" type="java.lang.String"/>
 		
 		<property name="twitterId" column="twitter_id" type="java.lang.String"/>
+		<property name="email" column="email" type="java.lang.String"/>
+		<property name="businessServices" column="business_services" type="java.lang.String"/>
 		
 		<property name="phone" column="phone" type="java.lang.String"/>
 		<property name="flag" column="flag" type="java.lang.String"/>

@@ -23,6 +23,8 @@ public class AwardOffer {
 	private String status;
 	private AwardType awardType;
 	
+	//private Award award;
+	
 	private Business business;
 	
 	public Long getId() {
@@ -124,6 +126,7 @@ public class AwardOffer {
 	public void setExpireDateMillis(Long expireDateMillis) {
 		this.expireDateMillis = expireDateMillis;
 	}
+
 
 
 	
