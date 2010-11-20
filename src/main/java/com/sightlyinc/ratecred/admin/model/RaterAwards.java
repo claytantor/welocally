@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
-import com.sightlyinc.ratecred.service.AwardsRulesUtils;
+import com.sightlyinc.ratecred.service.AwardsUtils;
 
 public class RaterAwards {
 	
@@ -36,7 +36,7 @@ public class RaterAwards {
 			
 			PlaceCityState pcs = null;
 			if(award.getMetadata() != null)
-				pcs = AwardsRulesUtils.getPlaceCityStateFromMetaData(award.getMetadata());
+				pcs = AwardsUtils.getPlaceCityStateFromMetaData(award.getMetadata());
 			if(pcs != null)
 			{
 				StringBuffer s2 = new StringBuffer();
@@ -65,6 +65,17 @@ public class RaterAwards {
 	{
 		boolean contains = keys.contains(key);
 		return contains;
+	}
+	
+	public boolean hasPlaceAward(int id)
+	{
+		Long placeId = new Long(id);
+		for (Award award : rater.getAwards()) {
+			Long awardPlaceId = AwardsUtils.getPlaceIdMetaData(award.getMetadata());
+			if(awardPlaceId != null && awardPlaceId.equals(placeId) && award.getOffer().equals("GIVEN"))
+				return true;
+		}
+		return false;
 	}
 	
 	public boolean hasAwardCityStar(String city, String state)

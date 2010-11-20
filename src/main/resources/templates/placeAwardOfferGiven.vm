@@ -1,0 +1,20 @@
+Yay ${awardOffer.programName}! This is great news, it means that RateCred is working for your business. 
+One of your customers has has been given an offer.
+
+An Award Has Been Given To A Customer!
+==========================================
+OFFER ID: ${awardOffer.id}
+OFFER NAME: ${awardOffer.name}
+OFFER DESCR: ${awardOffer.description}
+OFFER BY: ${awardOffer.externalId}
+OFFER SOURCE: ${awardOffer.externalSource}
+PLACE ID: ${awardOffer.programId}
+PLACE NAME: ${awardOffer.programName}
+
+CUSTOMER TWITTTER ID: ${rater.userName}
+
+
+Hope this helps your business succeed,
+
+
+The RateCred Crew!

@@ -3,6 +3,7 @@ package com.sightlyinc.ratecred.admin.rules;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +37,22 @@ public class RaterAwardsRuleTest extends TestCase{
 	
 	static Logger logger = Logger.getLogger(RaterAwardsRuleTest.class);
 	
+	private String ratingRulesUrl = "http://media.ratecred.com.s3.amazonaws.com/dev/data/rater_awards.java.drl";
+	
 	public void testRaterAwards() {
 		logger.debug("testRaterAwards");
 		try {
 			
-			RuleBase ruleBase = 
+/*			RuleBase ruleBase = 
 				RuleBaseLoader.loadFromInputStream(
 						TestRulesController.class.getResourceAsStream("/rules/rater_awards.java.drl"));
+*/			
+
+			/*RuleBase ruleBase = RuleBaseLoader
+			.loadFromInputStream(TestRulesController.class
+					.getResourceAsStream("/rules/rater_awards.java.drl"));*/
+
+			RuleBase ruleBase = RuleBaseLoader.loadFromUrl(new URL(ratingRulesUrl));			
 			
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
 			boolean dynamic = true;

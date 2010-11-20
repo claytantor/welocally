@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.admin.job;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,14 +30,16 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.xml.sax.SAXException;
 
 import com.sightlyinc.ratecred.admin.model.CityStateEvaluator;
+import com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.admin.mvc.controller.TestRulesController;
+import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.RaterMetrics;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardManagerService;
-import com.sightlyinc.ratecred.service.AwardsRulesUtils;
+import com.sightlyinc.ratecred.service.AwardsUtils;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.RaterAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
@@ -55,6 +58,8 @@ public class RaterAwardsJob extends QuartzJobBean {
 	private AwardManagerService awardManagerService;
 	
 	RaterAwardsService raterAwardsService;
+	
+	private String ratingRulesUrl;
 	
 	private Long millisSince;
 
@@ -77,10 +82,12 @@ public class RaterAwardsJob extends QuartzJobBean {
 			session.setFlushMode(FlushMode.AUTO);
 			
 			
-			RuleBase ruleBase = RuleBaseLoader
+			/*RuleBase ruleBase = RuleBaseLoader
 					.loadFromInputStream(TestRulesController.class
-							.getResourceAsStream("/rules/rater_awards.java.drl"));
+							.getResourceAsStream("/rules/rater_awards.java.drl"));*/
 
+			RuleBase ruleBase = RuleBaseLoader.loadFromUrl(new URL(ratingRulesUrl));
+			
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 			boolean dynamic = true;
 			
@@ -95,7 +102,9 @@ public class RaterAwardsJob extends QuartzJobBean {
 			
 			//what we are doing here is getting the top ten raters
 			//in all rated areas for the period
+			Set<Place> allPlaces = new HashSet<Place>();
 			for (Rating rating : ratingsSince) {
+				allPlaces.add(rating.getPlace());
 				
 				Rater r =  null;
 				try {
@@ -124,13 +133,15 @@ public class RaterAwardsJob extends QuartzJobBean {
 						
 			Map<String, PlaceCityState> allcs = new HashMap<String, PlaceCityState>();
 			List<RaterAwards> raList = new ArrayList<RaterAwards>();
+			
 						
-			for (Rater rater : allRaters) {
+			for (Rater rater : allRaters) {				
+				
 				RaterMetrics rm = ratingManagerService.findMetricsByRater(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
-				List<PlaceCityState> cities = AwardsRulesUtils.getCitiesRated(rater);
-				AwardsRulesUtils.addCitiesToMap(cities, allcs);
+				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
+				AwardsUtils.addCitiesToMap(cities, allcs);
 				raList.add(ra);
 			}
 			
@@ -143,6 +154,9 @@ public class RaterAwardsJob extends QuartzJobBean {
 			for (CityStateEvaluator cseval : allCityStates.values()) 
 				workingMemory.assertObject(cseval, dynamic);
 
+			for (Place place : allPlaces)
+				workingMemory.assertObject(new PlaceRatingEvaluator(place), dynamic);
+			
 			workingMemory.fireAllRules();
 			
 			//save those awards for everyone
@@ -205,6 +219,10 @@ public class RaterAwardsJob extends QuartzJobBean {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	public void setRatingRulesUrl(String ratingRulesUrl) {
+		this.ratingRulesUrl = ratingRulesUrl;
 	}
 	
 	

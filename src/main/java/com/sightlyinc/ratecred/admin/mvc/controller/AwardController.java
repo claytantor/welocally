@@ -173,7 +173,7 @@ public class AwardController {
 				
 				award.setOffer(aoffer);
 				
-				Long id = raterAwardsService.saveNewAward(award, awardType, r, null);
+				Long id = raterAwardsService.saveNewAward(award, awardType, r);
 				return "redirect:/do/admin/award/" + id;
 			}
 			
@@ -231,7 +231,7 @@ public class AwardController {
 				
 				award.setOffer(aoffer);
 				
-				Long id = raterAwardsService.saveNewAward(award, awardType, r, null);
+				Long id = raterAwardsService.saveNewAward(award, awardType, r);
 				return "redirect:/do/admin/award/" + id;
 			}
 						

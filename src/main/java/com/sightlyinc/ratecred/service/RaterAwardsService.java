@@ -12,7 +12,7 @@ public interface RaterAwardsService {
 	public abstract void proccessAwardsForRater(RaterAwards ra)
 			throws BLServiceException;
 	
-	public Long saveNewAward(Award award, AwardType awardType, Rater r,
-			PlaceCityState pcs) throws BLServiceException; 
+	public Long saveNewAward(Award award, AwardType awardType, Rater r) 
+		throws BLServiceException; 
 
 }

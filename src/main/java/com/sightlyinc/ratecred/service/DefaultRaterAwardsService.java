@@ -1,9 +1,12 @@
 package com.sightlyinc.ratecred.service;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.drools.FactException;
@@ -25,19 +28,22 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 
+import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.random.RandomMaker;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.rosaloves.net.shorturl.bitly.Bitly;
 import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
+import com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
-import com.sightlyinc.ratecred.admin.mvc.controller.TestRulesController;
+import com.sightlyinc.ratecred.admin.velocity.BusinessServicesPlaceAwardGenerator;
 import com.sightlyinc.ratecred.client.offers.Offer;
 import com.sightlyinc.ratecred.dao.UserDao;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
+import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.User;
@@ -51,6 +57,10 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Autowired
 	@Qualifier("RatingManagerService")
 	private RatingManagerService ratingManagerService;
+	
+	@Autowired
+	@Qualifier("PlaceManagerService")
+	private PlaceManagerService placeManagerService;	
 
 	@Autowired
 	@Qualifier("offerPoolService")
@@ -80,6 +90,19 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Value("${RatingController.supressTwitterPublish}")
 	private Boolean supressTwitterPublish;
 	
+	@Value("${raterAwardsService.offerRulesUrl}")
+	private String offerRulesUrl;
+	
+	@Value("${raterAwardsService.useAwardOfferUrl}")
+	private String useAwardOfferUrl;
+	
+	@Value("${MailerQueueService.smtpUsername}")
+	private String fromAddress;
+	
+	@Autowired
+	@Qualifier("mailerQueueService")
+	private MailerQueueService mailerQueueService;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -106,12 +129,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			
 			award.setAwardType(awardType);
 
-			PlaceCityState pcs = null;
-			if (award.getMetadata() != null)
-				pcs = AwardsRulesUtils.getPlaceCityStateFromMetaData(award
-						.getMetadata());
 
-			saveNewAward(award, awardType, ra.getRater(), pcs);
+			saveNewAward(award, awardType, ra.getRater());
 
 		}
 
@@ -129,7 +148,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				
 				if (awardToRemove.getAwardType().getKeyname().equals("citykey")) {
 					
-					PlaceCityState pcs = AwardsRulesUtils
+					PlaceCityState pcs = AwardsUtils
 							.getPlaceCityStateFromMetaData(awardToRemove
 									.getMetadata());
 					
@@ -160,11 +179,29 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	}
 
 	@Override
-	public Long saveNewAward(Award award, AwardType awardType, Rater r,
-			PlaceCityState pcs) throws BLServiceException {
-
-		if (pcs != null) // this is a place award, there can be more than one
+	public Long saveNewAward(Award award, AwardType awardType, Rater r) 
+		throws BLServiceException {
+		
+		PlaceCityState pcs = null;
+		Long placeId = null;
+		Place p = null;
+		
+		if(award.getMetadata() != null && award.getMetadata().contains("city") && award.getMetadata().contains("state"))
+		{
+			pcs = AwardsUtils.getPlaceCityStateFromMetaData(award.getMetadata());
+		} else if(award.getMetadata() != null && award.getMetadata().contains("placeId")) {
+			placeId = AwardsUtils.getPlaceIdMetaData(award.getMetadata());
+		} 
+		
+		if(placeId != null)
+			p = placeManagerService.findPlaceByPrimaryKey(placeId);
+			
+		if (pcs != null) 
 			award.setNotes("Ranked First " + pcs.getCity());
+		else if(p != null) {
+			logger.debug("award for place:"+p.getName());
+			award.setNotes(awardType.getName()+" at " + p.getName()+". ");			
+		}
 		else {
 			award.setNotes(awardType.getDescription());
 			award.setMetadata("imageUrl=/images/awards/award_"
@@ -178,8 +215,12 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		award.setExpiresMills(0l);
 
 		// we should use rule based targeting for this
+		// if this is a business award Xochi should know what offer to give
 		if (award.getGiveOffer()) {
-			Offer offer = targetOfferForRater(r);
+			Offer offer = targetOfferForRater(award, 
+					awardType, 
+					r,
+					pcs);
 
 			AwardOffer aoffer = new AwardOffer();
 			aoffer.setAwardType(awardType);
@@ -195,7 +236,18 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			aoffer.setStatus("GIVEN");
 			aoffer.setTimeCreated(Calendar.getInstance().getTime());
 			aoffer.setUrl(offer.getUrl());
+			
+			
 			awardManagerService.saveAwardOffer(aoffer);
+			
+			//this is a place award
+			if(p!=null) {
+				aoffer.setUrl(this.useAwardOfferUrl+"/"+aoffer.getId());
+				//send email to place
+				logger.debug("place email:"+p.getEmail());
+				sendOfferAwardedEmail(p.getEmail(), aoffer, r);
+			}
+			
 
 			award.setOffer(aoffer);
 		}
@@ -215,6 +267,33 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 
 	}
+	
+	private void sendOfferAwardedEmail(String emailTo, AwardOffer ao, Rater rater) 
+	{
+				
+		Map model = new HashMap();
+
+		model.put("awardOffer", ao);
+		model.put("rater", rater);
+		
+		
+		BusinessServicesPlaceAwardGenerator generator = 
+			new BusinessServicesPlaceAwardGenerator(model);
+
+		/*
+		 * sendMessage(String fromAddressName,String fromName, String toAddressName,
+					String toName, String subject, String body, String mimetype) 
+		 */
+		mailerQueueService.sendMessage(
+				fromAddress, 
+				"RateCred.com Mailer",
+				emailTo, 
+				ao.getProgramName(), 
+				"[RateCred] An Award Has Been Given To A Customer!", 
+				generator.makeDisplayString(),
+				"text/plain");		
+	}
+	
 	
 	private void sendAwardStatusUpdate(Award a, User u) throws TwitterException, IOException
 	{
@@ -243,12 +322,18 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 	}
 
-	private Offer targetOfferForRater(Rater r) throws BLServiceException {
+	private Offer targetOfferForRater(Award award, 
+			AwardType awardType, 
+			Rater r,
+			PlaceCityState pcs) throws BLServiceException {
 
 		try {
-			RuleBase ruleBase = RuleBaseLoader
+			/*RuleBase ruleBase = RuleBaseLoader
 					.loadFromInputStream(TestRulesController.class
-							.getResourceAsStream("/rules/offer.java.drl"));
+							.getResourceAsStream("/rules/offer.java.drl"));*/
+			
+			//offerRulesUrl
+			RuleBase ruleBase = RuleBaseLoader.loadFromUrl(new URL(offerRulesUrl));
 
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 
@@ -257,15 +342,30 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			for (Offer offer : offersRaw) {
 				workingMemory.assertObject(offer, dynamic);
 			}
+			
+			//now add the offer evaluator
+			AwardOfferEvaluator awardOffer = new AwardOfferEvaluator(
+					award, 
+					awardType, 
+					r,
+					pcs);
+			workingMemory.assertObject(awardOffer, dynamic);
+			
 			workingMemory.fireAllRules();
-
-			List<Offer> offersFiltered = new ArrayList<Offer>();
-			for (Offer offer : offersRaw) {
-				if (offer.isVisible())
-					offersFiltered.add(offer);
+			
+			if(awardOffer.hasOffer())
+				return awardOffer.getOffer();
+			else //backup plan
+			{
+				List<Offer> offersFiltered = new ArrayList<Offer>();
+				for (Offer offer : offersRaw) {
+					if (offer.isVisible())
+						offersFiltered.add(offer);
+				}
+				int pos = RandomMaker.nextInt(1, offersFiltered.size() - 1);
+				return offersFiltered.get(pos);
 			}
-			int pos = RandomMaker.nextInt(1, offersFiltered.size() - 1);
-			return offersFiltered.get(pos);
+
 
 		} catch (IntegrationException e) {
 			logger.error("IntegrationException", e);

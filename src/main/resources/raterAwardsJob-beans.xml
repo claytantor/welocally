@@ -22,9 +22,12 @@
 	      <entry key="raterAwardsService">
 	      		<ref bean="raterAwardsService" />
 	      </entry>
+	      <entry key="ratingRulesUrl">
+	      		<value>${raterAwardsJob.ratingRulesUrl}</value>
+	      </entry>	
 	      <entry key="millisSince">
 	      		<value>${raterAwardsJob.millisSince}</value>
-	      </entry>		      	      	      	       	       	          
+	      </entry>		      	      	      	      	       	       	          
 	    </map>
 	  </property>
 	</bean>

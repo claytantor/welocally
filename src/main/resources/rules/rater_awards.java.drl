@@ -11,6 +11,8 @@
 	<import>com.sightlyinc.ratecred.model.*</import>
     <import>com.sightlyinc.ratecred.admin.model.RaterAwards</import>
     <import>com.sightlyinc.ratecred.admin.model.CityStateEvaluator</import>
+    <import>com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator</import>
+    
     <import>java.net.URLEncoder</import>
     
     <rule name="RatingStarter" salience="40">
@@ -365,7 +367,7 @@
         
     </rule> 
     
-      <rule name="NotNetworkLeader" salience="10">
+    <rule name="NotNetworkLeader" salience="10">
     	<parameter identifier="rater_awards">
                <class>RaterAwards</class>
         </parameter>
@@ -383,5 +385,33 @@
         </java:consequence>
         
     </rule>          
+    
+    <rule name="LOttavo" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+    	<parameter identifier="place_rating">
+               <class>PlaceRatingEvaluator</class>
+        </parameter>           
+                 	
+		<java:condition>
+            place_rating.getRatingCount(rater_awards) >= 1
+		</java:condition>
+		<java:condition>
+            !rater_awards.hasPlaceAward(3139)
+        </java:condition> 	
+	          
+        <java:consequence>           	
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("vip");
+			awardGiven.setAwardType(at);
+			awardGiven.setExpiresGmt("2011-11-14");
+			awardGiven.setMetadata("imageUrl=/images/awards/award_vip.png&amp;placeId=3139");
+           	rater_awards.addAward(awardGiven);         	            	          	          	
+        </java:consequence>
+        
+    </rule>  
+    
     
   </rule-set>

@@ -8,8 +8,9 @@
                              http://drools.org/semantics/java java.xsd">
 
     <import>com.sightlyinc.ratecred.client.offers.Offer</import>
+    <import>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</import>
     
-    <rule name="filter_Gay">
+    <rule name="filter_Gay" salience="100">
         <parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
@@ -19,7 +20,7 @@
         </java:consequence>
     </rule>
     
-	<rule name="filter_Lesbian">
+	<rule name="filter_Lesbian" salience="100">
         <parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
@@ -29,7 +30,7 @@
         </java:consequence>
     </rule>
 
-	<rule name="filter_No_Code">
+	<rule name="filter_No_Code" salience="100">
         <parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
@@ -39,7 +40,7 @@
         </java:consequence>
     </rule>
 
-	<rule name="filter_Code_Empty">
+	<rule name="filter_Code_Empty" salience="100">
         <parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
@@ -47,7 +48,38 @@
         <java:consequence>
             offer.setVisible(false);
         </java:consequence>
+    </rule>    
+
+    <rule name="locationOffer" salience="20">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+		<parameter identifier="award_offer">
+            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+        </parameter> 
+        <java:condition>offer.isVisible()</java:condition>       
+        <java:condition>award_offer.isPlaceOffer(offer)</java:condition>
+              
+        <java:consequence>
+            award_offer.setOffer(offer);
+        </java:consequence>
     </rule>
+    
+    <rule name="placeOffer" salience="10">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+		<parameter identifier="award_offer">
+            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+        </parameter> 
+        <java:condition>offer.isVisible()</java:condition>       
+        <java:condition>award_offer.isPlaceOffer(offer)</java:condition>
+              
+        <java:consequence>
+            award_offer.setOffer(offer);
+        </java:consequence>
+    </rule>
+    
 	
 	
   </rule-set>

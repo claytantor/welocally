@@ -35,7 +35,7 @@ import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.RaterMetrics;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardManagerService;
-import com.sightlyinc.ratecred.service.AwardsRulesUtils;
+import com.sightlyinc.ratecred.service.AwardsUtils;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.RaterAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
@@ -206,8 +206,8 @@ public class TestRulesController {
 				RaterMetrics rm = ratingManagerService.findMetricsByRater(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
-				List<PlaceCityState> cities = AwardsRulesUtils.getCitiesRated(rater);
-				AwardsRulesUtils.addCitiesToMap(cities, allcs);
+				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
+				AwardsUtils.addCitiesToMap(cities, allcs);
 				raList.add(ra);
 			}
 			
@@ -306,8 +306,8 @@ public class TestRulesController {
 				RaterMetrics rm = ratingManagerService.findMetricsByRater(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
-				List<PlaceCityState> cities = AwardsRulesUtils.getCitiesRated(rater);
-				AwardsRulesUtils.addCitiesToMap(cities, allcs);
+				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
+				AwardsUtils.addCitiesToMap(cities, allcs);
 				raList.add(ra);
 			}
 			
