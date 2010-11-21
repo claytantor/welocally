@@ -1,10 +1,12 @@
-INSERT INTO `award_type` VALUES 
-(10,'VIP','all',0,'2010-11-07 00:00:00',1,'Very Important Person','vip',NULL, 0, NULL, NULL, 'place');
+INSERT INTO user (Host,User,Password) VALUES('10.210.37.193','ratecred',PASSWORD('Rammy56Tally'));
+FLUSH PRIVILEGES;
+INSERT INTO user (Host,User,Password) VALUES('10.254.98.161','ratecred',PASSWORD('Rammy56Tally'));
+FLUSH PRIVILEGES;
+GRANT ALL ON ratecred_080_etl.* TO 'ratecred'@'10.210.37.193';
+FLUSH PRIVILEGES;
+GRANT ALL ON ratecred_080_etl.* TO 'ratecred'@'10.254.98.161';
+FLUSH PRIVILEGES;
 
-ALTER TABLE `place` ADD COLUMN `email` VARCHAR(255) AFTER `business_location_id`;
-ALTER TABLE `place` ADD COLUMN `business_services` VARCHAR(10) AFTER `email`;
-update place set business_services='false';
 
-UPDATE award_type set name="Friends of RateCred" where id=2;
 
 
