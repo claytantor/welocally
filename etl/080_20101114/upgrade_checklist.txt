@@ -1,0 +1,26 @@
+Rate L'ottavo on previous prod as sam pento(done)
+
+backup prod to s3
+# /usr/local/bin/backup_ratecred
+
+get the backup
+# s3-get 1h8amwp9wtkkhvmv5782.storage.backups i-959eaeff/db_dumps/ratecred-1290381822.sql.gz
+
+goto mnt dir
+# cd /mnt/downloads/sql
+
+unzip it
+# gunzip ratecred-1290381822.sql.gz
+
+run the sql
+# mysql -h localhost -u root -pGampyTabm ratecred_080_etl<ratecred-1290381822.sql
+
+run sql to allow instances to connect
+
+run schema updates
+
+Upload rules and offer info
+
+Run L'ottavo place business services SQL (update 3)
+
+Rate L'ottavo
