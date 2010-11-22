@@ -240,11 +240,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			
 			awardManagerService.saveAwardOffer(aoffer);
 			
-			//this is a place award
-			if(p!=null) {
+			//this is a place award override the offer
+			if(p!=null && p.getBusinessServices().equals("true")) {
 				aoffer.setUrl(this.useAwardOfferUrl+"/"+aoffer.getId());
-				//send email to place
-				logger.debug("place email:"+p.getEmail());
 				sendOfferAwardedEmail(p.getEmail(), aoffer, r);
 			}
 			

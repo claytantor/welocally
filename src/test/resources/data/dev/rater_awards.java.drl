@@ -398,7 +398,7 @@
             place_rating.getRatingCount(rater_awards) >= 1
 		</java:condition>
 		<java:condition>
-            !rater_awards.hasPlaceAward(3198)
+            !rater_awards.hasPlaceAward(3139)
         </java:condition> 	
 	          
         <java:consequence>           	
@@ -407,7 +407,7 @@
 			at.setKeyname("vip");
 			awardGiven.setAwardType(at);
 			awardGiven.setExpiresGmt("2011-11-14");
-			awardGiven.setMetadata("imageUrl=/images/awards/award_vip.png&amp;placeId=3198");
+			awardGiven.setMetadata("imageUrl=/images/awards/award_vip.png&amp;placeId=3139");
            	rater_awards.addAward(awardGiven);         	            	          	          	
         </java:consequence>
         
