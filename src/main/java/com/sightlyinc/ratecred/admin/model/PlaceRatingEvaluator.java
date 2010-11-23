@@ -29,6 +29,12 @@ public class PlaceRatingEvaluator {
 		this.place = p;
 	}
 	
+	
+	public boolean isPlace(int placeId)
+	{
+		return this.place.getId().equals(new Long(placeId));
+	}
+	
 	/**
 	 * this will look at all the awards a rater has gotten, it will filter 
 	 * out just the awards related to the place, then it will filter
@@ -47,7 +53,6 @@ public class PlaceRatingEvaluator {
 			if(awardPlaceId != null && awardPlaceId.equals(this.place.getId()))
 				placeAwards.add(a);
 		}
-		logger.debug("rater:"+ra.getRater().getUserName()+" placeAwards:"+placeAwards.size());
 		//if no awards you can count all 
 		//otherwise you have to find the last expired
 		//award from this place and only count after that

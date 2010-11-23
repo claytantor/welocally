@@ -393,7 +393,11 @@
     	<parameter identifier="place_rating">
                <class>PlaceRatingEvaluator</class>
         </parameter>           
-                 	
+        
+        
+        <java:condition>
+            place_rating.isPlace(3139)
+		</java:condition>            	
 		<java:condition>
             place_rating.getRatingCount(rater_awards) >= 1
 		</java:condition>
