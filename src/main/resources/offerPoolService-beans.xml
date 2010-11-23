@@ -37,7 +37,7 @@
 		<property name="protocol" value="http"/>
 		<property name="port" value="80"/>
 		<property name="host" value="media.ratecred.com.s3.amazonaws.com"/>
-		<property name="endpoint" value="/dev/data/ratecred-offers.csv"/>
+		<property name="endpoint" value="${ratecredOfferClient.endpoint}"/>
 		<property name="sourceName" value="RATECRED"/>
 	</bean>	
 	
