@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -16,7 +17,7 @@ public class Rating {
 	private Float raterRating;
 	private Float userRating;
 
-	private Set<RatingAttribute> attributes;
+	private Set<RatingAttribute> attributes = new HashSet<RatingAttribute>();
 	
 	private Set<Compliment> compliments;
 	
