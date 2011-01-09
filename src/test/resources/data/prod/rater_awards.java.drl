@@ -416,6 +416,36 @@
         </java:consequence>
         
     </rule>  
+ 
+    <rule name="ThornhillCoffee2973" salience="10">
+    	<parameter identifier="rater_awards">
+               <class>RaterAwards</class>
+        </parameter>
+    	<parameter identifier="place_rating">
+               <class>PlaceRatingEvaluator</class>
+        </parameter>           
+        
+        <java:condition>
+            place_rating.isPlace(2973)
+		</java:condition>         	
+		<java:condition>
+            place_rating.getRatingCount(rater_awards) >= 1
+		</java:condition>
+		<java:condition>
+            !rater_awards.hasPlaceAward(2973)
+        </java:condition> 	
+	          
+        <java:consequence>           	
+        	Award awardGiven = new Award();
+			AwardType at = new AwardType();
+			at.setKeyname("vip");
+			awardGiven.setAwardType(at);
+			awardGiven.setExpiresGmt("2011-11-14");
+			awardGiven.setMetadata("imageUrl=/images/awards/award_vip.png&amp;placeId=2973");
+           	rater_awards.addAward(awardGiven);         	            	          	          	
+        </java:consequence>
+        
+    </rule> 
     
     
   </rule-set>
