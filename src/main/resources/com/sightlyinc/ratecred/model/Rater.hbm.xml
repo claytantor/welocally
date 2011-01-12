@@ -32,12 +32,14 @@
 	 	<set name="ratings"
 	 		lazy="extra"
 			fetch="select"
-			cascade="all">
+			cascade="all"
+			order-by="time_mills desc">
 	        <key column="rater_id"/>
 	        <one-to-many class="Rating"/>
 	    </set>
 
-	 	<set name="awards">
+	 	<set name="awards" 
+			order-by="time_created_mills desc">
 	        <key column="rater_id" not-null="false"/>
 	        <one-to-many class="Award"/>
 	    </set>
@@ -45,7 +47,8 @@
 	    <set name="compliments" 
 	 		lazy="extra"
 			fetch="select"
-			cascade="all">
+			cascade="all"
+			order-by="time_mills desc">
 	        <key column="rater_id"/>
 	        <one-to-many class="Compliment"/>
 	    </set>
