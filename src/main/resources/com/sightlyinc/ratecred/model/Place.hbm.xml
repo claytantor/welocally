@@ -44,6 +44,7 @@
 	 	<set name="ratings" 
 	 		lazy="extra"
 			fetch="select"
+			order-by="time_mills desc"
 			cascade="all">
 	        <key column="place_id"/>
 	        <one-to-many class="Rating"/>
