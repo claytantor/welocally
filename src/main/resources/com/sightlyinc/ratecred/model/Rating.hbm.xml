@@ -31,6 +31,12 @@
 		<property name="userRating" column="user_rating" type="java.lang.Float"/>
 		<property name="twitterStatusId" column="twitter_status_id" type="java.lang.Long"/>
 		
+		<property name="referalUrl"  type="java.lang.String" length="32000">
+			<column name="referal_url" sql-type="longtext"/>
+		</property>	
+		
+		<property name="referalToken" column="referal_token" type="java.lang.String"/>
+		
 		<many-to-one
 			lazy="no-proxy" 
 			fetch="select"

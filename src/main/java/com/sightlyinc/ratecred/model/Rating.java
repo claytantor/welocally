@@ -16,6 +16,8 @@ public class Rating {
 	private String timeCreatedGmt;	
 	private Float raterRating;
 	private Float userRating;
+	private String referalUrl;
+	private String referalToken;
 
 	private Set<RatingAttribute> attributes = new HashSet<RatingAttribute>();
 	
@@ -140,42 +142,26 @@ public class Rating {
 	public void setTwitterStatusId(Long twitterStatusId) {
 		this.twitterStatusId = twitterStatusId;
 	}
+
+	public String getReferalUrl() {
+		return referalUrl;
+	}
+
+	public void setReferalUrl(String referalUrl) {
+		this.referalUrl = referalUrl;
+	}
+
+	public String getReferalToken() {
+		return referalToken;
+	}
+
+	public void setReferalToken(String referalToken) {
+		this.referalToken = referalToken;
+	}
+
+
 	
-	
 
-	/*@Override
-	public String toString() {
 
-		StringBuffer buf = new StringBuffer();
-
-		try {
-			buf.append("[");
-
-			Map<String, String> description = BeanUtils.describe(this);
-
-			for (String key : description.keySet()) {
-				buf.append("[");
-				buf.append(key);
-				buf.append("=");
-
-				if (description.get(key) != null
-						&& StringUtils.isNotEmpty(description.get(key)
-								.toString()))
-					buf.append(description.get(key).toString());
-
-				buf.append("]");
-			}
-			buf.append("]");
-
-		} catch (IllegalAccessException e) {
-
-		} catch (InvocationTargetException e) {
-
-		} catch (NoSuchMethodException e) {
-
-		}
-
-		return buf.toString();
-	}*/
 
 }
