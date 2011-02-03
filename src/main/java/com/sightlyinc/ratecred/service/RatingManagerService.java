@@ -15,6 +15,9 @@ import com.sightlyinc.ratecred.model.RatingPage;
 
 public interface RatingManagerService {
 	
+	public void saveUpdatePlaceRatings();
+	public void saveUpdatePlaceRating(Long id);
+	
 	public Rating findRatingByPrimaryKey(Long id) throws BLServiceException;	
 	
 	public Rating findRateByTime(Long time);

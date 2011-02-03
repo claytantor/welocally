@@ -1,0 +1,31 @@
+{
+    "name" : "ratecred_dev",
+    "first" : "Clayton",
+    "last" : "Graham",
+    "admin_email" : "claytantor@gmail.com",
+    "password" : "aee63d5c34f5107e15af8f96ff8eef40",
+    "account_type" : "BRONZE",
+    "url" : "http://dev.ratecred.com",
+    "consumer_key" : "2D65CA50-0302-4135-AA66-BAAB27883F5E",
+    "consumer_secret" : "879C804E-65A5-42F9-B204-4092414A6C69",
+    "callback_url" : "http://dev.ratecred.com/aggregator/authorized",
+    "checkin_systems" : [
+        {
+            "name" : "FOURSQUARE",
+            "consumer_key" : "4Y4WGCNNRJQBOUNCRSQJE45OUKTARL4B4IWI5BKB2K50AGY5",
+            "consumer_secret" : "XCWVCTCOTJAM4T5BFVFEMQB1BLGQPAW4K0FHAELB3WAEKY3N",
+            "callback_url" : "https://aggregator.raptive.com/v1/oauth/callback/foursquare" 
+        },
+        {
+            "name" : "GOWALLA",
+            "consumer_key" : "c6cdf346d8fb4d8d96658cae5f06f077",
+            "consumer_secret" : "d123a8d4912d4b90b7145392b2fa6310",
+            "callback_url" : "https://aggregator.raptive.com/v1/oauth/callback/gowalla" 
+        } 
+    ],
+    
+}
+
+ 
+ 
+ 

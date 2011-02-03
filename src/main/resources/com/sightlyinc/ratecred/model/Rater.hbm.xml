@@ -27,7 +27,8 @@
 		<property name="imageValueId" column="imagevalue_id" 
 			type="java.lang.Long" insert="false"
 			update="false"/>		
-		
+		<property name="authFoursquare" column="auth_foursquare" type="string"/>
+		<property name="authGowalla" column="auth_gowalla" type="string"/>
 							
 	 	<set name="ratings"
 	 		lazy="extra"

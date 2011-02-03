@@ -21,6 +21,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
@@ -65,8 +67,74 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private String appSecretKey;
 	private String ratingUrlPrefix;
 	
+	
 	private Directory ratingDirectory;	
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
+	
+	@Autowired
+    @Qualifier("checkinService")
+	private CheckinService checkinService;
+	
+	
+	public void saveUpdatePlaceRating(Long id)  {
+		Place p = placeDao.findByPrimaryKey(id);
+				
+		logger.debug("place:"+p.getName());
+		// ok this is painful to admit, we had a 
+		// design that was too flexibile, really there 
+		// should be one field, I will probably
+		// add it to the row but for now lets just
+		// get this working
+		if(p.getPlaceRatings() == null) 			
+			p.setPlaceRatings(new HashSet<PlaceRating>());
+		
+		if(p.getRatings() == null)
+			p.setRatings(new HashSet<Rating>());
+		
+		PlaceRating ratingForType = new PlaceRating();
+
+		Float sum = 0.0f;
+
+		for (Rating rating : p.getRatings()) {
+				sum+=rating.getRaterRating();
+		}
+
+		Float avg = 2.5f;
+		try {
+			avg = sum/p.getRatings().size();
+		} catch (Exception e) {
+			logger.error("NaN", e);
+			avg = 2.5f;
+		}
+		if(!avg.isNaN())
+			ratingForType.setRating(avg);
+		else
+			ratingForType.setRating(2.5f);
+		
+		logger.debug("new rating value:"+ratingForType.getRating());
+		
+		if(p.getPlaceRatings().size() == 0) {
+			ratingForType.setPlace(p);
+			ratingForType.setType("Other");
+			p.getPlaceRatings().add(ratingForType);
+		} else {
+			PlaceRating pr = p.getPlaceRatings().iterator().next();
+			pr.setRating(ratingForType.getRating());				
+		}
+
+		placeDao.save(p);
+
+	}
+	
+	//we are going to put an init method here because 
+	//our ratings were wrong, this should normalize it
+	public void saveUpdatePlaceRatings()  {
+		List<Place> allPlaces = placeDao.findAll();
+		for (Place p : allPlaces) {			
+			saveUpdatePlaceRating(p.getId());
+			
+		}
+	}
 	
 	
 	@Override
@@ -159,11 +227,6 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		awardDao.save(entity);	
 	}
 	
-/*	@Override
-	public void saveAwardOffer(AwardOffer entity) throws BLServiceException {
-		awardOfferDao.save(entity);
-	}*/
-
 
 	@Override
 	public Long findAwardCountByOwnerBetweenTimes(Rater towards, Date startTime,
@@ -198,21 +261,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			return null;
 		
 		Long score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
-		
-		/*//when we have a user that is being created 
-		if(StringUtils.isEmpty(currentStatus))
-		{
-			score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
-			if(t.getStatus().equals("USER"))
-				score=score+100;
-		}
-		else
-		{
-			score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
-			if(currentStatus.equals("USER"))
-				score=score+100;
-		}*/
-		
+				
 		tm.setScore(score);
 		return tm;
 	}
@@ -259,41 +308,17 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	@Override
 	public void saveCompliment(Compliment c, Rating towards, Rater complementor)
-			throws BLServiceException {
-		
+			throws BLServiceException {		
 		try {
 			//should be this simple
 			c.setTowards(towards);
 			c.setOwner(complementor);
 			complimentDao.save(c);
 			
-			/*//get the metrics for complementor
-			RaterMetrics tmcomp =
-				findMetricsByRater(complementor);
-			if(tmcomp != null)
-				complementor.setScore(tmcomp.getScore());
-			raterDao.save(complementor);
-					
-			//update the score of the person being complimented
-			Rater rater = towards.getOwner();
-			
-			RaterMetrics tmrater =
-				findMetricsByRater(rater);
-			if(tmrater != null)
-			{
-				Long score2 = tmrater.getScore();
-				rater.setScore(score2.longValue());	
-				raterDao.save(rater);
-			}*/
-			
 		} catch (Exception e) {
 			logger.debug("problem saving compliment",e);
 			throw new BLServiceException(e);
 		}
-
-		
-		
-
 	}
 
 	@Override
@@ -637,134 +662,6 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return t;
 	}
 
-	/*public void saveRatingHold(Rating entity) 
-	throws BLServiceException
-	{
-		
-		try {
-			Rater owner = 
-				raterDao.findByUserName(
-						entity.getOwner().getUserName());
-			
-
-			
-			//we really want to work on the matching here, this 
-			//should make an attempt to match up to an existing 
-			//place if it makes sense, use probability
-
-			//1. if there is lat long get places close to here
-			List<Place> places = null;
-			if(entity.getPlace().getTwitterId() != null)
-			{
-				places = new ArrayList<Place>();
-				//Place p = placeDao.f
-				AccessToken accessToken = 
-					new AccessToken(
-							owner.getTwitterToken(), 
-							owner.getTwitterTokenSecret());
-
-				Twitter twitter = 
-					new TwitterFactory().getOAuthAuthorizedInstance(
-							appConsumerKey, appSecretKey, accessToken);	 
-				
-				//get the place
-				Place p = twitter.getGeoDetails(r.getTwitterPlaceId());
-			}
-			else if(entity.getPlace().getLatitude() != null
-					&& entity.getPlace().getLongitude() != null)
-				places = 
-					placeDao.findByGeoBounding(
-							entity.getPlace().getLatitude() - 0.001, 
-							entity.getPlace().getLongitude() - 0.001, 
-							entity.getPlace().getLatitude() + 0.001, 
-							entity.getPlace().getLongitude() + 0.001);
-			else 
-				//lame brute force
-				places = 
-					placeDao.findByNamePrefix(
-							entity.getPlace().getName().substring(0, 3));
-								
-			
-			//if its found use it, otherwise create
-			if(places != null && places.size()>0)
-			{
-				Collections.sort(
-						places,
-						new PobabilisticNameAndLocationPlaceComparitor(
-								entity.getPlace()));
-				
-				Place p = places.get(0);
-				
-				Set<PlaceRating> ratings = p.getPlaceRatings();
-				PlaceRating ratingForType = 
-					RatingHelper.computeNewRatingAdd(
-							new ArrayList<PlaceRating>(ratings), 
-							new ArrayList<Rating>(p.getRatings()), 
-							entity.getType(), 
-							entity.getRaterRating());
-				
-				//this needs to be tested
-				ratings.add(ratingForType);
-				p.setPlaceRatings(ratings);
-				
-				entity.setPlace(p);
-				//deal with the place rating
-			}
-			else
-			{
-				PlaceRating rating = new PlaceRating();
-				rating.setType(entity.getType());
-				rating.setRating(entity.getRaterRating());
-				Set<PlaceRating> ratings = new HashSet<PlaceRating>();
-				ratings.add(rating);
-				entity.getPlace().setPlaceRatings(ratings);
-				placeDao.save(entity.getPlace());
-			}
-			
-			//generate a secret if this is a first posting
-			if(owner == null)
-			{
-				Rater newOwner = entity.getOwner();
-				newOwner.setUserName(entity.getOwner().getSecretKey());
-				newOwner.setTimeCreated(Calendar.getInstance().getTime());
-				newOwner.setStatus("ANON");
-				newOwner.setScore(10l);
-				String uuid = UUID.randomUUID().toString();
-				String[] parts = uuid.split("-");
-				newOwner.setSecretKey(parts[0]);
-				newOwner.setUserName(parts[1]);
-				newOwner.setStatus("ANON");
-				raterDao.save(newOwner);
-			}
-			else
-			{
-				
-
-				RaterMetrics tmcomp =
-					findMetricsByRater(owner);
-				if(tmcomp != null)
-					owner.setScore(tmcomp.getScore());
-				
-				raterDao.save(owner);
-				entity.setOwner(owner);
-			}
-			
-			ratingDao.save(entity);
-			
-			//compute score
-			//get the metrics 
-			RaterMetrics tm =
-				findMetricsByRater(owner);
-			if(tm != null)
-				owner.setScore(tm.getScore());
-			raterDao.save(owner);
-			
-			ratingDirectoryIndexer.indexRate(entity);
-		} catch (Exception e) {
-			logger.error("problem", e);
-			throw new BLServiceException(e);
-		}
-	}*/
 
 	
 	@Override
@@ -774,9 +671,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			Rater owner = entity.getOwner();
 			Place p = entity.getPlace();
 
-			//Set<PlaceRating> ratings = p.getPlaceRatings();
 			
-			if(p.getPlaceRatings() == null)
+			// ok this is painful to admit, we had a 
+			// design that was too flexibile, really there 
+			// should be one field, I will probably
+			// add it to the row but for now lets just
+			// get this working
+			if(p.getPlaceRatings() == null) 			
 				p.setPlaceRatings(new HashSet<PlaceRating>());
 			
 			if(p.getRatings() == null)
@@ -787,10 +688,18 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 					new ArrayList<Rating>(p.getRatings()), 
 					entity.getType(), 
 					entity.getRaterRating());
-
-			// this needs to be tested
-			p.getPlaceRatings().add(ratingForType);
-			p.setPlaceRatings(p.getPlaceRatings());
+			
+			logger.debug("new rating value:"+ratingForType.getRating());
+			
+			if(p.getPlaceRatings().size() == 0) {
+				ratingForType.setPlace(p);
+				ratingForType.setType(entity.getType());
+				p.getPlaceRatings().add(ratingForType);
+			} else {
+				PlaceRating pr = p.getPlaceRatings().iterator().next();
+				pr.setRating(ratingForType.getRating());				
+			}
+			
 
 			RaterMetrics tmcomp = findMetricsByRater(owner);
 			if (tmcomp != null)
@@ -812,6 +721,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				entity.setTimeCreatedMills(Calendar.getInstance().getTimeInMillis());
 			}
 			
+			//checkin 
+			if(entity.getOwner().getAuthorizedFoursquare())
+				checkinService.checkinRating("foursquare", entity);
+			if(entity.getOwner().getAuthorizedGowalla())
+				checkinService.checkinRating("gowalla", entity);			
 			//save it
 			ratingDao.save(entity);
 

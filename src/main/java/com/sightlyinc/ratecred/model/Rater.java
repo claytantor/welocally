@@ -20,6 +20,10 @@ public class Rater {
 	protected ImageValue raterImage;
 	protected java.lang.Long imageValueId;
 	
+	
+	private String authFoursquare = "false";
+	private String authGowalla = "false";
+	
 	protected Set<Rating> ratings= new HashSet<Rating>();
 	
 	protected Set<Award> awards = new HashSet<Award>();
@@ -240,7 +244,37 @@ public class Rater {
 
 
 	}
+
+	public String getAuthFoursquare() {
+		return authFoursquare;
+	}
+
+	public void setAuthFoursquare(String authFoursquare) {
+		this.authFoursquare = authFoursquare;
+	}
+
+	public String getAuthGowalla() {
+		return authGowalla;
+	}
+
+	public void setAuthGowalla(String authGowalla) {
+		this.authGowalla = authGowalla;
+	}
 	
+	public void setAuthorizedFoursquare(Boolean auth) {
+		this.authFoursquare = auth.toString();
+	}
 	
+	public Boolean getAuthorizedFoursquare() {
+		return Boolean.parseBoolean(this.authFoursquare);
+	}	
+	
+	public void setAuthorizedGowalla(Boolean auth) {
+		this.authGowalla = auth.toString();
+	}
+	
+	public Boolean getAuthorizedGowalla() {
+		return Boolean.parseBoolean(this.authGowalla);
+	}	
 	
 }

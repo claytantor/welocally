@@ -31,6 +31,9 @@
 		<property name="userRating" column="user_rating" type="java.lang.Float"/>
 		<property name="twitterStatusId" column="twitter_status_id" type="java.lang.Long"/>
 		
+		<property name="checkedinFoursquare" column="checkin_foursquare" type="string"/>
+		<property name="checkedinGowalla" column="checkin_gowalla" type="string"/>
+		
 		<property name="referalUrl"  type="java.lang.String" length="32000">
 			<column name="referal_url" sql-type="longtext"/>
 		</property>	

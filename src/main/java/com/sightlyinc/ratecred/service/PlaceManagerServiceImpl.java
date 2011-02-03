@@ -270,7 +270,6 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 
 	@Override
 	public Place findPlaceByPrimaryKey(Long id) throws BLServiceException {
-		// TODO Auto-generated method stub
 		return placeDao.findByPrimaryKey(id);
 	}
 

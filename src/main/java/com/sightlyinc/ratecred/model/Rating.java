@@ -18,6 +18,9 @@ public class Rating {
 	private Float userRating;
 	private String referalUrl;
 	private String referalToken;
+	
+	private String checkedinFoursquare;
+	private String checkedinGowalla;
 
 	private Set<RatingAttribute> attributes = new HashSet<RatingAttribute>();
 	
@@ -157,6 +160,22 @@ public class Rating {
 
 	public void setReferalToken(String referalToken) {
 		this.referalToken = referalToken;
+	}
+
+	public String getCheckedinFoursquare() {
+		return checkedinFoursquare;
+	}
+
+	public void setCheckedinFoursquare(String checkedinFoursquare) {
+		this.checkedinFoursquare = checkedinFoursquare;
+	}
+
+	public String getCheckedinGowalla() {
+		return checkedinGowalla;
+	}
+
+	public void setCheckedinGowalla(String checkedinGowalla) {
+		this.checkedinGowalla = checkedinGowalla;
 	}
 
 

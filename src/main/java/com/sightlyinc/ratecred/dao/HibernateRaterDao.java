@@ -434,7 +434,7 @@ public class HibernateRaterDao
 				
 					Query query = 
 						session.createSQLQuery("SELECT rater.id, rater.username, rater.imagevalue_id, rater.secretkey, " +
-								"rater.time_created, rater.version, rater.guid, rater.status, (count(rating.id)*10) as score " +
+								"rater.time_created, rater.version, rater.guid, rater.status,rater.auth_foursquare,rater.auth_gowalla, (count(rating.id)*10) as score " +
 								"FROM rating,place,rater where rating.place_id = place.id " +
 								"and rating.rater_id = rater.id and place.city = :city and place.state =:state " +
 								"group by rater.id order by score "+order).addEntity(Rater.class);

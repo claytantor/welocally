@@ -14,8 +14,8 @@ public class RatingHelper {
 			String ratingType, 
 			Float ratingRatingToAdd)
 	{
-		PlaceRating ratingForType = null;
-		//find by type
+		PlaceRating ratingForType = new PlaceRating();
+		/*//find by type
 		for (PlaceRating placeRating : placeRatings) {
 			if(placeRating.getType().equals(ratingType))
 				ratingForType = placeRating;
@@ -27,19 +27,22 @@ public class RatingHelper {
 			ratingForType.setType(ratingType);
 			ratingForType.setRating(ratingRatingToAdd);
 			//ratings.add(ratingForType);
-		} else {
+		} else {*/
 			//recompute based on all ratings for type, plus the new one
 			List<Rating> allRates = 
 				new ArrayList<Rating>(ratings);
 			Float sum = 0.0f;
-			for (Rating rating : allRates) {
+			/*for (Rating rating : allRates) {
 				if(rating.getType().equals(ratingType) && rating.getRaterRating()!=null)
+					sum+=rating.getRaterRating();
+			}*/
+			for (Rating rating : allRates) {
 					sum+=rating.getRaterRating();
 			}
 			sum+=ratingRatingToAdd;
 			Float avg = sum/(allRates.size()+1);
 			ratingForType.setRating(avg);				
-		}
+		//}
 		return ratingForType;
 		//p.setRatings(ratings);
 	}
