@@ -23,6 +23,7 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
@@ -72,7 +73,6 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
 	
 	@Autowired
-    @Qualifier
 	private CheckinService checkinService;
 	
 	
