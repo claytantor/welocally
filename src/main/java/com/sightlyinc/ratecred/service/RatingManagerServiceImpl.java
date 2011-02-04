@@ -72,7 +72,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
 	
 	@Autowired
-    @Qualifier("checkinService")
+    @Qualifier
 	private CheckinService checkinService;
 	
 	
