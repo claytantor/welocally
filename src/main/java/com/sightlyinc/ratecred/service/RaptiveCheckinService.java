@@ -122,7 +122,8 @@ public class RaptiveCheckinService implements CheckinService {
 			logger.debug(checkinUrl);
 			
 			ClientResponse cresponse = 
-				SimpleHttpClient.get(checkinUrl, null);
+				SimpleHttpClient.get(checkinUrl, null, null);
+			
 			if(cresponse.getCode()!=200) {
 				logger.debug("problem checking in");
 				throw new BLServiceException("error during checkin RESPONSE:"+cresponse.getCode());

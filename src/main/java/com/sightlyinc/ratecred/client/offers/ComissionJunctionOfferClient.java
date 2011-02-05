@@ -40,7 +40,7 @@ public class ComissionJunctionOfferClient implements OfferClient {
 	public List<Offer> getOffers() throws OfferFeedException {
 		
 		List<Offer> offers = new ArrayList<Offer>();
-		LinkClientRequest requestModel = new LinkClientRequest();
+		//LinkClientRequest requestModel = new LinkClientRequest();
 		NetworkResponse response = linkClient.getNetworkResponse(webLinksRequest);
 		for (AffiliateLink link : response.getLinks().getLinks()) {
 			Offer o = new Offer();

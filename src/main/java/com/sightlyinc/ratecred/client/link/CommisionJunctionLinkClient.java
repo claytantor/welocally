@@ -3,14 +3,16 @@ package com.sightlyinc.ratecred.client.link;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import com.noi.utility.web.UrlUtils;
+import com.noi.utility.net.ClientResponse;
+import com.noi.utility.net.SimpleHttpClient;
+import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.AffiliateLink;
 import com.thoughtworks.xstream.XStream;
 
@@ -97,21 +99,22 @@ public class CommisionJunctionLinkClient implements LinkClient {
 
 	private NetworkResponse getNetworkResponseImpl(LinkClientRequest requestModel) 
 	throws MalformedURLException, IOException {
-		URL url = new URL(
-				"https",
-				"linksearch.api.cj.com",
-				443,
-				"/v2/link-search?" +
-				UrlUtils.toQueryString(requestModel.getLinkRequestModel()));
-		logger.debug("fetching url:"+url.toString());
-		java.net.URLConnection con = url.openConnection();
-		con.setRequestProperty(
-						"Authorization",
-						apiKey);
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		IOUtils.copy(con.getInputStream(), baos);
 		
+		
+		Map<String, String> headers = new HashMap<String,String>();
+		headers.put("authorization", apiKey);
+		
+		ClientResponse cresponse = 
+			SimpleHttpClient.get(
+					"https://linksearch.api.cj.com/v2/link-search", 
+					requestModel.getLinkRequestModel(), 
+					headers);
+		
+		if(cresponse.getCode()!=200) {
+			logger.debug("problem getting links");
+			throw new IOException("error during checkin RESPONSE:"+cresponse.getCode());
+		}
+				
 		XStream xstream = new XStream();
 		xstream.alias("cj-api", NetworkResponse.class);
 		
@@ -148,15 +151,13 @@ public class CommisionJunctionLinkClient implements LinkClient {
 		xstream.omitField(AffiliateLink.class, "link-type");
 		xstream.omitField(AffiliateLink.class, "link-code-javascript");
 		xstream.omitField(AffiliateLink.class, "performance-incentive");
-		//xstream.omitField(AffiliateLink.class, "promotion-end-date");
-		//xstream.omitField(AffiliateLink.class, "promotion-start-date");
 		xstream.omitField(AffiliateLink.class, "promotion-type");
 		xstream.omitField(AffiliateLink.class, "relationship-status");
 		xstream.omitField(AffiliateLink.class, "sale-commission");
 		xstream.omitField(AffiliateLink.class, "seven-day-epc");
 		xstream.omitField(AffiliateLink.class, "three-month-epc");
 		
-		return (NetworkResponse)xstream.fromXML(baos.toString());
+		return (NetworkResponse)xstream.fromXML(new String(cresponse.getResponse()));
 	}
 	
 	
