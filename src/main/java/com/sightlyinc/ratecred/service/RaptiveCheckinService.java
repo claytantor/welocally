@@ -98,7 +98,7 @@ public class RaptiveCheckinService implements CheckinService {
 			qsModel.put("lng", r.getPlace().getLongitude().toString());
 			qsModel.put("rad", "100");
 			qsModel.put("name", r.getPlace().getName());
-			qsModel.put("comment", URLEncoder.encode(r.getNotes(), "UTF-8"));
+			qsModel.put("comment", r.getNotes());
 			qsModel.put("cburl", checkinCallbackUrl);
 			
 			String unsignedUrl = aggegatorBaseUrl + "/v1/publisher/"
