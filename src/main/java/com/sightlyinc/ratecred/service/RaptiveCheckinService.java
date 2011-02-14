@@ -2,7 +2,6 @@ package com.sightlyinc.ratecred.service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +16,18 @@ import net.oauth.OAuth.Parameter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.web.UrlUtils;
+import com.sightlyinc.ratecred.dao.RatingDao;
 import com.sightlyinc.ratecred.model.Rating;
 
 /**
@@ -31,11 +35,9 @@ import com.sightlyinc.ratecred.model.Rating;
  * @author claygraham
  *
  */
-@Component("checkinService")
 public class RaptiveCheckinService implements CheckinService {
 	
 	private static final Log logger = LogFactory.getLog(RaptiveCheckinService.class);
-
 	
 	@Value("${aggegator.consumerKey}")	
 	private String aggegatorConsumerKey;
@@ -58,6 +60,8 @@ public class RaptiveCheckinService implements CheckinService {
 	@Value("${aggegator.checkinCallbackUrl}")
 	private String checkinCallbackUrl;
 	
+	private RatingDao ratingDao;
+	
 	/**
 	 * Post the checkin data to a specific provider
 	 * Required parameters in the end point
@@ -76,10 +80,14 @@ public class RaptiveCheckinService implements CheckinService {
 	 * 
 	 */
 	@Override
-	public void checkinRating(String providerName, Rating r)
+	public void checkinRating(String providerName, Rating rDetached)
 			throws BLServiceException {
 		
 		try {
+			
+			//get the rating by id to make sure its bound
+			Rating r = ratingDao.findByPrimaryKey(rDetached.getId());
+			
 			//empty callback url
 			String callbackUrl = "";
 
@@ -124,10 +132,33 @@ public class RaptiveCheckinService implements CheckinService {
 			ClientResponse cresponse = 
 				SimpleHttpClient.get(checkinUrl, null, null);
 			
-			if(cresponse.getCode()!=200) {
-				logger.debug("problem checking in");
+			if(cresponse.getCode()!=200 && cresponse.getCode()!=500) {
+				logger.debug("problem checking in:"+providerName);
 				throw new BLServiceException("error during checkin RESPONSE:"+cresponse.getCode());
+			} else if(cresponse.getCode()==500) {
+				logger.debug("checkin failed:"+cresponse.getCode()+" provider:"+providerName);
+			} else {
+				//parse the result
+				//{"SUCCESS":"Saved the data","txnid":"4d5872a8ce6fc87d0a000007"}
+				String response = new String(cresponse.getResponse());
+				logger.debug("response:"+response);
+				String startsat = response.substring(response.indexOf("\"txnid\":\"")+"\"txnid\":\"".length());
+				String txid = startsat.substring(0, startsat.lastIndexOf("\""));
+				logger.debug("txid:"+txid);
+									
+				if(providerName.equalsIgnoreCase("foursquare")) {
+					r.setCheckedinFoursquare("SENT");	
+					r.setTxIdFoursquare(txid);
+				} else if(providerName.equalsIgnoreCase("gowalla")) {
+					r.setCheckedinGowalla("SENT");
+					r.setTxIdGowalla(txid);
+				}
+				
+				ratingDao.save(r);
 			}
+			
+			
+			
 			
 		} catch (OAuthException e) {
 			logger.error("problem checking in",e);
@@ -138,10 +169,19 @@ public class RaptiveCheckinService implements CheckinService {
 		} catch (URISyntaxException e) {
 			logger.error("problem checking in",e);
 			throw new BLServiceException(e);
+		} catch (Exception e) {
+			logger.error("problem checking in",e);
+			throw new BLServiceException(e);
 		}
 		
 
 
 	}
+
+	public void setRatingDao(RatingDao ratingDao) {
+		this.ratingDao = ratingDao;
+	}
+	
+	
 
 }

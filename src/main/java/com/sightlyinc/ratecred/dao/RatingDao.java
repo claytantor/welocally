@@ -2,11 +2,13 @@ package com.sightlyinc.ratecred.dao;
 
 import java.util.List;
 
+import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Rating;
 
 public interface RatingDao {
 	
 	public Rating findByPrimaryKey(Long id);
+	public Rating findByTxId(String txid);
 	public List<Rating> findByPrimaryKeys(List<Long> ids);
 			
 			
@@ -22,8 +24,8 @@ public interface RatingDao {
 	
 	public Rating findByTime(Long time);
 	public List<Rating> findSince(Long time);
-	
 	public List<Rating> findByCityState(String city, String state);
+	public List<Rating> findRatingsWithBlogRefsByPlace(Place p);
 	public Long findByCityStateCount(String city, String state);
 	public List<Rating> findByCityStatePaged(String city, String state, int pageNum, final int pageSize, String sortField, boolean isAscending);
 	public List<Rating> findByOwner(Long ownerId, int pageNum, final int pageSize, String sortField, boolean isAscending);

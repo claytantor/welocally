@@ -18,7 +18,9 @@ public interface RatingManagerService {
 	public void saveUpdatePlaceRatings();
 	public void saveUpdatePlaceRating(Long id);
 	
-	public Rating findRatingByPrimaryKey(Long id) throws BLServiceException;	
+	public Rating findRatingByPrimaryKey(Long id) throws BLServiceException;
+	
+	public Rating findRatingByCheckinTxId(String checkinTxId) throws BLServiceException;
 	
 	public Rating findRateByTime(Long time);
 	public List<Rating> findAllRates() throws BLServiceException;	
@@ -55,7 +57,7 @@ public interface RatingManagerService {
 			boolean b) throws BLServiceException;
 	
 	public void deleteRate(Rating entity) throws BLServiceException;
-	public void saveRating(Rating entity) throws BLServiceException;
+	public void saveRating(Rating entity, Boolean checkin) throws BLServiceException;
 	
 	
 	//compliment

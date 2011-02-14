@@ -3,8 +3,6 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-
-	
 <hibernate-mapping 
 	package="com.sightlyinc.ratecred.model">
 	<class name="Rating" table="rating">
@@ -33,6 +31,9 @@
 		
 		<property name="checkedinFoursquare" column="checkin_foursquare" type="string"/>
 		<property name="checkedinGowalla" column="checkin_gowalla" type="string"/>
+		
+		<property name="txIdFoursquare" column="txid_foursquare" type="string"/>
+		<property name="txIdGowalla" column="txid_gowalla" type="string"/>
 		
 		<property name="referalUrl"  type="java.lang.String" length="32000">
 			<column name="referal_url" sql-type="longtext"/>

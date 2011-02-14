@@ -22,12 +22,11 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.client.jms.CheckinMessageProducer;
 import com.sightlyinc.ratecred.dao.AwardDao;
 import com.sightlyinc.ratecred.dao.AwardOfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
@@ -47,6 +46,7 @@ import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.RaterMetrics;
 import com.sightlyinc.ratecred.model.Rating;
+import com.sightlyinc.ratecred.model.RatingCheckinAction;
 import com.sightlyinc.ratecred.model.RatingPage;
 
 public class RatingManagerServiceImpl implements RatingManagerService {
@@ -73,7 +73,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
 	
 	@Autowired
-	private CheckinService checkinService;
+	private CheckinMessageProducer checkinMessageProducer;
+	
+	//@Autowired
+	//private CheckinService checkinService;
 	
 	
 	public void saveUpdatePlaceRating(Long id)  {
@@ -126,6 +129,12 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	}
 	
+	@Override
+	public Rating findRatingByCheckinTxId(String checkinTxId)
+			throws BLServiceException {
+		return ratingDao.findByTxId(checkinTxId);
+	}
+
 	//we are going to put an init method here because 
 	//our ratings were wrong, this should normalize it
 	public void saveUpdatePlaceRatings()  {
@@ -665,7 +674,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	
 	@Override
-	public void saveRating(Rating entity) throws BLServiceException {
+	public void saveRating(Rating entity, Boolean checkin) throws BLServiceException {
 
 		try {
 			Rater owner = entity.getOwner();
@@ -721,16 +730,33 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				entity.setTimeCreatedMills(Calendar.getInstance().getTimeInMillis());
 			}
 			
-			//checkin 
-			if(entity.getOwner().getAuthorizedFoursquare())
-				checkinService.checkinRating("foursquare", entity);
-			if(entity.getOwner().getAuthorizedGowalla())
-				checkinService.checkinRating("gowalla", entity);			
+			//fire and forget services send messages to the
+			//queue so that the user does not have to wait
+			//checkin foursquare 
+			
+			
 			//save it
 			ratingDao.save(entity);
-
 			//index it
 			ratingDirectoryIndexer.indexRate(entity);
+			
+			if(checkin)
+			{
+				if(entity.getOwner().getAuthorizedFoursquare()) {
+					logger.debug("authorized foursquare");
+					RatingCheckinAction fsAction = new RatingCheckinAction("foursquare",entity);				
+					checkinMessageProducer.generateMessage(fsAction);
+				}
+				
+				//checkin gowalla 
+				if(entity.getOwner().getAuthorizedGowalla()) {
+					logger.debug("authorized gowalla");
+					RatingCheckinAction fsAction = new RatingCheckinAction("gowalla",entity);				
+					checkinMessageProducer.generateMessage(fsAction);
+				}
+			}
+
+			
 			
 			
 		} catch (Exception e) {

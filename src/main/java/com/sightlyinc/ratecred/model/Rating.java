@@ -1,11 +1,12 @@
 package com.sightlyinc.ratecred.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class Rating {
+public class Rating implements Serializable {
 	private Long id;
 	private Integer version = new Integer(0);
 	private String type;
@@ -20,15 +21,17 @@ public class Rating {
 	private String referalToken;
 	
 	private String checkedinFoursquare;
+	private String txIdFoursquare;
 	private String checkedinGowalla;
+	private String txIdGowalla;
 
-	private Set<RatingAttribute> attributes = new HashSet<RatingAttribute>();
+	private transient Set<RatingAttribute> attributes = new HashSet<RatingAttribute>();
 	
-	private Set<Compliment> compliments;
+	private transient Set<Compliment> compliments;
 	
-	private Rater owner;
+	private transient Rater owner;
 	
-	private Place place;
+	private transient Place place;
 	
 
 	public Long getTimeCreatedMills() {
@@ -176,6 +179,36 @@ public class Rating {
 
 	public void setCheckedinGowalla(String checkedinGowalla) {
 		this.checkedinGowalla = checkedinGowalla;
+	}
+
+	public String getTxIdFoursquare() {
+		return txIdFoursquare;
+	}
+
+	public void setTxIdFoursquare(String txIdFoursquare) {
+		this.txIdFoursquare = txIdFoursquare;
+	}
+
+	public String getTxIdGowalla() {
+		return txIdGowalla;
+	}
+
+	public void setTxIdGowalla(String txIdGowalla) {
+		this.txIdGowalla = txIdGowalla;
+	}
+
+	@Override
+	public String toString() {
+		return "Rating [attributes=" + attributes + ", checkedinFoursquare="
+				+ checkedinFoursquare + ", checkedinGowalla="
+				+ checkedinGowalla + ", compliments=" + compliments + ", id="
+				+ id + ", notes=" + notes + ", owner=" + owner + ", place="
+				+ place + ", raterRating=" + raterRating + ", referalToken="
+				+ referalToken + ", referalUrl=" + referalUrl
+				+ ", timeCreated=" + timeCreated + ", timeCreatedGmt="
+				+ timeCreatedGmt + ", timeCreatedMills=" + timeCreatedMills
+				+ ", twitterStatusId=" + twitterStatusId + ", type=" + type
+				+ ", userRating=" + userRating + ", version=" + version + "]";
 	}
 
 

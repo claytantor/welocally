@@ -33,9 +33,57 @@ public class HibernateRatingDao
     }
 
     
-    public Date findPlaceFirstRateDate(Place p)
+    
+    
+    @Override
+	public Rating findByTxId(final String txid) {
+    	return (Rating)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+						"select entityimpl from "+Rating.class.getName()+
+						" as entityimpl where entityimpl.txIdFoursquare = :txId" +
+						" or entityimpl.txIdGowalla = :txId");
+					query.setString("txId", txid);
+					
+				Rating t = (Rating)query.uniqueResult();
+			
+				return t;
+	
+			}
+		});		
+	}
+
+
+
+
+	@Override
+	public List<Rating> findRatingsWithBlogRefsByPlace(Place p) {
+    	return (List<Rating>)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+				Query query = session.createQuery(
+						"select entityimpl from "+Rating.class.getName()+
+						" as entityimpl where entityimpl.timeCreatedMills > :since");
+				
+					//query.setLong("since", since);
+					
+					List<Rating> t = (List<Rating>)query.list();
+			
+				return t;
+	
+			}
+		});		
+	}
+
+
+	public Date findPlaceFirstRateDate(Place p)
     {
-    	return null;
+    	//return null;
+    	throw new RuntimeException("NO IMPL");
     }
     
     @Override
