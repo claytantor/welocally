@@ -15,6 +15,12 @@
 		<property name="password">
 			<value>${rating-services.LocalDS.HibernateDatabaseProperties.password}</value>
 		</property>
+		<property name="initialSize">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.poolSizeMin}</value>
+		</property>
+		<property name="maxActive">
+			<value>${rating-services.LocalDS.HibernateDatabaseProperties.poolSizeMax}</value>
+		</property>						
 	</bean>	
 
 	<bean id="LocalDS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
