@@ -27,7 +27,12 @@
 				<value>com/sightlyinc/ratecred/model/AwardType.hbm.xml</value>
 				<value>com/sightlyinc/ratecred/model/Award.hbm.xml</value>
 				<value>com/sightlyinc/ratecred/model/AwardOffer.hbm.xml</value>
+				<value>com/sightlyinc/ratecred/model/AwardOfferItem.hbm.xml</value>
 				<value>com/sightlyinc/ratecred/model/Compliment.hbm.xml</value>
+				
+				<!-- order handling -->
+				<value>com/sightlyinc/ratecred/model/Order.hbm.xml</value>
+				<value>com/sightlyinc/ratecred/model/Voucher.hbm.xml</value>				
 				
 				<!-- new business entities -->
 				<value>com/sightlyinc/ratecred/model/Business.hbm.xml</value>

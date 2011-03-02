@@ -23,7 +23,6 @@ public class RaterAwards {
 	private Rater rater;
 	private List<Award> awards = new ArrayList<Award>();
 	private List<Award> removeAwards = new ArrayList<Award>();
-	//private Boolean giveOffer = true;
 	private Set<String> keys = new HashSet<String>();
 	private Set<String> citykeys = new HashSet<String>();
 	
@@ -67,15 +66,18 @@ public class RaterAwards {
 		return contains;
 	}
 	
+	//NEED TO RECHECK THIS LOGIC
 	public boolean hasPlaceAward(int id)
 	{
-		Long placeId = new Long(id);
+		throw new RuntimeException("NEED TO REVIEW");
+		/*Long placeId = new Long(id);
 		for (Award award : rater.getAwards()) {
 			Long awardPlaceId = AwardsUtils.getPlaceIdMetaData(award.getMetadata());
-			if(awardPlaceId != null && awardPlaceId.equals(placeId) && award.getOffer().equals("GIVEN"))
+			if(awardPlaceId != null 
+					&& awardPlaceId.equals(placeId))
 				return true;
 		}
-		return false;
+		return false;*/
 	}
 	
 	public boolean hasAwardCityStar(String city, String state)

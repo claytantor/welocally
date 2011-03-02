@@ -82,9 +82,6 @@ public class RaterAwardsJob extends QuartzJobBean {
 			session.setFlushMode(FlushMode.AUTO);
 			
 			
-			/*RuleBase ruleBase = RuleBaseLoader
-					.loadFromInputStream(TestRulesController.class
-							.getResourceAsStream("/rules/rater_awards.java.drl"));*/
 
 			RuleBase ruleBase = RuleBaseLoader.loadFromUrl(new URL(ratingRulesUrl));
 			
@@ -169,14 +166,6 @@ public class RaterAwardsJob extends QuartzJobBean {
 				}
 			}
 			
-			//unbind
-			SessionHolder sessionHolder = (SessionHolder) 
-	        TransactionSynchronizationManager.unbindResource(sessionFactory);
-	        if(!FlushMode.MANUAL.equals(sessionHolder.getSession().getFlushMode())) {
-	           sessionHolder.getSession().flush(); 
-	        }
-	        SessionFactoryUtils.closeSession(sessionHolder.getSession());
-			
 
 		} catch (IntegrationException e) {
 			logger.error("IntegrationException", e);
@@ -193,6 +182,14 @@ public class RaterAwardsJob extends QuartzJobBean {
 		} catch (com.noi.utility.spring.service.BLServiceException e) {
 			logger.error("problem getting rater", e);
 			throw new JobExecutionException(e);
+		} finally {
+			//unbind
+			SessionHolder sessionHolder = (SessionHolder) 
+	        TransactionSynchronizationManager.unbindResource(sessionFactory);
+	        if(!FlushMode.MANUAL.equals(sessionHolder.getSession().getFlushMode())) {
+	           sessionHolder.getSession().flush(); 
+	        }
+	        SessionFactoryUtils.closeSession(sessionHolder.getSession());
 		}
 				
 	}

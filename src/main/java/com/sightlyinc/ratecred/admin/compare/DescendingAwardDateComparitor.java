@@ -14,7 +14,7 @@ public class DescendingAwardDateComparitor implements Comparator<Award>{
 	@Override
 	public int compare(Award o1, Award o2) {
 		//logger.debug("o1:"+o1.getOffer().getExpireDateMillis()+" o2:"+o2.getOffer().getExpireDateMillis());
-		return o1.getOffer().getExpireDateMillis().compareTo(o2.getOffer().getExpireDateMillis());
+		return o1.getTimeCreatedMills().compareTo(o2.getTimeCreatedMills());
 	}
 
 }

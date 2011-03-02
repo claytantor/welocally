@@ -13,8 +13,8 @@
         http://spring-security-oauth.codehaus.org/schema/spring-security-oauth-3.0.xsd">
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
-	<context:component-scan base-package="com.sightlyinc.ratecred" />
-	
+	<context:component-scan base-package="com.sightlyinc.ratecred,com.adility.resources" /> 
+
 	<!-- property placeholder -->
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

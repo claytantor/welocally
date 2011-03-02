@@ -9,6 +9,7 @@ public class User implements Serializable {
 	
 	private String userName;
 	private String password;
+	private String email;
 	private String twitterScreenName;
 	private Long twitterId;
 	private String twitterToken;
@@ -89,6 +90,12 @@ public class User implements Serializable {
 	}
 	public void setTimeCreatedMills(Long timeCreatedMills) {
 		this.timeCreatedMills = timeCreatedMills;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 

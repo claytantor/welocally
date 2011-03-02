@@ -1,0 +1,29 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/jms 
+        http://www.springframework.org/schema/jms/spring-jms.xsd	
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://activemq.apache.org/schema/core 
+		http://activemq.apache.org/schema/core/activemq-core-5.1.0.xsd">
+		
+  <!-- Allows us to use system properties as variables in this configuration file --> 
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/> 
+  
+  
+  <!--  lets create an embedded ActiveMQ Broker -->
+	<amq:broker id="broker" useJmx="false" persistent="false">
+		<amq:managementContext>
+			<amq:managementContext connectorPort="1199" jmxDomainName="org.apache.activemq"/>
+		</amq:managementContext>
+		<amq:networkConnectors>
+			<amq:networkConnector name="pool" uri="static:(tcp://localhost:61617)"/>
+		</amq:networkConnectors>		
+		<amq:transportConnectors>
+			<amq:transportConnector uri="tcp://localhost:61616" />
+		</amq:transportConnectors>		
+	</amq:broker>
+
+</beans> 

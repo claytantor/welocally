@@ -21,6 +21,7 @@
 		<property name="twitterProfileImage" column="twitter_profile_img" type="string"/>
 		<property name="twitterVerify" column="twitter_verify" type="string"/>
 		<property name="timeCreatedMills" column="time_created_mills" type="long"/>
+		<property name="email" column="email" type="string"/>
 
 				
 	</class>

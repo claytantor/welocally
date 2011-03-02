@@ -5,10 +5,13 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 	        <list>
-	            <ref bean="offerCheckTrigger" />
-	            <ref bean="raterAwardsTrigger" />
+	        	<ref bean="raterAwardsUpdateOffersTrigger" />
+	            <!-- <ref bean="offerCheckTrigger" />
+	            <ref bean="raterAwardsTrigger" /> -->
 	        </list>
 	    </property>
+		<!-- <property name="dataSource" ref="LocalDS"/> -->
+	    <!-- <property name="transactionManager" ref="ApplicationTransactionManager"/>-->
 	</bean>
 	
 	

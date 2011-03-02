@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<rule-set name="offer01"
+          xmlns="http://drools.org/rules"
+          xmlns:java="http://drools.org/semantics/java"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:schemaLocation="http://drools.org/rules rules.xsd
+                             http://drools.org/semantics/java java.xsd">
+
+    <import>com.sightlyinc.ratecred.client.offers.Offer</import>
+    <import>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</import>
+    
+    <rule name="placeOffer" salience="80">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+		<parameter identifier="award_offer">
+            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+        </parameter> 
+        <java:condition>offer.isVisible()</java:condition>       
+        <java:condition>award_offer.isPlaceOffer(offer)</java:condition>
+        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
+              
+        <java:consequence>
+            award_offer.setOffer(offer);
+        </java:consequence>
+    </rule>   
+
+    <rule name="localOffer" salience="30">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+		<parameter identifier="award_offer">
+            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+        </parameter> 
+        <java:condition>offer.isVisible()</java:condition>       
+        <java:condition>award_offer.isLocalOffer(offer)</java:condition>
+        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
+        
+              
+        <java:consequence>
+            award_offer.setOffer(offer);
+        </java:consequence>
+    </rule>
+    
+    <rule name="locallyRatedOffer" salience="10">
+        <parameter identifier="offer">
+            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+        </parameter>
+		<parameter identifier="award_offer">
+            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+        </parameter> 
+        <java:condition>offer.isVisible()</java:condition>       
+        <java:condition>award_offer.isRatedInCityOffer(offer)</java:condition>
+        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
+        
+              
+        <java:consequence>
+            award_offer.setOffer(offer);
+        </java:consequence>
+    </rule>
+
+    
+	
+	
+  </rule-set>

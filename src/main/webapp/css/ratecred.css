@@ -121,6 +121,15 @@ a:active            { color:#5a9147; text-decoration:underline; }
 	font: 4.0em  arial, helvetica, sans-serif;
 }
 
+.text-16 {
+	font: 1.6em verdana, arial, helvetica, sans-serif;
+}
+
+
+.text-14 {
+	font: 1.4em verdana, arial, helvetica, sans-serif;
+}
+
 
 .text-12 {
 	font: 1.2em verdana, arial, helvetica, sans-serif;

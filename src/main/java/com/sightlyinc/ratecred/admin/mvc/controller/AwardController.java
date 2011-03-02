@@ -171,10 +171,13 @@ public class AwardController {
 				aoffer.setUrl(offer.getUrl());
 				awardManagerService.saveAwardOffer(aoffer);
 				
-				award.setOffer(aoffer);
+				//award.setOffer(aoffer);
+				award.getOffers().add(aoffer);
 				
-				Long id = raterAwardsService.saveNewAward(award, awardType, r);
-				return "redirect:/do/admin/award/" + id;
+				//Long id = raterAwardsService.saveNewAward(award, awardType, r);
+				//return "redirect:/do/admin/award/" + id;
+				throw new RuntimeException("SEND TO QUEUE");
+				
 			}
 			
 
@@ -229,10 +232,12 @@ public class AwardController {
 				aoffer.setUrl(customAwardForm.getUrl());
 				awardManagerService.saveAwardOffer(aoffer);
 				
-				award.setOffer(aoffer);
+				//award.setOffer(aoffer);
+				award.getOffers().add(aoffer);
 				
-				Long id = raterAwardsService.saveNewAward(award, awardType, r);
-				return "redirect:/do/admin/award/" + id;
+				//Long id = raterAwardsService.saveNewAward(award, awardType, r);
+				//return "redirect:/do/admin/award/" + id;
+				throw new RuntimeException("SEND TO QUEUE");
 			}
 						
 

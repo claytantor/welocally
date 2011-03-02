@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.sightlyinc.ratecred.admin.compare.DescendingAwardDateComparitor;
 import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardsUtils;
@@ -80,13 +81,16 @@ public class PlaceRatingEvaluator {
 
 	}
 	
+	//THIS CANT BE GOOD
 	private Long getLastAwardDate(List<Award> awards)
 	{
 		Long largest = -1l;
 		for (Award award : awards) {
-			if(award.getOffer().getExpireDateMillis()>largest)
-				largest = award.getOffer().getExpireDateMillis();
-		}
+			for (AwardOffer offer : award.getOffers()) {
+				if(offer.getExpireDateMillis()>largest)
+					largest = offer.getExpireDateMillis();
+			}			
+		}		
 		return largest;
 	}
 	

@@ -14,5 +14,8 @@ public interface RaterAwardsService {
 	
 	public Long saveNewAward(Award award, AwardType awardType, Rater r) 
 		throws BLServiceException; 
+	
+	public Long saveUpdateAwardOffer(Award award, AwardType awardType, Rater r) 
+		throws BLServiceException;
 
 }

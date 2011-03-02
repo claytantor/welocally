@@ -8,26 +8,24 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 		WEB-INF/dispatcher-servlet.xml,
-		classpath:applicationSessionFactory-beans.xml,	
+		classpath:applicationSessionFactory-beans.xml,			
 		classpath:hibernateProperties-beans.xml,		
-		classpath:businessManagerService-beans.xml,	
-		classpath:awardManagerService-beans.xml,	
 		classpath:placeSearchEngine-beans.xml,		
-		classpath:ratingSearchEngine-beans.xml,		
+		classpath:ratingSearchEngine-beans.xml,
+		classpath:businessManagerService-beans.xml,	
 		classpath:localDataSource-beans.xml,				
 		classpath:springDao-beans.xml,
+		classpath:userDao-beans.xml,
 		classpath:imageValueDao-beans.xml,
 		classpath:placeManagerService-beans.xml,		
 		classpath:ratingManagerService-beans.xml,
-		classpath:security-config-beans.xml,
 		classpath:offerPoolService-beans.xml,
-		classpath:quartzScheduler-beans.xml,
-		classpath:raterAwardsJob-beans.xml,
-		classpath:offerPoolJob-beans.xml,
-		classpath:userDao-beans.xml,
+		classpath:linkManagerService-beans.xml,
 		classpath:linkClient-beans.xml,
-		classpath:mailerQueueService-beans.xml,
-		classpath:service-beans.xml
+		classpath:awardManagerService-beans.xml,
+		classpath:mailerQueueService-beans.xml,	
+		classpath:jacksonObjectMapper-beans.xml,
+		classpath:**/*beans.xml,
 		</param-value>
 	</context-param>
 	
