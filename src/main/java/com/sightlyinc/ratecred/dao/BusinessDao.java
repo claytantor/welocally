@@ -18,6 +18,8 @@ public interface BusinessDao {
 	
 	public Business findByPrimaryKey(Long id);	
 	
+	public Business findByAdvertiserIdAndSource(String advertiserId, String source);	
+	
 	public Business findByAuthId(String guid);	
 	
 	public Business findByUsername(String username);	

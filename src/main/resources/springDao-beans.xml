@@ -93,5 +93,16 @@
 		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
 	</bean>
 
+	<bean id="OrderDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateOrderDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
+
+	<bean id="VoucherDao" 
+		lazy-init="true" 
+		class="com.sightlyinc.ratecred.dao.HibernateVoucherDao">
+		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+	</bean>
 
 </beans>

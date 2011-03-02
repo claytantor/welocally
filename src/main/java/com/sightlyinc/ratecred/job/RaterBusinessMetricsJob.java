@@ -28,6 +28,7 @@ public class RaterBusinessMetricsJob extends QuartzJobBean {
 
 	
 	private BusinessManagerService businessManagerService;
+	
 	private SessionFactory sessionFactory;
 	
 	
@@ -63,7 +64,7 @@ public class RaterBusinessMetricsJob extends QuartzJobBean {
 			TransactionSynchronizationManager.bindResource(
 					sessionFactory,
 					new SessionHolder(session));
-			
+
 			//find all businesses
 			List<Business> allBusinesses = 
 				businessManagerService.findAllBusinesss();

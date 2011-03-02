@@ -59,7 +59,7 @@ public class BusinessMetricsJobTest extends AbstractBeanFactoryTestCase {
 	{
 
 		
-		BusinessMetricsJob job = new BusinessMetricsJob();
+		/*BusinessMetricsJob job = new BusinessMetricsJob();
 		job.setBusinessManagerService(
 				(BusinessManagerService)super.getBeanFactory().getBean("BusinessManagerService"));
 		job.setSessionFactory(
@@ -70,7 +70,7 @@ public class BusinessMetricsJobTest extends AbstractBeanFactoryTestCase {
 		} catch (JobExecutionException e) {
 			logger.error("cannot execute job", e);
 			fail("problem "+e.getMessage());
-		}
+		}*/
 		
 
 	

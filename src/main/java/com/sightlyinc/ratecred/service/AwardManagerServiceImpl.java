@@ -36,6 +36,20 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 	
 	@Override
+	public void deleteAwardOffer(AwardOffer awardOffer)
+			throws BLServiceException {
+		awardOfferDao.delete(awardOffer);
+		
+	}
+
+
+	@Override
+	public List<AwardOffer> findExpiredAwardOffers() throws BLServiceException {		
+		return awardOfferDao.findExpired();
+	}
+
+
+	@Override
 	public Award findAwardByOffer(AwardOffer offer) throws BLServiceException {
 		return awardDao.findByOffer(offer);
 	}
@@ -108,6 +122,12 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	public AwardType findAwardTypeByKey(String key)
 			throws BLServiceException {
 		return awardTypeDao.findByKeyname(key);
+	}
+	
+	@Override
+	public AwardType findAwardTypeByPrimaryKey(Long pkey)
+			throws BLServiceException {
+		return awardTypeDao.findByPrimaryKey(pkey);
 	}
 	
 	@Override

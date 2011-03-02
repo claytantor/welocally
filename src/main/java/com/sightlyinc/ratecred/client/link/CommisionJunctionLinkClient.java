@@ -64,7 +64,7 @@ public class CommisionJunctionLinkClient implements LinkClient {
 			
 			if(result.getLinks().getRecordsReturned() == result.getLinks().getTotalMatched())
 				return result;
-			else //if results > pagesize get all results
+			else if(result.getLinks().getTotalMatched()>0)//if results > pagesize get all results
 			{
 				int pages = result.getLinks().getTotalMatched()/pageSize;
 				int remainder = (pages*pageSize)%result.getLinks().getTotalMatched();
@@ -97,12 +97,20 @@ public class CommisionJunctionLinkClient implements LinkClient {
 		
 	}
 
+	/**
+	 * we do this to handle a single page
+	 * 
+	 * @param requestModel
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
 	private NetworkResponse getNetworkResponseImpl(LinkClientRequest requestModel) 
 	throws MalformedURLException, IOException {
 		
 		
 		Map<String, String> headers = new HashMap<String,String>();
-		headers.put("authorization", apiKey);
+		headers.put("Authorization", apiKey);
 		
 		ClientResponse cresponse = 
 			SimpleHttpClient.get(

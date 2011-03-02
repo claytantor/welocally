@@ -14,6 +14,8 @@ public class Business {
 	private String name;
 	private String userName;
 	private String guid;
+	private String advertiserId;
+	private String advertiserSource;
 	
 
 	private String description;
@@ -131,6 +133,22 @@ public class Business {
 
 	public void setWebsite(String website) {
 		this.website = website;
+	}
+
+	public String getAdvertiserId() {
+		return advertiserId;
+	}
+
+	public void setAdvertiserId(String advertiserId) {
+		this.advertiserId = advertiserId;
+	}
+
+	public String getAdvertiserSource() {
+		return advertiserSource;
+	}
+
+	public void setAdvertiserSource(String advertiserSource) {
+		this.advertiserSource = advertiserSource;
 	}	
 	
 	

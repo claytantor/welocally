@@ -32,6 +32,33 @@ public class HibernateBusinessDao
     
 
     @Override
+	public Business findByAdvertiserIdAndSource(final String advertiserId,
+			final String advertiserSource) {
+    	return (Business)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+					"select distinct entityimpl from "+Business.class.getName()+
+					" as entityimpl where entityimpl.advertiserId = :advertiserId" +
+					" and entityimpl.advertiserSource = :advertiserSource");
+				
+				query.setString("advertiserSource", advertiserSource);
+				query.setString("advertiserId", advertiserId);
+				
+				Business t = (Business)query.uniqueResult();
+				
+			
+				return t;
+	
+			}
+		});		
+	}
+
+
+
+	@Override
 	public Business findByUsername(final String userName) {
     	Business result = (Business)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)

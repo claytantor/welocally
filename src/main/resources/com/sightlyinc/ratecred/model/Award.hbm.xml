@@ -65,12 +65,13 @@ CREATE TABLE  `rater_20100210`.`award` (
 			class="AwardType"
 			column="award_type_id"/>
 			
-		<many-to-one
-			lazy="no-proxy" 
-			fetch="select"
-			name="offer"
-			class="AwardOffer"
-			column="award_offer_id"/>	
+		<set name="offers" 
+        	table="award_awardoffer">
+	        <key column="award_id"/>
+	        <many-to-many column="award_offer_id"
+	            unique="true"
+	            class="AwardOffer"/>
+	    </set>	
 														
 	</class>
 </hibernate-mapping>

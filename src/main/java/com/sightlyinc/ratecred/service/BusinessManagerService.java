@@ -19,6 +19,8 @@ import com.sightlyinc.ratecred.model.RaterBusinessMetrics;
 public interface BusinessManagerService {
 		
 	public Business findBusinessByPrimaryKey(Long id) throws BLServiceException;
+	public Business findBusinessByAdvertiserIdAndSource( String advertiserId,
+			 String advertiserSource) throws BLServiceException;	
 	public Business findBusinessByAuthId(String guid) throws BLServiceException;	
 	public Business findBusinessByUsername(String username) throws BLServiceException;
 	
@@ -96,6 +98,9 @@ public interface BusinessManagerService {
 	public AwardOffer findAwardOfferByPrimaryKey(Long awardOfferId) throws BLServiceException;
 	
 	public AwardType findAwardTypeByKey(String key) throws BLServiceException;
+	
+	public List<BusinessLocation> findBusinessLocationByInfo(
+			String name, String address, String city, String state, String postalCode ) throws BLServiceException;
 				
 	public Long saveBusiness(Business p) throws BLServiceException;
 	public void savePlaceForBusinessLocation(Business b, Place p) throws BLServiceException;

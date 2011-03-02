@@ -11,5 +11,7 @@ public interface OfferPoolService {
 	public abstract List<Offer> getOfferPool();
 	
 	public abstract Offer getOfferByExternalIdSource(String externalId, String sourceName);
+	
+	public void addOffersToPool(List<Offer> offer);
 
 }

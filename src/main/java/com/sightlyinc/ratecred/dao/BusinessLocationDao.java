@@ -22,7 +22,9 @@ public interface BusinessLocationDao {
 	
 	public BusinessLocation findByUsername(String username);	
 	
-	public List<BusinessLocation> findByPrimaryKeys(List<Long> ids);	
+	public List<BusinessLocation> findByPrimaryKeys(List<Long> ids);
+	
+	public List<BusinessLocation> findByExample(BusinessLocation example);
 	
 	public List<BusinessLocation> findAll();
 	public void save(BusinessLocation entity);

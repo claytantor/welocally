@@ -4,11 +4,13 @@
   <groupId>com.sightlyinc</groupId>
   <artifactId>sightly-ratecred-service</artifactId>
   <name>Sightly Inc. : RateCred : Services Module</name>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.9.2-SNAPSHOT</version>
   <!-- foo -->
   <description>The services tier for the ratecred project.</description>
 	<properties>
-		<org.springframework.version>3.0.1.RELEASE</org.springframework.version>
+		<org.springframework.version>3.0.3.RELEASE</org.springframework.version>
+		<org.drools.version>2.1</org.drools.version>
+		<org.hibernate.version>3.3.2.GA</org.hibernate.version>
 	</properties>   
 	<build>
     <plugins>
@@ -88,8 +90,13 @@
     <dependency>
   		<groupId>org.hibernate</groupId>
   		<artifactId>hibernate-core</artifactId>
-  		<version>3.3.2.GA</version>
+  		<version>${org.hibernate.version}</version>
   	</dependency>
+    <dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-annotations</artifactId>
+  		<version>3.4.0.GA</version>
+  	</dependency>  	
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -215,6 +222,64 @@
 		<groupId>org.apache.xbean</groupId>
 		<artifactId>xbean-spring</artifactId>
 		<version>3.6</version>
-	</dependency>		   
+	</dependency>
+    <dependency>
+    	<groupId>org.codehaus.jackson</groupId>
+    	<artifactId>jackson-mapper-lgpl</artifactId>
+    	<version>1.7.1</version>
+    </dependency>
+    
+		<!-- drools  -->  
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-base</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-core</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>   
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-io</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>  
+	<dependency>
+		<groupId>drools</groupId>
+		<artifactId>drools-java</artifactId>
+		<version>${org.drools.version}</version>
+		<exclusions>
+      	<exclusion>
+      		<groupId>easymock</groupId>
+      		<artifactId>easymockcontainer</artifactId>
+      	</exclusion>
+      	</exclusions>
+	</dependency>        
+    
+    <dependency>
+    	<groupId>junit</groupId>
+    	<artifactId>junit</artifactId>
+    	<version>4.8.2</version>
+    	<scope>test</scope>
+    </dependency>    			   
   </dependencies>
 </project>

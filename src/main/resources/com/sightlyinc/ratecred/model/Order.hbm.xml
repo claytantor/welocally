@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!-- 
+
+
+	private Long id;
+	private String externalId;
+	private String channel;
+	
+	private String shippingName;
+	private String addressFieldOne;
+	private String addressFieldTwo;
+	private String city;
+	private String state;
+	private String postalCode;
+	private String countryCode;
+	private String externalOrderItemCode;
+	private String sku;
+	private String title;
+	private String description;
+	private Float price;
+	private Integer quantity;
+
+ -->
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="Order" table="cust_order">
+	
+		<cache usage="read-write"/>
+		
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+				
+		<version name="version" column="version" />	
+		
+		<property name="timeCreated" column="time_created" type="java.lang.Long"/>
+		<property name="timeUpdated" column="time_updated" type="java.lang.Long"/>
+		
+		<property name="externalId" column="external_id" type="java.lang.String"/>
+		<property name="externalTxId" column="external_txid" type="java.lang.String"/>
+		
+		<property name="channel" column="channel" type="java.lang.String"/>
+		<property name="buyerName" column="buyer_name" type="java.lang.String"/>
+		<property name="buyerEmail" column="buyer_email" type="java.lang.String"/>
+		<property name="shippingName" column="shipping_name" type="java.lang.String"/>
+		<property name="addressFieldOne" column="address_one" type="java.lang.String"/>
+		<property name="addressFieldTwo" column="address_two" type="java.lang.String"/>
+		<property name="city" column="city" type="java.lang.String"/>
+		<property name="state" column="state" type="java.lang.String"/>
+		<property name="postalCode" column="postal_code" type="java.lang.String"/>
+		<property name="countryCode" column="country_code" type="java.lang.String"/>
+		<property name="externalOrderItemCode" column="external_orderitem" type="java.lang.String"/>
+		<property name="sku" column="sku" type="java.lang.String"/>
+		<property name="title" column="title" type="java.lang.String"/>
+		<property name="description"  type="java.lang.String" length="32000">
+			<column name="description" sql-type="longtext"/>
+		</property>	
+		
+		<property name="status" column="status" type="java.lang.String"/>
+		<property name="price" column="price" type="java.lang.Float"/>
+		<property name="quantity" column="quantity" type="java.lang.Integer"/>
+		
+		
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="owner"
+			class="Rater"
+			column="rater_id"/>
+						
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="offer"
+			class="AwardOffer"
+			column="awardoffer_id"/>
+		
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="voucher"
+			class="Voucher"
+			column="voucher_id"/>
+		
+			
+														
+	</class>
+</hibernate-mapping>

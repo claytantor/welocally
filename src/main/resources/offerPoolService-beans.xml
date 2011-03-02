@@ -31,12 +31,13 @@
 		<property name="sourceName" value="PEPPERJAM"/>
 	</bean>
 	
+
 	<!-- http://media.ratecred.com.s3.amazonaws.com/dev/data/ratecred-offers.csv -->
 	<bean id="ratecredOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.RatecredOfferClient">
 		<property name="protocol" value="http"/>
 		<property name="port" value="80"/>
-		<property name="host" value="media.ratecred.com.s3.amazonaws.com"/>
+		<property name="host" value="${ratecredOfferClient.host}"/>
 		<property name="endpoint" value="${ratecredOfferClient.endpoint}"/>
 		<property name="sourceName" value="RATECRED"/>
 	</bean>	

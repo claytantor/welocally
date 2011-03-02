@@ -11,6 +11,7 @@ public interface AwardOfferDao {
 	public AwardOffer findByKeyname(String kn);	
 	public List<AwardOffer> findByType(String type);
 	public List<AwardOffer> findByBusiness(Business b);
+	public List<AwardOffer> findExpired();
 	public void delete(AwardOffer entity);	
 	public void save(AwardOffer entity);
 	public List<AwardOffer> findAll();		

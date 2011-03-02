@@ -28,10 +28,8 @@ public class BusinessMetricsJob extends QuartzJobBean {
 
 	
 	private BusinessManagerService businessManagerService;
+	
 	private SessionFactory sessionFactory;
-	
-	
-		
 
 	/**
 	 * all businesses all locations
@@ -40,17 +38,10 @@ public class BusinessMetricsJob extends QuartzJobBean {
 	 */
 	public void execute()
 	throws JobExecutionException {
-		
-		
+				
 		logger.debug("[JOB] " + this.getClass().getName() +" running");
 		
-		
-		
-		
-		
 		long MILLS_DAY = 86400000l;
-		
-
 		
 		Session session = null;
 
@@ -181,14 +172,5 @@ public class BusinessMetricsJob extends QuartzJobBean {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-
-
-
-
-	
-	
-	
-	
-	
 
 }

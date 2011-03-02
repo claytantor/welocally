@@ -9,6 +9,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -29,7 +30,26 @@ public class HibernateBusinessLocationDao
         return template;
     }
     
-    
+    @Override
+	public List<BusinessLocation> findByExample(BusinessLocation exampleLocation) {
+    	
+    	final Example example = Example.create(exampleLocation)
+	        .excludeZeroes()           //exclude zero valued properties
+	        .ignoreCase();             //use like for string comparisons
+    			
+		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+					return  session.createCriteria(BusinessLocation.class)
+				        .add(example)
+				        .list();
+		
+				}
+		});
+		
+		return result;
+	}    
 
     @Override
 	public BusinessLocation findByUsername(final String userName) {

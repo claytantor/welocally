@@ -62,8 +62,28 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	private String imageBaseType;
 	
 	
-	
-		
+
+	@Override
+	public List<BusinessLocation> findBusinessLocationByInfo(String name,
+			String address, String city, String state, String postalCode)
+			throws BLServiceException {
+		BusinessLocation example = new BusinessLocation();
+		example.setName(name);
+		example.setAddress(address);
+		example.setCity(city);
+		example.setState(state);
+		example.setZip(postalCode);
+		List<BusinessLocation> locations = businessLocationDao.findByExample(example);
+		return locations;
+	}
+
+
+	@Override
+	public Business findBusinessByAdvertiserIdAndSource(String advertiserId,
+			String advertiserSource) throws BLServiceException {
+		return businessDao.findByAdvertiserIdAndSource(advertiserId, advertiserSource);
+	}
+
 
 	@Override
 	public List<RaterBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDaysRaters(
@@ -351,7 +371,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 		Award a = new Award();
 		a.setAwardType(ao.getAwardType());
 		a.setMetadata(imageBase+ao.getAwardType().getKeyname()+imageBaseType);
-		a.setOffer(ao);
+		a.getOffers().add(ao);
 		a.setOwner(t);
 		
 		if(StringUtils.isNotEmpty(notes))

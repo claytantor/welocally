@@ -21,12 +21,10 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.client.jms.CheckinMessageProducer;
 import com.sightlyinc.ratecred.dao.AwardDao;
 import com.sightlyinc.ratecred.dao.AwardOfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
@@ -46,7 +44,6 @@ import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rater;
 import com.sightlyinc.ratecred.model.RaterMetrics;
 import com.sightlyinc.ratecred.model.Rating;
-import com.sightlyinc.ratecred.model.RatingCheckinAction;
 import com.sightlyinc.ratecred.model.RatingPage;
 
 public class RatingManagerServiceImpl implements RatingManagerService {
@@ -72,8 +69,6 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private Directory ratingDirectory;	
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
 	
-	@Autowired
-	private CheckinMessageProducer checkinMessageProducer;
 	
 	//@Autowired
 	//private CheckinService checkinService;
@@ -672,9 +667,17 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 
-	
+	/**
+	 * same operation with different name so that
+	 * the advisor can work (if there is one)
+	 */
 	@Override
-	public void saveRating(Rating entity, Boolean checkin) throws BLServiceException {
+	public Long saveRatingWithCheckin(Rating entity) throws BLServiceException {
+		return saveRating(entity);
+	}
+
+	@Override
+	public Long saveRating(Rating entity) throws BLServiceException {
 
 		try {
 			Rater owner = entity.getOwner();
@@ -740,7 +743,9 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			//index it
 			ratingDirectoryIndexer.indexRate(entity);
 			
-			if(checkin)
+			
+			//this is a good use for an after intereceptor 
+			/*if(checkin)
 			{
 				if(entity.getOwner().getAuthorizedFoursquare()) {
 					logger.debug("authorized foursquare");
@@ -754,7 +759,9 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 					RatingCheckinAction fsAction = new RatingCheckinAction("gowalla",entity);				
 					checkinMessageProducer.generateMessage(fsAction);
 				}
-			}
+			}*/
+			
+			return entity.getId();
 
 			
 			

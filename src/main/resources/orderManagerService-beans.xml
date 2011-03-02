@@ -11,9 +11,9 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
            
 	
-	<bean id="awardManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+	<bean id="orderManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
 		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
-		<property name="target"><ref local="AwardManagerServiceTarget"/></property>
+		<property name="target"><ref local="OrderManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
 			<props>
 				<prop key="find*">PROPAGATION_REQUIRED,readOnly, -BLServiceException</prop>
@@ -23,10 +23,9 @@
 		</property>
 	</bean>
 	
-	<bean id="AwardManagerServiceTarget" class="com.sightlyinc.ratecred.service.AwardManagerServiceImpl">
-		<property name="awardDao" ref="AwardDao"/>				
-		<property name="awardTypeDao" ref="AwardTypeDao"/>				
-		<property name="awardOfferDao" ref="AwardOfferDao"/>				
+	<bean id="OrderManagerServiceTarget" class="com.sightlyinc.ratecred.service.OrderManagerServiceImpl">
+		<property name="orderDao" ref="OrderDao"/>				
+		<property name="voucherDao" ref="VoucherDao"/>								
 	</bean>
 	
 

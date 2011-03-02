@@ -34,6 +34,8 @@ CREATE TABLE  `rater_20100210`.`business` (
 		<property name="userName" column="username" type="java.lang.String"/>
 		<property name="status" column="status" type="java.lang.String"/>
 		<property name="guid" column="guid" type="java.lang.String"/>
+		<property name="advertiserId" column="advertiser_id" type="java.lang.String"/>
+		<property name="advertiserSource" column="advertiser_source" type="java.lang.String"/>
 		
 		
 		<property name="description"  type="java.lang.String" length="32000">

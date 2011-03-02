@@ -57,7 +57,8 @@ public interface RatingManagerService {
 			boolean b) throws BLServiceException;
 	
 	public void deleteRate(Rating entity) throws BLServiceException;
-	public void saveRating(Rating entity, Boolean checkin) throws BLServiceException;
+	public Long saveRating(Rating entity) throws BLServiceException;
+	public Long saveRatingWithCheckin(Rating entity) throws BLServiceException;
 	
 	
 	//compliment

@@ -19,6 +19,7 @@ public interface AwardDao {
 	public List<Award> findByOwner(Rater towards);
 	
 	public Award findByOffer(AwardOffer offer);
+	//public List<Award> findByOfferExpired();
 	
 	public List<Award> findByOwnerAwardType(Rater towards, AwardType at);
 	public List<Award> findByOwnerTypePlaceCityState(Rater towards, AwardType at, PlaceCityState pcs);

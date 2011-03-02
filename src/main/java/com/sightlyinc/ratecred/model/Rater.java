@@ -1,13 +1,16 @@
 package com.sightlyinc.ratecred.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.noi.utility.hibernate.ImageValue;
 
 
-public class Rater {
+public class Rater  {
 	
 	protected Long id;
 	protected Integer version = new Integer(0);

@@ -1,6 +1,8 @@
 package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AwardOffer {
 	
@@ -18,18 +20,34 @@ public class AwardOffer {
 	private String url;
 	private Long beginDateMillis;
 	private Long expireDateMillis;
-	
-	
+		
+	private String discountType;
+	private String type;
+	private Float price;
+	private Float value;
+	private String extraDetails;
+	private String illustrationUrl;
+	private Integer quantity;
 	private String status;
+
+	//relationships
+	private Award award;
 	private AwardType awardType;
-	
-	//private Award award;
-	
 	private Business business;
+	private Set<AwardOfferItem> items;
+	
+	
+	
+		
+	public AwardOffer() {
+		super();
+		items = new HashSet<AwardOfferItem>();
+	}
 	
 	public Long getId() {
 		return id;
 	}
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -125,6 +143,76 @@ public class AwardOffer {
 	}
 	public void setExpireDateMillis(Long expireDateMillis) {
 		this.expireDateMillis = expireDateMillis;
+	}	
+	
+	public Award getAward() {
+		return award;
+	}
+	public void setAward(Award award) {
+		this.award = award;
+	}
+	public String getDiscountType() {
+		return discountType;
+	}
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public Float getPrice() {
+		return price;
+	}
+	public void setPrice(Float price) {
+		this.price = price;
+	}
+	public Float getValue() {
+		return value;
+	}
+	public void setValue(Float value) {
+		this.value = value;
+	}
+	public String getExtraDetails() {
+		return extraDetails;
+	}
+	public void setExtraDetails(String extraDetails) {
+		this.extraDetails = extraDetails;
+	}
+	public String getIllustrationUrl() {
+		return illustrationUrl;
+	}
+	public void setIllustrationUrl(String illustrationUrl) {
+		this.illustrationUrl = illustrationUrl;
+	}
+	
+	public Integer getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+		
+	public Set<AwardOfferItem> getItems() {
+		return items;
+	}
+	public void setItems(Set<AwardOfferItem> items) {
+		this.items = items;
+	}
+	
+	@Override
+	public String toString() {
+		return "AwardOffer [awardType=" + awardType + ", beginDateMillis="
+				+ beginDateMillis + ", business=" + business + ", couponCode="
+				+ couponCode + ", description=" + description
+				+ ", expireDateMillis=" + expireDateMillis + ", externalId="
+				+ externalId + ", externalSource=" + externalSource + ", id="
+				+ id + ", name=" + name + ", programId=" + programId
+				+ ", programName=" + programName + ", status=" + status
+				+ ", timeCreated=" + timeCreated + ", url=" + url
+				+ ", version=" + version + "]";
 	}
 
 

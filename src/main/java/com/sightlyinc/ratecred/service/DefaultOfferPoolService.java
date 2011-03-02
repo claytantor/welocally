@@ -26,19 +26,28 @@ public class DefaultOfferPoolService implements OfferPoolService {
 		logger.debug("constructor");
 	}	
 	
+	@Override
+	public void addOffersToPool(List<Offer> offers) {
+		offerPool.addAll(offers);		
+	}
+
 	public void refresh() {
-		if(!fetchDisabled)
-		{
-			offerPool.clear();
-			for (OfferClient client : clients) {			
-				try {
-					List<Offer> o = client.getOffers();
-					logger.debug("offer count:"+o.size());
-					offerPool.addAll(o);
-				} catch (OfferFeedException e) {
-					logger.error("OfferFeedException", e);
+		try {
+			if(!fetchDisabled)
+			{
+				offerPool.clear();
+				for (OfferClient client : clients) {			
+					try {
+						List<Offer> o = client.getOffers();
+						logger.debug("offer count:"+o.size());
+						offerPool.addAll(o);
+					} catch (OfferFeedException e) {
+						logger.error("OfferFeedException", e);
+					}
 				}
 			}
+		} catch (Exception e) {
+			logger.error("cannot refresh", e);
 		}
 	}
 

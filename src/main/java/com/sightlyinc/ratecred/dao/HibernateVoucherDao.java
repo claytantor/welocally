@@ -1,32 +1,21 @@
 
 package com.sightlyinc.ratecred.dao;
 
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
-import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Business;
-import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Voucher;
 import com.sightlyinc.ratecred.model.Rater;
 
 
-public class HibernateAwardDao 
+public class HibernateVoucherDao 
 	extends HibernateDaoSupport 
-	implements AwardDao {
+	implements VoucherDao {
 
-	static Logger logger = Logger.getLogger(HibernateAwardDao.class);
+	static Logger logger = Logger.getLogger(HibernateVoucherDao.class);
     
     public HibernateTemplate getHibernateTemplateOverride() {
         HibernateTemplate template = getHibernateTemplate();
@@ -35,10 +24,45 @@ public class HibernateAwardDao
     }
 
  
+	@Override
+	public void delete(Voucher entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public List<Voucher> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+
+
+	@Override
+	public Voucher findByPrimaryKey(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	@Override
+	public void save(Voucher entity) {
+		getHibernateTemplateOverride().save(entity);		
+	}
     
+
+	   
     
-    /*@Override
-	public List<Award> findByOfferExpired() {
+  /*  @Override
+	public List<Voucher> findByOfferExpired() {
     	
     	final Long now = Calendar.getInstance().getTimeInMillis();
     	
@@ -48,7 +72,7 @@ public class HibernateAwardDao
 				{
 	
 				Query query = session.createQuery(
-						"select distinct entityimpl from "+Award.class.getName()+
+						"select distinct entityimpl from "+Voucher.class.getName()+
 						" as entityimpl where entityimpl.offer.expireDateMillis < :now");
 				
 				query.setLong("now", now);
@@ -61,25 +85,25 @@ public class HibernateAwardDao
 		});
 		return result;
 		
-	}*/
+	}
 
 
 
 
 	@Override
-	public Award findByOffer(final AwardOffer offer) {
-    	return (Award)getHibernateTemplateOverride().execute(new HibernateCallback() {
+	public Voucher findByOffer(final VoucherOffer offer) {
+    	return (Voucher)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 			throws HibernateException, SQLException 
 			{
 
 				Query query = session.createQuery(
-					"select distinct entityimpl from "+Award.class.getName()+
+					"select distinct entityimpl from "+Voucher.class.getName()+
 					" as entityimpl where entityimpl.offer = :offer");
 				
 				query.setEntity("offer", offer);
 				
-				Award t = (Award)query.uniqueResult();
+				Voucher t = (Voucher)query.uniqueResult();
 				
 			
 				return t;
@@ -92,9 +116,9 @@ public class HibernateAwardDao
 
 
 	@Override
-	public List<Award> findByOwnerTypePlaceCityState(
+	public List<Voucher> findByOwnerTypePlaceCityState(
 			final Rater towards,
-			final AwardType at,
+			final VoucherType at,
 			final PlaceCityState pcs) {
     	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)
@@ -102,7 +126,7 @@ public class HibernateAwardDao
 				{
 	
 				Query query = session.createQuery(
-					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+					"select entityimpl from "+Voucher.class.getName()+" as entityimpl " +
 							"where entityimpl.owner = :towards and " +
 							"entityimpl.awardType = :awardType and " +
 							"entityimpl.metadata like %:city% and " +
@@ -124,14 +148,14 @@ public class HibernateAwardDao
 
 
 	@Override
-	public List<Award> findByOwnerAwardType(final Rater towards, final AwardType at) {
+	public List<Voucher> findByOwnerVoucherType(final Rater towards, final VoucherType at) {
     	List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 				throws HibernateException, SQLException 
 				{
 	
 				Query query = session.createQuery(
-					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+					"select entityimpl from "+Voucher.class.getName()+" as entityimpl " +
 							"where entityimpl.owner = :towards and " +
 							"entityimpl.awardType = :awardType");
 	
@@ -163,7 +187,7 @@ public class HibernateAwardDao
 				{
 
 					Query query = session.createQuery(
-							"select count(entityimpl.id) from "+Award.class.getName()+
+							"select count(entityimpl.id) from "+Voucher.class.getName()+
 							" as entityimpl where entityimpl.owner = :towards" +
 							" and entityimpl.timeCreatedMills > :startTime" +
 							" and entityimpl.timeCreatedMills < :endTime");
@@ -183,7 +207,7 @@ public class HibernateAwardDao
     
     
 	@Override
-	public List<Award> findByOwnerBetweenTimes(
+	public List<Voucher> findByOwnerBetweenTimes(
 			final Rater towards, 
 			final Date startTime,
 			final Date endTime) {
@@ -196,7 +220,7 @@ public class HibernateAwardDao
 				{
 	
 				Query query = session.createQuery(
-					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+					"select entityimpl from "+Voucher.class.getName()+" as entityimpl " +
 							"where entityimpl.owner = :towards" +
 							" and entityimpl.timeCreatedMills > :startTime" +
 							" and entityimpl.timeCreatedMills < :endTime");
@@ -218,14 +242,14 @@ public class HibernateAwardDao
 
 
 	@Override
-	public List<Award> findByOwner(final Rater towards) {
+	public List<Voucher> findByOwner(final Rater towards) {
 		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 				throws HibernateException, SQLException 
 				{
 	
 				Query query = session.createQuery(
-					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+					"select entityimpl from "+Voucher.class.getName()+" as entityimpl " +
 							"where entityimpl.owner = :towards");
 	
 					query.setEntity("towards", towards);
@@ -241,14 +265,14 @@ public class HibernateAwardDao
 
 
 	@Override
-	public List<Award> findByBusiness(final Business b) {
+	public List<Voucher> findByBusiness(final Business b) {
 		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 				throws HibernateException, SQLException 
 				{
 	
 				Query query = session.createQuery(
-					"select entityimpl from "+Award.class.getName()+" as entityimpl " +
+					"select entityimpl from "+Voucher.class.getName()+" as entityimpl " +
 							"where entityimpl.offer.business.id = :businessId");
 				query.setLong("businessId", b.getId());
 				List list = query.list();
@@ -264,7 +288,7 @@ public class HibernateAwardDao
 
 
 	@Override
-	public void delete(Award entity) {
+	public void delete(Voucher entity) {
 		getHibernateTemplateOverride().delete(entity);
 		
 	}
@@ -272,14 +296,14 @@ public class HibernateAwardDao
 
 
 	@Override
-	public List<Award> findAll() {
+	public List<Voucher> findAll() {
 		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 				throws HibernateException, SQLException 
 				{
 	
 				Query query = session.createQuery(
-					"select entityimpl from "+Award.class.getName()+" as entityimpl");
+					"select entityimpl from "+Voucher.class.getName()+" as entityimpl");
 				List list = query.list();
 	
 				return list;
@@ -290,19 +314,19 @@ public class HibernateAwardDao
 	}
 
 	@Override
-	public Award findByPrimaryKey(final Long id) {
-		return (Award)getHibernateTemplateOverride().execute(new HibernateCallback() {
+	public Voucher findByPrimaryKey(final Long id) {
+		return (Voucher)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 			throws HibernateException, SQLException 
 			{
 
 				Query query = session.createQuery(
-					"select distinct entityimpl from "+Award.class.getName()+
+					"select distinct entityimpl from "+Voucher.class.getName()+
 					" as entityimpl where entityimpl.id = :id");
 				
 				query.setLong("id", id);
 				
-				Award t = (Award)query.uniqueResult();
+				Voucher t = (Voucher)query.uniqueResult();
 				
 			
 				return t;
@@ -312,34 +336,28 @@ public class HibernateAwardDao
 	}
 
 	@Override
-	public Award findByKeyname(final String kn) {
-		return (Award)getHibernateTemplateOverride().execute(new HibernateCallback() {
+	public Voucher findByKeyname(final String kn) {
+		return (Voucher)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 			throws HibernateException, SQLException 
 			{
 
 				Query query = session.createQuery(
-					"select distinct entityimpl from "+Award.class.getName()+
+					"select distinct entityimpl from "+Voucher.class.getName()+
 					" as entityimpl where entityimpl.keyname = :kn");
 				
 				query.setString("kn", kn);
 				
-				Award t = (Award)query.uniqueResult();
+				Voucher t = (Voucher)query.uniqueResult();
 				
 			
 				return t;
 	
 			}
 		});		
-	}
+	}*/
 
-	@Override
-	public void save(Award entity) {
-		getHibernateTemplateOverride().save(entity);		
-	}
-    
 
-	
 	
 	
 	  

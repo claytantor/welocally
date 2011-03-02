@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping 
+	package="com.sightlyinc.ratecred.model">
+	<class name="AwardOfferItem" table="award_offer_item">
+	
+		<cache usage="read-write"/>
+		
+		<id name="id" column="id" unsaved-value="null">
+			<generator class="native" />
+		</id>
+				
+		<version name="version" column="version" />	
+		
+		<property name="timeCreated" column="time_created" type="java.lang.Long"/>
+		<property name="timeUpdated" column="time_updated" type="java.lang.Long"/>
+			
+
+		<property name="title" column="title" type="java.lang.String"/> 		
+		<property name="description"  type="java.lang.String" length="32000">
+			<column name="description" sql-type="longtext"/>
+		</property>	
+		 		 
+		<property name="quantity" column="quantity" type="java.lang.Integer"/>
+				
+		<many-to-one
+			lazy="no-proxy" 
+			fetch="select"
+			name="offer"
+			class="AwardOffer"
+			column="award_offer_id"/>
+				
+		
+														
+	</class>
+</hibernate-mapping>

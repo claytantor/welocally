@@ -2,30 +2,53 @@ package com.sightlyinc.ratecred.client.offers;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
 
 public class Offer {
-	private Long id;
-	private String externalId;
-	private String externalSource;
-	private String programId;
-	private String programName;
-	private String name;
-	private String couponCode;
-	private String description;
-	private String url;
-	private String beginDateString;
-	private String expireDateString;
-	private String city;
-	private String state;
+	private Long id = new Long(0);
+	private String externalId = "";
+	private String externalSource ="";
+	private String programId="";
+	private String programName="";
+	private String name="";
+	private String couponCode="";
+	private String description="";
+	private String url="";
+	private String beginDateString="";
+	private String expireDateString="";
+	private String city="";
+	private String state="";
 	
+	private String discountType;
+	private String type;
+	private Float price;
+	private Float discountValue;
+	private Float value;
+	private String extraDetails;
+	private String illustrationUrl;
+	private Integer quantity;
+	private Integer checkinsRequired;
+	
+	private List<Item> items;
+	private Advertiser advertiser;
+	
+		
 	private boolean visible = true;
 	
 	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
 	
+	
+	
+	public Offer() {
+		super();
+		items = new ArrayList<Item>();		
+	}
+
 	public boolean fieldsEmpty()
 	{
 		if(StringUtils.isEmpty(couponCode) || StringUtils.isEmpty(name) || StringUtils.isEmpty(description))
@@ -147,8 +170,104 @@ public class Offer {
     
     public void removePropertyChangeListener( PropertyChangeListener l ) {
         changes.removePropertyChangeListener( l ); 
-    }	
+    }	   
 	
+	public String getDiscountType() {
+		return discountType;
+	}
+
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Float getPrice() {
+		return price;
+	}
+
+	public void setPrice(Float price) {
+		this.price = price;
+	}
+
+	public Float getDiscountValue() {
+		return discountValue;
+	}
+
+	public void setDiscountValue(Float discountValue) {
+		this.discountValue = discountValue;
+	}
+
+	public Float getValue() {
+		return value;
+	}
+
+	public void setValue(Float value) {
+		this.value = value;
+	}
+
+	public String getExtraDetails() {
+		return extraDetails;
+	}
+
+	public void setExtraDetails(String extraDetails) {
+		this.extraDetails = extraDetails;
+	}
+
+	public String getIllustrationUrl() {
+		return illustrationUrl;
+	}
+
+	public void setIllustrationUrl(String illustrationUrl) {
+		this.illustrationUrl = illustrationUrl;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Integer getCheckinsRequired() {
+		return checkinsRequired;
+	}
+
+	public void setCheckinsRequired(Integer checkinsRequired) {
+		this.checkinsRequired = checkinsRequired;
+	}
+
+	public PropertyChangeSupport getChanges() {
+		return changes;
+	}
+
+	public void setChanges(PropertyChangeSupport changes) {
+		this.changes = changes;
+	}
+
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
+	}
+
 	@Override
 	public String toString() {
 		return "Offer [beginDateString=" + beginDateString + ", couponCode="

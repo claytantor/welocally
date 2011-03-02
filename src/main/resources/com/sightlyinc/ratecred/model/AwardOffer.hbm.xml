@@ -46,6 +46,23 @@ CREATE TABLE  `award_offer` (
 		
 		<property name="beginDateMillis" column="begin_millis" type="java.lang.Long"/>
 		<property name="expireDateMillis" column="expire_millis" type="java.lang.Long"/>
+		
+		<property name="status" column="status" type="java.lang.String"/>
+		
+		 <property name="discountType" column="discount_type" type="java.lang.String"/>
+		 <property name="type" column="type" type="java.lang.String"/>
+		 <property name="price" column="price" type="java.lang.Float"/>
+		 <property name="value" column="value" type="java.lang.Float"/>
+		 
+		 <property name="extraDetails"  type="java.lang.String" length="32000">
+			<column name="extra_details" sql-type="longtext"/>
+		 </property>	
+		 
+		 <property name="illustrationUrl"  type="java.lang.String" length="3200">
+			<column name="illustration_url" sql-type="longtext"/>
+		 </property>	
+		 		 
+		 <property name="quantity" column="quantity" type="java.lang.Integer"/>
 				
 		<many-to-one
 			lazy="no-proxy" 
@@ -53,9 +70,6 @@ CREATE TABLE  `award_offer` (
 			name="awardType"
 			class="AwardType"
 			column="award_type_id"/>
-		
-		<property name="status" column="status" type="java.lang.String"/>
-		
 			
 				
 		<many-to-one
@@ -64,6 +78,23 @@ CREATE TABLE  `award_offer` (
 			name="business"
 			class="Business"
 			column="business_id"/>
+			
+		<set name="items"
+	 		lazy="extra"
+			fetch="select"
+			cascade="all">
+	        <key column="award_offer_id"/>
+	        <one-to-many class="AwardOfferItem"/>
+	    </set>	
+	    
+		<join table="award_awardoffer" 
+	        inverse="true" 
+	        optional="true">
+	        <key column="award_offer_id"/>
+	        <many-to-one name="award"
+	            column="award_id"
+	            not-null="true"/>
+	    </join> 	    
 														
 	</class>
 </hibernate-mapping>
