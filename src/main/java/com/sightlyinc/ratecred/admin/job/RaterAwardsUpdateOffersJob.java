@@ -67,6 +67,14 @@ public class RaterAwardsUpdateOffersJob extends QuartzJobBean {
 			for (AwardOffer awardOffer : expired) {
 				//logger.debug(awardOffer.getOffer().getExpireDateMillis());
 				
+				//delete any expired offer
+				//remove the offer from the award
+				Award a = awardOffer.getAward();
+				a.getOffers().remove(awardOffer);
+				awardManagerService.saveAward(a);
+				
+				awardManagerService.deleteAwardOffer(awardOffer);
+				
 				if(awardOffer.getAward() != null)
 				{
 					//dont throw if one has a problem
@@ -85,9 +93,7 @@ public class RaterAwardsUpdateOffersJob extends QuartzJobBean {
 					} catch (IOException e) {
 						logger.error("problem udating expired offer", e);
 					}
-				} else { //delete orphaned award offers
-					awardManagerService.deleteAwardOffer(awardOffer);					
-				}
+				} 
 				
 				
 			}

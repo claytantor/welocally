@@ -8,6 +8,11 @@ import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
 
 public interface RaterAwardsService {
+	
+	public void targetAwardById(Long awardId) throws BLServiceException;
+	
+	public void deleteRaterAwardOffers(Long raterId)
+		throws BLServiceException;
 
 	public abstract void proccessAwardsForRater(RaterAwards ra)
 			throws BLServiceException;

@@ -38,18 +38,20 @@ import twitter4j.http.AccessToken;
 
 import com.adility.resources.client.AudilityClientException;
 import com.adility.resources.client.ResourcesClient;
+import com.adility.resources.model.Category;
 import com.adility.resources.model.Illustration;
+import com.adility.resources.model.Money;
 import com.adility.resources.model.OffersResponse;
 import com.adility.resources.model.RequestModel;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.mail.MailerQueueService;
-import com.noi.utility.random.RandomMaker;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.rosaloves.net.shorturl.bitly.Bitly;
 import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.admin.jms.SaveNewAwardMessageProducer;
+import com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageProducer;
 import com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.admin.velocity.BusinessServicesPlaceAwardGenerator;
@@ -110,8 +112,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
     @Qualifier("resourcesClient")
     private ResourcesClient resourcesClient;
 	
-	
-	
+	@Autowired
+    @Qualifier("updateAwardOfferMessageProducer")
+	private UpdateAwardOfferMessageProducer updateAwardOfferMessageProducer;
 	
 	@Value("${twitter.rateCredOAuth.appConsumerKey}")
 	private String appConsumerKey;
@@ -142,6 +145,54 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	
 
 	
+
+	@Override
+	public void targetAwardById(Long awardId) throws BLServiceException {
+		Award a = awardManagerService.findAwardByPrimaryKey(awardId);
+		//dont throw if one has a problem
+		try {
+			updateAwardOfferMessageProducer
+			.generateMessage(
+					a, 
+					a.getAwardType(), 
+					a.getOwner());
+		} catch (JsonGenerationException e) {
+			logger.error("problem udating expired offer", e);
+		} catch (JsonMappingException e) {
+			logger.error("problem udating expired offer", e);
+		} catch (JMSException e) {
+			logger.error("problem udating expired offer", e);
+		} catch (IOException e) {
+			logger.error("problem udating expired offer", e);
+		}
+		
+	}
+
+	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public void deleteRaterAwardOffers(Long raterId) {
+		try {
+			Rater r = ratingManagerService.findRaterByPrimaryKey(raterId);
+			Set<AwardOffer> offers = new HashSet<AwardOffer>();
+			
+			for (Award award : r.getAwards()) 
+				offers.addAll(award.getOffers());
+			
+			for (AwardOffer awardOffer : offers) {
+				Award a = awardOffer.getAward();
+				a.getOffers().remove(awardOffer);
+				awardManagerService.saveAward(a);
+				
+				awardManagerService.deleteAwardOffer(awardOffer);
+				
+			}
+			
+		} catch (BLServiceException e) {
+			logger.error("cannot delete offers", e);
+		}
+		
+		
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -342,15 +393,18 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 					p,
 					pcs);
 			
-			try {
-				AwardOffer aoffer = transformOffer(offer);
-				aoffer.setAwardType(awardType);
-				awardManagerService.saveAwardOffer(aoffer);
-				award.getOffers().add(aoffer);
-				
-			} catch (Exception e) {
-				logger.error("fail", e);
+			if(offer != null) {
+				try {
+					AwardOffer aoffer = transformOffer(offer);
+					aoffer.setAwardType(awardType);
+					awardManagerService.saveAwardOffer(aoffer);
+					award.getOffers().add(aoffer);
+					
+				} catch (Exception e) {
+					logger.error("fail", e);
+				}
 			}
+			
 			
 			
 			//should we send an email here?
@@ -407,21 +461,21 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 						
 				if(b == null) {
 					b = new Business();
-					Advertiser a = offer.getAdvertiser();
-					b.setAdvertiserId(a.getExternalId());
+					Advertiser advertiser = offer.getAdvertiser();
+					b.setAdvertiserId(advertiser.getExternalId());
 					b.setAdvertiserSource(offer.getExternalSource());
-					b.setDescription(a.getDescription());
-					b.setName(a.getTitle());
-					b.setWebsite(a.getSiteUrl());
+					b.setDescription(advertiser.getDescription());
+					b.setName(advertiser.getName());
+					b.setWebsite(advertiser.getSiteUrl());
 					
 					//do locations
-					if(a.getLocations().size()>0) {
-						for (Location location : a.getLocations()) {
+					if(advertiser.getLocations().size()>0) {
+						for (Location location : advertiser.getLocations()) {
 							
 							//try to find the business location, if not there
 							//create both the bl and the place
 							List<BusinessLocation> locations = 
-								businessManagerService.findBusinessLocationByInfo(a.getTitle(),
+								businessManagerService.findBusinessLocationByInfo(advertiser.getName(),
 									location.getAddressOne(), 
 									location.getCity(), 
 									location.getState(), 
@@ -430,18 +484,18 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 							if(locations == null || locations.size()==0)
 							{
 								BusinessLocation bloc = new BusinessLocation();
-								bloc.setName(a.getTitle());
+								bloc.setName(advertiser.getName());
 								bloc.setAddress(location.getAddressOne());
 								bloc.setCity(location.getCity());
 								bloc.setState(location.getState());
 								bloc.setZip(location.getPostalCode());
 								bloc.setDescription(location.getComments());
 								bloc.setLatitude(location.getLat());
-								bloc.setLongitude(location.getLat());
+								bloc.setLongitude(location.getLng());
 								
 								//make the place
 								Place p = new Place();
-								p.setName(a.getTitle());
+								p.setName(advertiser.getName());
 								p.setAddress(location.getAddressOne());
 								p.setCity(location.getCity());
 								p.setState(location.getState());
@@ -535,7 +589,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	}
 
 	/**
-	 * needs to support adility targeting rules
+	 * needs to support adility targeting rules, also this should not
+	 * only return one offer what it should really do is set all the
+	 * possible offers for a type.
 	 * 
 	 * @param award
 	 * @param awardType
@@ -557,63 +613,71 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 			
-			offerPoolService.addOffersToPool(
-					getLocalOffersForAward( award, 
-						 awardType, 
-						 r,
-						 p,
-						 pcs));
-
-			List<Offer> offersRaw = offerPoolService.getOfferPool();			
+			//ok the reason we dont want to do this is because 
+			//we dont want to add these too the pool yet
+			//List<Offer> offersRaw = offerPoolService.getOfferPool();
+			
+			List<Offer> offersRaw = new ArrayList<Offer>();
+						
+			offersRaw.addAll(getLocalOffersForAward( award, 
+					 awardType, 
+					 r,
+					 p,
+					 pcs));
 			
 			boolean dynamic = true;
-			for (Offer offer : offersRaw) {
-				logger.debug("asserting offer:"+offer.getName());
-				/*if(pcs == null && 
-						!StringUtils.isEmpty(offer.getCity())
-						&& !StringUtils.isEmpty(offer.getState()))
-				{
-					pcs = new PlaceCityState(offer.getCity(), offer.getState(), 1);
-				} */
-				
-				workingMemory.assertObject(offer, dynamic);
-			}
 			
-			
-			//make sure there is a location for the award to go to
-			Set<PlaceCityState> allcites = new HashSet<PlaceCityState>();
-			for(Rating rating: r.getRatings()) {
-				PlaceCityState pcsRating = new PlaceCityState();
-				pcsRating.setCity(rating.getPlace().getCity());
-				pcsRating.setState(rating.getPlace().getState());				
-			}
-			
-			//now add the offer evaluator
-			AwardOfferEvaluator awardOfferEval = new AwardOfferEvaluator(
-					award, 
-					awardType, 
-					r,
-					pcs,
-					allcites);
-			
-			workingMemory.assertObject(awardOfferEval, dynamic);
-			
-			workingMemory.fireAllRules();
-			
-			if(awardOfferEval.hasOffer()) {
-				logger.debug("best offer found:"+awardOfferEval.getOffer().toString());
-				return awardOfferEval.getOffer();
-			}
-			else //backup plan
+			//only do this if there are offers to work with
+			if(offersRaw.size()>0)
 			{
-				List<Offer> offersFiltered = new ArrayList<Offer>();
 				for (Offer offer : offersRaw) {
-					if (offer.isVisible())
-						offersFiltered.add(offer);
+					logger.debug("asserting offer:"+offer.getName());
+					workingMemory.assertObject(offer, dynamic);
 				}
-				int pos = RandomMaker.nextInt(1, offersFiltered.size() - 1);
-				return offersFiltered.get(pos);
-			}
+				
+				
+				//make sure there is a location for the award to go to
+				Set<PlaceCityState> allcites = new HashSet<PlaceCityState>();
+				for(Rating rating: r.getRatings()) {
+					PlaceCityState pcsRating = new PlaceCityState();
+					pcsRating.setCity(rating.getPlace().getCity());
+					pcsRating.setState(rating.getPlace().getState());				
+				}
+				
+				//now add the offer evaluator
+				AwardOfferEvaluator awardOfferEval = new AwardOfferEvaluator(
+						award, 
+						awardType, 
+						r,
+						pcs,
+						allcites);
+				
+				workingMemory.assertObject(awardOfferEval, dynamic);
+				
+				workingMemory.fireAllRules();
+				
+				awardOfferEval.chooseBestOffers();
+				
+				//this really should not just return the 
+				//offer but set it to the award based on the award type
+				if(awardOfferEval.getTargetedOffers().size()>0) {
+					Offer bestOffer = awardOfferEval.getTargetedOffers().get(0);
+					logger.debug("best offer found:"+bestOffer.toString());
+					return bestOffer;
+				}
+				else //backup plan
+				{
+					List<Offer> offersFiltered = new ArrayList<Offer>();
+					for (Offer offer : offersRaw) {
+						if (offer.isVisible())
+							offersFiltered.add(offer);
+					}
+					return offersFiltered.get(0);
+				}
+				
+			} else 
+				return null;
+			
 
 
 		} catch (IntegrationException e) {
@@ -648,11 +712,13 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		if(p != null) {
 			params.put("lat", p.getLatitude().toString());
 			params.put("lng", p.getLongitude().toString());
-			params.put("distance", "10");
+			params.put("distance", "5");
+			
 		} else if(pcs != null) { //else use the city state
 			params.put("city", pcs.getCity());
 			params.put("state", pcs.getState());
-			params.put("distance", "15");
+			params.put("distance", "5");
+			
 		} else if(r.getRatings().size()>0) {
 			Rating rating = r.getRatings().iterator().next();
 			params.put("lat", rating.getPlace().getLatitude().toString());
@@ -661,25 +727,56 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		}		
 		
 		//we have enough info to make a query
-		if(params.size()>0)
-		{
-			RequestModel model = new RequestModel(params,"json");
-			try {
-				OffersResponse response = resourcesClient.getOffers(model);
-				//Offer [beginDateString=2009-12-15, couponCode=null, description=null, expireDateString=2012-10-13, id=null, name=$34.99 For Four Visits, programId=null, programName=null, url=null]
-				for (com.adility.resources.model.Offer aoffer : response.getOffers()) { 
-					logger.debug(aoffer.toString());
-										
-					offersForAward.add(transformAdilityOffer(aoffer) );					
-				}
-				
-			} catch (AudilityClientException e) {
-				logger.error("cannot get response from client", e);
-			}
+		try {
+			if(params.size()>0)
+				offersForAward = findOffersForArea(new RequestModel(params,"json"), 20, 5);
+		} catch (Exception e) {
+			logger.debug("cant find offers for area", e);
 		}
 		
+		logger.debug("returning");
 		return offersForAward;
 
+	}
+	
+	private List<Offer> findOffersForArea(RequestModel model, Integer max, Integer minOffers) {
+		List<Offer> offersFound = new ArrayList<Offer>();
+		try {
+			
+			Integer modelDistance = 
+				Integer.parseInt(model.getParams().get("distance"));
+			
+			if(modelDistance<max) {
+				modelDistance++;
+				
+				model.getParams().put("distance", modelDistance.toString());
+				Thread.sleep(3000);
+				OffersResponse response = resourcesClient.getOffers(model);
+				logger.debug("trying distance:"+modelDistance+" offers:"+response.getOffers().size());
+				if(response.getOffers().size()<minOffers && modelDistance <= max)
+					return findOffersForArea(model, max, minOffers);
+				else
+				{
+					//Offer [beginDateString=2009-12-15, couponCode=null, description=null, expireDateString=2012-10-13, id=null, name=$34.99 For Four Visits, programId=null, programName=null, url=null]
+					for (com.adility.resources.model.Offer aoffer : response.getOffers()) { 
+						logger.debug(aoffer.toString());
+											
+						offersFound.add(transformAdilityOffer(aoffer) );					
+					}
+				}
+			}
+			
+				
+			
+			
+		} catch (AudilityClientException e) {
+			logger.error("cannot get response from client", e);
+		} catch (InterruptedException e) {
+			logger.error("cannot get response from client", e);
+		} catch (Exception e) {
+			logger.error("cannot get response from client", e);
+		}
+		return offersFound;
 	}
 	
 	/**
@@ -693,10 +790,10 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		Offer offer = new Offer();
 		offer.setExternalId(aoffer.getId());
 		offer.setBeginDateString(aoffer.getStartDate());
-		if(aoffer.getAdvertiser().getLocations().size()>0)
+		if(aoffer.getAdvertiser().getRedemptionLocations().size()>0)
 		{
-			offer.setCity(aoffer.getAdvertiser().getLocations().get(0).getCity());
-			offer.setState(aoffer.getAdvertiser().getLocations().get(0).getState());
+			offer.setCity(aoffer.getAdvertiser().getRedemptionLocations().get(0).getCity());
+			offer.setState(aoffer.getAdvertiser().getRedemptionLocations().get(0).getState());
 		}
 		if(aoffer.getDescription() == null)
 			offer.setDescription(aoffer.getFineprint());
@@ -713,19 +810,24 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		}
 		
 		try {
-			offer.setValue(Float.parseFloat(aoffer.getValue()));
+			Money valueMoney = aoffer.getValue();
+			if(valueMoney.getCurrencyCode().equals("USD"))
+				offer.setValue(valueMoney.getAmount().floatValue()/100.00f);
 		} catch (RuntimeException e) { //number format, null
 			offer.setValue(0.0f);
 		}
 		
 		try {
-			offer.setPrice(Float.parseFloat(aoffer.getPrice()));
+			Money priceMoney = aoffer.getPrice();
+			if(priceMoney.getCurrencyCode().equals("USD"))
+				offer.setPrice(priceMoney.getAmount().floatValue()/100.00f);
+			
 		} catch (RuntimeException e) { //number format, null
 			offer.setPrice(0.0f);
 		}
 		
-		if(aoffer.getIllustrations().size()>0)  {
-			Illustration i = aoffer.getIllustrations().get(0);
+		if(aoffer.getCreative() != null && aoffer.getCreative().getIllustrations().size()>0 )  {
+			Illustration i = aoffer.getCreative().getIllustrations().get(0);
 			offer.setIllustrationUrl(i.getUrl());			
 		}
 		
@@ -755,7 +857,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		offer.setExternalSource("ADILITY");
 		offer.setName(aoffer.getTitle());
 		offer.setUrl(aoffer.getAdvertiser().getSiteUrl());
-		offer.setProgramName(aoffer.getAdvertiser().getTitle());
+		offer.setProgramName(aoffer.getAdvertiser().getName());
 		offer.setProgramId(aoffer.getAdvertiser().getId());
 		
 		//do the advertiser and locations
@@ -773,15 +875,22 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			//not locations or id
 			dest.setDescription(advertiser.getDescription());
 			dest.setAdvertiserLogoUrl(advertiser.getLogo().getUrl());
-			dest.setCategoryId(advertiser.getCategoryId());
-			dest.setContactPhone(advertiser.getContact_phone());
+			
+			if(advertiser.getCategories() != null && advertiser.getCategories().size()>0)
+			{
+				Category cat = advertiser.getCategories().get(0);
+				dest.setCategoryId(cat.getId());				
+			}
+			
+			
+			
+			dest.setContactPhone(advertiser.getPublicPhone());
 			dest.setSiteUrl(advertiser.getSiteUrl());
-			dest.setTitle(advertiser.getTitle());			
+			dest.setName(advertiser.getName());			
 			dest.setExternalId(advertiser.getId());
 			
-			for (com.adility.resources.model.Location location : advertiser.getLocations()) {
-							
-				
+			for (com.adility.resources.model.Location location : advertiser.getRedemptionLocations()) {
+											
 				Location newLoc = new Location();
 				newLoc.setAddressOne(location.getAddressOne());
 				newLoc.setAddressTwo(location.getAddressTwo());

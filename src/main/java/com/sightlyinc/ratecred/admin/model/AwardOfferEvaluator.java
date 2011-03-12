@@ -2,10 +2,22 @@ package com.sightlyinc.ratecred.admin.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.mcavallo.opencloud.Cloud;
+import org.mcavallo.opencloud.Tag;
+import org.mcavallo.opencloud.filters.DictionaryFilter;
+import org.mcavallo.opencloud.filters.Filter;
+import org.mcavallo.opencloud.filters.TagFilter;
+
+import com.sightlyinc.ratecred.admin.compare.OfferScoreComparitor;
+import com.sightlyinc.ratecred.admin.compare.TagScoreComparitor;
 import com.sightlyinc.ratecred.client.offers.Location;
 import com.sightlyinc.ratecred.client.offers.Offer;
 import com.sightlyinc.ratecred.model.Award;
@@ -17,15 +29,29 @@ import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 
 public class AwardOfferEvaluator {
+	
+	static Logger logger = Logger.getLogger(AwardOfferEvaluator.class);
 
 	private Award award;
 	private AwardType awardType;
 	private Rater rater;
 	private PlaceCityState pcs;
-	private List<AwardOffer> awardOffers = new ArrayList<AwardOffer>();
+	private List<AwardOffer> raterAwardOffers = new ArrayList<AwardOffer>();
+	private Map<String,Offer> offerCache = new HashMap<String,Offer>();
 	private Set<PlaceCityState> allCities = new HashSet<PlaceCityState>();
 	
-	private Offer offer;
+	private List<Offer> targetedOffers = new ArrayList<Offer>();
+	private Cloud ratingCloud = new Cloud();
+	
+	private static String TERMS = "a,about,all,and,are,as,at,back,be,because,been," +
+	"but,can,can't,come,could,did,didn't,do,don't,for,from,get,go,going," +
+	"good,got,had,have,he,her,here,he's,hey,him,his,how,I,if,I'll,I'm," +
+	"in,is,it,it's,just,know,like,look,me,mean,my,no,not,now,of,oh,OK," +
+	"okay,on,one,or,out,really,right,say,see,she,so,some,something,tell," +
+	"that,that's,the,then,there,they,think,this,time,to,up,want,was,we,well," +
+	"were,what,when,who,why,will,with,would,yeah,yes,you,your,you're";
+	
+	private static String[] TERMS_LIST = TERMS.split(",");
 
 
 	public AwardOfferEvaluator(
@@ -43,11 +69,31 @@ public class AwardOfferEvaluator {
 			if(awardItem.getOffers() != null)
 			{
 				for (AwardOffer offer : awardItem.getOffers()) {
-					awardOffers.add(offer);
+					raterAwardOffers.add(offer);
 				}
 			}
 				
 		}
+		
+		//build the cloud
+		StringBuffer placesBuffer = new StringBuffer(); 
+		for (Rating rating : r.getRatings()) {
+			placesBuffer.append(rating.getPlace().getName()+" ");
+		}
+		
+		
+		
+		DictionaryFilter fTerms = 
+			new DictionaryFilter( TERMS_LIST );
+		
+		ratingCloud.addOutputFilter(fTerms); 
+		ratingCloud.addText(placesBuffer.toString());
+		
+		//List<Tag> tags = ratingCloud.allTags(new TagScoreComparitor());
+		
+		/*for (Tag tag : tags) {
+			logger.debug(tag.getName()+"="+tag.getScore());
+		}*/
 		
 		this.allCities = allcites;
 		
@@ -55,7 +101,56 @@ public class AwardOfferEvaluator {
 		this.pcs = pcs;
 
 	}
-
+	
+	public void addOfferToCache(Offer o) {
+		String key = o.getExternalSource()+o.getExternalId();
+		Offer o2 = offerCache.get(key);
+		if(o2 == null) {
+			
+			//make a cloud for the offer and then score this 
+			//offer against it
+			DictionaryFilter fTerms = 
+				new DictionaryFilter( TERMS_LIST );
+			
+			Cloud offerCloud = new Cloud();
+			
+			offerCloud.addOutputFilter(fTerms); 
+			
+			String offerText = o.getProgramName() + " " +
+				o.getName()+ " " + 
+				o.getDescription();
+			
+			offerCloud.addText(offerText);
+			Double newScore = o.getScore()+findCompositScore(ratingCloud, offerCloud);
+			o.setScore(newScore.intValue());
+				
+			
+			offerCache.put(key, o);
+		}
+		
+	}
+	
+	private Double findCompositScore(Cloud raterCloud, Cloud offerCloud) {
+		Double tagScore = new Double(0.0d);
+		for (Tag rtag : raterCloud.allTags(new TagScoreComparitor())) {
+			for (Tag otag : offerCloud.allTags(new TagScoreComparitor())) {
+				if(otag.getName().equals(rtag.getName()))
+					tagScore = tagScore + (otag.getScore()*rtag.getScore()); 
+			}
+			
+			//logger.debug(rtag.getName()+"="+rtag.getScore());
+		}
+		return tagScore;
+	}
+	
+	public boolean hasOffers() {
+		return offerCache.size()>0;
+	}
+	
+	public boolean isExternalSource(String name, Offer offer) {
+		return offer.getExternalSource().equalsIgnoreCase(name);
+	}
+	
 	public boolean isRatedInCityOffer(Offer offer) {
 		
 		for (PlaceCityState pcs : allCities) {
@@ -63,7 +158,6 @@ public class AwardOfferEvaluator {
 				return true;
 		}
 		return false;
-		
 		
 	}
 	
@@ -96,14 +190,9 @@ public class AwardOfferEvaluator {
 	}
 	
 	
-	
-	public boolean hasOffer()
-	{
-		return(offer != null);
-	}
-	
 	public boolean isOfferNotGiven(Offer offer) {
-		for (AwardOffer awardOffer : awardOffers) {
+		for (AwardOffer awardOffer : raterAwardOffers) {
+			logger.debug("checking if "+awardOffer.getExternalId()+"="+offer.getExternalId());
 			if(awardOffer != null && awardOffer.getExternalId().equals(offer.getExternalId()))
 				return false;
 		}
@@ -123,13 +212,31 @@ public class AwardOfferEvaluator {
 			return false;
 	}
 
-	public void setOffer(Offer offer) {
-		this.offer = offer;
+	
+	public void chooseBestOffers() {
+		List<Offer> sortedOffers = new ArrayList<Offer>(this.offerCache.values()); 
+		Collections.sort(
+				sortedOffers, 
+				new OfferScoreComparitor());
+		
+		for (Offer offer : sortedOffers) {
+			logger.debug("offer score:"+offer.getScore());
+		}
+		
+		//only choose best offer for now
+		if(sortedOffers.size()>0) {
+			Offer bestOffer = sortedOffers.get(0);
+			logger.debug("best offer:"+bestOffer.toString());
+			targetedOffers.add(bestOffer);
+		}
+		
 	}
 
-	public Offer getOffer() {
-		return offer;
+	public List<Offer> getTargetedOffers() {
+		return targetedOffers;
 	}
+	
+	
 	
 
 }
