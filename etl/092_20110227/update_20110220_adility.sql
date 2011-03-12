@@ -84,5 +84,8 @@ CREATE TABLE `ratecred_080_etl`.`award_offer_item` (
 )
 CHARACTER SET utf8;
 
-
+#new_relationaljoin
 insert into award_awardoffer(award_id,award_offer_id) SELECT id as award_id,award_offer_id FROM award;
+ALTER TABLE `ratecred_080_etl`.`award` DROP COLUMN `award_offer_id`;
+
+

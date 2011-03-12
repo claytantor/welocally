@@ -34,6 +34,8 @@ public class Offer {
 	private Integer quantity;
 	private Integer checkinsRequired;
 	
+	private Integer score;
+	
 	private List<Item> items;
 	private Advertiser advertiser;
 	
@@ -46,7 +48,8 @@ public class Offer {
 	
 	public Offer() {
 		super();
-		items = new ArrayList<Item>();		
+		items = new ArrayList<Item>();	
+		score = new Integer(0);
 	}
 
 	public boolean fieldsEmpty()
@@ -57,6 +60,18 @@ public class Offer {
 			return false;
 	}
 	
+	public void addScore(int value) {
+		this.score = this.score+value;
+	}
+	
+	public Integer getScore() {
+		return score;
+	}
+
+	public void setScore(Integer score) {
+		this.score = score;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -270,12 +285,25 @@ public class Offer {
 
 	@Override
 	public String toString() {
-		return "Offer [beginDateString=" + beginDateString + ", couponCode="
-				+ couponCode + ", description=" + description
-				+ ", expireDateString=" + expireDateString + ", id=" + id
-				+ ", name=" + name + ", programId=" + programId
-				+ ", programName=" + programName + ", url=" + url + "]";
+		return "Offer [advertiser=" + advertiser + ", beginDateString="
+				+ beginDateString + ", changes=" + changes
+				+ ", checkinsRequired=" + checkinsRequired + ", city=" + city
+				+ ", couponCode=" + couponCode + ", description=" + description
+				+ ", discountType=" + discountType + ", discountValue="
+				+ discountValue + ", expireDateString=" + expireDateString
+				+ ", externalId=" + externalId + ", externalSource="
+				+ externalSource + ", extraDetails=" + extraDetails + ", id="
+				+ id + ", illustrationUrl=" + illustrationUrl + ", items="
+				+ items + ", name=" + name + ", price=" + price
+				+ ", programId=" + programId + ", programName=" + programName
+				+ ", quantity=" + quantity + ", score=" + score + ", state="
+				+ state + ", type=" + type + ", url=" + url + ", value="
+				+ value + ", visible=" + visible + "]";
 	}
+
+
+
+
 	
 	
 

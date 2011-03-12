@@ -152,6 +152,20 @@ public class BusinessLocation {
 	public void setImages(Set<BusinessLocationImage> images) {
 		this.images = images;
 	}
+	@Override
+	public String toString() {
+		return "BusinessLocation [address=" + address + ", business="
+				+ business + ", city=" + city + ", description=" + description
+				+ ", flag=" + flag + ", id=" + id + ", images=" + images
+				+ ", latitude=" + latitude + ", longitude=" + longitude
+				+ ", name=" + name + ", phone=" + phone + ", place=" + place
+				+ ", state=" + state + ", timeCreated=" + timeCreated
+				+ ", type=" + type + ", version=" + version + ", website="
+				+ website + ", zip=" + zip + "]";
+	}
+	
+	
+	
 	
 
 }

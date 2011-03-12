@@ -74,15 +74,15 @@ public class HibernateAwardDao
 			{
 
 				Query query = session.createQuery(
-					"select distinct entityimpl from "+Award.class.getName()+
-					" as entityimpl where entityimpl.offer = :offer");
+					"select distinct entityimpl from "+AwardOffer.class.getName()+
+					" as entityimpl where entityimpl.id = :id");
 				
-				query.setEntity("offer", offer);
+				query.setLong("id", offer.getId());
 				
-				Award t = (Award)query.uniqueResult();
+				AwardOffer ao = (AwardOffer)query.uniqueResult();
 				
 			
-				return t;
+				return ao.getAward();
 	
 			}
 		});		

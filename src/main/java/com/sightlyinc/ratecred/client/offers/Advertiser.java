@@ -64,8 +64,8 @@ public class Advertiser {
 	@JsonProperty(value = "contact_phone")
 	private String contactPhone;
 
-	@JsonProperty(value = "title")
-	private String title;
+	@JsonProperty(value = "name")
+	private String name;
 	
 	@JsonProperty(value = "site_url")
 	private String siteUrl;
@@ -90,9 +90,7 @@ public class Advertiser {
 		return description;
 	}
 
-	public String getTitle() {
-		return title;
-	}
+
 
 	public String getSiteUrl() {
 		return siteUrl;
@@ -135,9 +133,6 @@ public class Advertiser {
 		this.advertiserLogoUrl = advertiserLogoUrl;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	public void setSiteUrl(String siteUrl) {
 		this.siteUrl = siteUrl;
@@ -154,6 +149,14 @@ public class Advertiser {
 
 	public void setExternalId(String externalId) {
 		this.externalId = externalId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
