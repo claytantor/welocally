@@ -18,9 +18,14 @@ public class Offer {
 	private String name="";
 	private String couponCode="";
 	private String description="";
+	//private String finePrint="";	
 	private String url="";
+	
+	//these could probably be native Longs
 	private String beginDateString="";
 	private String expireDateString="";
+	private String endDateString="";
+	
 	private String city="";
 	private String state="";
 	
@@ -144,6 +149,19 @@ public class Offer {
 	}
 	public void setExpireDateString(String expireDateString) {
 		this.expireDateString = expireDateString;
+	}
+	
+	public String getEndDateString() {
+		return endDateString;
+	}
+
+	public void setEndDateString(String endDateString) {
+		this.endDateString = endDateString;
+	}
+
+	public Date getEnds()
+	{
+		return DateUtils.stringToDate(endDateString, DateUtils.DESC_SIMPLE_FORMAT);
 	}
 	
 	public Date getExpire()
@@ -282,6 +300,16 @@ public class Offer {
 	public void setAdvertiser(Advertiser advertiser) {
 		this.advertiser = advertiser;
 	}
+	
+	
+/*
+	public String getFinePrint() {
+		return finePrint;
+	}
+
+	public void setFinePrint(String finePrint) {
+		this.finePrint = finePrint;
+	}*/
 
 	@Override
 	public String toString() {

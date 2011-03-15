@@ -17,8 +17,11 @@ public class AwardOffer {
 	private String name;
 	private String couponCode;
 	private String description;
+	private String finePrint;
+	
 	private String url;
 	private Long beginDateMillis;
+	private Long endDateMillis;
 	private Long expireDateMillis;
 		
 	private String discountType;
@@ -201,7 +204,23 @@ public class AwardOffer {
 	public void setItems(Set<AwardOfferItem> items) {
 		this.items = items;
 	}
-	
+		
+	public String getFinePrint() {
+		return finePrint;
+	}
+
+	public void setFinePrint(String finePrint) {
+		this.finePrint = finePrint;
+	}
+		
+	public Long getEndDateMillis() {
+		return endDateMillis;
+	}
+
+	public void setEndDateMillis(Long endDateMillis) {
+		this.endDateMillis = endDateMillis;
+	}
+
 	@Override
 	public String toString() {
 		return "AwardOffer [awardType=" + awardType + ", beginDateMillis="

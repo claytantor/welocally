@@ -11,6 +11,7 @@ public class AwardOfferItem {
 	private Long timeUpdated;	
 	
 	private String description;
+	private String extraDetails;
 
 	private String title;
 		
@@ -69,6 +70,16 @@ public class AwardOfferItem {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	
+
+	public String getExtraDetails() {
+		return extraDetails;
+	}
+
+	public void setExtraDetails(String extraDetails) {
+		this.extraDetails = extraDetails;
 	}
 
 	public void setQuantity(Integer quantity) {
