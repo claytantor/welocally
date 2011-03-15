@@ -11,6 +11,9 @@ public interface RaterAwardsService {
 	
 	public void targetAwardById(Long awardId) throws BLServiceException;
 	
+	public void saveReassignAllOffers()
+		throws BLServiceException;
+	
 	public void deleteRaterAwardOffers(Long raterId)
 		throws BLServiceException;
 

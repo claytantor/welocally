@@ -142,9 +142,19 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	
 	@Value("${MailerQueueService.smtpUsername}")
 	private String fromAddress;
-	
+		
 
-	
+	@Override
+	public void saveReassignAllOffers() throws BLServiceException {
+		List<Rater> allRaters = ratingManagerService.findRatersByStatus("USER");
+		for (Rater rater : allRaters) {
+			deleteRaterAwardOffers(rater.getId());
+			for (Award award : rater.getAwards()) {
+				targetAwardById(award.getId());
+			}
+		}
+		
+	}
 
 	@Override
 	public void targetAwardById(Long awardId) throws BLServiceException {
@@ -424,8 +434,10 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 		awardOffer.setCouponCode(offer.getCouponCode());
 		awardOffer.setBeginDateMillis(offer.getBegin().getTime());
-		awardOffer.setDescription(offer.getDescription());
 		awardOffer.setExpireDateMillis(offer.getExpire().getTime());
+		awardOffer.setEndDateMillis(offer.getEnds().getTime());
+		awardOffer.setDescription(offer.getDescription());
+		awardOffer.setExtraDetails(offer.getExtraDetails());
 		awardOffer.setExternalId(offer.getExternalId().toString());
 		awardOffer.setExternalSource(offer.getExternalSource());
 		awardOffer.setName(offer.getName());
@@ -438,6 +450,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		awardOffer.setIllustrationUrl(offer.getIllustrationUrl());
 		awardOffer.setPrice(offer.getPrice());
 		awardOffer.setValue(offer.getValue());
+		awardOffer.setQuantity(offer.getQuantity());
+		
 		
 		//offer items
 		for (Item item : offer.getItems()) {
@@ -790,15 +804,23 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		Offer offer = new Offer();
 		offer.setExternalId(aoffer.getId());
 		offer.setBeginDateString(aoffer.getStartDate());
+		
+		if(!StringUtils.isEmpty(aoffer.getOfferClosedDate()))
+			offer.setEndDateString(aoffer.getOfferClosedDate());
+		else			
+			offer.setEndDateString(aoffer.getEndDate());
+		
+		offer.setExpireDateString(aoffer.getEndDate());
+		
 		if(aoffer.getAdvertiser().getRedemptionLocations().size()>0)
 		{
 			offer.setCity(aoffer.getAdvertiser().getRedemptionLocations().get(0).getCity());
 			offer.setState(aoffer.getAdvertiser().getRedemptionLocations().get(0).getState());
 		}
-		if(aoffer.getDescription() == null)
-			offer.setDescription(aoffer.getFineprint());
-		else	
-			offer.setDescription(aoffer.getDescription());
+		
+		offer.setDescription(aoffer.getDescription());
+		offer.setExtraDetails(aoffer.getFineprint());
+		
 		
 		offer.setDiscountType(aoffer.getDiscountType());
 		offer.setType(aoffer.getType());
@@ -874,7 +896,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			
 			//not locations or id
 			dest.setDescription(advertiser.getDescription());
-			dest.setAdvertiserLogoUrl(advertiser.getLogo().getUrl());
+			//dest.setAdvertiserLogoUrl(advertiser.getLogo().getUrl());
 			
 			if(advertiser.getCategories() != null && advertiser.getCategories().size()>0)
 			{
