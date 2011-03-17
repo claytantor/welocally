@@ -83,8 +83,8 @@ public class SaveNewAwardMessageListener implements MessageListener {
             	Rater r = ratingManagerService.findRaterByPrimaryKey(raterPk);
             	Award award = (Award)userData.get("award");
             	
-            	
-            	raterAwardsService.saveNewAward(award, awardType, r);
+            	//null offer will automatically target
+            	raterAwardsService.saveNewAward(award, awardType, r, null);
             	
             }
         	

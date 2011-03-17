@@ -64,7 +64,7 @@ public class RaterAwardsUpdateOffersJob extends QuartzJobBean {
 			
 			logger.debug("number of expired offers:"+expired.size());
 			
-			for (AwardOffer awardOffer : expired) {
+			/*for (AwardOffer awardOffer : expired) {
 				//logger.debug(awardOffer.getOffer().getExpireDateMillis());
 				
 				//delete any expired offer
@@ -96,7 +96,7 @@ public class RaterAwardsUpdateOffersJob extends QuartzJobBean {
 				} 
 				
 				
-			}
+			}*/
 			
 			
 			

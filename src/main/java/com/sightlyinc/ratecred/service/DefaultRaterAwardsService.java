@@ -145,13 +145,24 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 
 	@Override
-	public void saveReassignAllOffers() throws BLServiceException {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public void reassignAllOffers() throws BLServiceException {
 		List<Rater> allRaters = ratingManagerService.findRatersByStatus("USER");
 		for (Rater rater : allRaters) {
 			deleteRaterAwardOffers(rater.getId());
 			for (Award award : rater.getAwards()) {
 				targetAwardById(award.getId());
 			}
+		}
+		
+	}
+	
+	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public void removeAllOffers() throws BLServiceException {
+		List<Rater> allRaters = ratingManagerService.findRatersByStatus("USER");
+		for (Rater rater : allRaters) {
+			deleteRaterAwardOffers(rater.getId());
 		}
 		
 	}
@@ -297,7 +308,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	 * 
 	 */
 	@Override
-	public Long saveNewAward(Award award, AwardType awardType, Rater r) 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public Long saveNewAward(Award award, AwardType awardType, Rater r, AwardOffer aoffer) 
 		throws BLServiceException {
 		
 		PlaceCityState pcs = null;
@@ -334,7 +346,14 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		award.setStatus("GIVEN");
 		award.setExpiresMills(0l);
 		
-		giveAwardOffer( award,  awardType,  r,  p,  pcs) ;
+		if(aoffer == null)
+			giveAwardOffer( award,  awardType,  r,  p,  pcs) ;
+		else {
+			aoffer.setAwardType(awardType);
+			awardManagerService.saveAwardOffer(aoffer);
+			award.getOffers().add(aoffer);
+		}
+		
 		awardManagerService.saveAward(award);
 		
 		//now tweet the award, if you can

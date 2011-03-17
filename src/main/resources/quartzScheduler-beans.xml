@@ -6,12 +6,13 @@
 	    <property name="triggers">
 	        <list>
 	        	<ref bean="raterAwardsUpdateOffersTrigger" />
+	        	<ref bean="unlockOffersTrigger" />
 	            <!-- <ref bean="offerCheckTrigger" />
 	            <ref bean="raterAwardsTrigger" /> -->
 	        </list>
 	    </property>
 		<!-- <property name="dataSource" ref="LocalDS"/> -->
-	    <!-- <property name="transactionManager" ref="ApplicationTransactionManager"/>-->
+	    <property name="transactionManager" ref="ApplicationTransactionManager"/>
 	</bean>
 	
 	

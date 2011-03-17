@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	
+	<bean name="unlockOffersJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="com.sightlyinc.ratecred.admin.job.UnlockOffersJob" />
+	  <property name="jobDataAsMap">
+	    <map>
+	      <entry key="sessionFactory">
+	      		<ref bean="ApplicationSessionFactory" />
+	      </entry>	    
+	      <entry key="ratingManagerService">
+	      		<ref bean="RatingManagerService" />
+	      </entry>
+	      <entry key="awardManagerService">
+	      		<ref bean="awardManagerService" />
+	      </entry>
+	      <entry key="raterAwardsService">
+	      		<ref bean="raterAwardsService" />
+	      </entry>	
+	      <entry key="ratecredTwitterConsumerKey">
+	      		<value>${twitter.rateCredOAuth.appConsumerKey}</value>
+	      </entry>	
+	      <entry key="ratecredTwitterConsumerSecret">
+	      		<value>${twitter.rateCredOAuth.appSecretKey}</value>
+	      </entry>	 	            	      	      	      	       	       	          
+	    </map>
+	  </property>
+	</bean>
+
+	
+	<bean id="unlockOffersTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	    <property name="jobDetail" ref="unlockOffersJob" />
+	    <!-- run at 15m every hour -->
+	    <property name="cronExpression" value="${unlockOffersTrigger.cronExpression}" />
+	</bean>
+	
+	
+</beans>
