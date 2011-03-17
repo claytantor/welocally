@@ -19,7 +19,8 @@ public interface AwardManagerService {
 	
 	public Award findAwardByPrimaryKey(Long awardId) throws BLServiceException;
 	
-	public Award findAwardByOffer(AwardOffer offer) throws BLServiceException;
+	public List<Award> findAwardByOffer(AwardOffer offer) throws BLServiceException;
+	public List<Award> findAwardByOfferRater(AwardOffer offer,Rater r) throws BLServiceException;
 	
 	public List<Award> findAwardByRaterAwardType(Rater r, AwardType at) throws BLServiceException;
 	public List<Award> findAwardByRaterTypeCity(Rater r, AwardType at, PlaceCityState pcs) throws BLServiceException;

@@ -2,17 +2,23 @@
 package com.sightlyinc.ratecred.dao;
 
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transaction;
+
 import org.apache.log4j.Logger;
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardOffer;
@@ -67,8 +73,8 @@ public class HibernateAwardDao
 
 
 	@Override
-	public Award findByOffer(final AwardOffer offer) {
-    	return (Award)getHibernateTemplateOverride().execute(new HibernateCallback() {
+	public List<Award> findByOffer(final AwardOffer offer) {
+    	return (List)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 			throws HibernateException, SQLException 
 			{
@@ -79,10 +85,35 @@ public class HibernateAwardDao
 				
 				query.setLong("id", offer.getId());
 				
-				AwardOffer ao = (AwardOffer)query.uniqueResult();
+				List list = query.list();
 				
-			
-				return ao.getAward();
+				return list;
+	
+			}
+		});		
+	}
+
+
+
+
+	@Override
+	public List<Award> findByOfferRater(final AwardOffer offer, final Rater r) {
+		return (List)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+					"select distinct entityimpl from "+AwardOffer.class.getName()+
+					" as entityimpl where entityimpl.id = :id and" +
+					" entityimpl.award.owner = :owner");
+				
+				query.setLong("id", offer.getId());
+				query.setEntity("owner", r);
+				
+				List list = query.list();
+				
+				return list;
 	
 			}
 		});		
@@ -335,6 +366,28 @@ public class HibernateAwardDao
 
 	@Override
 	public void save(Award entity) {
+		/*//should not have to do this
+		try {
+			//bind to thread			
+	        //Session session = SessionFactoryUtils.getSession(super.getSessionFactory(), true); 
+			Session session = SessionFactoryUtils.getNewSession(super.getSessionFactory());
+			org.hibernate.Transaction t = session.beginTransaction();
+			TransactionSynchronizationManager.setCurrentTransactionReadOnly(false);
+	        TransactionSynchronizationManager.bindResource(super.getSessionFactory(), new SessionHolder(session)); 
+			session.setFlushMode(FlushMode.AUTO);
+									
+			session.save(entity);
+			
+			t.commit();
+		
+			
+		} catch (DataAccessException e) {
+			logger.error("cant save", e);
+		} catch (Exception e) {
+			logger.error("cant save", e);
+		}*/
+		
+		
 		getHibernateTemplateOverride().save(entity);		
 	}
     

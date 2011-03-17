@@ -15,7 +15,7 @@
 		<property name="target"><ref local="RatingManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
 			<props>
-				<prop key="find*">PROPAGATION_REQUIRED,readOnly, -BLServiceException</prop>
+				<prop key="find*">PROPAGATION_REQUIRED, -BLServiceException</prop>
 				<prop key="save*">PROPAGATION_REQUIRED, -BLServiceException</prop>
 				<prop key="delete*">PROPAGATION_REQUIRED, -BLServiceException</prop>
 			</props>

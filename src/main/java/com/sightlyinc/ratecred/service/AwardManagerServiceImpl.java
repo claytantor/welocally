@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;
@@ -48,9 +49,15 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 		return awardOfferDao.findExpired();
 	}
 
+	@Override
+	public List<Award> findAwardByOfferRater(AwardOffer offer, Rater r)
+			throws BLServiceException {
+		return awardDao.findByOfferRater(offer, r);
+	}
+
 
 	@Override
-	public Award findAwardByOffer(AwardOffer offer) throws BLServiceException {
+	public List<Award> findAwardByOffer(AwardOffer offer) throws BLServiceException {
 		return awardDao.findByOffer(offer);
 	}
 

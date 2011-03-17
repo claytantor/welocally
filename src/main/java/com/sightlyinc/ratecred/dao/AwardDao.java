@@ -18,7 +18,8 @@ public interface AwardDao {
 	public List<Award> findByOwnerBetweenTimes(Rater towards, Date startTime, Date endTime);
 	public List<Award> findByOwner(Rater towards);
 	
-	public Award findByOffer(AwardOffer offer);
+	public List<Award> findByOffer(AwardOffer offer);
+	public List<Award> findByOfferRater(AwardOffer offer, Rater r);
 	//public List<Award> findByOfferExpired();
 	
 	public List<Award> findByOwnerAwardType(Rater towards, AwardType at);
