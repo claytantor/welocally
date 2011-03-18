@@ -117,25 +117,29 @@ public class UnlockOffersJob extends QuartzJobBean {
 					Rater raterWhoRequested = 
 						ratingManagerService.findRaterByUsername(request.getFromUser());
 					
-					List<Award> offerGiven =
-						awardManagerService.findAwardByOfferRater(offerUnlocked, raterWhoRequested);
-					
-					//dont award unlock more than once 
-					if(offerGiven.size() == 0) {
+					if(offerUnlocked != null && raterWhoRequested !=null)
+					{
+						List<Award> offerGiven =
+							awardManagerService.findAwardByOfferRater(offerUnlocked, raterWhoRequested);
 						
-						AwardType awardType = 
-							awardManagerService.findAwardTypeByKey("unlocked");
-						Award unlockAward = new Award();
-						unlockAward.setGiveOffer(true);
-						unlockAward.setStatus("GIVEN");
-						unlockAward.setNotes("@"+request.getToUser()+" has unlocked an offer for you.");
-						Long now = Calendar.getInstance().getTimeInMillis();
-						unlockAward.setTimeCreatedMills(now);
-						
-						raterAwardsService.saveNewAward(
-								unlockAward, awardType, raterWhoRequested, offerUnlocked);
-						
+						//dont award unlock more than once 
+						if(offerGiven.size() == 0) {
+							
+							AwardType awardType = 
+								awardManagerService.findAwardTypeByKey("unlocked");
+							Award unlockAward = new Award();
+							unlockAward.setGiveOffer(true);
+							unlockAward.setStatus("GIVEN");
+							unlockAward.setNotes("@"+request.getToUser()+" has unlocked an offer for you.");
+							Long now = Calendar.getInstance().getTimeInMillis();
+							unlockAward.setTimeCreatedMills(now);
+							
+							raterAwardsService.saveNewAward(
+									unlockAward, awardType, raterWhoRequested, offerUnlocked);
+							
+						}
 					}
+					
 					
 					
 				}
