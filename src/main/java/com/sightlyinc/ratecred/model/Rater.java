@@ -5,40 +5,68 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.noi.utility.hibernate.ImageValue;
 
 
 public class Rater  {
 	
+	@JsonProperty
 	protected Long id;
+	
+	@JsonProperty
 	protected Integer version = new Integer(0);
+	
+	@JsonProperty
 	protected String userName;
+	
+	@JsonProperty
 	protected String secretKey;
+	
+	@JsonProperty
 	protected Date timeCreated;
+	
+	@JsonProperty
 	protected Long score;
+	
+	@JsonProperty
 	protected String authGuid;
+	
+	@JsonProperty
 	protected String status;	
+	
+	@JsonProperty
 	protected ImageValue raterImage;
+	
+	@JsonProperty
 	protected java.lang.Long imageValueId;
 	
-	
+	@JsonIgnore
 	private String authFoursquare = "false";
+	
+	@JsonIgnore
 	private String authGowalla = "false";
 	
+	@JsonIgnore
 	protected Set<Rating> ratings= new HashSet<Rating>();
 	
+	@JsonIgnore
 	protected Set<Award> awards = new HashSet<Award>();
 	
+	@JsonIgnore
 	protected Set<Compliment> compliments = new HashSet<Compliment>();
 	
+	@JsonIgnore
 	protected RaterMetrics metrics;
 	
 
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getImageValueId()
 	 */
+	@JsonProperty
 	public java.lang.Long getImageValueId() {
 		return imageValueId;
 	}
@@ -46,6 +74,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setImageValueId(java.lang.Long)
 	 */
+	@JsonProperty
 	public void setImageValueId(java.lang.Long imageValueId) {
 		this.imageValueId = imageValueId;
 	}
@@ -53,15 +82,18 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getRaterImage()
 	 */
+	@JsonIgnore
 	public ImageValue getRaterImage() {
 		return raterImage;
 	}
 	
 
+	@JsonIgnore
 	public Set<Compliment> getCompliments() {
 		return compliments;
 	}
 
+	@JsonIgnore
 	public void setCompliments(Set<Compliment> compliments) {
 		this.compliments = compliments;
 	}
@@ -69,6 +101,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setRaterImage(com.noi.utility.hibernate.ImageValue)
 	 */
+	@JsonIgnore
 	public void setRaterImage(ImageValue raterImage) {
 		this.raterImage = raterImage;
 	}
@@ -76,6 +109,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getAuthGuid()
 	 */
+	@JsonProperty
 	public String getAuthGuid() {
 		return authGuid;
 	}
@@ -83,6 +117,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setAuthGuid(java.lang.String)
 	 */
+	@JsonProperty
 	public void setAuthGuid(String authGuid) {
 		this.authGuid = authGuid;
 	}
@@ -92,6 +127,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getTimeCreated()
 	 */
+	@JsonIgnore
 	public Date getTimeCreated() {
 		return timeCreated;
 	}
@@ -99,6 +135,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setTimeCreated(java.util.Date)
 	 */
+	@JsonIgnore
 	public void setTimeCreated(Date timeCreated) {
 		this.timeCreated = timeCreated;
 	}
@@ -106,6 +143,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getVersion()
 	 */
+	@JsonProperty
 	public Integer getVersion() {
 		return version;
 	}
@@ -113,6 +151,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setVersion(java.lang.Integer)
 	 */
+	@JsonProperty
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
@@ -120,6 +159,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getSecretKey()
 	 */
+	@JsonProperty
 	public String getSecretKey() {
 		return secretKey;
 	}
@@ -127,6 +167,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setSecretKey(java.lang.String)
 	 */
+	@JsonProperty
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
 	}
@@ -134,6 +175,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getId()
 	 */
+	@JsonProperty
 	public Long getId() {
 		return id;
 	}
@@ -141,6 +183,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setId(java.lang.Long)
 	 */
+	@JsonProperty
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -148,6 +191,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getUserName()
 	 */
+	@JsonProperty
 	public String getUserName() {
 		return userName;
 	}
@@ -155,6 +199,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setUserName(java.lang.String)
 	 */
+	@JsonProperty
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
@@ -162,6 +207,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getRatings()
 	 */
+	@JsonProperty
 	public Set<Rating> getRatings() {
 		return ratings;
 	}
@@ -169,6 +215,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setRatings(java.util.Set)
 	 */
+	@JsonIgnore
 	public void setRatings(Set<Rating> ratings) {
 		this.ratings = ratings;
 	}
@@ -177,6 +224,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getStatus()
 	 */
+	@JsonProperty
 	public String getStatus() {
 		return status;
 	}
@@ -184,6 +232,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setStatus(java.lang.String)
 	 */
+	@JsonProperty
 	public void setStatus(String status) {
 		this.status = status;
 	}
@@ -196,6 +245,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getScore()
 	 */
+	@JsonProperty
 	public Long getScore() {
 		return score;
 	}
@@ -203,6 +253,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setScore(java.lang.Long)
 	 */
+	@JsonProperty
 	public void setScore(Long score) {
 		this.score = score;
 	}
@@ -210,6 +261,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getAwards()
 	 */
+	@JsonIgnore
 	public Set<Award> getAwards() {
 		return awards;
 	}
@@ -217,6 +269,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setAwards(java.util.Set)
 	 */
+	@JsonIgnore
 	public void setAwards(Set<Award> awards) {
 		this.awards = awards;
 	}
@@ -224,6 +277,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getMetrics()
 	 */
+	@JsonIgnore
 	public RaterMetrics getMetrics() {
 		return metrics;
 	}
@@ -231,6 +285,7 @@ public class Rater  {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#setMetrics(com.sightlyinc.ratecred.model.RaterMetrics)
 	 */
+	@JsonIgnore
 	public void setMetrics(RaterMetrics metrics) {
 		this.metrics = metrics;
 	}

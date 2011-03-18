@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.noi.utility.string.StringUtils;
 
@@ -13,25 +14,37 @@ public class RatingAttribute {
 	private String name;
 	private String type;
 	
+	@JsonProperty
 	public Long getId() {
 		return id;
 	}
+	
+	@JsonProperty
 	public void setId(Long id) {
 		this.id = id;
 	}	
 
+	@JsonProperty
 	public String getName() {
 		return name;
 	}
+	
+	@JsonProperty
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@JsonProperty
 	public String getType() {
 		return type;
 	}
+	
+	@JsonProperty
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
