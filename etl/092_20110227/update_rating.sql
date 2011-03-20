@@ -1,0 +1,1 @@
+ALTER TABLE `ratecred_092_dev`.`rating` MODIFY COLUMN `checkin_gowalla` VARCHAR(254) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL;
