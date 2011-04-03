@@ -12,6 +12,9 @@ import com.sightlyinc.ratecred.model.Rater;
 
 public interface AwardManagerService {
 	
+	public AwardOffer findAwardOfferByPrimaryKeywordsAndLocation(
+			List<String> keywords, Double lat, Double lon) throws BLServiceException;
+	
 	public List<AwardType> findBusinessAwardTypes() throws BLServiceException;
 	public List<AwardType> findAllAwardTypes() throws BLServiceException;		
 	public List<AwardOffer> findExpiredAwardOffers() throws BLServiceException;

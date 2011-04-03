@@ -43,7 +43,7 @@ public class DefaultLinkManagerService implements LinkManagerService {
 
 
 	public void initLinkCache() {
-		if(!fetchDisabled)
+		if(false)
 		{
 
 				NetworkResponse response = linkClient.getNetworkResponse(webLinksRequest);

@@ -37,6 +37,15 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 	
 	@Override
+	public AwardOffer findAwardOfferByPrimaryKeywordsAndLocation(
+			List<String> keywords, Double lat, Double lon)
+			throws BLServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
 	public void deleteAwardOffer(AwardOffer awardOffer)
 			throws BLServiceException {
 		awardOfferDao.delete(awardOffer);

@@ -2,14 +2,20 @@ package com.sightlyinc.ratecred.client.offers;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
 
 public class Offer {
+	
+	static Logger logger = Logger.getLogger(Offer.class);
+	
 	private Long id = new Long(0);
 	private String externalId = "";
 	private String externalSource ="";
@@ -66,6 +72,7 @@ public class Offer {
 	}
 	
 	public void addScore(int value) {
+		logger.debug("adding:"+value+" to score:"+this.score+" name:"+this.getName());
 		this.score = this.score+value;
 	}
 	
@@ -73,7 +80,8 @@ public class Offer {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(int score) {
+		logger.debug("setting score:"+score+" name:"+this.getName());
 		this.score = score;
 	}
 
@@ -301,15 +309,29 @@ public class Offer {
 		this.advertiser = advertiser;
 	}
 	
-	
-/*
-	public String getFinePrint() {
-		return finePrint;
-	}
 
-	public void setFinePrint(String finePrint) {
-		this.finePrint = finePrint;
-	}*/
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Object clone = new Offer();
+		try {
+			
+			clone = org.apache.commons.beanutils.BeanUtils.cloneBean(this);
+			
+			
+		} catch (IllegalAccessException e) {
+			throw new CloneNotSupportedException("cannot make clone");
+		} catch (InvocationTargetException e) {
+			throw new CloneNotSupportedException("cannot make clone");
+		} catch (InstantiationException e) {
+			throw new CloneNotSupportedException("cannot make clone");
+		} catch (NoSuchMethodException e) {
+			throw new CloneNotSupportedException("cannot make clone");
+		}
+		
+		return clone;
+		
+	}
 
 	@Override
 	public String toString() {

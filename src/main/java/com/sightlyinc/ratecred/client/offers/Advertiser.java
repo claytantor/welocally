@@ -159,6 +159,15 @@ public class Advertiser {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		return "Advertiser [advertiserLogoUrl=" + advertiserLogoUrl
+				+ ", categoryId=" + categoryId + ", contactPhone="
+				+ contactPhone + ", description=" + description
+				+ ", externalId=" + externalId + ", id=" + id + ", locations="
+				+ locations + ", name=" + name + ", siteUrl=" + siteUrl + "]";
+	}
+
 
 
 	

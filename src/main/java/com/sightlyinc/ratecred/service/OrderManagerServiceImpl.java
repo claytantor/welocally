@@ -18,9 +18,7 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 	
 	static Logger logger = 
 		Logger.getLogger(OrderManagerServiceImpl.class);
-	
-
-	
+		
 	@Autowired
 	private OrderDao orderDao;
 	
@@ -32,8 +30,6 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 	public List<Order> findOrdersByRater(Rater rater) throws BLServiceException {
 		return orderDao.findByOwner(rater);
 	}
-
-
 
 	@Override
 	public Long saveOrder(Order order) throws BLServiceException {

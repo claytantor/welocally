@@ -3,19 +3,24 @@ package com.sightlyinc.ratecred.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.sightlyinc.ratecred.client.offers.Offer;
 import com.sightlyinc.ratecred.client.offers.OfferClient;
 import com.sightlyinc.ratecred.client.offers.OfferFeedException;
 
+@Service("offerPoolService")
 public class DefaultOfferPoolService implements OfferPoolService {
-	
-	
+		
 	static Logger logger = 
 		Logger.getLogger(DefaultOfferPoolService.class);
 	
-	private List<OfferClient> clients;
+	private List<OfferClient> clients = new ArrayList<OfferClient>();
 	
 	private List<Offer> offerPool = new ArrayList<Offer>();
 	
@@ -26,12 +31,30 @@ public class DefaultOfferPoolService implements OfferPoolService {
 		logger.debug("constructor");
 	}	
 	
+	
+	//we are doing this to get over autowiring problems with the 
+	//client list
+	
+	@Autowired
+	@Qualifier("adilityOfferClient")
+	private OfferClient adilityOfferClient;
+	
+	
 	@Override
 	public void addOffersToPool(List<Offer> offers) {
 		offerPool.addAll(offers);		
 	}
 
+	@PostConstruct
 	public void refresh() {
+		
+		//get the clients
+		if(clients.size() == 0) {
+			//setup the adility requests			
+			clients.add(adilityOfferClient);
+		}
+				
+		//try to fetch
 		try {
 			if(!fetchDisabled)
 			{
@@ -49,6 +72,8 @@ public class DefaultOfferPoolService implements OfferPoolService {
 		} catch (Exception e) {
 			logger.error("cannot refresh", e);
 		}
+		
+		logger.debug("offers fetched");
 	}
 
 	/* (non-Javadoc)
@@ -56,8 +81,7 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	 */
 	public List<Offer> getOfferPool()
 	{
-		return offerPool;
-		
+		return offerPool;		
 	}
 
 

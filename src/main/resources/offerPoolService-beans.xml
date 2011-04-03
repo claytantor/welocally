@@ -3,25 +3,49 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
            http://www.springframework.org/schema/aop
-           http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
            http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context-2.1.xsd">
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/util 
+           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	<bean id="offerPoolService" 
-		class="com.sightlyinc.ratecred.service.DefaultOfferPoolService"
-		init-method="refresh">
-		<property name="clients">
-			<list>
-			  <ref bean="comissionJunctionOfferClient"/>
-			  <ref bean="ratecredOfferClient"/>
-			</list>
-		</property>	
-		<property name="fetchDisabled" value="${offerPoolService.fetchDisabled}"/>						
+	
+	<!-- <util:list id="clientList"/> 
+
+	
+	<util:list id="requestModelList">
+		<bean class="com.adility.resources.model.RequestModel">
+			<constructor-arg index="0">
+				<map>
+			        <entry key="city" value="San Francisco"/>
+			        <entry key="state" value="CA"/>
+			        <entry key="distance" value="15"/>
+			      </map>			
+			</constructor-arg>
+			<constructor-arg index="1">
+				<value>json</value>	
+			</constructor-arg>			
+		</bean>
+	</util:list>-->
+	
+	<bean class="com.adility.resources.model.RequestModel" id="sanFranciscoRequestModel">
+			<constructor-arg index="0">
+				<map>
+			        <entry key="city" value="San Francisco"/>
+			        <entry key="state" value="CA"/>
+			        <entry key="distance" value="15"/>
+			      </map>			
+			</constructor-arg>
+			<constructor-arg index="1">
+				<value>json</value>	
+			</constructor-arg>			
 	</bean>
 	
+	<!-- obsolete -->
 	<bean id="pepperJamOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.PepperJamOfferClient">
 		<property name="protocol" value="http"/>
@@ -31,7 +55,7 @@
 		<property name="sourceName" value="PEPPERJAM"/>
 	</bean>
 	
-
+	<!-- no offers here! -->
 	<!-- http://media.ratecred.com.s3.amazonaws.com/dev/data/ratecred-offers.csv -->
 	<bean id="ratecredOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.RatecredOfferClient">
@@ -42,12 +66,15 @@
 		<property name="sourceName" value="RATECRED"/>
 	</bean>	
 	
+	<!-- lame -->
 	<bean id="comissionJunctionOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.ComissionJunctionOfferClient">
 		<property name="sourceName" value="CJ"/>
 		<property name="webLinksRequest"><ref bean="offerLinksRequestModel"/></property>
 		<property name="linkClient"><ref bean="linkClient"/></property>
 	</bean>
+	
+	
 		
 	<bean id="offerLinksRequestModel" 
 		class="com.sightlyinc.ratecred.client.link.LinkClientRequest">
