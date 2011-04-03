@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<rule-set name="offer01"
+<rule-set name="target_offers"
           xmlns="http://drools.org/rules"
           xmlns:java="http://drools.org/semantics/java"
           xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
@@ -10,97 +10,44 @@
     <import>com.sightlyinc.ratecred.client.offers.Offer</import>
     <import>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</import>
     
-    <rule name="placeOffer" salience="80">
-        <parameter identifier="offer">
+    
+    <rule name="addOffer" salience="80">
+   		<parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
-		<parameter identifier="award_offer">
-            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+		<parameter identifier="offer_target">
+            <class>com.sightlyinc.ratecred.admin.model.OfferTargetEvaluator</class>
         </parameter> 
-        <java:condition>offer.isVisible()</java:condition> 
-        <java:condition>award_offer.isExternalSource("RATECRED", offer)</java:condition>      
-        <java:condition>award_offer.isPlaceOffer(offer)</java:condition>
-              
+        <java:condition>offer.isVisible()</java:condition>  
+        <java:condition>offer_target.isExternalSource("ADILITY", offer)</java:condition>
+        
+        
         <java:consequence>
-            offer.addScore(50); 
-        	award_offer.addOfferToCache(offer);
+        	offer_target.addOfferToCache(offer); 
         </java:consequence>
-    </rule> 
+    </rule>       
+ 
     
-      
-
     <rule name="localOffer" salience="40">
         <parameter identifier="offer">
             <class>com.sightlyinc.ratecred.client.offers.Offer</class>
         </parameter>
-		<parameter identifier="award_offer">
-            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
+		<parameter identifier="offer_target">
+            <class>com.sightlyinc.ratecred.admin.model.OfferTargetEvaluator</class>
         </parameter> 
         <java:condition>offer.isVisible()</java:condition>  
-        <java:condition>award_offer.isExternalSource("ADILITY", offer)</java:condition>     
-        <java:condition>award_offer.isLocalOffer(offer)</java:condition>
-        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
+        <java:condition>offer_target.isExternalSource("ADILITY", offer)</java:condition>     
+        <java:condition>offer_target.isLocalOffer(offer)</java:condition>
               
         <java:consequence>
-        	offer.addScore(10); 
-        	award_offer.addOfferToCache(offer);
+        	offer.addScore(5); 
         </java:consequence>
     </rule>
     
-    <rule name="locallyRatedOffer" salience="40">
-        <parameter identifier="offer">
-            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
-        </parameter>
-		<parameter identifier="award_offer">
-            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
-        </parameter> 
-        <java:condition>offer.isVisible()</java:condition>     
-        <java:condition>award_offer.isExternalSource("ADILITY", offer)</java:condition>  
-        <java:condition>award_offer.isRatedInCityOffer(offer)</java:condition>
-        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
-              
-        <java:consequence>
-           offer.addScore(5);  
-           award_offer.addOfferToCache(offer);
-        </java:consequence>
-    </rule>
-    
-	<rule name="adilityOffer" salience="40">
-        <parameter identifier="offer">
-            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
-        </parameter>
-		<parameter identifier="award_offer">
-            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
-        </parameter> 
-        <java:condition>offer.isVisible()</java:condition>             
-        <java:condition>award_offer.isExternalSource("ADILITY", offer)</java:condition>
-        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
-              
-        <java:consequence>
-            offer.addScore(2);  
-            award_offer.addOfferToCache(offer);
-        </java:consequence>
-    </rule>
-    
-	<rule name="cjOffer" salience="40">
-        <parameter identifier="offer">
-            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
-        </parameter>
-		<parameter identifier="award_offer">
-            <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
-        </parameter> 
-        <java:condition>offer.isVisible()</java:condition>             
-        <java:condition>award_offer.isExternalSource("CJ", offer)</java:condition>
-        <java:condition>award_offer.isOfferNotGiven(offer)</java:condition>
-              
-        <java:consequence>
-            offer.addScore(1);  
-            award_offer.addOfferToCache(offer);
-        </java:consequence>
-    </rule> 
-    
-	  
+        
+   
        
-	
+     
+    
 	
   </rule-set>

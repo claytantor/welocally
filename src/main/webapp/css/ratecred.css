@@ -1,4 +1,5 @@
 
+
 html, body {	
 	width: 100%;
 	height: 100%;
@@ -1786,3 +1787,8 @@ background-color: #F2F2F2;
 
 
 .business_offer_type_img { width:64px; height:64px; }
+
+.ratecred_offer_widget { padding: 0; margin: 0; }
+ul.ratecred_offer_widget { padding: 0; margin: 0; }
+li.ratecred_offer_widget { padding: 0; margin: 0; }
+

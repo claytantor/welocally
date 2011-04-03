@@ -22,6 +22,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -32,7 +34,6 @@ import org.xml.sax.SAXException;
 import com.sightlyinc.ratecred.admin.model.CityStateEvaluator;
 import com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
-import com.sightlyinc.ratecred.admin.mvc.controller.TestRulesController;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rater;
@@ -53,6 +54,8 @@ public class RaterAwardsJob extends QuartzJobBean {
 	
 	private RatingManagerService ratingManagerService;
 	
+	@Autowired
+	@Qualifier("offerPoolService")
 	private OfferPoolService offerPoolService;
 	
 	private AwardManagerService awardManagerService;

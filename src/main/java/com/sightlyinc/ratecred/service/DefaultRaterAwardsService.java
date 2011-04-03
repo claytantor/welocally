@@ -1,6 +1,8 @@
 package com.sightlyinc.ratecred.service;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.annotation.PostConstruct;
 import javax.jms.JMSException;
 
 import org.apache.log4j.Logger;
@@ -43,6 +46,7 @@ import com.adility.resources.model.Illustration;
 import com.adility.resources.model.Money;
 import com.adility.resources.model.OffersResponse;
 import com.adility.resources.model.RequestModel;
+import com.noi.utility.bean.BeanUtils;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.spring.service.BLServiceException;
@@ -53,7 +57,10 @@ import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.admin.jms.SaveNewAwardMessageProducer;
 import com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageProducer;
 import com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator;
+import com.sightlyinc.ratecred.admin.model.OfferSearchModel;
+import com.sightlyinc.ratecred.admin.model.OfferTargetEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
+import com.sightlyinc.ratecred.admin.model.TargetModel;
 import com.sightlyinc.ratecred.admin.velocity.BusinessServicesPlaceAwardGenerator;
 import com.sightlyinc.ratecred.client.offers.Advertiser;
 import com.sightlyinc.ratecred.client.offers.Item;
@@ -134,6 +141,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Value("${RatingController.supressTwitterPublish}")
 	private Boolean supressTwitterPublish;
 	
+	@Value("${raterAwardsService.awardOfferRulesUrl}")
+	private String awardOfferRulesUrl;
+	
 	@Value("${raterAwardsService.offerRulesUrl}")
 	private String offerRulesUrl;
 	
@@ -142,7 +152,29 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	
 	@Value("${MailerQueueService.smtpUsername}")
 	private String fromAddress;
+	
+	
+	private RuleBase ruleBase ;
 		
+	
+	@PostConstruct
+    public void setUpOffersTargetingWorkingMemory() {
+		
+			logger.debug("getting offer targeting rule base:"+"http://media.ratecred.com.s3.amazonaws.com/dev/data/offer.java.drl");
+			
+			try {
+				ruleBase = RuleBaseLoader.loadFromUrl(new URL("http://media.ratecred.com.s3.amazonaws.com/dev/data/offer.java.drl"));
+			} catch (IntegrationException e) {
+				logger.error("IntegrationException", e);
+			} catch (MalformedURLException e) {
+				logger.error("IntegrationException", e);
+			} catch (SAXException e) {
+				logger.error("IntegrationException", e);
+			} catch (IOException e) {
+				logger.error("IntegrationException", e);
+			}
+        
+    }
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -188,6 +220,74 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		}
 		
 	}
+	
+	@Override
+	public Offer targetOfferByTargetingModel(TargetModel targetModel) throws BLServiceException {
+		
+		try {			
+
+			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+			
+			List<Offer> offersRaw = offerPoolService.getOfferPool();
+			
+			
+			boolean dynamic = true;
+			
+			//only do this if there are offers to work with
+			if(offersRaw.size()>0)
+			{
+				for (Offer offer : offersRaw) {
+					logger.debug("asserting offer:"+offer.getName());
+					
+				
+					//use a cloned offer
+					workingMemory.assertObject((Offer)offer.clone(), dynamic);
+				}
+				
+				
+				//now add the offer evaluator
+				OfferTargetEvaluator awardOfferEval = new OfferTargetEvaluator(
+						targetModel.getKeywords(),
+						new PlaceCityState(targetModel.getCity(), targetModel.getState(), null));
+				
+				workingMemory.assertObject(awardOfferEval, dynamic);
+				
+				workingMemory.fireAllRules();
+				
+				awardOfferEval.chooseBestOffers();
+				
+				//this really should not just return the 
+				//offer but set it to the award based on the award type
+				if(awardOfferEval.getTargetedOffers().size()>0) {
+					Offer bestOffer = awardOfferEval.getTargetedOffers().get(0);
+					logger.debug("best offer found:"+bestOffer.toString());
+					return bestOffer;
+				}
+				else //backup plan
+				{
+					List<Offer> offersFiltered = new ArrayList<Offer>();
+					for (Offer offer : offersRaw) {
+						if (offer.isVisible())
+							offersFiltered.add(offer);
+					}
+					return offersFiltered.get(0);
+				}
+				
+			} else 
+				return null;
+			
+
+
+		} catch (FactException e) {
+			logger.error("FactException", e);
+			throw new BLServiceException(e);
+		} catch (CloneNotSupportedException e) {
+			logger.error("CloneNotSupportedException", e);
+			throw new BLServiceException(e);
+		} 		
+		
+	}
+	
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -642,7 +742,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		try {
 			
 			//offerRulesUrl
-			RuleBase ruleBase = RuleBaseLoader.loadFromUrl(new URL(offerRulesUrl));
+			RuleBase ruleBase = RuleBaseLoader.loadFromUrl(new URL(awardOfferRulesUrl));
 
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 			

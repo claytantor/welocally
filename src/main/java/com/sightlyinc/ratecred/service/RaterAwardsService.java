@@ -2,12 +2,16 @@ package com.sightlyinc.ratecred.service;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
+import com.sightlyinc.ratecred.admin.model.TargetModel;
+import com.sightlyinc.ratecred.client.offers.Offer;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Rater;
 
 public interface RaterAwardsService {
+	
+	public Offer targetOfferByTargetingModel(TargetModel targetModel) throws BLServiceException;
 	
 	public void targetAwardById(Long awardId) throws BLServiceException;
 	
