@@ -147,8 +147,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Value("${raterAwardsService.offerRulesUrl}")
 	private String offerRulesUrl;
 	
-	@Value("${raterAwardsService.useAwardOfferUrl}")
+	/*@Value("${raterAwardsService.useAwardOfferUrl}")
 	private String useAwardOfferUrl;
+	*/
 	
 	@Value("${MailerQueueService.smtpUsername}")
 	private String fromAddress;
@@ -160,10 +161,10 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@PostConstruct
     public void setUpOffersTargetingWorkingMemory() {
 		
-			logger.debug("getting offer targeting rule base:"+"http://media.ratecred.com.s3.amazonaws.com/dev/data/offer.java.drl");
+			logger.debug("getting offer targeting rule base:"+offerRulesUrl);
 			
 			try {
-				ruleBase = RuleBaseLoader.loadFromUrl(new URL("http://media.ratecred.com.s3.amazonaws.com/dev/data/offer.java.drl"));
+				ruleBase = RuleBaseLoader.loadFromUrl(new URL(offerRulesUrl));
 			} catch (IntegrationException e) {
 				logger.error("IntegrationException", e);
 			} catch (MalformedURLException e) {
