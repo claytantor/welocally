@@ -80,51 +80,58 @@ if (!RATECRED.OfferWidget) {
                 var script = document.getElementsByTagName('SCRIPT');
                 script = script[script.length - 1];
 
-                // Build Widget
-                wrapper = document.createElement('DIV');
-                wrapper.className = 'ratecred_offer_widget';
-                if (cfg.header) {
-                        title = document.createElement('P');
-                        title.innerHTML = RATECRED.util.escape(cfg.header);
-                        wrapper.appendChild(title);
+                // Build Widget               
+                //but only if this is the page we want
+                if(cfg.url == window.location.href)
+                {
+                	
+                	wrapper = document.createElement('DIV');
+                    wrapper.className = 'ratecred_offer';
+                    if (cfg.header) {
+                            title = document.createElement('P');
+                            title.innerHTML = RATECRED.util.escape(cfg.header);
+                            wrapper.appendChild(title);
+                    }
+                	
+                    list = document.createElement('UL');
+                    //list.className = 'ratecred_offer';
+                    for (i=0, len=cfg.s.length; i<len; i++) {
+                            if (source = RATECRED.Sources[cfg.s[i]]) {
+                                    source = RATECRED.prepSource(cfg.s[i], source);
+                                    li = document.createElement('LI');
+                                    //li.className = 'ratecred_offer';
+                                    li.height = cfg.height;
+                                    RATECRED.util.update(li.style, {border: 'none', overflow: 'hidden', width: cfg.width+'px', height: cfg.height+'px', padding: '0px 0 0 0'});
+                                    if (source.html) {
+                                            a = source.html(cfg);
+                                    } else {
+                                            a = document.createElement('A');
+                                            a.className = source.klass;
+                                            a.href = '#';
+                                            a.innerHTML = RATECRED.util.escape(source.name);
+                                            if (source.title) a.title = source.title;
+                                            if (source.like) a.onclick = source.like(cfg);
+                                            if (source.basicLink) {
+                                                    a.href = source.basicLink(a, cfg);
+                                                    if (source.popup) {
+                                                            a.onclick = function(url, target, attrs) {
+                                                                    return function() {
+                                                                            window.open(url, target, attrs);
+                                                                            return false;
+                                                                    };
+                                                            }(a.href, source.popup.target, source.popup.attrs);
+                                                    }
+                                                    a.target = source.target;
+                                            }
+                                    }
+                                    li.appendChild(a);
+                                    list.appendChild(li);
+                            }
+                    }
+                    wrapper.appendChild(list);
                 }
-
-                list = document.createElement('UL');
-                list.className = 'ratecred_offer_widget';
-                for (i=0, len=cfg.s.length; i<len; i++) {
-                        if (source = RATECRED.Sources[cfg.s[i]]) {
-                                source = RATECRED.prepSource(cfg.s[i], source);
-                                li = document.createElement('LI');
-                                list.className = 'ratecred_offer_widget';
-                                li.height = cfg.height;
-                                RATECRED.util.update(li.style, {border: 'none', overflow: 'hidden', width: cfg.width+'px', height: cfg.height+'px', padding: '0px 0 0 0'});
-                                if (source.html) {
-                                        a = source.html(cfg);
-                                } else {
-                                        a = document.createElement('A');
-                                        a.className = source.klass;
-                                        a.href = '#';
-                                        a.innerHTML = RATECRED.util.escape(source.name);
-                                        if (source.title) a.title = source.title;
-                                        if (source.like) a.onclick = source.like(cfg);
-                                        if (source.basicLink) {
-                                                a.href = source.basicLink(a, cfg);
-                                                if (source.popup) {
-                                                        a.onclick = function(url, target, attrs) {
-                                                                return function() {
-                                                                        window.open(url, target, attrs);
-                                                                        return false;
-                                                                };
-                                                        }(a.href, source.popup.target, source.popup.attrs);
-                                                }
-                                                a.target = source.target;
-                                        }
-                                }
-                                li.appendChild(a);
-                                list.appendChild(li);
-                        }
-                }
-                wrapper.appendChild(list);
+                
+                
 
                 script.parentNode.insertBefore(wrapper, script);
                 wrapper = title = list = li = script = source = null;
@@ -151,7 +158,7 @@ if (!RATECRED.OfferWidget) {
 			                    var elt = document.createElement('IFRAME');
 			                    elt.width = cfg.width;
 			                    elt.height = cfg.height;
-			                    elt.src = 'http://'+cfg.hostname+'/rcadmin/do/offer/target?city='+cfg.city+'&state='+cfg.state+'&keywords='+cfg.keywords+'&view='+cfg.view+'&css='+encodeURIComponent(cfg.css);
+			                    elt.src = 'http://'+cfg.hostname+'/rcadmin/do/offer/target?keywords='+encodeURIComponent(cfg.keywords)+'&view='+cfg.view+'&css='+encodeURIComponent(cfg.css)+'&address1='+encodeURIComponent(cfg.address1)+'&title='+encodeURIComponent(cfg.title)+'&teaser='+encodeURIComponent(cfg.teaser)+'&url='+encodeURIComponent(cfg.url)+ '&referrerId=' + cfg.referrerId;
 			                    RATECRED.util.update(elt, {scrolling: 'no', frameBorder: '0', allowTransparency: 'true'});
 			                    RATECRED.util.update(elt.style, {border: 'none', align:'left', overflow: 'hidden', width: cfg.width+'px', height: cfg.height+'px', marginheight:'0px', marginwidth: '0px'});
 			                    return elt;

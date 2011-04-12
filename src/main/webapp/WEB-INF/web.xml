@@ -24,6 +24,7 @@
 		classpath:linkClient-beans.xml,
 		classpath:awardManagerService-beans.xml,
 		classpath:mailerQueueService-beans.xml,	
+		classpath:saveArticleLocationJMSQueue-beans.xml,
 		classpath:jacksonObjectMapper-beans.xml,
 		classpath:**/*beans.xml,
 		</param-value>

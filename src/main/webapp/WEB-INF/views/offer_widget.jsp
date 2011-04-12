@@ -12,21 +12,7 @@
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="<c:url value='/js/jquery.jcarousel.js' />"></script>	
 	<link rel="stylesheet" href="${css}" type="text/css">	
-	<style type="text/css">
-/**
- *  Vertical Buttons
- */
-.jcarousel-skin-rc .rc_logo {
-    position: absolute;
-    bottom: 5px;
-    left: 43px;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    background: transparent url(http://media.ratecred.com.s3.amazonaws.com/dev/images/widget/offer/next-vertical.png) no-repeat 0 0;
-}	
 	
-	</style>
 </head>
 <script type="text/javascript">
 var mMap = null;
@@ -70,7 +56,7 @@ function addMarker(latitude, longitude, map) {
 }
 </script>
 
-<body style="{ width: 100%; height: 100%; padding: 0; margin: 0; }">
+<body style="width: 100%; height: 100%; padding: 0; margin: 0;">
 <div class="rc_offer_container">
 <ul id="offercarousel" class="jcarousel-skin-rc"> 
 <li>
@@ -86,11 +72,10 @@ function addMarker(latitude, longitude, map) {
 			<table class="rc_offer_tdetails">
 				<tr>
 					<td>
-						<div class="rc_offer_program_name">${offer.programName} <span class="rc_offer_offer_citystate">${offer.city}, ${offer.state}</span> </div>
+						<div class="rc_offer_program_name">${offer.advertiser.name} <span class="rc_offer_offer_citystate">${offer.city}, ${offer.state}</span> </div>
 	       				<div class="rc_offer_offer_name">${offer.name}</div>  
 	       				<c:if test="${not empty offer.description}">   								
-	       					<div class="rc_offer_offer_descr">${offer.description}</div>
-	       					
+	       					<div class="rc_offer_offer_descr">${offer.description}</div>       					
 	       				</c:if>      								
 					</td>
 				</tr>
@@ -113,9 +98,9 @@ function addMarker(latitude, longitude, map) {
 				</tr>
 				<tr>
 					<td class="rc_offer_tbuttons">
-						<ratecred:azcart itemTitle="${offer.advertiser.name}, ${offer.name}" itemSku="${fn:substring(offer.externalId, 0, 20)}" itemDescription="${offer.description}" itemPrice="${offer.price}" environment="SANDBOX"  />
+						<ratecred:azcart itemTitle="${offer.advertiser.name}, ${offer.name}" itemSku="${fn:substring(offer.externalId, 0, 36)}" itemDescription="${offer.description}" itemPrice="${offer.price}" environment="SANDBOX"  />
 						<div class="rc_offer_tbutton_float">				
-						<a class="rc_offer_tbutton_buy" href="#" onclick="javascript:$('#form_${fn:substring(offer.externalId, 0, 20)}').submit();return false;">buy this!</a>
+						<a class="rc_offer_tbutton_buy" href="#" onclick="javascript:$('#form_${fn:substring(offer.externalId, 0, 36)}').submit();return false;">buy this!</a>
 						</div>
 					</td>			
 				</tr>					
@@ -178,5 +163,4 @@ function addMarker(latitude, longitude, map) {
 </div>	
 				
 </body>         		
-</div>
 </html>

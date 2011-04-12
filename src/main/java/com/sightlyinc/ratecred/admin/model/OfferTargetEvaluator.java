@@ -16,6 +16,7 @@ import org.mcavallo.opencloud.filters.DictionaryFilter;
 import org.mcavallo.opencloud.filters.Filter;
 import org.mcavallo.opencloud.filters.TagFilter;
 
+import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.compare.OfferScoreComparitor;
 import com.sightlyinc.ratecred.admin.compare.TagScoreComparitor;
 import com.sightlyinc.ratecred.client.offers.Location;
@@ -56,9 +57,12 @@ public class OfferTargetEvaluator {
 		
 		//build the cloud
 		StringBuffer termsBuffer = new StringBuffer(); 
-		for (String term : terms) {
-			logger.debug("adding search term:"+term);
-			termsBuffer.append(term+" ");
+		if(terms != null)
+		{			
+			for (String term : terms) {
+				logger.debug("adding search term:"+term);
+				termsBuffer.append(term+" ");
+			}
 		}
 				
 		DictionaryFilter fTerms = 

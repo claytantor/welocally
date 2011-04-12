@@ -3,7 +3,7 @@
 <beans>
 
 
-	<bean name="offerPoolJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<!-- <bean name="offerPoolJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 	  <property name="jobClass" value="com.sightlyinc.ratecred.job.OfferPoolJob" />
 	  <property name="jobDataAsMap">
 	    <map>
@@ -17,9 +17,8 @@
 	
 	<bean id="offerCheckTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="offerPoolJob" />
-	    <!-- run at 3 every day -->
 	    <property name="cronExpression" value="0 0 3 * * ?" />
-	</bean>
+	</bean> -->
 	
 	
 </beans>

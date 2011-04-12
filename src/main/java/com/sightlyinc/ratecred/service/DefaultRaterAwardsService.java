@@ -1,7 +1,6 @@
 package com.sightlyinc.ratecred.service;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -46,7 +46,6 @@ import com.adility.resources.model.Illustration;
 import com.adility.resources.model.Money;
 import com.adility.resources.model.OffersResponse;
 import com.adility.resources.model.RequestModel;
-import com.noi.utility.bean.BeanUtils;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.spring.service.BLServiceException;
@@ -57,7 +56,6 @@ import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.admin.jms.SaveNewAwardMessageProducer;
 import com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageProducer;
 import com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator;
-import com.sightlyinc.ratecred.admin.model.OfferSearchModel;
 import com.sightlyinc.ratecred.admin.model.OfferTargetEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.admin.model.TargetModel;
@@ -259,7 +257,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				
 				//this really should not just return the 
 				//offer but set it to the award based on the award type
-				if(awardOfferEval.getTargetedOffers().size()>0) {
+				if(awardOfferEval.getTargetedOffers().size()>0) {					
 					Offer bestOffer = awardOfferEval.getTargetedOffers().get(0);
 					logger.debug("best offer found:"+bestOffer.toString());
 					return bestOffer;
@@ -271,8 +269,11 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 						if (offer.isVisible())
 							offersFiltered.add(offer);
 					}
-					return offersFiltered.get(0);
+					return getRandomOffer(offersFiltered);
 				}
+				
+				
+				
 				
 			} else 
 				return null;
@@ -289,6 +290,18 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 	}
 	
+	
+	public Offer getRandomOffer(List<Offer> offers) {
+		int size = offers.size();
+		int item = new Random().nextInt(size); 
+		int i = 0;
+		for(Offer obj : offers) {
+		    if (i == item)
+		        return obj;
+		    i = i + 1;
+		}
+		return offers.get(0);
+	}
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

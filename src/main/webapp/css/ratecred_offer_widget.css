@@ -1,3 +1,48 @@
+.ratecred_offer {
+	position: relative;
+	font-weight: bold;
+}
+
+.ratecred_offer p {
+	margin-bottom: .5em !important;
+	padding: 0;
+	font-size: 1em;
+	font-weight: bold;
+} 
+
+.ratecred_offer ul {
+	position: relative;
+	display: block;
+	margin: 0 0 .5em 0 !important;
+	padding: 0 !important;
+	overflow: hidden;
+	zoom: 1;
+}
+
+.ratecred_offer ul li {
+	float: left;
+	position: relative;
+	display: block;
+	list-style-type: none;
+	height: 85px;
+	margin: 0;
+	background: none;
+	padding: 0 5px 0 0;
+	overflow: hidden;
+	zoom: 1;
+}
+
+.ratecred_offer ul li a {
+	background: transparent url(../images/sprite_like.png) scroll no-repeat;
+	display: block;
+	height: 100px;
+	width: 25px;
+	margin: 0 !important;
+	padding: 0 !important;
+	overflow: hidden;
+	text-indent: -9999em;
+}
+
 .rc_offer_container {	
 	width: 100%;
 	height: 100%;

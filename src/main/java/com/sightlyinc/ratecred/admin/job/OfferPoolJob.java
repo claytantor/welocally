@@ -3,38 +3,32 @@ package com.sightlyinc.ratecred.admin.job;
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.sightlyinc.ratecred.service.OfferPoolService;
 
-public class OfferPoolJob extends QuartzJobBean {
+@Component("offerPoolJob")
+public class OfferPoolJob  {
 	
 	static Logger logger = 
 		Logger.getLogger(OfferPoolJob.class);
 
+	@Autowired
 	private OfferPoolService offerPoolService;
 	
 	/**
-	 * all businesses all locations
+	 * every 2 mins
 	 * 
 	 * @throws JobExecutionException
 	 */
-	public void execute()
-	throws JobExecutionException {				
+	@Scheduled(fixedRate = 120000)
+	public void execute() {				
 		logger.debug("[JOB] " + this.getClass().getName() +" running");
 		offerPoolService.refresh();		
 	}
 
-	@Override
-	protected void executeInternal(JobExecutionContext arg0)
-			throws JobExecutionException {
-		logger.debug("running job");
-		execute();
-	}
-
-	public void setOfferPoolService(OfferPoolService offerPoolService) {
-		this.offerPoolService = offerPoolService;
-	}
 	
 
 }
