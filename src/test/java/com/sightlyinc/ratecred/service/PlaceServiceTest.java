@@ -1,27 +1,60 @@
 package com.sightlyinc.ratecred.service;
 
-import java.util.Collections;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.noi.utility.spring.test.AbstractBeanFactoryTestCase;
+import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
-import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparitor;
-import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.test.BaseTest;
 
-public class ComparePlaceTest extends AbstractBeanFactoryTestCase {
+public class PlaceServiceTest extends BaseTest {
 	
 	static Logger logger = 
-		Logger.getLogger(ComparePlaceTest.class);
+		Logger.getLogger(PlaceServiceTest.class);
+	
+	@Autowired
+	private PlaceManagerService placeManagerService;
+	
+	
+	@Before
+	public void setup(){
+		logger.debug("setup");
+	}
+	
+	/*@Test
+	public void testGetPlaces() {
+		try {
+			List<Place> places = placeManagerService.findAllPlaces();
+			Assert.assertTrue(places != null && places.size()>0);
+			
+		} catch (BLServiceException e) {
+			Assert.fail(e.getMessage());
+		}
+			
+	}*/
+	
+	
+	@Test
+	public void testUpdatePlaceInfo() {
+		try {
+			//Place place = placeManagerService.findPlaceByPrimaryKey(1992l);
+			placeManagerService.saveNewLocationInfo(2007l);
+			
+		} catch (BLServiceException e) {
+			Assert.fail(e.getMessage());
+		}
+			
+	}
+	
 
-	@Override
+	/*@Override
 	protected String[] getSpringResources() {
 		return new String[] {
 				"/com/noi/rater/service/ComparePlaceTest-configurer-beans.xml",
@@ -34,7 +67,7 @@ public class ComparePlaceTest extends AbstractBeanFactoryTestCase {
 		};
 	}
 	
-private static Session session;
+    private static Session session;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -128,7 +161,7 @@ private static Session session;
 		
 		
 		
-	}
+	}*/
 	
 	
 }

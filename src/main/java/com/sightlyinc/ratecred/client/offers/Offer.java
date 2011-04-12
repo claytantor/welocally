@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
@@ -17,25 +19,50 @@ public class Offer {
 	static Logger logger = Logger.getLogger(Offer.class);
 	
 	private Long id = new Long(0);
+	
+	@JsonProperty
 	private String externalId = "";
+	
+	@JsonProperty
 	private String externalSource ="";
+	
+	@JsonProperty
 	private String programId="";
+	
+	@JsonProperty
 	private String programName="";
+	
+	@JsonProperty
 	private String name="";
+	
+	@JsonProperty
 	private String couponCode="";
+	
+	@JsonProperty
 	private String description="";
-	//private String finePrint="";	
+	
+	@JsonProperty
 	private String url="";
 	
 	//these could probably be native Longs
+	@JsonProperty
 	private String beginDateString="";
+	
+	@JsonProperty
 	private String expireDateString="";
+	
+	@JsonProperty
 	private String endDateString="";
 	
+	@JsonProperty
 	private String city="";
+	
+	@JsonProperty
 	private String state="";
 	
 	private String discountType;
+	
+	
 	private String type;
 	private Float price;
 	private Float discountValue;
@@ -47,16 +74,17 @@ public class Offer {
 	
 	private Integer score;
 	
+	private Location offerLocation;
+	
 	private List<Item> items;
 	private Advertiser advertiser;
 	
 		
 	private boolean visible = true;
 	
+	@JsonIgnore
 	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
-	
-	
-	
+		
 	public Offer() {
 		super();
 		items = new ArrayList<Item>();	
@@ -308,8 +336,18 @@ public class Offer {
 	public void setAdvertiser(Advertiser advertiser) {
 		this.advertiser = advertiser;
 	}
-	
 
+	public Location getOfferLocation() {
+		return offerLocation;
+	}
+
+	public void setOfferLocation(Location offerLocation) {
+		this.offerLocation = offerLocation;
+	}
+
+	public void setScore(Integer score) {
+		this.score = score;
+	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

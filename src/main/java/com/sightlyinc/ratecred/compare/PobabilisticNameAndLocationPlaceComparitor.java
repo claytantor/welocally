@@ -39,7 +39,13 @@ public class PobabilisticNameAndLocationPlaceComparitor implements Comparator<Pl
 			abs2 += Math.abs(o2.getLongitude()-p.getLongitude());
 		
 		//backup plan
-		if(p.getLatitude() != null && p.getLongitude() != null)
+		if(p.getCity() != null 
+				&& o1.getCity() != null 
+				&& o2.getCity() != null 				
+				&& p.getState() != null
+				&& o1.getState() != null
+				&& o2.getState() != null
+				)
 		{
 			abs1+= 1.0-StringUtils.compareStrings(p.getCity().toLowerCase(), o1.getCity().toLowerCase());	
 			abs2+= 1.0-StringUtils.compareStrings(p.getState().toLowerCase(), o2.getState().toLowerCase());	

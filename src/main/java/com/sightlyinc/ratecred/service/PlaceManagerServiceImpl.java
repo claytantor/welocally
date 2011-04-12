@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,9 +18,16 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
+import com.noi.utility.string.StringUtils;
+import com.sightlyinc.ratecred.client.places.LocationPlacesClient;
+import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparitor;
 import com.sightlyinc.ratecred.dao.PlaceAttributeDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
@@ -32,24 +40,68 @@ import com.sightlyinc.ratecred.model.PlacePage;
 import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rating;
 
-
+@Service("PlaceManagerService")
+@Transactional(readOnly = true)
 public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 	static Logger logger = 
 		Logger.getLogger(PlaceManagerServiceImpl.class);
 	
+	@Autowired
 	private PlaceCityStateDao placeCityStateDao;
+	
+	@Autowired
 	private PlaceDao placeDao;
+	
+	@Autowired
 	private PlaceAttributeDao placeAttributeDao;
+	
+	@Autowired
 	private PlaceRatingDao placeRatingDao;
 	
+	@Autowired
+	@Qualifier("PlaceDirectory")
 	private Directory placeSearchDirectory;	
+	
+	@Autowired
+	@Qualifier("PlaceDirectoryIndexer")
 	private PlaceDirectoryIndexer placeDirectoryIndexer;
 	
-/*	private String appConsumerKey;
-	private String appSecretKey;*/
-
-	
+	@Autowired
+	@Qualifier("locationPlacesClient")
+	private LocationPlacesClient locationClient;
+		
+	@Transactional(readOnly = false)
+	public void saveNewLocationInfo(Long placeId) throws BLServiceException
+	{
+		Place p = findPlaceByPrimaryKey(placeId);
+		List<Place> nPlaces = locationClient.findPlaces(p.getLatitude(), p.getLongitude(), 0.5);
+		Collections.sort(nPlaces, new PobabilisticNameAndLocationPlaceComparitor(p));
+		if(nPlaces != null && nPlaces.size()>0 &&
+				StringUtils.compareStrings(p.getName(), nPlaces.get(0).getName())>0.65)
+		{
+			logger.debug("updating place:"+p.getName());
+			Place top = nPlaces.get(0);
+			if(top.getAddress() != null)
+				p.setAddress(top.getAddress());
+			if(top.getCategory() != null)
+				p.setCategory(top.getCategory());
+			if(top.getCategoryType() != null)
+				p.setCategoryType(top.getCategoryType());
+			if(top.getCity() != null)
+				p.setCity(top.getCity());
+			if(top.getState() != null)
+				p.setState(top.getState());
+			p.setLatitude(top.getLatitude());
+			p.setLongitude(top.getLongitude());
+			p.setSimpleGeoId(top.getSimpleGeoId());
+			p.setSubcategory(top.getSubcategory());
+			p.setWebsite(top.getWebsite());
+			placeDao.save(p);
+							
+		}
+		
+	}
 	
 	/**
 	 * will attempt to find in the database, if its there then dont go to twitter
@@ -70,53 +122,6 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		//try to find in in the store
 		com.sightlyinc.ratecred.model.Place place = 
 			placeDao.findByTwitterId(twitterId);
-		
-		/*if(place == null)
-		{
-		
-			try {
-				AccessToken accessToken = 
-					new AccessToken(
-							accessUserToken, 
-							accessSecret);
-	
-				Twitter twitter = 
-					new TwitterFactory().getOAuthAuthorizedInstance(
-							appConsumerKey, appSecretKey, accessToken);	 
-				
-				//make the place
-				place = new com.sightlyinc.ratecred.model.Place();
-				twitter4j.Place p = twitter.getGeoDetails(twitterId);
-				
-				for (int i = 0; i < p.getContainedWithIn().length; i++) {
-					twitter4j.Place wrapper = p.getContainedWithIn()[i];
-					
-					if(wrapper.getPlaceType().equals("city"))
-					{
-						String[] cs = wrapper.getFullName().split(",");						
-						place.setCity(cs[0]);
-						place.setState(cs[1].replace(" ",""));
-					}
-					
-				}
-								
-				place.setTwitterId(p.getId());
-				place.setAddress(p.getStreetAddress());
-				place.setName(p.getName());
-				place.setPhone(p.getPhone());
-				place.setZip(p.getPostalCode());
-				place.setLatitude(p.getGeometryCoordinates()[1]);
-				place.setLongitude(p.getGeometryCoordinates()[0]);
-				place.setTimeCreated(Calendar.getInstance().getTime());
-				
-				placeDao.save(place);
-				
-				
-			} catch (TwitterException e) {
-				logger.error("cannot find place with id:"+twitterId, e);
-				
-			}
-		}*/
 		
 		return place;
 	}
@@ -153,6 +158,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 
 
 	@Override
+	@Transactional(readOnly = false)
 	public void deletePlaceAttribute(Place p, PlaceAttribute attr)
 			throws BLServiceException {
 		p.getAttributes().remove(attr);
@@ -163,6 +169,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 
 	@Override
+	@Transactional(readOnly = false)
 	public void deletePlace(Place p) throws BLServiceException {
 		placeDao.delete(p);		
 	} 
@@ -274,6 +281,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public Long savePlace(Place p) throws BLServiceException {
 		placeDao.save(p);
 		return p.getId();
@@ -364,6 +372,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	 * 
 	 */
 	@Override
+	@Transactional(readOnly = false)
 	public void savePlaceDuplicateConsolidation(Place p, Place duplicatePlace)
 			throws BLServiceException {
 		
@@ -413,7 +422,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		return placeCityStateDao.findAll();
 	}
 	
-	public void setPlaceCityStateDao(PlaceCityStateDao placeCityStateDao) {
+	/*public void setPlaceCityStateDao(PlaceCityStateDao placeCityStateDao) {
 		this.placeCityStateDao = placeCityStateDao;
 	}
 
@@ -435,7 +444,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 
 	public void setPlaceDirectoryIndexer(PlaceDirectoryIndexer placeDirectoryIndexer) {
 		this.placeDirectoryIndexer = placeDirectoryIndexer;
-	}
+	}*/
 
 
 

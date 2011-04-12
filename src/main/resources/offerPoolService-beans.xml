@@ -30,7 +30,7 @@
 				<value>json</value>	
 			</constructor-arg>			
 		</bean>
-	</util:list>-->
+	</util:list>
 	
 	<bean class="com.adility.resources.model.RequestModel" id="sanFranciscoRequestModel">
 			<constructor-arg index="0">
@@ -45,7 +45,7 @@
 			</constructor-arg>			
 	</bean>
 	
-	<!-- obsolete -->
+
 	<bean id="pepperJamOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.PepperJamOfferClient">
 		<property name="protocol" value="http"/>
@@ -55,8 +55,7 @@
 		<property name="sourceName" value="PEPPERJAM"/>
 	</bean>
 	
-	<!-- no offers here! -->
-	<!-- http://media.ratecred.com.s3.amazonaws.com/dev/data/ratecred-offers.csv -->
+
 	<bean id="ratecredOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.RatecredOfferClient">
 		<property name="protocol" value="http"/>
@@ -66,7 +65,7 @@
 		<property name="sourceName" value="RATECRED"/>
 	</bean>	
 	
-	<!-- lame -->
+
 	<bean id="comissionJunctionOfferClient" 
 		class="com.sightlyinc.ratecred.client.offers.ComissionJunctionOfferClient">
 		<property name="sourceName" value="CJ"/>
@@ -112,6 +111,6 @@
 		        </entry> 		        
 		   </map>		
 		</property>
-	</bean>	
+	</bean>	-->
 
 </beans>

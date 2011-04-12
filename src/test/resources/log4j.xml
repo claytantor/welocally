@@ -16,14 +16,11 @@
   <category name="com.sightlyinc">
     <priority value="debug"/>
   </category>   
-  <category name="net.sourceforge.pebble">
-    <priority value="debug"/>
-  </category>  
   <category name="org.apache">
-    <priority value="info"/>
+    <priority value="error"/>
   </category>
   <category name="org.springframework">
-    <priority value="info"/>
+    <priority value="error"/>
   </category>    
 
   

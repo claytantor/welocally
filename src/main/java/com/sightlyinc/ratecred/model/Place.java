@@ -13,6 +13,7 @@ public class Place {
 	private String state;
 	private String zip;
 	private String twitterId;
+	private String simpleGeoId;
 	private String email;
 	private String businessServices;	
 	private String phone;
@@ -22,6 +23,10 @@ public class Place {
 	private String description;
 	private String website;
 	private String flag;
+	private String category;
+	private String subcategory;
+	private String categoryType;
+	
 	
 	private Date timeCreated;
 
@@ -40,6 +45,15 @@ public class Place {
 	public void setTwitterId(String twitterId) {
 		this.twitterId = twitterId;
 	}
+	
+	
+	public String getSimpleGeoId() {
+		return simpleGeoId;
+	}
+	public void setSimpleGeoId(String simpleGeoId) {
+		this.simpleGeoId = simpleGeoId;
+	}
+	
 	public Set<PlaceRating> getPlaceRatings() {
 		return placeRatings;
 	}
@@ -168,49 +182,44 @@ public class Place {
 	public void setBusinessServices(String businessServices) {
 		this.businessServices = businessServices;
 	}
-	/**
-	 * 
-	 * 	
-	private Long id;
-	private Integer version = new Integer(0);
-	private String type;
-	private String address;
-	private String city;
-	private String state;
-	private String zip;
-	private String phone;
-	private String name;
-	private Double latitude;
-	private Double longitude;
-	private String description;
-	private String website;
-	private String flag;
-	private Date timeCreated;
-	 * 
-	 */
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public String getSubcategory() {
+		return subcategory;
+	}
+	public void setSubcategory(String subcategory) {
+		this.subcategory = subcategory;
+	}
+	public String getCategoryType() {
+		return categoryType;
+	}
+	public void setCategoryType(String categoryType) {
+		this.categoryType = categoryType;
+	}
 	
 	@Override
 	public String toString() {
-		return super.toString();
-		/*StringBuffer buf = new StringBuffer();
-		
-		buf.append(id.toString())
-		.append(type)
-		.append(address)
-		.append(city)
-		.append(state)
-		.append(zip)
-		.append(phone)
-		.append(name)
-		.append(latitude.toString())
-		.append(longitude.toString())
-		.append(description)
-		.append(website)
-		.append(flag)
-		;
-		
-		return buf.toString();*/
+		return "Place [address=" + address + ", attributes=" + attributes
+				+ ", businessLocation=" + businessLocation
+				+ ", businessServices=" + businessServices + ", category="
+				+ category + ", categoryType=" + categoryType + ", city="
+				+ city + ", description=" + description + ", email=" + email
+				+ ", flag=" + flag + ", id=" + id + ", latitude=" + latitude
+				+ ", longitude=" + longitude + ", name=" + name + ", phone="
+				+ phone + ", placeRatings=" + placeRatings + ", ratings="
+				+ ratings + ", simpleGeoId=" + simpleGeoId + ", state=" + state
+				+ ", subcategory=" + subcategory + ", timeCreated="
+				+ timeCreated + ", twitterId=" + twitterId + ", type=" + type
+				+ ", version=" + version + ", website=" + website + ", zip="
+				+ zip + "]";
 	}
+
+	
 	
 	
 

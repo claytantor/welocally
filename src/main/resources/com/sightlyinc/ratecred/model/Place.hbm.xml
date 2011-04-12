@@ -23,6 +23,11 @@
 		<property name="zip" column="zip" type="java.lang.String"/>
 		
 		<property name="twitterId" column="twitter_id" type="java.lang.String"/>
+		
+		<property name="simpleGeoId"  type="java.lang.String" length="32000">
+			<column name="sg_id" sql-type="longtext"/>
+		</property>	
+		
 		<property name="email" column="email" type="java.lang.String"/>
 		<property name="businessServices" column="business_services" type="java.lang.String"/>
 		

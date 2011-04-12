@@ -1,89 +1,199 @@
 package com.sightlyinc.ratecred.client.offers;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import javax.annotation.PostConstruct;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
-import au.com.bytecode.opencsv.bean.CsvToBean;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.simplegeo.client.SimpleGeoStorageClient;
+import com.simplegeo.client.types.Feature;
+import com.simplegeo.client.types.FeatureCollection;
 
 /**
  * URL url = new URL("http", "feeds.pepperjamnetwork.com", 80, "/coupon/download/?affiliate_id=59161&program_ids=259-1687-1801-2110-2708-2803-3456-4750-4826-5173");			
  * @author claygraham
  *
  */
+@Component("ratecredOfferClient")
 public class RatecredOfferClient implements OfferClient {
 	
 	static Logger logger = 
 		Logger.getLogger(RatecredOfferClient.class);
 	
-	private String protocol;
+	private SimpleGeoStorageClient client;
 	
-	private Integer port;
+	@Value("${simpleGeo.rateCredOAuth.appConsumerKey}")
+	private String ratecredConsumerKey;
 	
-	private String host;
+	@Value("${simpleGeo.rateCredOAuth.appSecretKey}")
+	private String ratecredConsumerSecret;
 	
-	private String endpoint;
+	@Value("${offers.layerName}")
+	private String offersLayerName="com.ratecred.geo.offer.e65498e6be6f.dev";
 	
-	private String sourceName;
+	@Value("${offers.lat}")
+	private String offersLat="37.804431";
+	
+	@Value("${offers.lon}")
+	private String offersLon="-122.270751";
+	
+	@PostConstruct
+	public void init() {
+		client = SimpleGeoStorageClient.getInstance();	
+		client.getHttpClient().setToken(ratecredConsumerKey, ratecredConsumerSecret);
+	}
+	
+
 
 	@Override
 	public List<Offer> getOffers() throws OfferFeedException {
+		
+		final List<Offer> offers = new ArrayList<Offer>();
+		
 		try {
-			URL url = new URL(protocol, host, port, endpoint);
-			java.net.URLConnection c = url.openConnection();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			IOUtils.copy(c.getInputStream(), baos);
-			StringReader sreader = new StringReader(new String(baos.toByteArray()));
-			CSVReader reader = new CSVReader(sreader);
-			//skip the first line
-			reader.readNext();
-			ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
-			strat.setType(Offer.class);
-			String[] columns = new String[] {"externalId","programId","programName","name","couponCode","description","url","beginDateString","expireDateString"}; // the fields to bind do in your JavaBean		
-			strat.setColumnMapping(columns);
-			CsvToBean csv = new CsvToBean();
-			List<Offer> list = csv.parse(strat, reader);
-			for (Offer offer : list) 
-				offer.setExternalSource(sourceName);
-			return list;
 			
-		} catch (MalformedURLException e) {
-			logger.error("problem",e);
-			throw new OfferFeedException(e);
+			double lat = Double.parseDouble(offersLat);
+			double lon = Double.parseDouble(offersLon);
+			double radiusInKMeters = 20.0;
+			
+			String cursor = "";
+			
+			FeatureCollection collection = 
+				client.search(lat, lon, offersLayerName,radiusInKMeters, 100, cursor);
+			for (Feature feature : collection.getFeatures()) {
+				Offer o = transformOffer(feature);
+				if(o != null)
+					offers.add(o);
+			}
+			
+			
 		} catch (IOException e) {
-			logger.error("problem",e);
 			throw new OfferFeedException(e);
 		}
-	}
-
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}
-
-	public void setSourceName(String sourceName) {
-		this.sourceName = sourceName;
-	}
-
-	public void setPort(Integer port) {
-		this.port = port;
+				
+		
+		return offers;
 	}
 	
 	
+/*
+ * 
+{
+    "visible": "true",
+    "state": "CA",
+    "type": "deal",
+    "externalId": "",
+    "city": "Oakland",
+    "id": "0",
+    "programId": "5c045a9e377a",
+    "discountType": "Deal",
+    "description": "When you choose 3 designs you will recieve a free limited edition celebrity poodle necklace.",
+    "name": "Three Designs and our Limited Edition Poodle Design for $39.99",
+    "beginDateString": "2011-04-10",
+    "value": "120.0",
+    "quantity": null,
+    "externalSource": "RATECRED",
+    "programName": "Oakland Unwrapped",
+    "expire": "Tue Apr 10 00:00:00 PDT 2012",
+    "ends": "Tue Apr 10 00:00:00 PDT 2012",
+    "offerLocation": {
+        "addressTwo": null,
+        "postalCode": "94611",
+        "addressOne": "4096 Piedmont Ave.",
+        "state": "CA",
+        "lng": "-122.252121",
+        "comments": null,
+        "lat": "37.826625",
+        "city": "Oakland"
+    },
+    "expireDateString": "2012-04-10",
+    "extraDetails": "Not valid for any of our designs that include gold.",
+    "illustrationUrl": "http://www.celebritypoodle.com/images/jewelry/45rpm_blue_thumb.jpg",
+    "begin": "Sun Apr 10 00:00:00 PDT 2011",
+    "price": "39.99",
+    "checkinsRequired": null,
+    "items": "[]",
+    "advertiser": {
+        "id": null,
+        "siteUrl": null,
+        "contactPhone": null,
+        "locations": [
+            {
+                "addressTwo": null,
+                "postalCode": "94611",
+                "addressOne": "4096 Piedmont Ave.",
+                "state": "CA",
+                "lng": "-122.252121",
+                "comments": null,
+                "lat": "37.826625",
+                "city": "Oakland"
+            }
+        ],
+        "description": "We specialize in fabulous jewelry (for fabulous humans) with a focus on the Glam Rock scene & a bit of the Hip Hop world.",
+        "categoryId": null,
+        "name": "Celebrity Poodle",
+        "advertiserLogoUrl": null,
+        "externalId": null
+    },
+    "endDateString": "2012-04-10"
+}
+	
+	
+ */
+	private Offer transformOffer(Feature f) {
+		try {
+			JSONObject offerObject = (JSONObject)f.getProperties().get("offer");
+			Offer o = new Offer();
+			o.setBeginDateString(offerObject.getString("beginDateString"));
+			o.setCity(offerObject.getString("city"));
+			o.setDescription(offerObject.getString("description"));
+			o.setDiscountType(offerObject.getString("discountType"));
+			o.setValue(new Float(offerObject.getDouble("value")));
+			o.setPrice(new Float(offerObject.getDouble("price")));
+			o.setEndDateString(offerObject.getString("endDateString"));
+			o.setExpireDateString(offerObject.getString("expireDateString"));
+			o.setExternalId(offerObject.getString("externalId"));
+			o.setExternalSource(offerObject.getString("externalSource"));
+			o.setExtraDetails(offerObject.getString("extraDetails"));
+			o.setIllustrationUrl(offerObject.getString("illustrationUrl"));
+			o.setName(offerObject.getString("name"));
+			o.setProgramId(offerObject.getString("programId"));
+			o.setProgramName(offerObject.getString("programName"));
+			o.setState(offerObject.getString("state"));
+			o.setType(offerObject.getString("type"));
+			
+			JSONObject jOfferLocation = offerObject.getJSONObject("offerLocation");
+			Location offerLocation = new Location();
+			offerLocation.setAddressOne(jOfferLocation.getString("addressOne"));
+			offerLocation.setCity(jOfferLocation.getString("city"));
+			offerLocation.setState(jOfferLocation.getString("state"));
+			offerLocation.setPostalCode(jOfferLocation.getString("postalCode"));
+			offerLocation.setLat(jOfferLocation.getDouble("lat"));
+			offerLocation.setLng(jOfferLocation.getDouble("lng"));			
+			o.setOfferLocation(offerLocation);
+			
+			JSONObject jOfferAdvertiser = offerObject.getJSONObject("advertiser");
+			Advertiser offerAdvertiser = new Advertiser();
+			offerAdvertiser.getLocations().add(offerLocation);
+			offerAdvertiser.setName(jOfferAdvertiser.getString("name"));
+			offerAdvertiser.setDescription(jOfferAdvertiser.getString("description"));
+			o.setAdvertiser(offerAdvertiser);
+			
+			return o;
+			
+		} catch (JSONException e) {
+			logger.error("problem deserializing feature");
+		}
+		return null;
+	}
+
+
 
 }

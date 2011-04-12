@@ -15,15 +15,6 @@ public interface PlaceManagerService {
 		
 	public List<Place> findAllPlacesForCity(PlaceCityState cs) throws BLServiceException;
 	
-	
-/*	public PlacePage findPlacesByCityStateRatedByType(
-			PlaceCityState cs, 
-			String type, 
-			Integer i, 
-			Integer pageSize, 
-			String string, 
-			boolean b) throws RaterBLServiceException;*/
-	
 	public PlacePage findPlacesRatedByType(
 			String type, 
 			Integer pageNum, 
@@ -74,5 +65,7 @@ public interface PlaceManagerService {
 
 	public void deletePlaceAttribute(Place p, PlaceAttribute attrs) throws BLServiceException;
 	public void deletePlace(Place p) throws BLServiceException;
+	
+	public void saveNewLocationInfo(Long placeId) throws BLServiceException;
 		
 }

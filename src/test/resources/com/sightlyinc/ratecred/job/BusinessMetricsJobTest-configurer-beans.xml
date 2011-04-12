@@ -6,12 +6,6 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
 
-	<beans:bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<beans:property name="location">
-			<beans:value>classpath:/com/noi/rater/job/BusinessMetricsJobTest.properties</beans:value>
-		</beans:property>
-	</beans:bean>   
-
+	
 	
 </beans:beans>

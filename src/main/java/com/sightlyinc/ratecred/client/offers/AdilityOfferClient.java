@@ -23,7 +23,7 @@ import com.adility.resources.model.RequestModel;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
 
-@Component("adilityOfferClient")
+
 public class AdilityOfferClient implements OfferClient {
 	
 	static Logger logger = Logger.getLogger(AdilityOfferClient.class);
@@ -31,12 +31,12 @@ public class AdilityOfferClient implements OfferClient {
 
 	private List<RequestModel> requestModelList = new ArrayList<RequestModel>();
 
-	@Autowired
-    @Qualifier("resourcesClient")
+	/*@Autowired
+    @Qualifier("resourcesClient")*/
     private ResourcesClient resourcesClient;
 	
-	@Autowired
-	@Qualifier("sanFranciscoRequestModel")
+	/*@Autowired
+	@Qualifier("sanFranciscoRequestModel")*/
 	private RequestModel sanFranciscoRequestModel;
 	
 	

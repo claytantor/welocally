@@ -32,12 +32,9 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	}	
 	
 	
-	//we are doing this to get over autowiring problems with the 
-	//client list
-	
 	@Autowired
-	@Qualifier("adilityOfferClient")
-	private OfferClient adilityOfferClient;
+	@Qualifier("ratecredOfferClient")
+	private OfferClient offerClient;
 	
 	
 	@Override
@@ -45,13 +42,14 @@ public class DefaultOfferPoolService implements OfferPoolService {
 		offerPool.addAll(offers);		
 	}
 
-	@PostConstruct
+	
 	public void refresh() {
 		
+
 		//get the clients
 		if(clients.size() == 0) {
 			//setup the adility requests			
-			clients.add(adilityOfferClient);
+			clients.add(offerClient);
 		}
 				
 		//try to fetch
@@ -94,8 +92,6 @@ public class DefaultOfferPoolService implements OfferPoolService {
 		//Long extLong = Long.parseLong(externalId);
 		for (Offer offer : offerPool) {
 			
-			logger.debug(offer.getExternalId()+":"+offer.getExternalSource());
-			logger.debug(externalId+":"+sourceName);
 			if(offer.getExternalSource().equals(sourceName) && offer.getExternalId().equals(externalId))
 				return offer;
 		}

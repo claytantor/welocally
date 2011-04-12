@@ -6,38 +6,7 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
 
-	<beans:bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<beans:property name="location">
-			<beans:value>classpath:/com/noi/rater/job/BusinessMetricsJobTest.properties</beans:value>
-		</beans:property>
-	</beans:bean>   
-	
-	<!-- PLACE======
-	private Long id;
-	private Integer version = new Integer(0);
-	private String type;
-	private String address;
-	private String city;
-	private String state;
-	private String zip;
-	private String phone;
-	private String name;
-	private Double latitude;
-	private Double longitude;
-	private String description;
-	private String website;
-	private String flag;
-	private Date timeCreated;
 
-	// relations
-	private Set<Rating> ratings;
-	private Set<PlaceAttribute> attributes;
-	private Set<PlaceRating> ratings;
-	
-	private BusinessLocation businessLocation;	
-	
-	 -->
 	
 	<beans:bean id="placeTestComparePlace1"
 		class="com.sightlyinc.ratecred.model.Place">

@@ -11,7 +11,7 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
            
 	
-	<bean id="PlaceManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+	<!-- <bean id="PlaceManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
 		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
 		<property name="target"><ref local="PlaceManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
@@ -30,7 +30,7 @@
 		<property name="placeRatingDao"><ref bean="PlaceRatingDao"/></property>	
 		<property name="placeDirectoryIndexer"><ref bean="PlaceDirectoryIndexer"/></property>
 		<property name="placeSearchDirectory"><ref bean="PlaceDirectory"/></property>					
-	</bean>
+	</bean> -->
 	
 
 </beans>

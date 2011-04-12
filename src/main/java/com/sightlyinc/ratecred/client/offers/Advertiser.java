@@ -69,9 +69,7 @@ public class Advertiser {
 	
 	@JsonProperty(value = "site_url")
 	private String siteUrl;
-		
-	//private List<Review> reviews;
-	
+			
 	@JsonProperty(value = "locations")
 	private List<Location> locations = new ArrayList<Location>();
 	
