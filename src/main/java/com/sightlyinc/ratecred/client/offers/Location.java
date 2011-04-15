@@ -40,6 +40,9 @@ public class Location {
 	
 	@JsonProperty(value = "lng")
 	private Double lng;
+	
+	@JsonProperty(value = "name")
+	private String name;
 
 	public String getComments() {
 		return comments;
@@ -104,5 +107,17 @@ public class Location {
 	public void setLng(Double lng) {
 		this.lng = lng;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	
+	
 
 }
