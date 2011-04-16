@@ -37,8 +37,9 @@ public class Article {
 	@JsonProperty
 	private String referrerId;
 	
-	
-	
+	@JsonProperty
+	private Site site;
+		
 	
 	public String getAddress1() {
 		return address1;
@@ -75,6 +76,12 @@ public class Article {
 	}
 	public void setReferrerId(String referrerId) {
 		this.referrerId = referrerId;
+	}
+	public Site getSite() {
+		return site;
+	}
+	public void setSite(Site site) {
+		this.site = site;
 	}
 	
 	

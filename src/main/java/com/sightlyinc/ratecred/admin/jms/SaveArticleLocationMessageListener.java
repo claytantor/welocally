@@ -2,7 +2,12 @@ package com.sightlyinc.ratecred.admin.jms;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.jms.JMSException;
@@ -10,6 +15,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
@@ -18,16 +24,18 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-import com.noi.utility.data.Base64;
+import au.com.bytecode.opencsv.CSVReader;
+
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
 import com.rosaloves.net.shorturl.bitly.Bitly;
 import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.admin.model.Article;
+import com.sightlyinc.ratecred.admin.model.Site;
+import com.sightlyinc.ratecred.admin.util.DigestUtils;
 import com.sightlyinc.ratecred.client.offers.Location;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
@@ -40,9 +48,11 @@ public class SaveArticleLocationMessageListener implements MessageListener {
 
 	static Logger logger = Logger.getLogger(SaveArticleLocationMessageListener.class);
 
-   /* @Autowired
-    @Qualifier("saveArticleLocationJmsTemplate")
-    private JmsTemplate saveArticleLocationJmsTemplate;*/
+	//this is used to check if there were 
+	//changes
+	private String lastHash;
+	
+	private List<Site> sites;
     
     @Autowired
     @Qualifier("jacksonMapper")
@@ -55,7 +65,7 @@ public class SaveArticleLocationMessageListener implements MessageListener {
 	private String ratecredConsumerSecret;
 	
 	@Value("${simpleGeo.articleLayer.prefix}")
-	private String articleLayerPrefix="com.ratecred.geo.article";
+	private String articleLayerPrefix="com.ratecred.article";
 	
 	@Value("${simpleGeo.articleLayer.suffix}")
 	private String articleLayerSuffix="dev";
@@ -66,6 +76,9 @@ public class SaveArticleLocationMessageListener implements MessageListener {
 	@Value("${twitter.rateCredService.bitlyKey}")
 	private String bitlyKey;
 	
+	@Value("${sites.spreadsheetUrl}")
+	private String sitesUrl="http://spreadsheets.google.com/tq?tqx=out:csv&key=0Au9a580BQZPYdFl2YU5nRkJhNFZhZmJaLWlkc1F0Nnc&hl=en";
+		
 	
 	//Qh3x7erV34FE3UXznOhwVubn2bEG1pmiAfQMqEJae4D4vXjUMuWKFq4MwmeADWV.mOTx
 	@Value("${article.geocodingUrl}")
@@ -95,12 +108,39 @@ public class SaveArticleLocationMessageListener implements MessageListener {
         		TextMessage tm = (TextMessage)message;
     			//what we are sending to storage
     			JSONObject jArticle = new JSONObject(new String(tm.getText().getBytes()));
-            	
-            	//deserialize the json
+    			
+    			//add the site object to the article json
+    			//now reverse geocode it
+            	ClientResponse responseSites = 
+        			SimpleHttpClient.get(sitesUrl, null, null);
+            	String hash = DigestUtils.makeDigest(responseSites.getResponse());
+    			if(sites== null || lastHash == null || !lastHash.equals(hash)) {
+    				sites = new ArrayList<Site>();
+    				StringReader sreader = new StringReader(new String(responseSites.getResponse()));
+    				CSVReader reader = new CSVReader(sreader);
+    				reader.readNext();   				
+    				String [] nextLine;
+    				
+    				//clear sites
+    				sites = new ArrayList<Site>();
+    			    while ((nextLine = reader.readNext()) != null) {
+    			    	sites.add(convertSite(nextLine));
+    			    }
+    			}
+
+    			//deserialize the json
             	Article article = 
             		jacksonMapper.readValue(
             				new ByteArrayInputStream(
             						tm.getText().getBytes()), Article.class);
+            	
+            	String articleType = "Restaurant";
+            	if(article.getKeywords().contains("Shopping"))
+            		articleType = "Shopping";
+    			
+    			//find site by referrerId
+    			Site articleSite = findSiteByReffereId(sites, article.getReferrerId());
+    			jArticle.put("site", convertSiteToJSON(articleSite));    			
     			
     			//now reverse geocode it
             	ClientResponse response = 
@@ -122,7 +162,7 @@ public class SaveArticleLocationMessageListener implements MessageListener {
     			p.setLat(loc.getLat());
     			p.setLon(loc.getLng());
     			g.setPoint(p);	
-    			r.setLayer(articleLayerPrefix+"."+article.getReferrerId()+"."+articleLayerSuffix);
+    			r.setLayer(articleLayerPrefix+"."+article.getReferrerId()+"."+articleType.toLowerCase()+"."+articleLayerSuffix);
     			
     			Bitly bitly = 
     				BitlyFactory.newInstance(bitlyUserName, bitlyKey);
@@ -145,7 +185,41 @@ public class SaveArticleLocationMessageListener implements MessageListener {
 			logger.error(e.getMessage(), e);
 		} catch (JSONException e) {
 			logger.error(e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			logger.error(e.getMessage(), e);
+		} catch (IllegalAccessException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvocationTargetException e) {
+			logger.error(e.getMessage(), e);
+		} catch (NoSuchMethodException e) {
+			logger.error(e.getMessage(), e);
 		} 
+    }
+    
+    private Site findSiteByReffereId(List<Site> sites, String id) {
+    	for (Site site : sites) {
+			if(site.getReferrerId().equals(id))
+				return site;
+		}
+    	return null;
+    }
+    
+    //referrerId	siteName	siteUrl	description	iconUrl	sgLayer	keywords
+    private Site convertSite(String[] line) {
+    	Site site = new Site();
+    	site.setReferrerId(line[0]);
+    	site.setSiteName(line[1]);
+    	site.setSiteUrl(line[2]);
+    	site.setDescription(line[3]);
+    	site.setIconUrl(line[4]);
+    	site.setKeywords(line[5]);  	
+    	return site;
+    }
+    
+    private JSONObject convertSiteToJSON(Site site) 
+    throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    	JSONObject siteObj = new JSONObject(BeanUtils.describe(site));
+    	return siteObj;
     }
     
     /**

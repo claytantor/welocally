@@ -24,6 +24,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
+import com.sightlyinc.ratecred.admin.util.DigestUtils;
 import com.sightlyinc.ratecred.client.offers.Advertiser;
 import com.sightlyinc.ratecred.client.offers.Location;
 import com.sightlyinc.ratecred.client.offers.Offer;
@@ -51,11 +52,15 @@ public class SyncSimpleGeoStorageOffersJob  {
 	@Value("${offers.spreadsheetUrl}")
 	private String spreadsheetUrl="http://spreadsheets.google.com/tq?tqx=out:csv&key=0Au9a580BQZPYdHkxRE1jQnFpLS1IS3VNaUVMalNiRmc&hl=en";
 	
-	@Value("${offers.layerName}")
-	private String offersLayerName="com.ratecred.geo.offer.e65498e6be6f.dev";
+	@Value("${offers.shopping.layerName}")
+	private String offersShoppingLayerName="com.ratecred.offer.b93acd058af5.shopping.dev";
+	
+	@Value("${offers.dining.layerName}")
+	private String offersDiningLayerName="com.ratecred.offer.b93acd058af5.dining.dev";
+	
 		
 	//every 2 mins
-	@Scheduled(fixedRate = 120000)
+	//@Scheduled(fixedRate = 120000)
 	protected void executeInternal()
 			throws JobExecutionException {
 		try {
@@ -65,7 +70,7 @@ public class SyncSimpleGeoStorageOffersJob  {
 			ClientResponse response = 
 				SimpleHttpClient.get(spreadsheetUrl, null, null);
 			
-			String hash = makeDigest(response.getResponse());
+			String hash = DigestUtils.makeDigest(response.getResponse());
 			if(lastHash == null || !lastHash.equals(hash)) {
 				
 				StringReader sreader = new StringReader(new String(response.getResponse()));
@@ -84,15 +89,16 @@ public class SyncSimpleGeoStorageOffersJob  {
 				        Point p = new Point();			        
 				        p.setLat(Double.parseDouble(offerLine[14]));
 						p.setLon(Double.parseDouble(offerLine[15]));
-				        					
+						
+								        					
 				        saveOfferToStorage(
 				    			o, 
 				    			p,
-				    			offersLayerName,
+				    			"com.ratecred.offer.b93acd058af5."+offerLine[22].toLowerCase()+".dev",
 				    			offerLine[0]);
 				        
 			    	} else if(offerLine[1].equals("INACTIVE")) {
-			    		deleteOfferFromStorage(offersLayerName, offerLine[0]);
+			    		deleteOfferFromStorage("", offerLine[0]);
 			    	} 
 			        
 			        
@@ -261,43 +267,7 @@ public class SyncSimpleGeoStorageOffersJob  {
 		return jOffer;
 	}
 	
-	public String makeDigest(byte[] buffer) throws NoSuchAlgorithmException {
-
-			// Initialize SecureRandom
-			// This is a lengthy operation, to be done only upon
-			// initialization of the application
-			SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
-
-			// generate a random number
-			String randomNum = new Integer(prng.nextInt()).toString();
-
-			// get its digest
-			MessageDigest sha = MessageDigest.getInstance("SHA-1");
-			byte[] result = sha.digest(buffer);
-			return new String(result);
-		
-	}
 	
-	/**
-	  * The byte[] returned by MessageDigest does not have a nice
-	  * textual representation, so some form of encoding is usually performed.
-	  *
-	  * This implementation follows the example of David Flanagan's book
-	  * "Java In A Nutshell", and converts a byte array into a String
-	  * of hex characters.
-	  *
-	  * Another popular alternative is to use a "Base64" encoding.
-	  */
-	  private String hexEncode( byte[] aInput){
-	    StringBuilder result = new StringBuilder();
-	    char[] digits = {'0', '1', '2', '3', '4','5','6','7','8','9','a','b','c','d','e','f'};
-	    for ( int idx = 0; idx < aInput.length; ++idx) {
-	      byte b = aInput[idx];
-	      result.append( digits[ (b&0xf0) >> 4 ] );
-	      result.append( digits[ b&0x0f] );
-	    }
-	    return result.toString();
-	  }
 	
 
 
