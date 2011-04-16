@@ -52,11 +52,11 @@ public class SyncSimpleGeoStorageOffersJob  {
 	@Value("${offers.spreadsheetUrl}")
 	private String spreadsheetUrl="http://spreadsheets.google.com/tq?tqx=out:csv&key=0Au9a580BQZPYdHkxRE1jQnFpLS1IS3VNaUVMalNiRmc&hl=en";
 	
-	@Value("${offers.shopping.layerName}")
+	/*@Value("${offers.shopping.layerName}")
 	private String offersShoppingLayerName="com.ratecred.offer.b93acd058af5.shopping.dev";
 	
 	@Value("${offers.dining.layerName}")
-	private String offersDiningLayerName="com.ratecred.offer.b93acd058af5.dining.dev";
+	private String offersDiningLayerName="com.ratecred.offer.b93acd058af5.dining.dev";*/
 	
 		
 	//every 2 mins
