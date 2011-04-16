@@ -35,8 +35,8 @@ public class RatecredOfferClient implements OfferClient {
 	@Value("${simpleGeo.rateCredOAuth.appSecretKey}")
 	private String ratecredConsumerSecret;
 	
-	@Value("${offers.layerName}")
-	private String offersLayerName="com.ratecred.geo.offer.e65498e6be6f.dev";
+	@Value("${offers.layersNames}")
+	private String offersLayerNames="com.ratecred.offer.b93acd058af5.restaurant.dev,com.ratecred.offer.b93acd058af5.shopping.dev";
 	
 	@Value("${offers.lat}")
 	private String offersLat="37.804431";
@@ -64,14 +64,17 @@ public class RatecredOfferClient implements OfferClient {
 			double radiusInKMeters = 20.0;
 			
 			String cursor = "";
-			
-			FeatureCollection collection = 
-				client.search(lat, lon, offersLayerName,radiusInKMeters, 100, cursor);
-			for (Feature feature : collection.getFeatures()) {
-				Offer o = transformOffer(feature);
-				if(o != null)
-					offers.add(o);
+			String[] layers = offersLayerNames.split(",");
+			for (int i = 0; i < layers.length; i++) {
+				FeatureCollection collection = 
+					client.search(lat, lon, layers[i],radiusInKMeters, 100, cursor);
+				for (Feature feature : collection.getFeatures()) {
+					Offer o = transformOffer(feature);
+					if(o != null)
+						offers.add(o);
+				}
 			}
+			
 			
 			
 		} catch (IOException e) {
