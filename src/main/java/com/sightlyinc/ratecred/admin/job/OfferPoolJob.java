@@ -23,7 +23,7 @@ public class OfferPoolJob  {
 	 * 
 	 * @throws JobExecutionException
 	 */
-	@Scheduled(fixedRate = 120000)
+	@Scheduled(fixedRate = 1200000)
 	public void execute() {				
 		logger.debug("[JOB] " + this.getClass().getName() +" running");
 		offerPoolService.refresh();		
