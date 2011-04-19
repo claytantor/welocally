@@ -9,11 +9,79 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
 
+/**
+ * 
+{
+    "visible": "true",
+    "state": "CA",
+    "type": "deal",
+    "externalId": "17c61c45-e833-4fbf-af13-2b5d64864b76",
+    "city": "Oakland",
+    "id": "0",
+    "programId": "b93acd058af5",
+    "discountType": "deal",
+    "description": "Six pounds of your favorite flavors for a great price! Choose any grind or who bean, we will make it just like you want it!",
+    "beginDateString": "2011-04-10",
+    "name": "Six Pounds of Any Grind",
+    "value": "60.0",
+    "quantity": null,
+    "externalSource": "Oaklandly",
+    "programName": "Oaklandly",
+    "expire": "Tue Apr 10 00:00:00 PDT 2012",
+    "ends": "Tue Apr 10 00:00:00 PDT 2012",
+    "offerLocation": {
+        "addressTwo": null,
+        "postalCode": "null",
+        "addressOne": "300 Webster Street",
+        "name": null,
+        "state": "CA",
+        "lng": "-122.27278",
+        "lat": "37.798027",
+        "comments": null,
+        "city": "Oakland"
+    },
+    "expireDateString": "2012-04-10",
+    "extraDetails": "Does not apply to Sumatra or Hawaiian flavors ",
+    "illustrationUrl": "http://oaklandunwrapped.org/bluebottle/graphics/logo.gif",
+    "begin": "Sun Apr 10 00:00:00 PDT 2011",
+    "price": "39.99",
+    "checkinsRequired": null,
+    "items": "[]",
+    "advertiser": {
+        "siteUrl": null,
+        "id": null,
+        "contactPhone": null,
+        "locations": [
+            {
+                "addressTwo": null,
+                "postalCode": "null",
+                "addressOne": "300 Webster Street",
+                "name": null,
+                "state": "CA",
+                "lng": "-122.27278",
+                "lat": "37.798027",
+                "comments": null,
+                "city": "Oakland"
+            }
+        ],
+        "description": "A slightly disaffected freelance musician and coffee lunatic, weary of the grande eggnog latte, and the double skim pumpkin-pie macchiato, decides to open a roaster for people who are clamoring for the actual taste of freshly roasted coffee. Using a miniscule six-pound batch roaster, he makes an historic vow: \"I will only sell coffee less than 48 hours out of the roaster to my customers, so they may enjoy coffee at its peak of flavor. I will only use the finest organic, and pesticide-free, shade-grown beans. If they can't come to me, I will drive to their house to give them the freshest coffee they have ever tasted.\" In honor of Kolshitsky's heroics, he names his business The Blue Bottle Coffee Company, and begins another chapter in the history of superlative coffee.",
+        "name": "Blue Bottle Coffee Co.",
+        "categoryId": null,
+        "advertiserLogoUrl": null,
+        "externalId": null
+    },
+    "endDateString": "2012-04-10"
+}
+ * @author claygraham
+ *
+ */
+@JsonIgnoreProperties({ "expire", "ends", "begin", "items"  })
 public class Offer {
 	
 	static Logger logger = Logger.getLogger(Offer.class);
@@ -22,6 +90,7 @@ public class Offer {
 	
 	@JsonProperty
 	private String externalId = "";
+	
 	
 	@JsonProperty
 	private String externalSource ="";
@@ -48,7 +117,7 @@ public class Offer {
 	@JsonProperty
 	private String beginDateString="";
 	
-	@JsonProperty
+	@JsonProperty("")
 	private String expireDateString="";
 	
 	@JsonProperty
@@ -72,11 +141,13 @@ public class Offer {
 	private Integer quantity;
 	private Integer checkinsRequired;
 	
+	@JsonIgnore
 	private Integer score;
 	
 	private Location offerLocation;
 	
 	private List<Item> items;
+	
 	private Advertiser advertiser;
 	
 		
@@ -104,10 +175,12 @@ public class Offer {
 		this.score = this.score+value;
 	}
 	
+	@JsonIgnore
 	public Integer getScore() {
 		return score;
 	}
 
+	@JsonIgnore
 	public void setScore(int score) {
 		logger.debug("setting score:"+score+" name:"+this.getName());
 		this.score = score;
@@ -200,6 +273,7 @@ public class Offer {
 		return DateUtils.stringToDate(endDateString, DateUtils.DESC_SIMPLE_FORMAT);
 	}
 	
+	@JsonIgnore
 	public Date getExpire()
 	{
 		return DateUtils.stringToDate(expireDateString, DateUtils.DESC_SIMPLE_FORMAT);
