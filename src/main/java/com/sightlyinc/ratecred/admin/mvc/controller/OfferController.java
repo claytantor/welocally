@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +13,14 @@ import javax.jms.JMSException;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +38,8 @@ import com.sightlyinc.ratecred.client.offers.Offer;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.RaterAwardsService;
+import com.simplegeo.client.SimpleGeoStorageClient;
+import com.simplegeo.client.types.Record;
 
 @Controller
 @RequestMapping(value="/offer")
@@ -55,6 +62,17 @@ public class OfferController {
 	
 	@Autowired
 	RaterAwardsService raterAwardsService;
+	
+	@Value("${simpleGeo.rateCredOAuth.appConsumerKey}")
+	private String authConsumerKey;
+	
+	@Value("${simpleGeo.rateCredOAuth.appSecretKey}")
+	private String authSecretKey;
+	
+	@Autowired
+    @Qualifier("jacksonMapper")
+    private ObjectMapper jacksonMapper;
+	
 	
 	//this will need to be fixed this is just a quick solution
 	//so there are write messages every request 
@@ -156,6 +174,60 @@ public class OfferController {
 			return "offer";
 		else
 			return view;
+	}
+	
+	/**
+	 * hack for demo, goto simple geo and get the offer
+	 * 
+	 * @param awardIexternalId
+	 * @param view
+	 * @param model
+	 * @return
+	 * @throws BLServiceException
+	 */
+	@RequestMapping(value="/sg/{layer}/{externalId}",method=RequestMethod.GET)
+	public String getSGOffer(
+			@PathVariable("layer") String layer,
+			@PathVariable("externalId") String externalId,
+			@RequestParam(value="view",required=false) String view, 
+			Model model) throws BLServiceException {
+		
+		try {
+			SimpleGeoStorageClient client = SimpleGeoStorageClient.getInstance();
+			client.getHttpClient().setToken(
+					authConsumerKey, 
+					authSecretKey);
+			
+			Record record = 
+				client.getRecord(layer, externalId);
+			
+			JSONObject offerRecord = 
+				(JSONObject)record.getProperties().get("offer");
+			
+			/*Offer o = JSONDeserializer.deserializeOffer(offerRecord);
+			model.addAttribute("offer",o);*/
+			
+			//deserialize the json
+			Offer o = 
+        		jacksonMapper.readValue(
+        				new ByteArrayInputStream(
+        						offerRecord.toString().getBytes()), Offer.class);
+			
+			model.addAttribute("offer",o);
+			
+		} catch (IOException e) {
+			logger.error("cannot get places result",e);
+		} catch (Exception e) {
+			logger.error("cannot get places result",e);
+		}
+		
+		
+		if(StringUtils.isEmpty(view))
+			return "offer";
+		else
+			return view;
+		
+		
 	}
 	
 	

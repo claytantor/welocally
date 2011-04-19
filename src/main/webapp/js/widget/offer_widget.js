@@ -87,11 +87,7 @@ if (!RATECRED.OfferWidget) {
                 	
                 	wrapper = document.createElement('DIV');
                     wrapper.className = 'ratecred_offer';
-                    if (cfg.header) {
-                            title = document.createElement('P');
-                            title.innerHTML = RATECRED.util.escape(cfg.header);
-                            wrapper.appendChild(title);
-                    }
+                    
                 	
                     list = document.createElement('UL');
                     //list.className = 'ratecred_offer';
@@ -129,6 +125,11 @@ if (!RATECRED.OfferWidget) {
                             }
                     }
                     wrapper.appendChild(list);
+                    if (cfg.formkey) {
+                        title = document.createElement('P');
+                        title.innerHTML = "<a href='https://spreadsheets1.google.com/a/ratecred.com/viewform?formkey="+cfg.formkey+"'>Place your business local offer here!</a>";
+                        wrapper.appendChild(title);
+                    }
                 }
                 
                 

@@ -208,7 +208,9 @@ public class AmazonCartTag extends TagSupport {
 						.replaceAll("\\[MERCHANT_ID\\]", merchantID));
 			}
 			else 
-				cartHTML.append(CART_FORM_START_PROD.replaceAll("\\[MERCHANT_ID\\]", merchantID));
+				cartHTML.append(CART_FORM_START_PROD
+						.replaceAll("\\[SKU\\]", itemSku)
+						.replaceAll("\\[MERCHANT_ID\\]", merchantID));
 			
 			cartHTML.append(getCart(merchantID, awsAccessKeyID));
 			cartHTML.append(CART_FORM_SIGNATURE_INPUT_FIELD.replaceAll("\\[SIGNATURE\\]", signature));
