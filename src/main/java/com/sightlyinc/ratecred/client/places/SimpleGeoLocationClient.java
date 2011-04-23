@@ -4,21 +4,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simplegeo.client.callbacks.SimpleGeoCallback;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.model.Place;
 import com.simplegeo.client.SimpleGeoPlacesClient;
 import com.simplegeo.client.callbacks.FeatureCollectionCallback;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
 
+import javax.annotation.PostConstruct;
 
 @Service("locationPlacesClient")
 public class SimpleGeoLocationClient implements LocationPlacesClient {
@@ -28,23 +28,18 @@ public class SimpleGeoLocationClient implements LocationPlacesClient {
 	
 	
 	private SimpleGeoPlacesClient client;
-	
+
 	@Value("${simpleGeo.rateCredOAuth.appConsumerKey}")
 	private String ratecredConsumerKey;
-	
+
 	@Value("${simpleGeo.rateCredOAuth.appSecretKey}")
 	private String ratecredConsumerSecret;
-	
-
-	
-		
-	@Autowired
-	private PlaceDao placeDao;
-
-
-	private Object JSONObject;
 
 	public SimpleGeoLocationClient() {
+    }
+
+    @PostConstruct
+    public void init() {
 		client = SimpleGeoPlacesClient.getInstance();
 		client.getHttpClient().setToken(ratecredConsumerKey, ratecredConsumerSecret);
 	}
@@ -56,9 +51,47 @@ public class SimpleGeoLocationClient implements LocationPlacesClient {
 		return findPlacesSynchronous(lat, lon, radiusInKMeters);
 	}
 
+    @Override
+    public Place findById(String id) {
+        return findByIdSynchronous(id);
+    }
+
+    public Place findByIdSynchronous(String id) {
+        Place place = null;
+        try {
+            place = trasformFeature(client.getPlace(id));
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("problem getting place by id", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return place;
+    }
+
+    public Place findByIdAsynchronous(String id) {
+        final List<Place> places = new ArrayList<Place>(1);
+        try {
+            client.getPlace(id, new SimpleGeoCallback<Feature>() {
+                @Override
+                public void onSuccess(Feature feature) {
+                    logger.debug(feature.getProperties());
+                    places.add(trasformFeature(feature));
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    System.out.println(errorMessage);
+                }
+            });
+        } catch (IOException e) {
+            logger.error("problem getting place by id", e);
+        }
+        return (places.isEmpty() ? null : places.get(0));
+    }
 
 
-	protected List<Place> findPlacesAsync(double lat, double lon, double radiusInKMeters) {
+    protected List<Place> findPlacesAsync(double lat, double lon, double radiusInKMeters) {
 		
 		
 		final List<Place> places = new ArrayList<Place>();
