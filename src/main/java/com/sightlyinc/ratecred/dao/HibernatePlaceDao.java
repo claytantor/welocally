@@ -52,10 +52,30 @@ public class HibernatePlaceDao
 		});		
 	}
 
+    @Override
+    public Place findBySimpleGeoId(final String simpleGeoId) {
+        return (Place)getHibernateTemplateOverride().execute(new HibernateCallback() {
+            public Object doInHibernate(Session session)
+            throws HibernateException, SQLException
+            {
+
+                Query query = session.createQuery(
+                    "select distinct entityimpl from "+Place.class.getName()+
+                    " as entityimpl where entityimpl.simpleGeoId = :simpleGeoId");
+
+                query.setString("simpleGeoId", simpleGeoId);
+
+                Place t = (Place)query.uniqueResult();
 
 
+                return t;
 
-	@Override
+            }
+        });
+    }
+
+
+    @Override
 	public List<Place> findBySimillarNameCityState(String name, String city,
 			String state) {
 		return null;

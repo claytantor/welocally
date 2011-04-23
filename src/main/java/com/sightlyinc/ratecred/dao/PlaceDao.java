@@ -6,7 +6,9 @@ import com.sightlyinc.ratecred.model.Place;
 
 public interface PlaceDao {
 	public Place findByTwitterId(String id);	
-	
+
+    public Place findBySimpleGeoId(String simpleGeoId);
+
 	public List<Place> findByNamePrefix(String namePrefix);
 	
 	public List<Place> findByCityState(String city, String state);
@@ -29,4 +31,5 @@ public interface PlaceDao {
 	public List<Place> findAll();
 	public void save(Place entity);
 	public void delete(Place entity);
+
 }
