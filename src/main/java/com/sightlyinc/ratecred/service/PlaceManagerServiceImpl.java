@@ -126,11 +126,18 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		return place;
 	}
 
+    @Override
+    public Place findBySimpleGeoId(String simpleGeoId) throws BLServiceException {
+		//get the place
+		//try to find it in the store
+		com.sightlyinc.ratecred.model.Place place =
+			placeDao.findBySimpleGeoId(simpleGeoId);
+
+		return place;
+    }
 
 
-
-
-	@Override
+    @Override
 	public Place findPlaceByNameAddressCityState(String name, String address,
 			String city, String state) throws BLServiceException {
 		List<Place> places = 

@@ -13,6 +13,9 @@ public interface PlaceManagerService {
 	public com.sightlyinc.ratecred.model.Place findByTwitterId(
 			String twitterId) throws BLServiceException;
 		
+	public com.sightlyinc.ratecred.model.Place findBySimpleGeoId(
+			String simpleGeoId) throws BLServiceException;
+
 	public List<Place> findAllPlacesForCity(PlaceCityState cs) throws BLServiceException;
 	
 	public PlacePage findPlacesRatedByType(
