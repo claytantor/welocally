@@ -12,6 +12,7 @@ ALTER TABLE `award_offer` ADD COLUMN `discount_type` VARCHAR(45) AFTER `expire_m
 ALTER TABLE `business` ADD COLUMN `advertiser_id` VARCHAR(255) AFTER `guid`,
  ADD COLUMN `advertiser_source` VARCHAR(45) AFTER `advertiser_id`; 
  
+DROP TABLE IF EXISTS cust_order; 
 CREATE TABLE `cust_order` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `version` INT,
@@ -43,6 +44,7 @@ CREATE TABLE `cust_order` (
 )
 CHARACTER SET utf8;
 
+DROP TABLE IF EXISTS voucher; 
 CREATE TABLE `voucher` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `version` INT,
@@ -62,6 +64,7 @@ CREATE TABLE `voucher` (
 )
 CHARACTER SET utf8;
 
+DROP TABLE IF EXISTS award_awardoffer; 
 CREATE TABLE `award_awardoffer` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `award_id` BIGINT(20),
@@ -70,6 +73,7 @@ CREATE TABLE `award_awardoffer` (
 )
 CHARACTER SET utf8;
 
+DROP TABLE IF EXISTS award_offer_item; 
 CREATE TABLE `award_offer_item` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `version` INT,
