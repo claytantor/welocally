@@ -56,7 +56,9 @@ public interface RatingManagerService {
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
 	
-	public void deleteRate(Rating entity) throws BLServiceException;
+	public void deleteRatingByPrimaryKey(Long id) throws BLServiceException;
+	
+	public void deleteRating(Rating entity) throws BLServiceException;
 	public Long saveRating(Rating entity) throws BLServiceException;
 	public Long saveRatingWithCheckin(Rating entity) throws BLServiceException;
 	

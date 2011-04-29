@@ -325,8 +325,17 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		}
 	}
 
+	
+	
+	
 	@Override
-	public void deleteRate(Rating entity) {	
+	public void deleteRatingByPrimaryKey(Long id) throws BLServiceException {
+		Rating r = findRatingByPrimaryKey(id);
+		deleteRating(r); 		
+	}
+
+	@Override
+	public void deleteRating(Rating entity) {	
 		
 		//need to re compute place rating
 		Place p = placeDao.findByPrimaryKey(entity.getPlace().getId());
