@@ -14,6 +14,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
+import com.sightlyinc.ratecred.model.Location;
 
 /**
  * 

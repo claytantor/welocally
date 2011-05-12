@@ -1,4 +1,4 @@
-package com.sightlyinc.ratecred.client.offers;
+package com.sightlyinc.ratecred.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

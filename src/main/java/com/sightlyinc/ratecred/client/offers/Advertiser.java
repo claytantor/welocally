@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import com.sightlyinc.ratecred.model.Location;
+
 /*"advertiser": {
     "reviews": [
         {

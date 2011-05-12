@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
-import com.sightlyinc.ratecred.client.places.LocationPlacesClient;
+import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
 import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparitor;
 import com.sightlyinc.ratecred.dao.PlaceAttributeDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
@@ -69,7 +69,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 	@Autowired
 	@Qualifier("locationPlacesClient")
-	private LocationPlacesClient locationClient;
+	private GeoPlacesClient locationClient;
 		
 	@Transactional(readOnly = false)
 	public void saveNewLocationInfo(Long placeId) throws BLServiceException

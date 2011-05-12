@@ -26,6 +26,7 @@ public class Place {
 	private String category;
 	private String subcategory;
 	private String categoryType;
+	private String addressFull;
 	
 	
 	private Date timeCreated;
@@ -202,6 +203,12 @@ public class Place {
 		this.categoryType = categoryType;
 	}
 	
+	public String getAddressFull() {
+		return addressFull;
+	}
+	public void setAddressFull(String addressFull) {
+		this.addressFull = addressFull;
+	}
 	@Override
 	public String toString() {
 		return "Place [address=" + address + ", attributes=" + attributes

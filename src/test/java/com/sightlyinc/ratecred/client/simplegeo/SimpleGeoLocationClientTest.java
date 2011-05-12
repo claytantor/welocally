@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.sightlyinc.ratecred.client.places.LocationPlacesClient;
-import com.sightlyinc.ratecred.client.places.SimpleGeoLocationClient;
+import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
+import com.sightlyinc.ratecred.client.geo.SimpleGeoLocationClient;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.test.BaseTest;
 
@@ -22,7 +22,7 @@ public class SimpleGeoLocationClientTest extends BaseTest {
 	
 	@Autowired
 	@Qualifier("locationPlacesClient")
-	private LocationPlacesClient locationClient;
+	private GeoPlacesClient locationClient;
 	
 	@Before
 	public void setup(){

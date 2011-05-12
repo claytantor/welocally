@@ -2,9 +2,26 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Publisher {
 	
 	private Long id;
+	
+	
+	@JsonProperty
+	private String referrerId;
+		
+	@JsonProperty
+	private String siteUrl;
+	
+	
+	@JsonProperty
+	private String iconUrl;
+	
+	@JsonProperty
+	private String keywords;
+	
 	private String token;
 	private Date signupDate;
 	private String publisherUrl;
