@@ -2,9 +2,6 @@ package com.sightlyinc.ratecred.admin.job;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,21 +13,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.noi.utility.data.DigestUtils;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
-import com.sightlyinc.ratecred.admin.util.DigestUtils;
 import com.sightlyinc.ratecred.client.offers.Advertiser;
-import com.sightlyinc.ratecred.client.offers.Location;
 import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.model.Location;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
-import com.simplegeo.client.types.Layer;
 import com.simplegeo.client.types.Point;
 import com.simplegeo.client.types.Record;
 
@@ -51,16 +46,8 @@ public class SyncSimpleGeoStorageOffersJob  {
 	
 	@Value("${offers.spreadsheetUrl}")
 	private String spreadsheetUrl="http://spreadsheets.google.com/tq?tqx=out:csv&key=0Au9a580BQZPYdHkxRE1jQnFpLS1IS3VNaUVMalNiRmc&hl=en";
-	
-	/*@Value("${offers.shopping.layerName}")
-	private String offersShoppingLayerName="com.ratecred.offer.b93acd058af5.shopping.dev";
-	
-	@Value("${offers.dining.layerName}")
-	private String offersDiningLayerName="com.ratecred.offer.b93acd058af5.dining.dev";*/
-	
 		
-	//every 2 mins
-	//@Scheduled(fixedRate = 120000)
+		
 	protected void executeInternal()
 			throws JobExecutionException {
 		try {
@@ -106,8 +93,6 @@ public class SyncSimpleGeoStorageOffersJob  {
 				
 				lastHash = hash;
 			}
-			
-			
 			
 		} catch (Exception e) {
 			logger.error("problem getting getting unlocks", e);

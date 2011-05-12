@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.noi.utility.data.DigestUtils;
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
 import com.rosaloves.net.shorturl.bitly.Bitly;
@@ -35,8 +36,7 @@ import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.admin.model.Article;
 import com.sightlyinc.ratecred.admin.model.Site;
-import com.sightlyinc.ratecred.admin.util.DigestUtils;
-import com.sightlyinc.ratecred.client.offers.Location;
+import com.sightlyinc.ratecred.model.Location;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
 import com.simplegeo.client.types.Point;
