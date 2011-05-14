@@ -16,7 +16,6 @@ import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.geocoding.Geocoder;
 import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
-import com.sightlyinc.ratecred.admin.geocoding.PublishEventsTest;
 import com.sightlyinc.ratecred.model.Event;
 import com.sightlyinc.ratecred.model.Events;
 import com.sightlyinc.ratecred.model.Location;
