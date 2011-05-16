@@ -65,15 +65,14 @@ import com.sightlyinc.ratecred.client.offers.Item;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.dao.UserDao;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
-import com.sightlyinc.ratecred.model.OfferItem;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.model.Offer;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.User;
 
@@ -555,26 +554,21 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 		
 		Offer awardOffer = new Offer();
 		
-		awardOffer.setCouponCode(offer.getCouponCode());
-		awardOffer.setBeginTime(offer.getBegin().getTime());
-		awardOffer.setEndTime(offer.getExpire().getTime());
+		awardOffer.setCode(offer.getCouponCode());
+		awardOffer.setTimeStarts(offer.getBegin().getTime());
+		awardOffer.setTimeEnds(offer.getExpire().getTime());
 		awardOffer.setDescription(offer.getDescription());
 		awardOffer.setExtraDetails(offer.getExtraDetails());
-		awardOffer.setExternalId(offer.getExternalId().toString());
-		awardOffer.setExternalSource(offer.getExternalSource());
 		awardOffer.setName(offer.getName());
-		awardOffer.setProgramId(offer.getProgramId().toString());
-		awardOffer.setProgramName(offer.getProgramName());
 		awardOffer.setStatus("GIVEN");
-		awardOffer.setType(offer.getType());
 		awardOffer.setUrl(offer.getUrl());
 		awardOffer.setIllustrationUrl(offer.getIllustrationUrl());
 		awardOffer.setPrice(offer.getPrice());
-		awardOffer.setValue(offer.getValue());
+		awardOffer.setOfferValue(offer.getValue());
 		awardOffer.setQuantity(offer.getQuantity());
 		
 		
-		//offer items
+		/*//offer items
 		for (Item item : offer.getItems()) {
 			OfferItem offerItem = new OfferItem();
 			offerItem.setDescription(item.getDescription());
@@ -583,7 +577,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 			offerItem.setTimeCreated(Calendar.getInstance().getTimeInMillis());
 			offerItem.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
 			awardOffer.getItems().add(offerItem);
-		}
+		}*/
 		
 		//now do the business
 		if(offer.getAdvertiser() != null) {			
@@ -648,7 +642,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 					
 				}
 				
-				awardOffer.setBusiness(b);
+				awardOffer.getMerchant().setBusiness(b);
 				
 			} catch (BLServiceException e) {
 				logger.error("problem when trying to find business", e);

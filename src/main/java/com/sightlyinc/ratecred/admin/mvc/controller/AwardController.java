@@ -157,18 +157,20 @@ public class AwardController {
 				Offer aoffer = new Offer();
 				award.setGiveOffer(true);
 				aoffer.setAwardType(awardType);
-				aoffer.setCouponCode(offer.getCouponCode());
-				aoffer.setBeginTime(offer.getBegin().getTime());
+				
+				aoffer.setCode(offer.getCouponCode());
+				aoffer.setTimeStarts(offer.getBegin().getTime());
+				aoffer.setTimeEnds(offer.getExpire().getTime());
 				aoffer.setDescription(offer.getDescription());
-				aoffer.setEndTime(offer.getExpire().getTime());
-				aoffer.setExternalId(offer.getExternalId().toString());
-				aoffer.setExternalSource(offer.getExternalSource());
+				aoffer.setExtraDetails(offer.getExtraDetails());
 				aoffer.setName(offer.getName());
-				aoffer.setProgramId(offer.getProgramId().toString());
-				aoffer.setProgramName(offer.getProgramName());
 				aoffer.setStatus("GIVEN");
-				//aoffer.setTimeCreated(Calendar.getInstance().getTime());
 				aoffer.setUrl(offer.getUrl());
+				aoffer.setIllustrationUrl(offer.getIllustrationUrl());
+				aoffer.setPrice(offer.getPrice());
+				aoffer.setOfferValue(offer.getValue());
+				aoffer.setQuantity(offer.getQuantity());
+	
 				awardManagerService.saveAwardOffer(aoffer);
 				
 				//award.setOffer(aoffer);
@@ -211,22 +213,21 @@ public class AwardController {
 				award.setGiveOffer(false);
 				
 				aoffer.setAwardType(awardType);
-				aoffer.setCouponCode(customAwardForm.getCouponCode());
-				aoffer.setBeginTime(
+				
+				aoffer.setCode(customAwardForm.getCouponCode());
+				aoffer.setTimeStarts(
 						DateUtils.stringToDate(
 								customAwardForm.getBeginDateString(), 
 								DateUtils.DESC_SIMPLE_FORMAT).getTime());
-				aoffer.setEndTime(
+				aoffer.setTimeEnds(
 						DateUtils.stringToDate(customAwardForm.getExpireDateString(), 
 						DateUtils.DESC_SIMPLE_FORMAT).getTime());
 				
 				aoffer.setDescription(customAwardForm.getDescription());
 				
-				aoffer.setExternalId(customAwardForm.getExternalId().toString());
-				aoffer.setExternalSource(customAwardForm.getExternalSource());
+				
 				aoffer.setName(customAwardForm.getName());
-				aoffer.setProgramId(customAwardForm.getProgramId().toString());
-				aoffer.setProgramName(customAwardForm.getProgramName());
+
 				aoffer.setStatus("GIVEN");
 				aoffer.setUrl(customAwardForm.getUrl());
 				awardManagerService.saveAwardOffer(aoffer);

@@ -87,8 +87,8 @@ public class PlaceRatingEvaluator {
 		Long largest = -1l;
 		for (Award award : awards) {
 			for (Offer offer : award.getOffers()) {
-				if(offer.getEndTime()>largest)
-					largest = offer.getEndTime();
+				if(offer.getTimeEnds()>largest)
+					largest = offer.getTimeEnds();
 			}			
 		}		
 		return largest;
@@ -98,7 +98,7 @@ public class PlaceRatingEvaluator {
 	{
 		ArrayList<Rating> filtered = new ArrayList<Rating>();
 		for (Rating rating : ratings) {
-			if(rating.getTimeCreatedMills()>since)
+			if(rating.getTimeCreated()>since)
 				filtered.add(rating);
 		}
 		return filtered;
