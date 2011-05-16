@@ -2,6 +2,11 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
 
+/**
+ * NOT PERSISTED, will need to determine if this is obsolete 
+ * @author claygraham
+ *
+ */
 public class PatronBusinessMetrics {
 	
 	private Long id;

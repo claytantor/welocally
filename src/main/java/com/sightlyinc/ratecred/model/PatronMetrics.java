@@ -1,5 +1,10 @@
 package com.sightlyinc.ratecred.model;
 
+/**
+ * NOT PERSISTED, will need to determine if this is obsolete 
+ * @author claygraham
+ *
+ */
 public class PatronMetrics {
 	private Long id;
 	private String username;	

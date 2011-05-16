@@ -164,7 +164,7 @@ public class SimpleGeoLocationClient implements GeoPlacesClient {
 				JSONObject first = classifiers.getJSONObject(0);
 				p.setCategory(first.getString("category"));
 				p.setSubcategory(first.getString("subcategory"));
-				p.setCategoryType(first.getString("type"));
+				//p.setCategoryType(first.getString("type"));
 			}
 		} catch (JSONException e) {
 			logger.debug(e.getMessage());

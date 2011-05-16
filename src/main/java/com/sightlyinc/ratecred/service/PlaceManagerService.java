@@ -3,10 +3,10 @@ package com.sightlyinc.ratecred.service;
 import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.PlacePage;
 
 public interface PlaceManagerService {
 	
@@ -18,31 +18,31 @@ public interface PlaceManagerService {
 
 	public List<Place> findAllPlacesForCity(PlaceCityState cs) throws BLServiceException;
 	
-	public PlacePage findPlacesRatedByType(
+	public Page<Place> findPlacesRatedByType(
 			String type, 
 			Integer pageNum, 
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
 	
-	public PlacePage findPlacesRated(
+	public Page<Place> findPlacesRated(
 			Integer pageNum, 
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
 	
-	public PlacePage findCityStatePlacesRatedByType(
+	public Page<Place> findCityStatePlacesRatedByType(
 			PlaceCityState cs,
 			String type, 
 			Integer pageNum, 
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
 
-	public PlacePage findCityStatePlacesRated(
+	public Page<Place> findCityStatePlacesRated(
 			PlaceCityState cs,
 			Integer pageNum, 
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
 	
-	public PlacePage findPlacesByText(
+	public Page<Place> findPlacesByText(
 			String text, 
 			Integer pageNum, 
 			Integer pageSize, 

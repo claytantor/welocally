@@ -31,10 +31,10 @@ import com.sightlyinc.ratecred.dao.PlaceAttributeDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.index.PlaceDirectoryIndexer;
+import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.PlacePage;
 import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rating;
 
@@ -84,8 +84,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 				p.setAddress(top.getAddress());
 			if(top.getCategory() != null)
 				p.setCategory(top.getCategory());
-			if(top.getCategoryType() != null)
-				p.setCategoryType(top.getCategoryType());
+			//if(top.getCategoryType() != null)
+			//	p.setCategoryType(top.getCategoryType());
 			if(top.getCity() != null)
 				p.setCity(top.getCity());
 			if(top.getState() != null)
@@ -190,7 +190,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 
 
 	@Override
-	public PlacePage findPlacesRatedByType( 
+	public Page<Place> findPlacesRatedByType( 
 			String type, 
 			Integer pageNum,
 			Integer pageSize, 
@@ -217,7 +217,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 
 	@Override
-	public PlacePage findPlacesRated(Integer pageNum, Integer pageSize,
+	public Page<Place> findPlacesRated(Integer pageNum, Integer pageSize,
 			boolean isAcending) throws BLServiceException {
 		/*PlacePage tp = new PlacePage(); 
 		tp.setPageSize(pageSize);
@@ -237,10 +237,10 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 
 
 	@Override
-	public PlacePage findPlacesByText(String text, Integer pageNum,
+	public Page<Place> findPlacesByText(String text, Integer pageNum,
 			Integer pageSize, boolean isAcending) throws BLServiceException {
 		
-		PlacePage page = new PlacePage(); 
+		Page<Place> page = new Page<Place>(); 
 		
 		try {
 			Map<String,Rating> ratingResult = new HashMap<String,Rating>();
@@ -264,7 +264,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			}
 			
 			if(ratingIds.size()>0)
-				page.setPlaces(placeDao.findByPrimaryKeys(new ArrayList(ratingIds)));
+				page.setItems(placeDao.findByPrimaryKeys(new ArrayList(ratingIds)));
 
 		} catch (ParseException e) {
 			throw new BLServiceException(e);
@@ -297,7 +297,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		
 	
 	@Override
-	public PlacePage findCityStatePlacesRatedByType(PlaceCityState cs,
+	public Page<Place> findCityStatePlacesRatedByType(PlaceCityState cs,
 			String type, Integer pageNum, Integer pageSize, boolean isAscending)
 			throws BLServiceException {
 		
@@ -339,7 +339,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	
 	
 	@Override
-	public PlacePage findCityStatePlacesRated(PlaceCityState cs,
+	public Page<Place> findCityStatePlacesRated(PlaceCityState cs,
 			Integer pageNum, Integer pageSize, boolean isAscending)
 			throws BLServiceException {
 		

@@ -1,13 +1,13 @@
 package com.sightlyinc.ratecred.model;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PlaceCityState {
 	private Long id;
 	private String city;
 	private String state;
 	private Integer count;
-	
-	
-	
 
 	public PlaceCityState(String city, String state, Integer count) {
 		super();

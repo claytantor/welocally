@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -26,23 +25,23 @@ import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;
-import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.ComplimentDao;
-import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
-import com.sightlyinc.ratecred.dao.PlaceDao;
+import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.PatronDao;
 import com.sightlyinc.ratecred.dao.PatronMetricsDao;
+import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
+import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.dao.RatingDao;
 import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
+import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.PlaceRating;
-import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingPage;
 
@@ -55,15 +54,15 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private PatronMetricsDao raterMetricsDao;
 	private AwardTypeDao awardTypeDao; 
 	private AwardDao awardDao;
-	private OfferDao awardOfferDao;
+	//private OfferDao awardOfferDao;
 	private PatronDao raterDao;
     private ComplimentDao complimentDao;
     private PlaceCityStateDao placeCityStateDao;
 	private PlaceDao placeDao;
 	
-	private String appConsumerKey;
-	private String appSecretKey;
-	private String ratingUrlPrefix;
+	//private String appConsumerKey;
+	//private String appSecretKey;
+	//private String ratingUrlPrefix;
 	
 	
 	private Directory ratingDirectory;	
@@ -270,7 +269,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return tm;
 	}
 
-	@Override
+	/*@Override
 	public Patron createAnonymousRater() {
 		Patron anonRater = new Patron();
 		String uuid = UUID.randomUUID().toString();
@@ -279,9 +278,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		anonRater.setUserName(parts[1]);
 		anonRater.setScore(0l);
 		anonRater.setStatus("ANON");
-		anonRater.setTimeCreated(Calendar.getInstance().getTime());
-		return anonRater;
-	}
+		//anonRater.setTimeCreated(Calendar.getInstance().getTime());
+		//return anonRater;
+		throw new RuntimeException("NOT ALLOWED");
+	}*/
 
 	@Override
 	public List<Patron> findRatersByCityStateScoreDesc(PlaceCityState cs,
@@ -739,17 +739,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			entity.setOwner(owner);
 			
 			
-			//make sure timestamp if new
-			if(entity.getId()==null)
-			{
-				String gmtTime = DateUtils.dateToString(
-						Calendar.getInstance().getTime(), 
-						DateUtils.NOSPACE_TIMESTAMP_FORMAT, 
-						new SimpleTimeZone(0, "GMT"))+"-0000";
-				entity.setTimeCreatedGmt(gmtTime);
-				entity.setTimeCreated(Calendar.getInstance().getTime());
-				entity.setTimeCreatedMills(Calendar.getInstance().getTimeInMillis());
-			}
+			
 			
 			//fire and forget services send messages to the
 			//queue so that the user does not have to wait
@@ -953,7 +943,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		this.awardDao = awardDao;
 	}
 
-	public void setAppConsumerKey(String appConsumerKey) {
+	/*public void setAppConsumerKey(String appConsumerKey) {
 		this.appConsumerKey = appConsumerKey;
 	}
 
@@ -968,7 +958,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	public void setAwardOfferDao(OfferDao awardOfferDao) {
 		this.awardOfferDao = awardOfferDao;
-	}
+	}*/
 	
 	
 

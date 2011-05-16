@@ -1,57 +1,41 @@
 package com.sightlyinc.ratecred.model;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-public class OfferItem {
-	
-	protected Long id;
-	protected Integer version = new Integer(0);
-	
-	private Long timeCreated;
-	private Long timeUpdated;	
+
+/**
+ *
+ *`id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `offer_id` BIGINT(20) NULL DEFAULT NULL ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `title` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` LONGTEXT NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+ * 
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="offer_item")
+public class OfferItem extends BaseEntity {
 	
 	private String description;
+	
 	private String extraDetails;
 
 	private String title;
 		
 	private Integer quantity;
 	
+	@ManyToOne
+	@JoinColumn(name = "offer_id")
 	private Offer offer;
-		
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getVersion() {
-		return version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
-	public Long getTimeCreated() {
-		return timeCreated;
-	}
-
-	public void setTimeCreated(Long timeCreated) {
-		this.timeCreated = timeCreated;
-	}
-
-	public Long getTimeUpdated() {
-		return timeUpdated;
-	}
-
-	public void setTimeUpdated(Long timeUpdated) {
-		this.timeUpdated = timeUpdated;
-	}
-
+			
 	public String getDescription() {
 		return description;
 	}
@@ -71,8 +55,6 @@ public class OfferItem {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	
 
 	public String getExtraDetails() {
 		return extraDetails;

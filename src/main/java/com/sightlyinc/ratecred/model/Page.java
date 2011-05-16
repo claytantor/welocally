@@ -3,7 +3,7 @@ package com.sightlyinc.ratecred.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlacePage {
+public class Page<T> {
 	private int pageNumber;
 	private int totalPages;
 	private long totalResults;
@@ -13,7 +13,7 @@ public class PlacePage {
 	private String type;
 	
 	
-	private List<Place> ratings = new ArrayList<Place>();
+	private List<T> items = new ArrayList<T>();
 	
 	public int getPageNumber() {
 		return pageNumber;
@@ -21,12 +21,7 @@ public class PlacePage {
 	public void setPageNumber(int pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-	public List<Place> getPlaces() {
-		return ratings;
-	}
-	public void setPlaces(List<Place> ratings) {
-		this.ratings = ratings;
-	}
+	
 	public int getTotalPages() {
 		return totalPages;
 	}
@@ -62,6 +57,12 @@ public class PlacePage {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public List<T> getItems() {
+		return items;
+	}
+	public void setItems(List<T> items) {
+		this.items = items;
 	}
 	
 	

@@ -35,6 +35,8 @@ public class NetworkMember extends BaseEntity {
 	private String description;
 	private String iconUrl;
 	private String mapIconUrl;
+	private String primaryEmail;
+	private String paypalEmail;
 	
 	@Column(name = "member_type")
 	@Enumerated(EnumType.STRING)
@@ -98,6 +100,22 @@ public class NetworkMember extends BaseEntity {
 
 	public void setPrincipal(UserPrincipal principal) {
 		this.principal = principal;
+	}
+
+	public String getPrimaryEmail() {
+		return primaryEmail;
+	}
+
+	public void setPrimaryEmail(String primaryEmail) {
+		this.primaryEmail = primaryEmail;
+	}
+
+	public String getPaypalEmail() {
+		return paypalEmail;
+	}
+
+	public void setPaypalEmail(String paypalEmail) {
+		this.paypalEmail = paypalEmail;
 	}
 	
 	

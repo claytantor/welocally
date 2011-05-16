@@ -3,10 +3,45 @@ package com.sightlyinc.ratecred.model;
 import java.util.Date;
 import java.util.Set;
 
-public class Place {
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+
+/**
+ * 
+ *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `address1` VARCHAR(255) NULL DEFAULT NULL ,
+  `city` VARCHAR(255) NULL DEFAULT NULL ,
+  `state` VARCHAR(255) NULL DEFAULT NULL ,
+  `zip` VARCHAR(45) NULL DEFAULT NULL ,
+  `twitter_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `sg_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `phone` VARCHAR(45) NULL DEFAULT NULL ,
+  `latitude` DOUBLE NULL DEFAULT NULL ,
+  `longitude` DOUBLE NULL DEFAULT NULL ,
+  `descr` TEXT NULL DEFAULT NULL ,
+  `type` VARCHAR(255) NULL DEFAULT NULL ,
+  `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `email` VARCHAR(255) NULL DEFAULT NULL ,
+  `business_services` VARCHAR(10) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+ * 
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="place")
+public class Place extends BaseEntity {
 	
-	private Long id;
-	private Integer version = new Integer(0);
 	private String type;
 	private String address;
 	private String city;
@@ -25,17 +60,23 @@ public class Place {
 	private String flag;
 	private String category;
 	private String subcategory;
-	private String categoryType;
+	private String categoryAttachmentKey;
+	private String imageAttachmentKey;
+	
 	private String addressFull;
 	
-	
-	private Date timeCreated;
-
 	// relations
+	@OneToMany(mappedBy = "place")
 	private Set<Rating> ratings;
+	
+	@OneToMany(mappedBy = "place")
 	private Set<PlaceAttribute> attributes;
+	
+	@OneToMany(mappedBy = "place")
 	private Set<PlaceRating> placeRatings;
 	
+	@ManyToOne
+	@JoinColumn(name = "business_location_id")
 	private BusinessLocation businessLocation;
 		
 	
@@ -61,18 +102,7 @@ public class Place {
 	public void setPlaceRatings(Set<PlaceRating> ratings) {
 		this.placeRatings = ratings;
 	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Integer getVersion() {
-		return version;
-	}
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+
 	public String getType() {
 		return type;
 	}
@@ -139,12 +169,7 @@ public class Place {
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
-	}
+
 	public Set<Rating> getRatings() {
 		return ratings;
 	}
@@ -196,12 +221,7 @@ public class Place {
 	public void setSubcategory(String subcategory) {
 		this.subcategory = subcategory;
 	}
-	public String getCategoryType() {
-		return categoryType;
-	}
-	public void setCategoryType(String categoryType) {
-		this.categoryType = categoryType;
-	}
+
 	
 	public String getAddressFull() {
 		return addressFull;
@@ -209,22 +229,19 @@ public class Place {
 	public void setAddressFull(String addressFull) {
 		this.addressFull = addressFull;
 	}
-	@Override
-	public String toString() {
-		return "Place [address=" + address + ", attributes=" + attributes
-				+ ", businessLocation=" + businessLocation
-				+ ", businessServices=" + businessServices + ", category="
-				+ category + ", categoryType=" + categoryType + ", city="
-				+ city + ", description=" + description + ", email=" + email
-				+ ", flag=" + flag + ", id=" + id + ", latitude=" + latitude
-				+ ", longitude=" + longitude + ", name=" + name + ", phone="
-				+ phone + ", placeRatings=" + placeRatings + ", ratings="
-				+ ratings + ", simpleGeoId=" + simpleGeoId + ", state=" + state
-				+ ", subcategory=" + subcategory + ", timeCreated="
-				+ timeCreated + ", twitterId=" + twitterId + ", type=" + type
-				+ ", version=" + version + ", website=" + website + ", zip="
-				+ zip + "]";
+	public String getCategoryAttachmentKey() {
+		return categoryAttachmentKey;
 	}
+	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
+		this.categoryAttachmentKey = categoryAttachmentKey;
+	}
+	public String getImageAttachmentKey() {
+		return imageAttachmentKey;
+	}
+	public void setImageAttachmentKey(String imageAttachmentKey) {
+		this.imageAttachmentKey = imageAttachmentKey;
+	}
+	
 
 	
 	

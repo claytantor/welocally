@@ -102,7 +102,7 @@ extends AbstractDao<Patron>
 		
 		//pass a fake date for now [4]
 		//Timestamp 2009-08-19 01:31:35.0
-		t.setTimeCreated(Calendar.getInstance().getTime());
+		//t.setTimeCreated(Calendar.getInstance().getTime());
 		
 		t.setScore(((BigInteger)oScalar[5]).longValue());
 		
@@ -116,7 +116,8 @@ extends AbstractDao<Patron>
 				
 			queryImage.setLong("ivid", ((BigInteger)oScalar[6]).longValue());
 			ImageValue oRaterImage = (ImageValue)queryImage.uniqueResult();
-			t.setRaterImage(oRaterImage);
+			//t.setRaterImage(oRaterImage);
+			throw new RuntimeException("NEED NEW IMAGE IMPL");
 		}
 	
 		

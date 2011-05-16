@@ -8,14 +8,30 @@ import java.util.Set;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-
-public class Rating implements Serializable {
+/**
+ *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `patron_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `type` VARCHAR(255) NULL DEFAULT NULL ,
+  `notes` LONGTEXT NULL DEFAULT NULL ,
+  `twitter_status_id` BIGINT(20) NULL DEFAULT NULL ,
+  `patron_rating` FLOAT(11) NULL DEFAULT NULL ,
+  `user_rating` FLOAT(11) NULL DEFAULT NULL ,
+  `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
+  `referral_url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `referral_token` VARCHAR(255) NULL DEFAULT NULL ,
+  `checkin_foursquare` VARCHAR(255) NULL DEFAULT NULL ,
+  `checkin_gowalla` VARCHAR(255) NULL DEFAULT NULL ,
+  `txid_foursquare` VARCHAR(45) NULL DEFAULT NULL ,
+  `txid_gowalla` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+ * @author claygraham
+ *
+ */
+public class Rating extends BaseEntity implements Serializable {
 	
-	@JsonProperty
-	private Long id;
-	
-	@JsonProperty
-	private Integer version = new Integer(0);
 	
 	@JsonProperty
 	private String type;
@@ -23,17 +39,10 @@ public class Rating implements Serializable {
 	@JsonProperty
 	private String notes;
 	
-	@JsonProperty
-	private Date timeCreated;
-	
-	@JsonProperty
-	private Long timeCreatedMills;
 	
 	@JsonProperty
 	private Long twitterStatusId;
 	
-	@JsonProperty
-	private String timeCreatedGmt;
 	
 	@JsonProperty
 	private Float raterRating;
@@ -73,25 +82,6 @@ public class Rating implements Serializable {
 	private transient Place place;
 	
 
-	@JsonProperty
-	public Long getTimeCreatedMills() {
-		return timeCreatedMills;
-	}
-
-	@JsonProperty
-	public void setTimeCreatedMills(Long timeCreatedMills) {
-		this.timeCreatedMills = timeCreatedMills;
-	}
-
-	@JsonProperty
-	public String getTimeCreatedGmt() {
-		return timeCreatedGmt;
-	}
-
-	@JsonProperty
-	public void setTimeCreatedGmt(String timeCreatedGmt) {
-		this.timeCreatedGmt = timeCreatedGmt;
-	}
 
 	@JsonProperty
 	public Float getRaterRating() {
@@ -133,25 +123,7 @@ public class Rating implements Serializable {
 		this.owner = owner;
 	}
 
-	@JsonProperty
-	public Integer getVersion() {
-		return version;
-	}
 
-	@JsonProperty
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
-	@JsonProperty
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-
-	@JsonProperty
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
-	}
 
 	@JsonProperty
 	public Place getPlace() {
@@ -163,15 +135,7 @@ public class Rating implements Serializable {
 		this.place = place;
 	}
 
-	@JsonProperty
-	public Long getId() {
-		return id;
-	}
 
-	@JsonProperty
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	@JsonProperty
 	public String getType() {

@@ -86,31 +86,58 @@ DROP TABLE IF EXISTS `offer` ;
 CREATE  TABLE IF NOT EXISTS `offer` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NOT NULL ,
-  `business_id` BIGINT(20) NOT NULL ,
+  `merchant_id` BIGINT(20) NOT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
-  `description` LONGTEXT NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
   `status` VARCHAR(45) NULL DEFAULT NULL ,
-  `external_id` VARCHAR(255) NULL DEFAULT NULL ,
-  `external_source` VARCHAR(255) NULL DEFAULT NULL ,
-  `program_id` VARCHAR(45) NULL DEFAULT NULL ,
-  `program_name` VARCHAR(128) NULL DEFAULT NULL ,
   `code` VARCHAR(45) NULL DEFAULT NULL ,
-  `url` LONGTEXT NULL DEFAULT NULL ,
-  `discount_type` VARCHAR(45) NULL DEFAULT NULL ,
-  `type` VARCHAR(45) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `discount_type` ENUM('DISCOUNT','COMP','PROMOCODE') NULL DEFAULT NULL ,
+  `offer_type` ENUM('DEAL','VOUCHER','EVOUCHER','GIFTCARD','ADVERTISMENT') NULL DEFAULT NULL ,
   `quantity` INT(11) NULL DEFAULT NULL ,
   `price` FLOAT(11) NULL DEFAULT NULL ,
-  `value` FLOAT(11) NULL DEFAULT NULL ,
-  `extra_details` LONGTEXT NULL DEFAULT NULL ,
-  `illustration_url` LONGTEXT NULL DEFAULT NULL ,
+  `offer_value` FLOAT(11) NULL DEFAULT NULL ,
+  `extra_details` TEXT NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `time_starts` BIGINT NULL DEFAULT NULL ,
   `time_ends` BIGINT NULL DEFAULT NULL ,
   `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
   PRIMARY KEY (`id`) ,
-  INDEX `fk_offer_business1` (`business_id` ASC) ,
-  CONSTRAINT `fk_offer_business1`
-    FOREIGN KEY (`business_id` )
-    REFERENCES `business` (`id` )
+  INDEX `fk_offer_merchant1` (`merchant_id` ASC) ,
+  CONSTRAINT `fk_offer_merchant1`
+    FOREIGN KEY (`merchant_id` )
+    REFERENCES `merchant` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `offer_item`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `offer_item` ;
+
+CREATE  TABLE IF NOT EXISTS `offer_item` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `offer_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `item_value` FLOAT(11) NULL DEFAULT NULL ,
+  `extra_details` TEXT NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_order` (`offer_id` ASC) ,
+  CONSTRAINT `fk_offer`
+    FOREIGN KEY (`offer_id` )
+    REFERENCES `offer` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -168,7 +195,7 @@ CREATE  TABLE IF NOT EXISTS `offer_item` (
   `offer_id` BIGINT(20) NULL DEFAULT NULL ,
   `version` INT(11) NULL DEFAULT NULL ,
   `title` VARCHAR(255) NULL DEFAULT NULL ,
-  `description` LONGTEXT NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
   `quantity` INT(11) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
@@ -190,7 +217,7 @@ DROP TABLE IF EXISTS `business_attribute` ;
 CREATE  TABLE IF NOT EXISTS `business_attribute` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(255) NOT NULL ,
-  `attribute_value` LONGTEXT NULL DEFAULT NULL ,
+  `attribute_value` TEXT NULL DEFAULT NULL ,
   `business_id` BIGINT(20) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
@@ -223,9 +250,14 @@ CREATE  TABLE IF NOT EXISTS `business_metrics` (
   `business_location_id` BIGINT(20) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,    
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`),
+  INDEX `business_metrics_business_location_id_fk` (`business_location_id` ASC) ,
+  CONSTRAINT `business_metrics_business_location_id_fk`
+    FOREIGN KEY (`business_location_id` )
+    REFERENCES `business_location` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION  )
 ENGINE = InnoDB
-AUTO_INCREMENT = 13354
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -252,14 +284,20 @@ CREATE  TABLE IF NOT EXISTS `place` (
   `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
   `url` VARCHAR(1024) NULL DEFAULT NULL ,
   `email` VARCHAR(255) NULL DEFAULT NULL ,
-  `business_services` VARCHAR(10) NULL DEFAULT NULL ,
+  `business_location_id` BIGINT(20) NULL DEFAULT NULL ,
   `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` BIGINT NULL DEFAULT NULL ,
   `time_updated` BIGINT NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`),
+  INDEX `place_business_location_id_fk` (`business_location_id` ASC),
+  CONSTRAINT `place_business_location_id_fk`
+    FOREIGN KEY (`business_location_id` )
+    REFERENCES `business_location` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+  )
 ENGINE = InnoDB
-AUTO_INCREMENT = 3834
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -274,7 +312,7 @@ CREATE  TABLE IF NOT EXISTS `rating` (
   `patron_id` BIGINT(20) NOT NULL ,
   `place_id` BIGINT(20) NOT NULL ,
   `type` VARCHAR(255) NULL DEFAULT NULL ,
-  `notes` LONGTEXT NULL DEFAULT NULL ,
+  `notes` TEXT NULL DEFAULT NULL ,
   `twitter_status_id` BIGINT(20) NULL DEFAULT NULL ,
   `patron_rating` FLOAT(11) NULL DEFAULT NULL ,
   `user_rating` FLOAT(11) NULL DEFAULT NULL ,
@@ -363,7 +401,7 @@ DROP TABLE IF EXISTS `cust_order` ;
 CREATE  TABLE IF NOT EXISTS `cust_order` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NULL DEFAULT NULL ,
-  `award_offer_id` BIGINT(20) NOT NULL ,
+  `offer_id` BIGINT(20) NOT NULL ,
   `voucher_id` BIGINT(20) NOT NULL ,
   `patron_id` BIGINT(20) NOT NULL ,
   `external_id` VARCHAR(255) NULL DEFAULT NULL ,
@@ -381,7 +419,7 @@ CREATE  TABLE IF NOT EXISTS `cust_order` (
   `external_orderitem` VARCHAR(255) NULL DEFAULT NULL ,
   `sku` VARCHAR(255) NULL DEFAULT NULL ,
   `title` VARCHAR(255) NULL DEFAULT NULL ,
-  `description` LONGTEXT NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
   `price` FLOAT(11) NULL DEFAULT NULL ,
   `quantity` INT(11) NULL DEFAULT NULL ,
   `status` VARCHAR(45) NULL DEFAULT NULL ,
@@ -389,15 +427,15 @@ CREATE  TABLE IF NOT EXISTS `cust_order` (
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `cust_order_voucher_fk` (`voucher_id` ASC) ,
-  INDEX `cust_order_award_offer_fk` (`award_offer_id` ASC) ,
+  INDEX `fk_cust_order_offer1` (`offer_id` ASC) ,
   INDEX `cust_order_patron_fk` (`patron_id` ASC) ,
   CONSTRAINT `fk_cust_order_voucher1`
     FOREIGN KEY (`voucher_id` )
     REFERENCES `voucher` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_cust_order_award_offer1`
-    FOREIGN KEY (`award_offer_id` )
+  CONSTRAINT `fk_cust_order_offer1`
+    FOREIGN KEY (`offer_id` )
     REFERENCES `offer` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -439,7 +477,7 @@ CREATE  TABLE IF NOT EXISTS `place_attribute` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT,
   `name` VARCHAR(255) NOT NULL ,
-  `attribute_value` LONGTEXT NULL DEFAULT NULL ,
+  `attribute_value` TEXT NULL DEFAULT NULL ,
   `place_id` BIGINT(20) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
@@ -507,7 +545,9 @@ CREATE  TABLE IF NOT EXISTS `patron` (
   `secretkey` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` DATETIME NULL DEFAULT NULL ,
   `score` BIGINT(20) NULL DEFAULT '0' ,
-  `imagevalue_id` BIGINT(20) NULL DEFAULT NULL ,
+  `profile_image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `guid` VARCHAR(45) NULL DEFAULT NULL ,
   `status` VARCHAR(12) NULL DEFAULT NULL ,
   `auth_foursquare` VARCHAR(12) NULL DEFAULT 'false' ,
@@ -529,8 +569,11 @@ DROP TABLE IF EXISTS `network_member` ;
 
 CREATE  TABLE IF NOT EXISTS `network_member` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
   `user_principal_id` BIGINT(20) NOT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `primary_email` VARCHAR(255) NULL DEFAULT NULL ,
+  `paypal_email` VARCHAR(255) NULL DEFAULT NULL ,  
   `member_key` VARCHAR(255) NULL DEFAULT NULL ,
   `description` TEXT NULL DEFAULT NULL ,
   `icon_url` VARCHAR(1024) NULL DEFAULT NULL ,
@@ -556,6 +599,7 @@ DROP TABLE IF EXISTS `publisher` ;
 
 CREATE  TABLE IF NOT EXISTS `publisher` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
   `network_member_id` BIGINT(20) NOT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
@@ -576,8 +620,11 @@ DROP TABLE IF EXISTS `merchant` ;
 
 CREATE  TABLE IF NOT EXISTS `merchant` (
   `id` BIGINT NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
   `network_member_id` BIGINT(20) NOT NULL ,
   `business_id` BIGINT(20) NOT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
   PRIMARY KEY (`id`) ,
   INDEX `fk_merchant_network_member1` (`network_member_id` ASC) ,
   INDEX `fk_merchant_business1` (`business_id` ASC) ,

@@ -1,52 +1,70 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+/**
+ *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `merchant_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `code` VARCHAR(45) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `discount_type` ENUM('DISCOUNT','COMP','PROMOCODE') NULL DEFAULT NULL ,
+  `offer_type` ENUM('DEAL','VOUCHER','EVOUCHER','GIFTCARD','ADVERTISMENT') NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `price` FLOAT(11) NULL DEFAULT NULL ,
+  `offer_value` FLOAT(11) NULL DEFAULT NULL ,
+  `extra_details` TEXT NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_starts` BIGINT NULL DEFAULT NULL ,
+  `time_ends` BIGINT NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+ * 
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="offer")
 public class Offer extends BaseEntity {
-		
-	private String externalId;
-	private String externalSource;
-	private String programId;
-	private String programName;
+
+	public enum DiscountType {DISCOUNT,COMP,PROMOCODE}
+	public enum OfferType {DEAL,VOUCHER,EVOUCHER,GIFTCARD,ADVERTISMENT}
+	
 	private String name;
-	private String couponCode;
+	private String code;
 	private String description;
-	private String finePrint;
 	
 	private String url;
-	private Long beginTime;
-	private Long endTime;
+	private Long timeStarts;
+	private Long timeEnds;
 	
-	private String discountType;
-	private String type;
 	private Float price;
-	private Float value;
+	private Float offerValue;
 	private String extraDetails;
 	private String illustrationUrl;
 	private Integer quantity;
 	private String status;
+	private String imageAttachmentKey;
+	private String categoryAttachmentKey;
+	
 
 	//relationships
 	private Award award;
 	
 	private AwardType awardType;
 	
-	private Business business;
-	
-	private Set<OfferItem> items;
+	private Merchant merchant;
 	
 	private OfferEconomics offerEconomics;
-	
-	
-	
-		
+			
 	public Offer() {
 		super();
-		items = new HashSet<OfferItem>();
 	}
-	
-
 
 	public String getName() {
 		return name;
@@ -67,12 +85,7 @@ public class Offer extends BaseEntity {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Business getBusiness() {
-		return business;
-	}
-	public void setBusiness(Business business) {
-		this.business = business;
-	}
+
 	public AwardType getAwardType() {
 		return awardType;
 	}
@@ -80,37 +93,8 @@ public class Offer extends BaseEntity {
 		this.awardType = awardType;
 	}
 
-	public String getExternalId() {
-		return externalId;
-	}
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
-	}
-	public String getExternalSource() {
-		return externalSource;
-	}
-	public void setExternalSource(String externalSource) {
-		this.externalSource = externalSource;
-	}
 	
-	public String getProgramId() {
-		return programId;
-	}
-	public void setProgramId(String programId) {
-		this.programId = programId;
-	}
-	public String getProgramName() {
-		return programName;
-	}
-	public void setProgramName(String programName) {
-		this.programName = programName;
-	}
-	public String getCouponCode() {
-		return couponCode;
-	}
-	public void setCouponCode(String couponCode) {
-		this.couponCode = couponCode;
-	}
+
 	public String getUrl() {
 		return url;
 	}
@@ -124,29 +108,11 @@ public class Offer extends BaseEntity {
 	public void setAward(Award award) {
 		this.award = award;
 	}
-	public String getDiscountType() {
-		return discountType;
-	}
-	public void setDiscountType(String discountType) {
-		this.discountType = discountType;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
 	public Float getPrice() {
 		return price;
 	}
 	public void setPrice(Float price) {
 		this.price = price;
-	}
-	public Float getValue() {
-		return value;
-	}
-	public void setValue(Float value) {
-		this.value = value;
 	}
 	public String getExtraDetails() {
 		return extraDetails;
@@ -167,60 +133,70 @@ public class Offer extends BaseEntity {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-		
-	public Set<OfferItem> getItems() {
-		return items;
-	}
-	public void setItems(Set<OfferItem> items) {
-		this.items = items;
-	}
-		
-	public String getFinePrint() {
-		return finePrint;
-	}
-
-	public void setFinePrint(String finePrint) {
-		this.finePrint = finePrint;
-	}
-
-
-
-	public Long getBeginTime() {
-		return beginTime;
-	}
-
-
-
-	public void setBeginTime(Long beginTime) {
-		this.beginTime = beginTime;
-	}
-
-
-
-	public Long getEndTime() {
-		return endTime;
-	}
-
-
-
-	public void setEndTime(Long endTime) {
-		this.endTime = endTime;
-	}
-
-
 
 	public OfferEconomics getOfferEconomics() {
 		return offerEconomics;
 	}
 
-
-
 	public void setOfferEconomics(OfferEconomics offerEconomics) {
 		this.offerEconomics = offerEconomics;
 	}
-		
 
+	public String getCode() {
+		return code;
+	}
 
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public Long getTimeStarts() {
+		return timeStarts;
+	}
+
+	public void setTimeStarts(Long timeStarts) {
+		this.timeStarts = timeStarts;
+	}
+
+	public Long getTimeEnds() {
+		return timeEnds;
+	}
+
+	public void setTimeEnds(Long timeEnds) {
+		this.timeEnds = timeEnds;
+	}
+
+	public Float getOfferValue() {
+		return offerValue;
+	}
+
+	public void setOfferValue(Float offerValue) {
+		this.offerValue = offerValue;
+	}
+
+	public String getImageAttachmentKey() {
+		return imageAttachmentKey;
+	}
+
+	public void setImageAttachmentKey(String imageAttachmentKey) {
+		this.imageAttachmentKey = imageAttachmentKey;
+	}
+
+	public String getCategoryAttachmentKey() {
+		return categoryAttachmentKey;
+	}
+
+	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
+		this.categoryAttachmentKey = categoryAttachmentKey;
+	}
+
+	public Merchant getMerchant() {
+		return merchant;
+	}
+
+	public void setMerchant(Merchant merchant) {
+		this.merchant = merchant;
+	}
 	
 	
 }

@@ -1,36 +1,33 @@
 package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
+import java.util.Set;
+
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Publisher {
 	
 	private Long id;
-	
-	
-	@JsonProperty
-	private String referrerId;
 		
-	@JsonProperty
-	private String siteUrl;
-	
-	
-	@JsonProperty
-	private String iconUrl;
-	
-	@JsonProperty
-	private String keywords;
 	
 	private String token;
-	private Date signupDate;
-	private String publisherUrl;
+	private String url;
 	private String siteName;
 	private String description;
-	private String paypalEmail;
-	private String contactEmail;
-	private String contactPhone;
 	private Integer monthlyPageviews;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "network_member_id")
+	private NetworkMember networkMember;
+	 
+	@OneToMany(mappedBy = "affiliate")
+	private Set<OfferEconomics> offerEconomics;
+
 	
 	public Long getId() {
 		return id;
@@ -44,18 +41,7 @@ public class Publisher {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public Date getSignupDate() {
-		return signupDate;
-	}
-	public void setSignupDate(Date signupDate) {
-		this.signupDate = signupDate;
-	}
-	public String getPublisherUrl() {
-		return publisherUrl;
-	}
-	public void setPublisherUrl(String publisherUrl) {
-		this.publisherUrl = publisherUrl;
-	}
+
 	public String getSiteName() {
 		return siteName;
 	}
@@ -68,29 +54,30 @@ public class Publisher {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getPaypalEmail() {
-		return paypalEmail;
-	}
-	public void setPaypalEmail(String paypalEmail) {
-		this.paypalEmail = paypalEmail;
-	}
-	public String getContactEmail() {
-		return contactEmail;
-	}
-	public void setContactEmail(String contactEmail) {
-		this.contactEmail = contactEmail;
-	}
-	public String getContactPhone() {
-		return contactPhone;
-	}
-	public void setContactPhone(String contactPhone) {
-		this.contactPhone = contactPhone;
-	}
+
 	public Integer getMonthlyPageviews() {
 		return monthlyPageviews;
 	}
 	public void setMonthlyPageviews(Integer monthlyPageviews) {
 		this.monthlyPageviews = monthlyPageviews;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public NetworkMember getNetworkMember() {
+		return networkMember;
+	}
+	public void setNetworkMember(NetworkMember networkMember) {
+		this.networkMember = networkMember;
+	}
+	public Set<OfferEconomics> getOfferEconomics() {
+		return offerEconomics;
+	}
+	public void setOfferEconomics(Set<OfferEconomics> offerEconomics) {
+		this.offerEconomics = offerEconomics;
 	}
 	
 	

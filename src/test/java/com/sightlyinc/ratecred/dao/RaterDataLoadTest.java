@@ -213,8 +213,6 @@ public class RaterDataLoadTest extends TestCase {
 		t.setOwner(rater);
 		
 		t.setPlace(p);
-		t.setTimeCreatedMills(timeCreatedMills);
-		t.setTimeCreated(new Date(timeCreatedMills));
 		t.setNotes(RandomMaker.makeSentance(128));
 		t.setType("service");
 		t.setUserRating(RandomMaker.getFloat());

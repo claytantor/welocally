@@ -90,7 +90,7 @@ public interface RatingManagerService {
 	public Patron findRaterByAuthId(String authId) throws BLServiceException;	
 	
 	//create anonymous rater, must be saved
-	public Patron createAnonymousRater();
+	//public Patron createAnonymousRater();
 	
 	public List<Patron> findAllRaters() throws BLServiceException;	
 	

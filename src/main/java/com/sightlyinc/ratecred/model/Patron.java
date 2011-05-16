@@ -1,24 +1,37 @@
 package com.sightlyinc.ratecred.model;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.noi.utility.hibernate.ImageValue;
 
-
-public class Patron  {
+/**
+ * `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `user_principal_id` BIGINT(20) NOT NULL ,
+  `username` VARCHAR(255) NULL DEFAULT NULL ,
+  `secretkey` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` DATETIME NULL DEFAULT NULL ,
+  `score` BIGINT(20) NULL DEFAULT '0' ,
+  `imagevalue_id` BIGINT(20) NULL DEFAULT NULL ,
+  `guid` VARCHAR(45) NULL DEFAULT NULL ,
+  `status` VARCHAR(12) NULL DEFAULT NULL ,
+  `auth_foursquare` VARCHAR(12) NULL DEFAULT 'false' ,
+  `auth_gowalla` VARCHAR(12) NULL DEFAULT 'false' ,
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="patron")
+public class Patron extends BaseEntity {
 	
-	@JsonProperty
-	protected Long id;
-	
-	@JsonProperty
-	protected Integer version = new Integer(0);
 	
 	@JsonProperty
 	protected String userName;
@@ -27,19 +40,23 @@ public class Patron  {
 	protected String secretKey;
 	
 	@JsonProperty
-	protected Date timeCreated;
-	
-	@JsonProperty
 	protected Long score;
 	
 	@JsonProperty
+	@Column(name="guid")
 	protected String authGuid;
 	
 	@JsonProperty
 	protected String status;	
 	
 	@JsonProperty
-	protected ImageValue raterImage;
+	protected String profileImageAttachmentKey;
+	
+	@JsonProperty
+	protected String imageAttachmentKey;
+	
+	@JsonProperty
+	protected String categoryAttachmentKey;
 	
 	@JsonProperty
 	protected java.lang.Long imageValueId;
@@ -79,14 +96,6 @@ public class Patron  {
 		this.imageValueId = imageValueId;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#getRaterImage()
-	 */
-	@JsonIgnore
-	public ImageValue getRaterImage() {
-		return raterImage;
-	}
-	
 
 	@JsonIgnore
 	public Set<Compliment> getCompliments() {
@@ -98,13 +107,6 @@ public class Patron  {
 		this.compliments = compliments;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#setRaterImage(com.noi.utility.hibernate.ImageValue)
-	 */
-	@JsonIgnore
-	public void setRaterImage(ImageValue raterImage) {
-		this.raterImage = raterImage;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getAuthGuid()
@@ -123,39 +125,6 @@ public class Patron  {
 	}
 
 
-
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#getTimeCreated()
-	 */
-	@JsonIgnore
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#setTimeCreated(java.util.Date)
-	 */
-	@JsonIgnore
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#getVersion()
-	 */
-	@JsonProperty
-	public Integer getVersion() {
-		return version;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#setVersion(java.lang.Integer)
-	 */
-	@JsonProperty
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getSecretKey()
 	 */
@@ -172,21 +141,7 @@ public class Patron  {
 		this.secretKey = secretKey;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#getId()
-	 */
-	@JsonProperty
-	public Long getId() {
-		return id;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#setId(java.lang.Long)
-	 */
-	@JsonProperty
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.model.Rater#getUserName()
@@ -295,7 +250,7 @@ public class Patron  {
 		if(obj instanceof Patron)
 		{
 			Patron inst = (Patron)obj;
-			return inst.getId().equals(this.id);
+			return inst.getId().equals(super.getId());
 			
 		} else 
 			return false;

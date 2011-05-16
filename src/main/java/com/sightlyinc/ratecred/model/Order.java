@@ -1,18 +1,48 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+/**
+ * 
+ *  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `offer_id` BIGINT(20) NOT NULL ,
+  `voucher_id` BIGINT(20) NOT NULL ,
+  `patron_id` BIGINT(20) NOT NULL ,
+  `external_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `external_txid` VARCHAR(255) NULL DEFAULT NULL ,
+  `channel` VARCHAR(45) NULL DEFAULT NULL ,
+  `buyer_name` VARCHAR(128) NULL DEFAULT NULL ,
+  `buyer_email` VARCHAR(255) NULL DEFAULT NULL ,
+  `shipping_name` VARCHAR(128) NULL DEFAULT NULL ,
+  `address_one` VARCHAR(128) NULL DEFAULT NULL ,
+  `address_two` VARCHAR(128) NULL DEFAULT NULL ,
+  `city` VARCHAR(128) NULL DEFAULT NULL ,
+  `state` VARCHAR(45) NULL DEFAULT NULL ,
+  `postal_code` VARCHAR(45) NULL DEFAULT NULL ,
+  `country_code` VARCHAR(8) NULL DEFAULT NULL ,
+  `external_orderitem` VARCHAR(255) NULL DEFAULT NULL ,
+  `sku` VARCHAR(255) NULL DEFAULT NULL ,
+  `title` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` LONGTEXT NULL DEFAULT NULL ,
+  `price` FLOAT(11) NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+ * 
+ * @author claygraham
+ *
+ */
 
+@Entity
+@Table(name="cust_order")
+public class Order extends BaseEntity {
 
-public class Order {
-	
-
-	protected Long id;
-	protected Integer version = new Integer(0);
-	
-	private Long timeCreated;
-	private Long timeUpdated;	
-	
 	//order id
 	private String externalId;
 	
@@ -23,15 +53,22 @@ public class Order {
 	private String buyerName;
 	private String buyerEmail;	
 	private String shippingName;
+
+	@Column(name="address_one")
 	private String addressFieldOne;
+	
+	@Column(name="address_one")
 	private String addressFieldTwo;
+	
 	private String city;
 	private String state;
 	private String postalCode;
 	private String countryCode;
 	
 	//amazon  order item id
+	@Column(name="external_id")
 	private String externalOrderItemCode;
+	
 	private String sku;
 	private String title;
 	private String description;
@@ -40,53 +77,17 @@ public class Order {
 	
 	private Integer quantity;
 	
+	@ManyToOne
+	@JoinColumn(name = "patron_id")
 	private Patron owner;
+	
+	@ManyToOne
+	@JoinColumn(name = "offer_id")
 	private Offer offer;
+	
+	@ManyToOne
+	@JoinColumn(name = "voucher_id")
 	private Voucher voucher;
-	
-
-	
-	public Long getId() {
-		return id;
-	}
-	
-	
-	public void setId(Long id) {
-		this.id = id;
-	}	
-	
-	public Integer getVersion() {
-		return version;
-	}
-
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
-
-	public Long getTimeCreated() {
-		return timeCreated;
-	}
-	
-	public Date getTimeCreatedDate() {
-		return new Date(timeCreated);
-	}
-
-
-	public void setTimeCreated(Long timeCreated) {
-		this.timeCreated = timeCreated;
-	}
-
-
-	public Long getTimeUpdated() {
-		return timeUpdated;
-	}
-
-
-	public void setTimeUpdated(Long timeUpdated) {
-		this.timeUpdated = timeUpdated;
-	}
 
 
 	public String getStatus() {
