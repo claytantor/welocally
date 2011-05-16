@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.client.offers.OfferClient;
 import com.sightlyinc.ratecred.client.offers.OfferFeedException;
 
@@ -22,7 +22,7 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	
 	private List<OfferClient> clients = new ArrayList<OfferClient>();
 	
-	private List<Offer> offerPool = new ArrayList<Offer>();
+	private List<OfferOld> offerPool = new ArrayList<OfferOld>();
 	
 	private Boolean fetchDisabled = false;
 	
@@ -38,7 +38,7 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	
 	
 	@Override
-	public void addOffersToPool(List<Offer> offers) {
+	public void addOffersToPool(List<OfferOld> offers) {
 		offerPool.addAll(offers);		
 	}
 
@@ -59,7 +59,7 @@ public class DefaultOfferPoolService implements OfferPoolService {
 				offerPool.clear();
 				for (OfferClient client : clients) {			
 					try {
-						List<Offer> o = client.getOffers();
+						List<OfferOld> o = client.getOffers();
 						logger.debug("offer count:"+o.size());
 						offerPool.addAll(o);
 					} catch (OfferFeedException e) {
@@ -77,7 +77,7 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.service.OfferPoolService#getOfferPool()
 	 */
-	public List<Offer> getOfferPool()
+	public List<OfferOld> getOfferPool()
 	{
 		return offerPool;		
 	}
@@ -88,9 +88,9 @@ public class DefaultOfferPoolService implements OfferPoolService {
 	}
 
 	@Override
-	public Offer getOfferByExternalIdSource(String externalId, String sourceName) {
+	public OfferOld getOfferByExternalIdSource(String externalId, String sourceName) {
 		//Long extLong = Long.parseLong(externalId);
-		for (Offer offer : offerPool) {
+		for (OfferOld offer : offerPool) {
 			
 			if(offer.getExternalSource().equals(sourceName) && offer.getExternalId().equals(externalId))
 				return offer;

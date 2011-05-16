@@ -1,24 +1,16 @@
 package com.sightlyinc.ratecred.client.link;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
-
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeansException;
-
-import com.noi.utility.spring.test.AbstractBeanFactoryTestCase;
-import com.sightlyinc.ratecred.model.AffiliateLink;
 
 
 
 
-public class CommisionJunctionLinkClientTest extends AbstractBeanFactoryTestCase {
+public class CommisionJunctionLinkClientTest {
 	
 	static Logger logger = 
 		Logger.getLogger(CommisionJunctionLinkClientTest.class);
 
-	@Override
+	/*@Override
 	protected String[] getSpringResources() {
 		return new String[] {
 				"/linkClient-beans.xml",
@@ -41,6 +33,6 @@ public class CommisionJunctionLinkClientTest extends AbstractBeanFactoryTestCase
 			logger.error("fail", e);
 			fail(e.getMessage());
 		} 
-	}
+	}*/
 
 }

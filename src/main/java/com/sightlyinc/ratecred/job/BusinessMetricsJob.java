@@ -95,7 +95,7 @@ public class BusinessMetricsJob extends QuartzJobBean {
 						
 						for (BusinessMetrics businessMetrics : minedLocationMetrics) {
 							logger.debug("update metric with start:"+minedMidnight.getTime()+
-									" and blid:"+businessMetrics.getBusinessLocationId());
+									" and blid:"+businessMetrics.getBusinessLocation().getId());
 							
 							
 							//we will try to get the existing metric in the store

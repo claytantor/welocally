@@ -1,50 +1,51 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Business {
-	
-	private Long id;
-	private Integer version;
-	private Date timeCreated;
-	
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+/**
+ * 
+ * 
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="business")
+public class Business extends BaseEntity {
+	
+	@Column(name="name")
 	private String name;
-	private String userName;
-	private String guid;
-	private String advertiserId;
-	private String advertiserSource;
 	
-
+	@Column(name="description")
 	private String description;
 	
+	@Column(name="status")
 	private String status;
-	
-	private String website;
-	
-	/**
-	 * 
-	 * @element-type BusinessImage
-	 */
-	private Set<BusinessImage> images = new HashSet<BusinessImage>();
-	
-	private Set<BusinessLocation> locations = new HashSet<BusinessLocation>();
-	
-	
-	/**
-	 * 
-	 * @element-type Business Attribute
-	 */
-	private Set<BusinessAttribute> attributes = new HashSet<BusinessAttribute>();
 
-	public String getGuid() {
-		return guid;
-	}
+	@Column(name="url")
+	private String url;
+	
+	@Column(name="image_attachment_key")
+	private String imageAttachmentKey;
+	
+	@Column(name="category_attachment_key")
+	private String categoryAttachmentKey;
+	
+	@OneToMany(mappedBy = "business")
+	private Set<BusinessLocation> locations;
+	
+	@OneToMany(mappedBy = "business")
+	private Set<BusinessAttribute> attributes;
 
-	public void setGuid(String guid) {
-		this.guid = guid;
+	public Business() {
+		super();
+		locations = new HashSet<BusinessLocation>();
+		attributes = new HashSet<BusinessAttribute>(); 
 	}
 
 	public String getName() {
@@ -63,17 +64,6 @@ public class Business {
 		this.description = description;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public Set<BusinessImage> getImages() {
-		return images;
-	}
-
-	public void setImages(Set<BusinessImage> images) {
-		this.images = images;
-	}
 
 	public Set<BusinessLocation> getLocations() {
 		return locations;
@@ -91,26 +81,6 @@ public class Business {
 		this.attributes = attributes;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getVersion() {
-		return version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -119,39 +89,29 @@ public class Business {
 		this.status = status;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
-	public String getWebsite() {
-		return website;
+	public String getImageAttachmentKey() {
+		return imageAttachmentKey;
 	}
 
-	public void setWebsite(String website) {
-		this.website = website;
+	public void setImageAttachmentKey(String imageAttachmentKey) {
+		this.imageAttachmentKey = imageAttachmentKey;
 	}
 
-	public String getAdvertiserId() {
-		return advertiserId;
+	public String getCategoryAttachmentKey() {
+		return categoryAttachmentKey;
 	}
 
-	public void setAdvertiserId(String advertiserId) {
-		this.advertiserId = advertiserId;
+	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
+		this.categoryAttachmentKey = categoryAttachmentKey;
 	}
-
-	public String getAdvertiserSource() {
-		return advertiserSource;
-	}
-
-	public void setAdvertiserSource(String advertiserSource) {
-		this.advertiserSource = advertiserSource;
-	}	
-	
-	
 	
 	
 }

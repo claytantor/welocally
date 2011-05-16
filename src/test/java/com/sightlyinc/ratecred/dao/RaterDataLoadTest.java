@@ -22,7 +22,7 @@ import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceRating;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingAttribute;
 import com.sightlyinc.ratecred.service.RatingHelper;
@@ -145,9 +145,9 @@ public class RaterDataLoadTest extends TestCase {
 			logger.debug("got business:"+b.getName());
 						
 			//raters
-			List<Rater> raters = new ArrayList<Rater>();
+			List<Patron> raters = new ArrayList<Patron>();
 			for (int i = 0; i < 30; i++) {
-				Rater t = getRandomRater(session);
+				Patron t = getRandomRater(session);
 				logger.debug("rater:"+t.getUserName()+" id:"+t.getId());
 				for (BusinessLocation bl : b.getLocations()) {
 					
@@ -198,7 +198,7 @@ public class RaterDataLoadTest extends TestCase {
 		return oVal;
 	}*/
 	
-	private Rating generateRating(Rater rater, Place p, Session session)
+	private Rating generateRating(Patron rater, Place p, Session session)
 	{
 		//min time 1246646945000
 		//max time now
@@ -264,7 +264,7 @@ public class RaterDataLoadTest extends TestCase {
 		return attributes;
 	}
 	
-	private Rater getRandomRater(Session session)
+	private Patron getRandomRater(Session session)
 	{
 	
 
@@ -272,11 +272,11 @@ public class RaterDataLoadTest extends TestCase {
 		//logger.debug("trying to get rater id:"+id);
 		
 		Query query = session.createQuery(
-				"select entityimpl from "+Rater.class.getName()+
+				"select entityimpl from "+Patron.class.getName()+
 				" as entityimpl where entityimpl.id = :id");
 			
 		query.setLong("id", id);
-		Rater oTat = (Rater)query.uniqueResult();
+		Patron oTat = (Patron)query.uniqueResult();
 
 		return oTat;
 

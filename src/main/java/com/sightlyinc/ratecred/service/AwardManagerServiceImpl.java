@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;
-import com.sightlyinc.ratecred.dao.AwardOfferDao;
+import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 
 
 
@@ -32,12 +32,12 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	private AwardDao awardDao;
 	
 	@Autowired
-	private AwardOfferDao awardOfferDao; 
+	private OfferDao awardOfferDao; 
 	
 
 	
 	@Override
-	public AwardOffer findAwardOfferByPrimaryKeywordsAndLocation(
+	public Offer findAwardOfferByPrimaryKeywordsAndLocation(
 			List<String> keywords, Double lat, Double lon)
 			throws BLServiceException {
 		// TODO Auto-generated method stub
@@ -46,7 +46,7 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 
 	@Override
-	public void deleteAwardOffer(AwardOffer awardOffer)
+	public void deleteAwardOffer(Offer awardOffer)
 			throws BLServiceException {
 		awardOfferDao.delete(awardOffer);
 		
@@ -54,19 +54,19 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 
 	@Override
-	public List<AwardOffer> findExpiredAwardOffers() throws BLServiceException {		
+	public List<Offer> findExpiredAwardOffers() throws BLServiceException {		
 		return awardOfferDao.findExpired();
 	}
 
 	@Override
-	public List<Award> findAwardByOfferRater(AwardOffer offer, Rater r)
+	public List<Award> findAwardByOfferRater(Offer offer, Patron r)
 			throws BLServiceException {
 		return awardDao.findByOfferRater(offer, r);
 	}
 
 
 	@Override
-	public List<Award> findAwardByOffer(AwardOffer offer) throws BLServiceException {
+	public List<Award> findAwardByOffer(Offer offer) throws BLServiceException {
 		return awardDao.findByOffer(offer);
 	}
 
@@ -78,7 +78,7 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 
 	@Override
-	public List<Award> findAwardByRaterAwardType(Rater r, AwardType at)
+	public List<Award> findAwardByRaterAwardType(Patron r, AwardType at)
 			throws BLServiceException {
 		return awardDao.findByOwnerAwardType(r, at);
 	}
@@ -86,7 +86,7 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 	@Override
 	public List<Award> findAwardByRaterTypeCity(
-			Rater towards, 
+			Patron towards, 
 			AwardType at, 
 			PlaceCityState pcs)
 			throws BLServiceException {
@@ -96,10 +96,12 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 	@Override
 	public Long saveAward(Award award) throws BLServiceException {
-		if(award.getId()==null)
+		
+		//should be done with an interceptor
+		/*if(award.getId()==null)
 		{
-			award.setTimeCreatedMills(Calendar.getInstance().getTimeInMillis());			
-		}
+			award.setTimeCreated(Calendar.getInstance().getTimeInMillis());			
+		}*/
 		
 		awardDao.save(award);
 		return award.getId();
@@ -121,14 +123,14 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 
 
 	@Override
-	public AwardOffer findAwardOfferByPrimaryKey(Long awardOfferId)
+	public Offer findAwardOfferByPrimaryKey(Long awardOfferId)
 			throws BLServiceException {
 		return awardOfferDao.findByPrimaryKey(awardOfferId);
 	}
 
 
 	@Override
-	public List<AwardOffer> findBusinessAwardOffers(Business b)
+	public List<Offer> findBusinessAwardOffers(Business b)
 			throws BLServiceException {
 		return awardOfferDao.findByBusiness(b);
 	}
@@ -164,7 +166,7 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	 * 
 	 */
 	@Override
-	public Long saveAwardOffer(AwardOffer entity) throws BLServiceException {
+	public Long saveAwardOffer(Offer entity) throws BLServiceException {
 		awardOfferDao.save(entity);
 		return entity.getId();
 	}	
@@ -183,7 +185,7 @@ public class AwardManagerServiceImpl implements AwardManagerService {
 	}
 
 
-	public void setAwardOfferDao(AwardOfferDao awardOfferDao) {
+	public void setAwardOfferDao(OfferDao awardOfferDao) {
 		this.awardOfferDao = awardOfferDao;
 	}
 

@@ -1,6 +1,12 @@
 package com.sightlyinc.ratecred.model;
 
-import com.sightlyinc.ratecred.model.Place;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * <event>
@@ -14,20 +20,80 @@ import com.sightlyinc.ratecred.model.Place;
    <address>2330 Telegraph Ave., Oakland CA</address>
 </event>
 
+
+
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NULL ,
+  `publisher_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `cost` FLOAT(11) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_starts` BIGINT(20) NULL DEFAULT NULL ,
+  `time_ends` BIGINT(20) NULL DEFAULT NULL ,
+  `alarm_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `alarm_time` BIGINT(20) NULL DEFAULT NULL ,
+  `recurrance_type` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY','HOURLY','MINUTELY') NULL DEFAULT NULL ,
+  `recurrance_interval` INT(11) NULL DEFAULT NULL ,
+  `recurrance_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `recurrance_end` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+
+
  * @author claygraham
  *
  */
-public class Event {
+@Entity
+@Table(name="entity")
+public class Event extends BaseEntity {
+	
+	private enum RecurranceType {DAILY,WEEKLY,MONTHLY,YEARLY,HOURLY,MINUTELY}
+	
 	private String name;
+	
 	private String url;
-	private String categories;
-	private String when;
-	private String phone;
-	//private String locationName;
+	
+	private Float cost;
+	
 	private String description;
-	//private String address;
+	
+	private String whenText;
+	
+	@Column(name="category_attachment_key")
+	private String categoryAttachmentKey;
+	
+	@Column(name="image_attachment_key")
+	private String imageAttachmentKey;
+
+	private Long timeStarts;
+	
+	private Long timeEnds;
+	
+	@Column(name="recurrance_type")
+	@Enumerated(EnumType.STRING)
+	private RecurranceType recurranceType;
+	
+	private Integer recurranceInterval;
+	
+	private String recurranceData;
+	
+	private Long recurranceEnd;
+	
+	private String categories;
+	
+	private String phone;
+	
+	@ManyToOne
+	@JoinColumn(name = "place_id")
 	private Place place;
 	
+	@ManyToOne
+	@JoinColumn(name = "publisher_id")
+	private Publisher publisher;
 	
 	public String getName() {
 		return name;
@@ -47,41 +113,91 @@ public class Event {
 	public void setCategories(String categories) {
 		this.categories = categories;
 	}
-	public String getWhen() {
-		return when;
-	}
-	public void setWhen(String when) {
-		this.when = when;
-	}
+	
 	public String getPhone() {
 		return phone;
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	/*public String getLocationName() {
-		return locationName;
-	}
-	public void setLocationName(String locationName) {
-		this.locationName = locationName;
-	}*/
+
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	/*public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}*/
 	public Place getPlace() {
 		return place;
 	}
 	public void setPlace(Place place) {
 		this.place = place;
+	}
+	public Float getCost() {
+		return cost;
+	}
+	public void setCost(Float cost) {
+		this.cost = cost;
+	}
+	public String getCategoryAttachmentKey() {
+		return categoryAttachmentKey;
+	}
+	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
+		this.categoryAttachmentKey = categoryAttachmentKey;
+	}
+	public String getImageAttachmentKey() {
+		return imageAttachmentKey;
+	}
+	public void setImageAttachmentKey(String imageAttachmentKey) {
+		this.imageAttachmentKey = imageAttachmentKey;
+	}
+	public Long getTimeStarts() {
+		return timeStarts;
+	}
+	public void setTimeStarts(Long timeStarts) {
+		this.timeStarts = timeStarts;
+	}
+	public Long getTimeEnds() {
+		return timeEnds;
+	}
+	public void setTimeEnds(Long timeEnds) {
+		this.timeEnds = timeEnds;
+	}
+	public RecurranceType getRecurranceType() {
+		return recurranceType;
+	}
+	public void setRecurranceType(RecurranceType recurranceType) {
+		this.recurranceType = recurranceType;
+	}
+	public Integer getRecurranceInterval() {
+		return recurranceInterval;
+	}
+	public void setRecurranceInterval(Integer recurranceInterval) {
+		this.recurranceInterval = recurranceInterval;
+	}
+	public String getRecurranceData() {
+		return recurranceData;
+	}
+	public void setRecurranceData(String recurranceData) {
+		this.recurranceData = recurranceData;
+	}
+	public Long getRecurranceEnd() {
+		return recurranceEnd;
+	}
+	public void setRecurranceEnd(Long recurranceEnd) {
+		this.recurranceEnd = recurranceEnd;
+	}
+	public Publisher getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+	public String getWhenText() {
+		return whenText;
+	}
+	public void setWhenText(String whenText) {
+		this.whenText = whenText;
 	}
 	
 	

@@ -67,7 +67,7 @@ public class Rating implements Serializable {
 	private transient Set<Compliment> compliments;
 	
 	@JsonProperty
-	private transient Rater owner;
+	private transient Patron owner;
 	
 	@JsonProperty
 	private transient Place place;
@@ -124,12 +124,12 @@ public class Rating implements Serializable {
 	}
 
 	@JsonProperty
-	public Rater getOwner() {
+	public Patron getOwner() {
 		return owner;
 	}
 
 	@JsonProperty
-	public void setOwner(Rater owner) {
+	public void setOwner(Patron owner) {
 		this.owner = owner;
 	}
 

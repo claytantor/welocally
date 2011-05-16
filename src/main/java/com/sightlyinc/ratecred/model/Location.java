@@ -3,7 +3,7 @@ package com.sightlyinc.ratecred.model;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /*
- * 
+ * NON PERSISTENT TYPE
 {
             "comments": "",
             "address_2": null,

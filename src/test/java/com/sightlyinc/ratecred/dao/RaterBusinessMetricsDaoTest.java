@@ -14,7 +14,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.noi.utility.spring.test.AbstractBeanFactoryTestCase;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.RaterBusinessMetrics;
+import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
 
 public class RaterBusinessMetricsDaoTest extends AbstractBeanFactoryTestCase {
 	
@@ -61,27 +61,6 @@ public class RaterBusinessMetricsDaoTest extends AbstractBeanFactoryTestCase {
 		
 	}
 	
-	public void testGetBusinessMetrics()
-	{
-		RaterBusinessMetricsDao raterBusinessMetricsDao =
-			(RaterBusinessMetricsDao)super.getBeanFactory().getBean("RaterBusinessMetricsDao");
-		BusinessLocationDao businessLocationDao = 
-			(BusinessLocationDao)super.getBeanFactory().getBean("BusinessLocationDao");
-		BusinessLocation bl = 
-			businessLocationDao.findByPrimaryKey(new Long(5));
-		
-		long startTime = 
-			Calendar.getInstance().getTimeInMillis() - 
-			(86400000l*90);
-		
-		List<RaterBusinessMetrics> all =
-			new ArrayList<RaterBusinessMetrics>();
-		
-		all.addAll(
-				raterBusinessMetricsDao.mineBusinessLocationMetricsForDateRange(
-						bl, new Date(startTime), Calendar.getInstance().getTime()));		
-				
-		
-	}
+	
 	
 }

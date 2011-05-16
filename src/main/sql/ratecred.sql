@@ -2,570 +2,807 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
---
--- Table structure for table `award`
---
 
-DROP TABLE IF EXISTS `award`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `award` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `award_type_id` bigint(20) NOT NULL,
-  `rater_id` bigint(20) DEFAULT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `version` int(11) NOT NULL,
-  `expires` datetime DEFAULT NULL,
-  `notes` longtext,
-  `metadata` longtext,
-  `time_created_mills` bigint(20) DEFAULT NULL,
-  `time_created_gmt` varchar(45) DEFAULT NULL,
-  `expires_mills` bigint(20) DEFAULT NULL,
-  `expires_gmt` varchar(45) DEFAULT NULL,
-  `status` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `award_type_fk` (`award_type_id`),
-  KEY `rater_fk` (`rater_id`),
-  KEY `FK58E7A5D7BBD5A3B` (`award_type_id`),
-  KEY `FK58E7A5D7E5BCE60` (`rater_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2818 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `award_type`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `award_type` ;
 
---
--- Table structure for table `award_awardoffer`
---
+CREATE  TABLE IF NOT EXISTS `award_type` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `class_type` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `keyname` VARCHAR(45) NULL DEFAULT NULL ,
+  `metadata` TEXT NULL DEFAULT NULL ,
+  `points_value` INT(11) NULL DEFAULT NULL ,
+  `previous` VARCHAR(45) NULL DEFAULT NULL ,
+  `next` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `award_awardoffer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `award_awardoffer` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `award_id` bigint(20) DEFAULT NULL,
-  `award_offer_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=603 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `award_offer`
---
+-- -----------------------------------------------------
+-- Table `user_principal`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_principal` ;
 
-DROP TABLE IF EXISTS `award_offer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `award_offer` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `time_created` datetime DEFAULT NULL,
-  `version` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` longtext,
-  `status` varchar(45) DEFAULT NULL,
-  `external_id` varchar(255) DEFAULT NULL,
-  `external_source` varchar(45) DEFAULT NULL,
-  `program_id` varchar(45) DEFAULT NULL,
-  `program_name` varchar(128) DEFAULT NULL,
-  `code` varchar(45) DEFAULT NULL,
-  `url` longtext,
-  `begin_millis` bigint(20) DEFAULT NULL,
-  `expire_millis` bigint(20) DEFAULT NULL,
-  `discount_type` varchar(45) DEFAULT NULL,
-  `type` varchar(45) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `price` float DEFAULT NULL,
-  `value` float DEFAULT NULL,
-  `extra_details` longtext,
-  `illustration_url` longtext,
-  `end_millis` bigint(20) DEFAULT NULL,
-  `business_id` bigint(20) DEFAULT NULL,
-  `award_type_id` bigint(20) DEFAULT NULL,
-  `business_location_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKBB56FDFA1B90EE54` (`business_id`),
-  KEY `FKBB56FDFA7BBD5A3B` (`award_type_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2690 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `user_principal` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `user_name` VARCHAR(255) NULL DEFAULT NULL ,
+  `password` VARCHAR(255) NULL DEFAULT NULL ,
+  `email` VARCHAR(255) NULL DEFAULT NULL ,
+  `expired` TINYINT NULL DEFAULT NULL ,
+  `credentials_expired` TINYINT NULL DEFAULT NULL ,
+  `locked` TINYINT NULL DEFAULT NULL ,
+  `enabled` TINYINT NULL DEFAULT NULL ,
+  `guid` VARCHAR(45) NULL DEFAULT NULL ,
+  `user_class` VARCHAR(255) NULL DEFAULT NULL ,
+  `twitter_id` BIGINT(20) NULL DEFAULT NULL ,
+  `twitter_username` VARCHAR(45) NULL DEFAULT NULL ,
+  `twitter_token` VARCHAR(255) NULL DEFAULT NULL ,
+  `twitter_secret` VARCHAR(255) NULL DEFAULT NULL ,
+  `twitter_verify` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created_mills` BIGINT(20) NULL DEFAULT NULL ,
+  `twitter_profile_img` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Table structure for table `award_offer_item`
---
 
-DROP TABLE IF EXISTS `award_offer_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `award_offer_item` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) DEFAULT NULL,
-  `time_created` bigint(20) DEFAULT NULL,
-  `time_updated` bigint(20) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext,
-  `quantity` int(11) DEFAULT NULL,
-  `award_offer_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `business`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `business` ;
 
---
--- Table structure for table `award_type`
---
+CREATE  TABLE IF NOT EXISTS `business` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `status` VARCHAR(15) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `award_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `award_type` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `cost` bigint(20) DEFAULT '0',
-  `time_created` datetime DEFAULT NULL,
-  `version` int(11) NOT NULL,
-  `description` longtext,
-  `keyname` varchar(45) DEFAULT NULL,
-  `metadata` longtext,
-  `value` int(11) DEFAULT NULL,
-  `previous` varchar(45) DEFAULT NULL,
-  `next` varchar(45) DEFAULT NULL,
-  `category` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2201 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `business`
---
+-- -----------------------------------------------------
+-- Table `offer`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `offer` ;
 
-DROP TABLE IF EXISTS `business`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `business` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `status` varchar(15) DEFAULT NULL,
-  `description` longtext,
-  `website` longtext,
-  `version` int(11) DEFAULT NULL,
-  `username` varchar(16) DEFAULT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `guid` varchar(45) DEFAULT NULL,
-  `advertiser_id` varchar(255) DEFAULT NULL,
-  `advertiser_source` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `offer` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `business_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` LONGTEXT NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `external_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `external_source` VARCHAR(255) NULL DEFAULT NULL ,
+  `program_id` VARCHAR(45) NULL DEFAULT NULL ,
+  `program_name` VARCHAR(128) NULL DEFAULT NULL ,
+  `code` VARCHAR(45) NULL DEFAULT NULL ,
+  `url` LONGTEXT NULL DEFAULT NULL ,
+  `discount_type` VARCHAR(45) NULL DEFAULT NULL ,
+  `type` VARCHAR(45) NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `price` FLOAT(11) NULL DEFAULT NULL ,
+  `value` FLOAT(11) NULL DEFAULT NULL ,
+  `extra_details` LONGTEXT NULL DEFAULT NULL ,
+  `illustration_url` LONGTEXT NULL DEFAULT NULL ,
+  `time_starts` BIGINT NULL DEFAULT NULL ,
+  `time_ends` BIGINT NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_offer_business1` (`business_id` ASC) ,
+  CONSTRAINT `fk_offer_business1`
+    FOREIGN KEY (`business_id` )
+    REFERENCES `business` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Table structure for table `business_attribute`
---
 
-DROP TABLE IF EXISTS `business_attribute`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `business_attribute` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `value` longtext,
-  `business_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `business_fk` (`business_id`),
-  KEY `FK7390B4DD1B90EE54` (`business_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=888 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `award`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `award` ;
 
---
--- Table structure for table `business_image`
---
+CREATE  TABLE IF NOT EXISTS `award` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `award_type_id` BIGINT(20) NOT NULL ,
+  `award_offer_id` BIGINT(20) NOT NULL ,
+  `patron_id` BIGINT(20) NOT NULL ,
+  `version` INT(11) NOT NULL ,
+  `expires` BIGINT NULL DEFAULT NULL ,
+  `notes` TEXT NULL DEFAULT NULL ,
+  `metadata` TEXT NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `award_type_fk` (`award_type_id` ASC) ,
+  INDEX `patron_fk` (`patron_id` ASC) ,
+  INDEX `fk_award_patron` (`patron_id` ASC) ,
+  INDEX `fk_award_award_offer` (`award_offer_id` ASC) ,
+  CONSTRAINT `fk_award_award_type`
+    FOREIGN KEY (`award_type_id` )
+    REFERENCES `award_type` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_award_patron`
+    FOREIGN KEY (`patron_id` )
+    REFERENCES `patron` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_award_award_offer`
+    FOREIGN KEY (`award_offer_id` )
+    REFERENCES `offer` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `business_image`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `business_image` (
-  `id` bigint(20) NOT NULL DEFAULT '0',
-  `version` int(11) DEFAULT NULL,
-  `imagevalue_id` bigint(20) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `business_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK5ECDEFDCE45292DA` (`business_id`),
-  KEY `FK5ECDEFDCFE4A8C89` (`imagevalue_id`),
-  KEY `FK8B9CFC1CFE4A8C8B` (`imagevalue_id`),
-  CONSTRAINT `FK8B9CFC1CFE4A8C8B` FOREIGN KEY (`imagevalue_id`) REFERENCES `image_value` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `business_location`
---
+-- -----------------------------------------------------
+-- Table `offer_item`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `offer_item` ;
 
-DROP TABLE IF EXISTS `business_location`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `business_location` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `address1` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `state` varchar(2) DEFAULT NULL,
-  `zip` varchar(10) DEFAULT NULL,
-  `phone` varchar(16) DEFAULT NULL,
-  `local_website` longtext,
-  `flag` varchar(16) DEFAULT 'ACTIVE',
-  `place_id` bigint(20) NOT NULL,
-  `version` int(11) NOT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `business_id` bigint(20) DEFAULT NULL,
-  `latitude` double DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
-  `descr` longtext,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK960BC9541B90EE54` (`business_id`),
-  KEY `FK960BC954DF3D4200` (`place_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `offer_item` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `offer_id` BIGINT(20) NULL DEFAULT NULL ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `title` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` LONGTEXT NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  CONSTRAINT `fk_offer_item_offer`
+    FOREIGN KEY (`offer_id` )
+    REFERENCES `offer` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Table structure for table `business_location_image`
---
 
-DROP TABLE IF EXISTS `business_location_image`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `business_location_image` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) DEFAULT NULL,
-  `imagevalue_id` bigint(20) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `business_location_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKBUSSINESSLOCID` (`business_location_id`),
-  KEY `FK69F386B0FE4A8C8B` (`imagevalue_id`),
-  CONSTRAINT `FK69F386B0FE4A8C8B` FOREIGN KEY (`imagevalue_id`) REFERENCES `image_value` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `business_attribute`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `business_attribute` ;
 
---
--- Table structure for table `business_metrics`
---
+CREATE  TABLE IF NOT EXISTS `business_attribute` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `attribute_value` LONGTEXT NULL DEFAULT NULL ,
+  `business_id` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
+  PRIMARY KEY (`id`) ,
+  INDEX `business_fk` (`business_id` ASC) ,
+  CONSTRAINT `fk_business_attribute_business1`
+    FOREIGN KEY (`business_id` )
+    REFERENCES `business` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 888
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `business_metrics`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `business_metrics` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) NOT NULL,
-  `yays` int(11) NOT NULL,
-  `boos` int(11) NOT NULL,
-  `ratings` int(11) NOT NULL,
-  `rating_avg` float DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `start_time` datetime DEFAULT NULL,
-  `start_time_mills` bigint(20) DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
-  `end_time_mills` bigint(20) DEFAULT NULL,
-  `business_id` bigint(20) DEFAULT NULL,
-  `business_location_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13354 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `compliment`
---
+-- -----------------------------------------------------
+-- Table `business_metrics`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `business_metrics` ;
 
-DROP TABLE IF EXISTS `compliment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `compliment` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `rater_id` bigint(20) NOT NULL,
-  `rating_id` bigint(20) NOT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `time_gmt` varchar(45) DEFAULT NULL,
-  `note` longtext,
-  `version` int(11) NOT NULL,
-  `time_mills` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `rating_fk` (`rating_id`),
-  KEY `rater_fk` (`rater_id`),
-  KEY `FKDFF3042AF38F1314` (`rating_id`),
-  KEY `FKDFF3042A7E5BCE60` (`rater_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2864 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `business_metrics` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `yays` INT(11) NOT NULL ,
+  `boos` INT(11) NOT NULL ,
+  `ratings` INT(11) NOT NULL ,
+  `rating_avg` FLOAT(11) NULL DEFAULT NULL ,
+  `start_time` BIGINT(20) NULL DEFAULT NULL ,
+  `end_time` BIGINT(20) NULL DEFAULT NULL ,
+  `business_location_id` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,    
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 13354
+DEFAULT CHARACTER SET = utf8;
 
---
--- Table structure for table `cust_order`
---
 
-DROP TABLE IF EXISTS `cust_order`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cust_order` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) DEFAULT NULL,
-  `time_created` bigint(20) DEFAULT NULL,
-  `time_updated` bigint(20) DEFAULT NULL,
-  `external_id` varchar(255) DEFAULT NULL,
-  `external_txid` varchar(255) DEFAULT NULL,
-  `channel` varchar(45) DEFAULT NULL,
-  `buyer_name` varchar(128) DEFAULT NULL,
-  `buyer_email` varchar(255) DEFAULT NULL,
-  `shipping_name` varchar(128) DEFAULT NULL,
-  `address_one` varchar(128) DEFAULT NULL,
-  `address_two` varchar(128) DEFAULT NULL,
-  `city` varchar(128) DEFAULT NULL,
-  `state` varchar(45) DEFAULT NULL,
-  `postal_code` varchar(45) DEFAULT NULL,
-  `country_code` varchar(8) DEFAULT NULL,
-  `external_orderitem` varchar(255) DEFAULT NULL,
-  `sku` varchar(255) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` longtext,
-  `price` float DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `status` varchar(45) DEFAULT NULL,
-  `rater_id` bigint(20) DEFAULT NULL,
-  `awardoffer_id` bigint(20) DEFAULT NULL,
-  `voucher_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `place`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `place` ;
 
---
--- Table structure for table `image_value`
---
+CREATE  TABLE IF NOT EXISTS `place` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `address1` VARCHAR(255) NULL DEFAULT NULL ,
+  `city` VARCHAR(255) NULL DEFAULT NULL ,
+  `state` VARCHAR(255) NULL DEFAULT NULL ,
+  `zip` VARCHAR(45) NULL DEFAULT NULL ,
+  `twitter_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `sg_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `phone` VARCHAR(45) NULL DEFAULT NULL ,
+  `latitude` DOUBLE NULL DEFAULT NULL ,
+  `longitude` DOUBLE NULL DEFAULT NULL ,
+  `descr` TEXT NULL DEFAULT NULL ,
+  `type` VARCHAR(255) NULL DEFAULT NULL ,
+  `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `email` VARCHAR(255) NULL DEFAULT NULL ,
+  `business_services` VARCHAR(10) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 3834
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `image_value`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `image_value` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `image` blob,
-  `content_type` varchar(255) DEFAULT NULL,
-  `filename` varchar(255) DEFAULT NULL,
-  `type` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=633 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `place`
---
+-- -----------------------------------------------------
+-- Table `rating`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `rating` ;
 
-DROP TABLE IF EXISTS `place`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `place` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `address1` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
-  `zip` varchar(45) DEFAULT NULL,
-  `twitter_id` varchar(255) DEFAULT NULL,
-  `sg_id` longtext,
-  `phone` varchar(45) DEFAULT NULL,
-  `latitude` double DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
-  `descr` longtext,
-  `type` varchar(255) DEFAULT NULL,
-  `flag` varchar(16) DEFAULT 'ACTIVE',
-  `version` int(11) NOT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `website` longtext,
-  `business_location_id` bigint(20) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `business_services` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK65CD90748C99615` (`business_location_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3834 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `rating` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `patron_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `type` VARCHAR(255) NULL DEFAULT NULL ,
+  `notes` LONGTEXT NULL DEFAULT NULL ,
+  `twitter_status_id` BIGINT(20) NULL DEFAULT NULL ,
+  `patron_rating` FLOAT(11) NULL DEFAULT NULL ,
+  `user_rating` FLOAT(11) NULL DEFAULT NULL ,
+  `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
+  `referral_url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `referral_token` VARCHAR(255) NULL DEFAULT NULL ,
+  `checkin_foursquare` VARCHAR(255) NULL DEFAULT NULL ,
+  `checkin_gowalla` VARCHAR(255) NULL DEFAULT NULL ,
+  `txid_foursquare` VARCHAR(45) NULL DEFAULT NULL ,
+  `txid_gowalla` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `rating_patron_fk` (`patron_id` ASC) ,
+  INDEX `rating_place_fk` (`place_id` ASC) ,
+  CONSTRAINT `fk_rating_place1`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_rating_patron1`
+    FOREIGN KEY (`patron_id` )
+    REFERENCES `patron` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
 
---
--- Table structure for table `place_attribute`
---
 
-DROP TABLE IF EXISTS `place_attribute`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `place_attribute` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `value` longtext,
-  `place_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `place_fk` (`place_id`),
-  KEY `FK592B2164DF3D4200` (`place_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=976 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `compliment`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `compliment` ;
 
---
--- Table structure for table `place_rating`
---
+CREATE  TABLE IF NOT EXISTS `compliment` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `patron_id` BIGINT(20) NOT NULL ,
+  `rating_id` BIGINT(20) NOT NULL ,
+  `note` TEXT NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `rating_fk` (`rating_id` ASC) ,
+  INDEX `patron_fk` (`patron_id` ASC) ,
+  CONSTRAINT `fk_compliment_rating1`
+    FOREIGN KEY (`rating_id` )
+    REFERENCES `rating` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `place_rating`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `place_rating` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` varchar(100) NOT NULL,
-  `place_id` bigint(20) DEFAULT NULL,
-  `rating_avg` float DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `place_fk` (`place_id`),
-  KEY `FK79DAEFD5DF3D4200` (`place_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1986 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `rater`
---
+-- -----------------------------------------------------
+-- Table `voucher`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `voucher` ;
 
-DROP TABLE IF EXISTS `rater`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rater` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `secretkey` varchar(255) DEFAULT NULL,
-  `time_created` datetime DEFAULT NULL,
-  `score` bigint(20) DEFAULT '0',
-  `imagevalue_id` bigint(20) DEFAULT NULL,
-  `guid` varchar(45) DEFAULT NULL,
-  `status` varchar(12) DEFAULT NULL,
-  `auth_foursquare` varchar(12) DEFAULT 'false',
-  `auth_gowalla` varchar(12) DEFAULT 'false',
-  PRIMARY KEY (`id`),
-  KEY `FKA471F14CFE4A8C8B` (`imagevalue_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3432 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `voucher` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `external_offerid` VARCHAR(255) NULL DEFAULT NULL ,
+  `external_source` VARCHAR(45) NULL DEFAULT NULL ,
+  `reservation_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `barcode` VARCHAR(255) NULL DEFAULT NULL ,
+  `print_url` VARCHAR(255) NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_expires` BIGINT(20) NULL DEFAULT NULL ,
+  `time_aquired` BIGINT(20) NULL DEFAULT NULL ,
+  `time_redeemed` BIGINT(20) NULL DEFAULT NULL ,
+  `time_cancelled` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Table structure for table `rating`
---
 
-DROP TABLE IF EXISTS `rating`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rating` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) NOT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `notes` longtext,
-  `time_created` datetime DEFAULT NULL,
-  `time_mills` bigint(20) DEFAULT NULL,
-  `time_gmt` varchar(45) DEFAULT NULL,
-  `rater_id` bigint(20) DEFAULT NULL,
-  `twitter_status_id` bigint(20) DEFAULT NULL,
-  `rater_rating` float DEFAULT NULL,
-  `user_rating` float DEFAULT NULL,
-  `place_id` bigint(20) DEFAULT NULL,
-  `flag` varchar(16) DEFAULT 'ACTIVE',
-  `referal_url` longtext,
-  `referal_token` varchar(45) DEFAULT NULL,
-  `checkin_foursquare` varchar(45) DEFAULT NULL,
-  `checkin_gowalla` varchar(254) DEFAULT NULL,
-  `txid_foursquare` varchar(45) DEFAULT NULL,
-  `txid_gowalla` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKCB7F8BE62675F586` (`rater_id`),
-  KEY `FKCB7F8BE6DF3D4200` (`place_id`),
-  KEY `FKCB7F8BE67E5BCE60` (`rater_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2408 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `cust_order`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `cust_order` ;
 
---
--- Table structure for table `rating_attribute`
---
+CREATE  TABLE IF NOT EXISTS `cust_order` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `award_offer_id` BIGINT(20) NOT NULL ,
+  `voucher_id` BIGINT(20) NOT NULL ,
+  `patron_id` BIGINT(20) NOT NULL ,
+  `external_id` VARCHAR(255) NULL DEFAULT NULL ,
+  `external_txid` VARCHAR(255) NULL DEFAULT NULL ,
+  `channel` VARCHAR(45) NULL DEFAULT NULL ,
+  `buyer_name` VARCHAR(128) NULL DEFAULT NULL ,
+  `buyer_email` VARCHAR(255) NULL DEFAULT NULL ,
+  `shipping_name` VARCHAR(128) NULL DEFAULT NULL ,
+  `address_one` VARCHAR(128) NULL DEFAULT NULL ,
+  `address_two` VARCHAR(128) NULL DEFAULT NULL ,
+  `city` VARCHAR(128) NULL DEFAULT NULL ,
+  `state` VARCHAR(45) NULL DEFAULT NULL ,
+  `postal_code` VARCHAR(45) NULL DEFAULT NULL ,
+  `country_code` VARCHAR(8) NULL DEFAULT NULL ,
+  `external_orderitem` VARCHAR(255) NULL DEFAULT NULL ,
+  `sku` VARCHAR(255) NULL DEFAULT NULL ,
+  `title` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` LONGTEXT NULL DEFAULT NULL ,
+  `price` FLOAT(11) NULL DEFAULT NULL ,
+  `quantity` INT(11) NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `cust_order_voucher_fk` (`voucher_id` ASC) ,
+  INDEX `cust_order_award_offer_fk` (`award_offer_id` ASC) ,
+  INDEX `cust_order_patron_fk` (`patron_id` ASC) ,
+  CONSTRAINT `fk_cust_order_voucher1`
+    FOREIGN KEY (`voucher_id` )
+    REFERENCES `voucher` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_cust_order_award_offer1`
+    FOREIGN KEY (`award_offer_id` )
+    REFERENCES `offer` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_cust_order_patron1`
+    FOREIGN KEY (`patron_id` )
+    REFERENCES `patron` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `rating_attribute`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rating_attribute` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `rating_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK534F09834B74EBEE` (`rating_id`),
-  KEY `FK534F0983F38F1314` (`rating_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11943 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `role`
---
+-- -----------------------------------------------------
+-- Table `image_value`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `image_value` ;
 
-DROP TABLE IF EXISTS `role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `role` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `version` int(11) DEFAULT NULL,
-  `role` varchar(255) DEFAULT NULL,
-  `role_group` varchar(255) DEFAULT NULL,
-  `principal_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1602 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE  TABLE IF NOT EXISTS `image_value` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `content_type` VARCHAR(255) NULL DEFAULT NULL ,
+  `url` VARCHAR(1025) NULL DEFAULT NULL ,
+  `type` VARCHAR(45) NULL DEFAULT NULL ,
+  `attachement_key` VARCHAR(255) NULL ,
+  `description` TEXT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 633
+DEFAULT CHARACTER SET = utf8;
 
---
--- Table structure for table `user_principal`
---
 
-DROP TABLE IF EXISTS `user_principal`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_principal` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) DEFAULT NULL,
-  `user_name` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `expired` varchar(10) DEFAULT NULL,
-  `credentials_expired` varchar(10) DEFAULT NULL,
-  `locked` varchar(10) DEFAULT NULL,
-  `enabled` varchar(10) DEFAULT NULL,
-  `guid` varchar(45) DEFAULT NULL,
-  `user_class` varchar(255) DEFAULT NULL,
-  `twitter_id` bigint(20) DEFAULT NULL,
-  `twitter_username` varchar(45) DEFAULT NULL,
-  `twitter_token` varchar(255) DEFAULT NULL,
-  `twitter_secret` varchar(255) DEFAULT NULL,
-  `twitter_verify` varchar(255) DEFAULT NULL,
-  `time_created_mills` bigint(20) DEFAULT NULL,
-  `twitter_profile_img` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=782 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Table `place_attribute`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `place_attribute` ;
 
---
--- Table structure for table `voucher`
---
+CREATE  TABLE IF NOT EXISTS `place_attribute` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT,
+  `name` VARCHAR(255) NOT NULL ,
+  `attribute_value` LONGTEXT NULL DEFAULT NULL ,
+  `place_id` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
+  PRIMARY KEY (`id`) ,
+  INDEX `place_fk` (`place_id` ASC) ,
+  CONSTRAINT `fk_place_attribute_place1`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 976
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `voucher`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `voucher` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `version` int(11) DEFAULT NULL,
-  `time_created` bigint(20) DEFAULT NULL,
-  `time_updated` bigint(20) DEFAULT NULL,
-  `external_offerid` varchar(255) DEFAULT NULL,
-  `external_source` varchar(45) DEFAULT NULL,
-  `reservation_id` varchar(255) DEFAULT NULL,
-  `barcode` varchar(255) DEFAULT NULL,
-  `print_url` varchar(255) DEFAULT NULL,
-  `status` varchar(45) DEFAULT NULL,
-  `time_expires` bigint(20) DEFAULT NULL,
-  `time_aquired` bigint(20) DEFAULT NULL,
-  `time_redeemed` bigint(20) DEFAULT NULL,
-  `time_cancelled` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------------
+-- Table `rating_attribute`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `rating_attribute` ;
+
+CREATE  TABLE IF NOT EXISTS `rating_attribute` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `type` VARCHAR(255) NULL DEFAULT NULL ,
+  `rating_id` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `rating_attribute_rating_fk` (`rating_id` ASC) ,
+  CONSTRAINT `fk_rating_attribute_rating1`
+    FOREIGN KEY (`rating_id` )
+    REFERENCES `rating` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 11943
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `role`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `role` ;
+
+CREATE  TABLE IF NOT EXISTS `role` (
+  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `role` VARCHAR(255) NULL DEFAULT NULL ,
+  `role_group` VARCHAR(255) NULL DEFAULT NULL ,
+  `principal_id` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 1602
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `patron`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `patron` ;
+
+CREATE  TABLE IF NOT EXISTS `patron` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `user_principal_id` BIGINT(20) NOT NULL ,
+  `username` VARCHAR(255) NULL DEFAULT NULL ,
+  `secretkey` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` DATETIME NULL DEFAULT NULL ,
+  `score` BIGINT(20) NULL DEFAULT '0' ,
+  `imagevalue_id` BIGINT(20) NULL DEFAULT NULL ,
+  `guid` VARCHAR(45) NULL DEFAULT NULL ,
+  `status` VARCHAR(12) NULL DEFAULT NULL ,
+  `auth_foursquare` VARCHAR(12) NULL DEFAULT 'false' ,
+  `auth_gowalla` VARCHAR(12) NULL DEFAULT 'false' ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_patron_user_principal1` (`user_principal_id` ASC) ,
+  CONSTRAINT `fk_patron_user_principal1`
+    FOREIGN KEY (`user_principal_id` )
+    REFERENCES `user_principal` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `network_member`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `network_member` ;
+
+CREATE  TABLE IF NOT EXISTS `network_member` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `user_principal_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `member_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `icon_url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `map_icon_url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `member_type` ENUM('PUBLISHER','AFFILIATE','MERCHANT') NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `network_member_user_principal_fk` (`user_principal_id` ASC) ,
+  CONSTRAINT `fk_network_member_user_principal1`
+    FOREIGN KEY (`user_principal_id` )
+    REFERENCES `user_principal` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `publisher`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `publisher` ;
+
+CREATE  TABLE IF NOT EXISTS `publisher` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `network_member_id` BIGINT(20) NOT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `publisher_network_member1_fk` (`network_member_id` ASC) ,
+  CONSTRAINT `fk_publisher_network_member1`
+    FOREIGN KEY (`network_member_id` )
+    REFERENCES `network_member` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `merchant`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `merchant` ;
+
+CREATE  TABLE IF NOT EXISTS `merchant` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT ,
+  `network_member_id` BIGINT(20) NOT NULL ,
+  `business_id` BIGINT(20) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_merchant_network_member1` (`network_member_id` ASC) ,
+  INDEX `fk_merchant_business1` (`business_id` ASC) ,
+  CONSTRAINT `fk_merchant_network_member1`
+    FOREIGN KEY (`network_member_id` )
+    REFERENCES `network_member` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_merchant_business1`
+    FOREIGN KEY (`business_id` )
+    REFERENCES `business` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `event`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `event` ;
+
+CREATE  TABLE IF NOT EXISTS `event` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NULL ,
+  `publisher_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `phone` VARCHAR(32) NULL DEFAULT NULL ,
+  `whenText` VARCHAR(255) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `cost` FLOAT(11) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_starts` BIGINT(20) NULL DEFAULT NULL ,
+  `time_ends` BIGINT(20) NULL DEFAULT NULL ,
+  `alarm_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `alarm_time` BIGINT(20) NULL DEFAULT NULL ,
+  `recurrance_type` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY','HOURLY','MINUTELY') NULL DEFAULT NULL ,
+  `recurrance_interval` INT(11) NULL DEFAULT NULL ,
+  `recurrance_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `recurrance_end` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_event_publisher` (`publisher_id` ASC) ,
+  INDEX `fk_event_place` (`place_id` ASC) ,
+  CONSTRAINT `fk_event_publisher`
+    FOREIGN KEY (`publisher_id` )
+    REFERENCES `publisher` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_event_place`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `business_location`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `business_location` ;
+
+CREATE  TABLE IF NOT EXISTS `business_location` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `business_id` BIGINT(20) NULL DEFAULT NULL ,  
+  `phone` VARCHAR(16) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
+  `descr` TEXT NULL DEFAULT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_business` (`business_id` ASC) ,
+  INDEX `fk_place` (`place_id` ASC),
+  CONSTRAINT `fk_business`
+    FOREIGN KEY (`business_id` )
+    REFERENCES `business` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_place`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 16
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `award_has_offer`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `award_has_offer` ;
+
+CREATE  TABLE IF NOT EXISTS `award_has_offer` (
+  `award_id` BIGINT(20) NULL DEFAULT NULL ,
+  `offer_id` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`award_id`, `offer_id`) ,
+  INDEX `fk_award` (`award_id` ASC) ,
+  INDEX `fk_offer` (`offer_id` ASC) ,
+  CONSTRAINT `fk_award`
+    FOREIGN KEY (`award_id` )
+    REFERENCES `award` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_offer`
+    FOREIGN KEY (`offer_id` )
+    REFERENCES `offer` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)  
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `affiliate`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `affiliate` ;
+
+CREATE  TABLE IF NOT EXISTS `affiliate` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NOT NULL ,  
+  `network_member_id` BIGINT(20) NOT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL , 
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_affiliate_network_member1` (`network_member_id` ASC) ,
+  CONSTRAINT `fk_affiliate_network_member1`
+    FOREIGN KEY (`network_member_id` )
+    REFERENCES `network_member` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `offer_economics`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `offer_economics` ;
+
+CREATE  TABLE IF NOT EXISTS `offer_economics` (
+	 `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+	 `version` INT NOT NULL ,
+	 `publisher_id` BIGINT(20) ,
+	 `merchant_id` BIGINT(20)  ,
+	 `affiliate_id` BIGINT(20) ,
+	 `offer_id` BIGINT(20) ,
+	 `publisher_revenue_percentage` FLOAT  ,
+	 `affiliate_revenue_percentage` FLOAT  ,
+	 `merchant_revenue_percentage` FLOAT ,
+	 `time_created` BIGINT(20) NULL DEFAULT NULL ,
+	 `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+	 PRIMARY KEY (`id`) ,
+	 INDEX `fk_offer_economics_publisher1` (`publisher_id` ASC) ,
+	 INDEX `fk_offer_economics_merchant1` (`merchant_id` ASC) ,
+	 INDEX `fk_offer_economics_affiliate1` (`affiliate_id` ASC) ,
+	 INDEX `fk_offer_economics_offer1` (`offer_id` ASC) ,
+	 CONSTRAINT `fk_offer_economics_publisher1`
+		 FOREIGN KEY (`publisher_id` )
+		 REFERENCES `publisher` (`id` )
+		 ON DELETE NO ACTION
+		 ON UPDATE NO ACTION,
+	 CONSTRAINT `fk_offer_economics_merchant1`
+		 FOREIGN KEY (`merchant_id` )
+		 REFERENCES `merchant` (`id` )
+		 ON DELETE NO ACTION
+		 ON UPDATE NO ACTION,
+	 CONSTRAINT `fk_offer_economics_affiliate1`
+		 FOREIGN KEY (`affiliate_id` )
+		 REFERENCES `affiliate` (`id` )
+		 ON DELETE NO ACTION
+		 ON UPDATE NO ACTION,
+	 CONSTRAINT `fk_offer_economics_offer1`
+		 FOREIGN KEY (`offer_id` )
+		 REFERENCES `offer` (`id` )
+		 ON DELETE NO ACTION
+		 ON UPDATE NO ACTION)
+ ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `affiliate_has_business`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `affiliate_has_business` ;
+
+CREATE  TABLE IF NOT EXISTS `affiliate_has_business` (
+  `affiliate_id` BIGINT(20) NOT NULL ,
+  `business_id` BIGINT(20) NOT NULL ,
+  PRIMARY KEY (`affiliate_id`, `business_id`) ,
+  INDEX `fk_affiliate_has_business_business1` (`business_id` ASC) ,
+  INDEX `fk_affiliate_has_business_affiliate1` (`affiliate_id` ASC) ,
+  CONSTRAINT `fk_affiliate_has_business_affiliate1`
+    FOREIGN KEY (`affiliate_id` )
+    REFERENCES `affiliate` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_affiliate_has_business_business1`
+    FOREIGN KEY (`business_id` )
+    REFERENCES `business` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `article`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `article` ;
+
+CREATE  TABLE IF NOT EXISTS `article` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `publisher_id` BIGINT(20) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_article_publisher1` (`publisher_id` ASC) ,
+  CONSTRAINT `fk_article_publisher1`
+    FOREIGN KEY (`publisher_id` )
+    REFERENCES `publisher` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

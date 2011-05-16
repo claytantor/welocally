@@ -54,16 +54,16 @@ public class AdilityOfferClient implements OfferClient {
 	}
 	
 	@Override
-	public List<Offer> getOffers() throws OfferFeedException {
-		List<Offer> allOffers = new ArrayList<Offer>();
+	public List<OfferOld> getOffers() throws OfferFeedException {
+		List<OfferOld> allOffers = new ArrayList<OfferOld>();
 		for (RequestModel model : requestModelList) {
 			allOffers.addAll(findOffersForArea(model, 20, 10));
 		}
 		return allOffers;
 	}
 	
-	public List<Offer> findOffersForArea(RequestModel model, Integer max, Integer minOffers) {
-		List<Offer> offersFound = new ArrayList<Offer>();
+	public List<OfferOld> findOffersForArea(RequestModel model, Integer max, Integer minOffers) {
+		List<OfferOld> offersFound = new ArrayList<OfferOld>();
 		try {
 			
 			Integer modelDistance = 
@@ -111,8 +111,8 @@ public class AdilityOfferClient implements OfferClient {
 	 * @param aoffer
 	 * @return
 	 */
-	private Offer transformAdilityOffer(com.adility.resources.model.Offer aoffer) {
-		Offer offer = new Offer();
+	private OfferOld transformAdilityOffer(com.adility.resources.model.Offer aoffer) {
+		OfferOld offer = new OfferOld();
 		offer.setExternalId(aoffer.getId());
 		offer.setBeginDateString(aoffer.getStartDate());
 		

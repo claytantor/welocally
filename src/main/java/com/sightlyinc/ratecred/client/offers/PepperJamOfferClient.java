@@ -35,7 +35,7 @@ public class PepperJamOfferClient implements OfferClient {
 	private String sourceName;
 
 	@Override
-	public List<Offer> getOffers() throws OfferFeedException {
+	public List<OfferOld> getOffers() throws OfferFeedException {
 		try {
 			URL url = new URL(protocol, host, port, endpoint);
 			java.net.URLConnection c = url.openConnection();
@@ -46,12 +46,12 @@ public class PepperJamOfferClient implements OfferClient {
 			//skip the first line
 			reader.readNext();
 			ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
-			strat.setType(Offer.class);
+			strat.setType(OfferOld.class);
 			String[] columns = new String[] {"externalId","programId","programName","name","couponCode","description","url","beginDateString","expireDateString"}; // the fields to bind do in your JavaBean		
 			strat.setColumnMapping(columns);
 			CsvToBean csv = new CsvToBean();
-			List<Offer> list = csv.parse(strat, reader);
-			for (Offer offer : list) 
+			List<OfferOld> list = csv.parse(strat, reader);
+			for (OfferOld offer : list) 
 				offer.setExternalSource(sourceName);
 			return list;
 			

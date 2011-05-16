@@ -12,7 +12,7 @@ import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.noi.utility.spring.test.AbstractBeanFactoryTestCase;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 
 public class RaterDaoTest extends AbstractBeanFactoryTestCase {
 	static Logger logger = 
@@ -67,15 +67,15 @@ public class RaterDaoTest extends AbstractBeanFactoryTestCase {
 		try {
 			BusinessDao businessDao = 
 				(BusinessDao)super.getBeanFactory().getBean("BusinessDao");
-			RaterDao raterDao = 
-				(RaterDao)super.getBeanFactory().getBean("RaterDao");
+			PatronDao raterDao = 
+				(PatronDao)super.getBeanFactory().getBean("RaterDao");
 			
 			
 			long startTime = 
 				Calendar.getInstance().getTimeInMillis() - 
 				(86400000l*90);
 			
-			List<Rater> raters = raterDao.findByBusinessDateRange(
+			List<Patron> raters = raterDao.findByBusinessDateRange(
 					businessDao.findByPrimaryKey(5l), 
 					new Date(startTime), 
 					Calendar.getInstance().getTime());

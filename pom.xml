@@ -29,7 +29,51 @@
       <configuration>
         <skip>true</skip>
       </configuration>
-    </plugin>      
+    </plugin> 
+    
+    
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sql-maven-plugin</artifactId>
+        <version>1.4</version>
+
+        <dependencies>
+          <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.13</version>
+          </dependency>
+        </dependencies>
+
+        <!-- common configuration shared by all executions -->
+        <configuration>
+          <driver>${database.driverClassName}</driver>
+          <url>${database.url}</url>
+          <username>${database.username}</username>
+          <password>${database.password}</password>
+          <skip>${maven.test.skip}</skip>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>create-test-db</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <autocommit>true</autocommit>
+              <srcFiles>
+                <srcFile>src/main/sql/create_ratecred.sql</srcFile>
+                <srcFile>src/main/sql/ratecred.sql</srcFile>
+              </srcFiles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    
+    
+         
     </plugins>
   </build>  
   <dependencies>
@@ -326,13 +370,7 @@
     	<version>4.8.2</version>
     	<scope>test</scope>
     </dependency>
-    <!-- <dependency>
-    	<groupId>opensymphony</groupId>
-    	<artifactId>oscache</artifactId>
-    	<version>2.4.1</version>
-    </dependency>    -->
-    
-    
-     			   
   </dependencies>
+
+
 </project>

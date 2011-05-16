@@ -1,5 +1,10 @@
 package com.sightlyinc.ratecred.model;
-
+/**
+ * non persistent class
+ * 
+ * @author claygraham
+ *
+ */
 public class BusinessMetricsMetadata {
 
 	private Integer maxRates;

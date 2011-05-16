@@ -8,8 +8,8 @@ import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
-import com.sightlyinc.ratecred.model.RaterMetrics;
+import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingPage;
 
@@ -39,12 +39,12 @@ public interface RatingManagerService {
 	
 	public List<Rating> findRatingsSince(Long millis) throws BLServiceException;
 	
-	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, Rater rater) throws BLServiceException;
-	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, List<Rater> raters) throws BLServiceException;
+	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, Patron rater) throws BLServiceException;
+	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, List<Patron> raters) throws BLServiceException;
 
 	//awards THESE SHOULD MOVE
-	public List<Award> findAwardsLocalByRater(Rater t) throws BLServiceException;
-	public List<Award> findAwardsByOwner(Rater t) throws BLServiceException;
+	public List<Award> findAwardsLocalByRater(Patron t) throws BLServiceException;
+	public List<Award> findAwardsByOwner(Patron t) throws BLServiceException;
 	public Award findAwardById(Long awardId) throws BLServiceException;
 	public void saveAward(Award entity) throws BLServiceException;
 	//public void saveAwardOffer(AwardOffer entity) throws BLServiceException;
@@ -64,52 +64,52 @@ public interface RatingManagerService {
 	
 	
 	//compliment
-	public void saveCompliment(Compliment c, Rating twords, Rater complementor) throws BLServiceException;
-	public List<Compliment> findComplimentsByRaterBetweenTimes(Rater towards, Date startTime, Date endTime) throws BLServiceException;
+	public void saveCompliment(Compliment c, Rating twords, Patron complementor) throws BLServiceException;
+	public List<Compliment> findComplimentsByRaterBetweenTimes(Patron towards, Date startTime, Date endTime) throws BLServiceException;
 	public Long findComplimentCountByRaterBetweenTimes(
-			Rater towards, Date startTime, Date endTime) throws BLServiceException;
+			Patron towards, Date startTime, Date endTime) throws BLServiceException;
 	
 	//awards given
 	public List<Award> findBusinessAwardsByRaterBetweenTimes(
-			Rater towards, Date startTime, Date endTime) throws BLServiceException;
+			Patron towards, Date startTime, Date endTime) throws BLServiceException;
 	public Long findAwardCountByOwnerBetweenTimes(
-			Rater towards, Date startTime, Date endTime) throws BLServiceException;
+			Patron towards, Date startTime, Date endTime) throws BLServiceException;
 		
 	
 	//rater functions
-	public Rater findRaterByPrimaryKey(Long string) throws BLServiceException;			
-	public List<Rater> findRatersByPrimaryKeys(final Long[] ids) throws BLServiceException;
-	public List<Rater> findRatersByStatus(String status) throws BLServiceException;
+	public Patron findRaterByPrimaryKey(Long string) throws BLServiceException;			
+	public List<Patron> findRatersByPrimaryKeys(final Long[] ids) throws BLServiceException;
+	public List<Patron> findRatersByStatus(String status) throws BLServiceException;
 	
-	public void saveConvertRater(Rater fromRater, Rater toRater) throws BLServiceException;
+	public void saveConvertRater(Patron fromRater, Patron toRater) throws BLServiceException;
 
 	
-	public Rater findRaterByUsername(String userName) throws BLServiceException;
+	public Patron findRaterByUsername(String userName) throws BLServiceException;
 	//public Rater findRaterByTwitterScreenName(String twitterScreenName) throws BLServiceException;
 	
-	public Rater findRaterByAuthId(String authId) throws BLServiceException;	
+	public Patron findRaterByAuthId(String authId) throws BLServiceException;	
 	
 	//create anonymous rater, must be saved
-	public Rater createAnonymousRater();
+	public Patron createAnonymousRater();
 	
-	public List<Rater> findAllRaters() throws BLServiceException;	
+	public List<Patron> findAllRaters() throws BLServiceException;	
 	
-	public List<Rater> findRatersRatedSince(Long millis) throws BLServiceException;
+	public List<Patron> findRatersRatedSince(Long millis) throws BLServiceException;
 	
-	public List<Rater> findRatersByScreenNames(String[] screenNames) throws BLServiceException;
+	public List<Patron> findRatersByScreenNames(String[] screenNames) throws BLServiceException;
 				
-	public void deleteRater(Rater entity) throws BLServiceException;
+	public void deleteRater(Patron entity) throws BLServiceException;
 	
-	public void saveRater(Rater entity) throws BLServiceException;
+	public void saveRater(Patron entity) throws BLServiceException;
 	
 	
 			
-	public List<Rater> findRatersByScoreDesc(int size) throws BLServiceException;
+	public List<Patron> findRatersByScoreDesc(int size) throws BLServiceException;
 	
-	public List<Rater> findRatersByCityStateScoreDesc(PlaceCityState cs, int size) throws BLServiceException;
+	public List<Patron> findRatersByCityStateScoreDesc(PlaceCityState cs, int size) throws BLServiceException;
 		
 	//rater metrics
-	public RaterMetrics findMetricsByRater(Rater t);
+	public PatronMetrics findMetricsByRater(Patron t);
 	
 	
 }

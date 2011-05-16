@@ -2,61 +2,29 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 
 /**
- * 
+ *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `rater_id` BIGINT(20) NOT NULL ,
+  `rating_id` BIGINT(20) NOT NULL ,
+  `note` TEXT NULL DEFAULT NULL ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
  * 
  * @author claygraham
  *
  */
-public class Compliment {
-	private Long id;
-	private Integer version;
-	private Date timeCreated;
+@Entity
+@Table(name="compliment")
+public class Compliment extends BaseEntity{
 	private String note;
-	private Long timeCreatedMills;
-	private String timeCreatedGmt;
-	private Rater owner;
+	private Patron owner;
 	private Rating towards;
 	
-	public Long getTimeCreatedMills() {
-		return timeCreatedMills;
-	}
-	
-	public void setTimeCreatedMills(Long timeCreatedMills) {
-		this.timeCreatedMills = timeCreatedMills;
-	}
-	
-	public Integer getVersion() {
-		return version;
-	}
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public String getTimeCreatedGmt() {
-		return timeCreatedGmt;
-	}
-	public void setTimeCreatedGmt(String timeCreatedGmt) {
-		this.timeCreatedGmt = timeCreatedGmt;
-	}
-	
-	
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-	
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
-		/*if(timeCreated != null)
-			this.timeCreatedMills = timeCreated.getTime();*/
-	}
 	
 	
 	public String getNote() {
@@ -65,10 +33,10 @@ public class Compliment {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public Rater getOwner() {
+	public Patron getOwner() {
 		return owner;
 	}
-	public void setOwner(Rater owner) {
+	public void setOwner(Patron owner) {
 		this.owner = owner;
 	}
 	public Rating getTowards() {

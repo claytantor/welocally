@@ -1,0 +1,55 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+             
+  
+     <bean id="sessionFactory" autowire="byName"
+        class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="annotatedClasses">
+            <list>
+	            <!-- list of annotated classes should be here -->
+	            <value>com.sightlyinc.ratecred.model.Award</value>
+ 	            <value>com.sightlyinc.ratecred.model.AwardType</value>
+ 	            <value>com.sightlyinc.ratecred.model.Business</value>
+	            <value>com.sightlyinc.ratecred.model.BusinessLocation</value>
+ 	            <value>com.sightlyinc.ratecred.model.BusinessMetrics</value>
+	            <value>com.sightlyinc.ratecred.model.Compliment</value>
+ 	            <value>com.sightlyinc.ratecred.model.PatronBusinessMetrics</value>
+	            <value>com.sightlyinc.ratecred.model.PlaceCityState</value>
+ 	            <value>com.sightlyinc.ratecred.model.PatronMetrics</value>
+	            <value>com.sightlyinc.ratecred.model.Offer</value>
+ 	            <value>com.sightlyinc.ratecred.model.Order</value>
+	            <value>com.sightlyinc.ratecred.model.Patron</value>
+ 	            <value>com.sightlyinc.ratecred.model.Place</value>
+	            <value>com.sightlyinc.ratecred.model.PlaceAttribute</value>
+ 	            <value>com.sightlyinc.ratecred.model.PlaceRating</value>
+	            <value>com.sightlyinc.ratecred.model.Patron</value>
+ 	            <value>com.sightlyinc.ratecred.model.Place</value>
+	            <value>com.sightlyinc.ratecred.model.Offer</value>
+ 	            <value>com.sightlyinc.ratecred.model.Order</value>
+	            <value>com.sightlyinc.ratecred.model.Patron</value>
+ 	            <value>com.sightlyinc.ratecred.model.Place</value>
+            </list>
+        </property>
+		<property name="hibernateProperties">
+			<ref bean="HibernateDatabaseProperties"/>
+		</property>	
+		<property name="dataSource">
+			<ref bean="DBCPLocalDS"/>
+		</property>	
+    </bean>
+
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" autowire="byName" />
+
+    <tx:annotation-driven />
+
+</beans>

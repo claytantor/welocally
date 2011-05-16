@@ -19,16 +19,16 @@ import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.compare.BusinessMetricsStartDateComparitor;
 import com.sightlyinc.ratecred.dao.AwardDao;
-import com.sightlyinc.ratecred.dao.AwardOfferDao;
+import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.BusinessDao;
 import com.sightlyinc.ratecred.dao.BusinessLocationDao;
 import com.sightlyinc.ratecred.dao.BusinessMetricsDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
-import com.sightlyinc.ratecred.dao.RaterBusinessMetricsDao;
-import com.sightlyinc.ratecred.dao.RaterDao;
+import com.sightlyinc.ratecred.dao.PatronBusinessMetricsDao;
+import com.sightlyinc.ratecred.dao.PatronDao;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessAttribute;
@@ -36,8 +36,8 @@ import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.BusinessMetrics;
 import com.sightlyinc.ratecred.model.BusinessMetricsMetadata;
 import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.model.Rater;
-import com.sightlyinc.ratecred.model.RaterBusinessMetrics;
+import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
 
 public class BusinessManagerServiceImpl implements BusinessManagerService {
 	
@@ -50,13 +50,13 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	private BusinessDao businessDao;
 	private BusinessLocationDao businessLocationDao;
 	private BusinessMetricsDao businessMetricsDao;
-	private RaterBusinessMetricsDao raterBusinessMetricsDao;
+	private PatronBusinessMetricsDao raterBusinessMetricsDao;
 	
-	private RaterDao raterDao;	
+	private PatronDao raterDao;	
 	private PlaceDao placeDao;
 	private AwardTypeDao awardTypeDao;
 	private AwardDao awardDao;
-	private AwardOfferDao awardOfferDao; 
+	private OfferDao awardOfferDao; 
 	
 	private String imageBase;
 	private String imageBaseType;
@@ -69,10 +69,6 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 			throws BLServiceException {
 		BusinessLocation example = new BusinessLocation();
 		example.setName(name);
-		example.setAddress(address);
-		example.setCity(city);
-		example.setState(state);
-		example.setZip(postalCode);
 		List<BusinessLocation> locations = businessLocationDao.findByExample(example);
 		return locations;
 	}
@@ -86,15 +82,15 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDaysRaters(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDaysRaters(
 			BusinessLocation bl, int days, Long[] raterIds)
 			throws BLServiceException {
 		long startTime = 
 			Calendar.getInstance().getTimeInMillis() - 
 			(86400000l*days);
 		
-		List<RaterBusinessMetrics> all =
-			new ArrayList<RaterBusinessMetrics>();
+		List<PatronBusinessMetrics> all =
+			new ArrayList<PatronBusinessMetrics>();
 		
 		try {
 			return raterBusinessMetricsDao.mineBusinessLocationMetricsForRaters(
@@ -112,15 +108,15 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDaysRaters(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDaysRaters(
 			Business b, int days, Long[] raterIds)
 			throws BLServiceException {
 		long startTime = 
 			Calendar.getInstance().getTimeInMillis() - 
 			(86400000l*days);
 		
-		List<RaterBusinessMetrics> all =
-			new ArrayList<RaterBusinessMetrics>();
+		List<PatronBusinessMetrics> all =
+			new ArrayList<PatronBusinessMetrics>();
 		
 		try {
 			return raterBusinessMetricsDao.mineBusinessMetricsForRaters(
@@ -134,15 +130,15 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDays(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDays(
 			Business b, int days) throws BLServiceException {
 
 		long startTime = 
 			Calendar.getInstance().getTimeInMillis() - 
 			(86400000l*days);
 		
-		List<RaterBusinessMetrics> all =
-			new ArrayList<RaterBusinessMetrics>();
+		List<PatronBusinessMetrics> all =
+			new ArrayList<PatronBusinessMetrics>();
 		
 		try {
 			return raterBusinessMetricsDao.mineBusinessMetricsForDateRange(
@@ -156,15 +152,15 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDays(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDays(
 			BusinessLocation bl, int days) throws BLServiceException {
 		
 		long startTime = 
 			Calendar.getInstance().getTimeInMillis() - 
 			(86400000l*days);
 		
-		List<RaterBusinessMetrics> all =
-			new ArrayList<RaterBusinessMetrics>();
+		List<PatronBusinessMetrics> all =
+			new ArrayList<PatronBusinessMetrics>();
 		
 		try {
 			return raterBusinessMetricsDao.mineBusinessLocationMetricsForDateRange(
@@ -330,14 +326,14 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public AwardOffer findAwardOfferByPrimaryKey(Long awardOfferId)
+	public Offer findAwardOfferByPrimaryKey(Long awardOfferId)
 			throws BLServiceException {
 		return awardOfferDao.findByPrimaryKey(awardOfferId);
 	}
 
 
 	@Override
-	public List<AwardOffer> findBusinessAwardOffers(Business b)
+	public List<Offer> findBusinessAwardOffers(Business b)
 			throws BLServiceException {
 		return awardOfferDao.findByBusiness(b);
 	}
@@ -357,7 +353,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public void saveBusinessAwardOffer(AwardOffer ao)
+	public void saveBusinessAwardOffer(Offer ao)
 			throws BLServiceException {
 		//first save the award		
 		awardOfferDao.save(ao);
@@ -366,7 +362,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public void saveBusinessAward(AwardOffer ao, String notes, Date expires, Rater t)
+	public void saveBusinessAward(Offer ao, String notes, Date expires, Patron t)
 			throws BLServiceException {
 		Award a = new Award();
 		a.setAwardType(ao.getAwardType());
@@ -383,10 +379,11 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 				DateUtils.NOSPACE_TIMESTAMP_FORMAT, 
 				new SimpleTimeZone(0, "GMT"))+"-0000";
 		
-		Date gmtCreated = DateUtils.stringToDate(gmtTime, DateUtils.NOSPACE_TIMESTAMP_FORMAT_TZ);			
+		//done with interceptor
+		/*Date gmtCreated = DateUtils.stringToDate(gmtTime, DateUtils.NOSPACE_TIMESTAMP_FORMAT_TZ);			
 		a.setTimeCreated(gmtCreated);
 		a.setTimeCreatedMills(gmtCreated.getTime());
-		a.setTimeCreatedGmt(gmtTime);
+		a.setTimeCreatedGmt(gmtTime);*/
 		
 		//convert expires
 		String gmtExpires = DateUtils.dateToString(
@@ -395,9 +392,11 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 				new SimpleTimeZone(0, "GMT"))+"-0000";
 		
 		Date gmtExpiresDate = DateUtils.stringToDate(gmtExpires, DateUtils.NOSPACE_TIMESTAMP_FORMAT_TZ);			
-		a.setExpires(gmtExpiresDate);
+		a.setExpires(gmtExpiresDate.getTime());
+		
+		/*a.setExpires(gmtExpiresDate);
 		a.setExpiresMills(gmtExpiresDate.getTime());
-		a.setExpiresGmt(gmtExpires);
+		a.setExpiresGmt(gmtExpires);*/
 		
 		
 		
@@ -411,7 +410,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<Rater> findBusinessLocationRatersDaysTrailing(
+	public List<Patron> findBusinessLocationRatersDaysTrailing(
 			BusinessLocation bl, Integer period)
 			throws BLServiceException {
 		long startTime = 
@@ -424,25 +423,25 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<Rater> findBusinessRatersDaysTrailing(Business b,
+	public List<Patron> findBusinessRatersDaysTrailing(Business b,
 			Integer period) throws BLServiceException {
 		long startTime = 
 			Calendar.getInstance().getTimeInMillis() - 
 			(86400000l*period);
 		
-		List<Rater> braters = raterDao.findByBusinessDateRange(
+		List<Patron> braters = raterDao.findByBusinessDateRange(
 				b, new Date(startTime), Calendar.getInstance().getTime());
 		
 		return braters;
 	}
 
-	private void populateRaterMetrics(List<Rater> braters)
+	private void populateRaterMetrics(List<Patron> braters)
 	{
 	
 	}
 
 	@Override
-	public List<Rater> findBusinessLocationRatersOverPeriod(
+	public List<Patron> findBusinessLocationRatersOverPeriod(
 			BusinessLocation bl, Date startDate, Date endDate)
 			throws BLServiceException {
 		return raterDao.findByBusinessLocationDateRange(bl, startDate, endDate);
@@ -450,7 +449,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	@Override
-	public List<Rater> findBusinessRatersOverPeriod(Business b,
+	public List<Patron> findBusinessRatersOverPeriod(Business b,
 			Date startDate, Date endDate) throws BLServiceException {
 		return raterDao.findByBusinessDateRange(b, startDate, endDate);
 	}
@@ -615,7 +614,8 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 		for (BusinessMetrics bm : allLocationsMetrics) {
 			
 			//make the date string as a key
-			String dateKey = DateUtils.dateToString(bm.getStartTime(), "yyyyMMdd");
+			String dateKey = DateUtils.dateToString(
+					new Date(bm.getStartTime()), "yyyyMMdd");
 			
 			//lookup by start date
 			BusinessMetrics lookup = 
@@ -760,7 +760,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	}
 
 
-	public void setRaterDao(RaterDao raterDao) {
+	public void setRaterDao(PatronDao raterDao) {
 		this.raterDao = raterDao;
 	}
 
@@ -775,7 +775,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	}
 
 
-	public void setAwardOfferDao(AwardOfferDao awardOfferDao) {
+	public void setAwardOfferDao(OfferDao awardOfferDao) {
 		this.awardOfferDao = awardOfferDao;
 	}
 
@@ -791,7 +791,7 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 
 
 	public void setRaterBusinessMetricsDao(
-			RaterBusinessMetricsDao raterBusinessMetricsDao) {
+			PatronBusinessMetricsDao raterBusinessMetricsDao) {
 		this.raterBusinessMetricsDao = raterBusinessMetricsDao;
 	}
 	

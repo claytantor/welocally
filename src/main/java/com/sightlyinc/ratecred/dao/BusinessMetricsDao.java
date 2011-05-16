@@ -6,7 +6,7 @@ import java.util.List;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.BusinessMetrics;
 
-public interface BusinessMetricsDao {
+public interface BusinessMetricsDao extends BaseDao<BusinessMetrics> {
 	
 	public Long findLastBusinessLocationMetricsTime( BusinessLocation bl);
 	
@@ -19,6 +19,5 @@ public interface BusinessMetricsDao {
 	public Long mineFirstBusinessMetricsTime(BusinessLocation bl);
 	public Long mineLastBusinessMetricsTime(BusinessLocation bl);
 	public BusinessMetrics mineMetricsForDateRange(BusinessLocation bl,  Date startDate,  Date endDate);
-	public Long save(BusinessMetrics bm);
 
 }

@@ -1,41 +1,37 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+@Entity
+@Table(name="award_type")
+public class AwardType extends BaseEntity{
 
-public class AwardType {
-
-	private Long id;
-	private Integer version = new Integer(0);
-	private Date timeCreated;
+	@Column(name = "points_value")
 	private Integer value;
+	
+	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "description")
 	private String description;
+	
+	@Column(name = "class_type")
 	private String type;
+	
+	@Column(name = "keyname")
 	private String keyname;
+	
+	@Column(name = "previous")
 	private String previous;
+	
+	@Column(name = "next")
 	private String next;
-	private String category;
 	
+	@Column(name = "category_attachment_key")
+	private String categoryAttachmentKey;
 	
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Integer getVersion() {
-		return version;
-	}
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
-	}
+
 	public String getName() {
 		return name;
 	}
@@ -78,22 +74,13 @@ public class AwardType {
 	public void setNext(String next) {
 		this.next = next;
 	}
+	public String getCategoryAttachmentKey() {
+		return categoryAttachmentKey;
+	}
+	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
+		this.categoryAttachmentKey = categoryAttachmentKey;
+	}
 	
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	
-	@Override
-	public String toString() {
-		return "AwardType [description=" + description + ", id=" + id
-				+ ", keyname=" + keyname + ", name=" + name + ", next=" + next
-				+ ", previous=" + previous + ", timeCreated=" + timeCreated
-				+ ", type=" + type + ", value=" + value + ", version="
-				+ version + "]";
-	}
 	
 	
 }

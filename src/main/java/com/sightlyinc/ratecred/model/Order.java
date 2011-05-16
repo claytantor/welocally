@@ -40,8 +40,8 @@ public class Order {
 	
 	private Integer quantity;
 	
-	private Rater owner;
-	private AwardOffer offer;
+	private Patron owner;
+	private Offer offer;
 	private Voucher voucher;
 	
 
@@ -207,16 +207,16 @@ public class Order {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	public Rater getOwner() {
+	public Patron getOwner() {
 		return owner;
 	}
-	public void setOwner(Rater owner) {
+	public void setOwner(Patron owner) {
 		this.owner = owner;
 	}
-	public AwardOffer getOffer() {
+	public Offer getOffer() {
 		return offer;
 	}
-	public void setOffer(AwardOffer offer) {
+	public void setOffer(Offer offer) {
 		this.offer = offer;
 	}
 	public Voucher getVoucher() {

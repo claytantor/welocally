@@ -1,67 +1,63 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 
-
+@Entity
+@Table(name = "award")
 @JsonAutoDetect(fieldVisibility=Visibility.NONE, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
-public class Award {
+public class Award extends BaseEntity {
+		
+	@JsonProperty
+	@Column(name = "expires")
+	private Long expires;	
 	
 	@JsonProperty
-	private Long id;
-	
-	@JsonProperty
-	private Integer version = new Integer(0);
-	
-	@JsonProperty
-	private Date timeCreated;
-	
-	@JsonProperty
-	private Long timeCreatedMills;
-	
-	@JsonProperty
-	private String timeCreatedGmt;
-	
-	@JsonProperty
-	private Date expires;
-	
-	@JsonProperty
-	private Long expiresMills;
-	
-	@JsonProperty
-	private String expiresGmt;
-	
-	@JsonProperty
+	@Column(name = "notes")
 	private String notes;
 	
 	@JsonProperty
+	@Column(name = "metadata")
 	private String metadata;
 	
 	@JsonProperty
+	@Column(name = "status")
 	private String status;
 	
+	//not persistent
 	@JsonProperty
 	private Boolean giveOffer = true;
+		
+	@JsonIgnore
+	@OneToMany(mappedBy = "award")
+	private Set<Offer> offers;
 	
 	@JsonIgnore
-	private Set<AwardOffer> offers;
+	@ManyToOne
+	@JoinColumn(name = "patron_id")
+	private Patron owner;
 	
 	@JsonIgnore
-	private Rater owner;
-	
-	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "award_type_id")
 	private AwardType awardType;
 	
 
 	public Award() {
 		super();
-		offers = new HashSet<AwardOffer>();
+		offers = new HashSet<Offer>();
 	}
 	
 	@JsonProperty
@@ -85,46 +81,6 @@ public class Award {
 	}
 	
 	@JsonProperty
-	public Long getExpiresMills() {
-		return expiresMills;
-	}
-	
-	@JsonProperty
-	public void setExpiresMills(Long expiresMills) {
-		this.expiresMills = expiresMills;
-	}
-	
-	@JsonProperty
-	public String getExpiresGmt() {
-		return expiresGmt;
-	}
-	
-	@JsonProperty
-	public void setExpiresGmt(String expiresGmt) {
-		this.expiresGmt = expiresGmt;
-	}
-	
-	@JsonProperty
-	public String getTimeCreatedGmt() {
-		return timeCreatedGmt;
-	}
-	
-	@JsonProperty
-	public void setTimeCreatedGmt(String timeCreatedGmt) {
-		this.timeCreatedGmt = timeCreatedGmt;
-	}
-	
-	@JsonProperty
-	public Long getTimeCreatedMills() {
-		return timeCreatedMills;
-	}
-	
-	@JsonProperty
-	public void setTimeCreatedMills(Long timeCreatedMills) {
-		this.timeCreatedMills = timeCreatedMills;
-	}
-	
-	@JsonProperty
 	public String getNotes() {
 		return notes;
 	}
@@ -132,46 +88,6 @@ public class Award {
 	@JsonProperty
 	public void setNotes(String notes) {
 		this.notes = notes;
-	}
-	
-	@JsonProperty
-	public Date getExpires() {
-		return expires;
-	}
-	
-	@JsonProperty
-	public void setExpires(Date expires) {
-		this.expires = expires;
-	}
-	
-	@JsonProperty
-	public Long getId() {
-		return id;
-	}
-	
-	@JsonProperty
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@JsonProperty
-	public Integer getVersion() {
-		return version;
-	}
-	
-	@JsonProperty
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	
-	@JsonProperty
-	public Date getTimeCreated() {
-		return timeCreated;
-	}
-	
-	@JsonProperty
-	public void setTimeCreated(Date timeCreated) {
-		this.timeCreated = timeCreated;
 	}
 	
 	@JsonProperty
@@ -192,12 +108,12 @@ public class Award {
 	//relationships
 	
 	@JsonIgnore
-	public Rater getOwner() {
+	public Patron getOwner() {
 		return owner;
 	}
 	
 	@JsonIgnore
-	public void setOwner(Rater owner) {
+	public void setOwner(Patron owner) {
 		this.owner = owner;
 	}
 	
@@ -212,13 +128,21 @@ public class Award {
 	}
 	
 	@JsonIgnore
-	public Set<AwardOffer> getOffers() {
+	public Set<Offer> getOffers() {
 		return offers;
 	}
 	
 	@JsonIgnore
-	public void setOffers(Set<AwardOffer> offers) {
+	public void setOffers(Set<Offer> offers) {
 		this.offers = offers;
+	}
+
+	public Long getExpires() {
+		return expires;
+	}
+
+	public void setExpires(Long expires) {
+		this.expires = expires;
 	}
 	
 	

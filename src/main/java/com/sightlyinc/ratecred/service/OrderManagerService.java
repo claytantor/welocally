@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Order;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Voucher;
 
 public interface OrderManagerService {
@@ -12,7 +12,7 @@ public interface OrderManagerService {
 	public Order findOrderByPrimaryKey(Long id) throws BLServiceException;
 	public Order findOrderByChannelAndExternalId(String channel, String externalId) 
 		throws BLServiceException;
-	public List<Order> findOrdersByRater(Rater rater) throws BLServiceException;
+	public List<Order> findOrdersByRater(Patron rater) throws BLServiceException;
 	
 	public Long saveOrder(Order order) throws BLServiceException;
 	

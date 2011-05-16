@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sightlyinc.ratecred.model.BusinessLocation;
 
-public interface BusinessLocationDao {
+public interface BusinessLocationDao extends BaseDao<BusinessLocation> {
 	public List<BusinessLocation> findByCityState(String city, String state);
 	public List<BusinessLocation> findByNameCityState(String name, String city, String state);
 	public List<BusinessLocation> findByCityStateRatingTypePaged(
@@ -15,9 +15,7 @@ public interface BusinessLocationDao {
 			Double maxLat, Double maxLong);
 	
 	public Long findByCityStateCount(String city, String state);
-	
-	public BusinessLocation findByPrimaryKey(Long id);	
-	
+		
 	public BusinessLocation findByAuthId(String guid);	
 	
 	public BusinessLocation findByUsername(String username);	
@@ -26,7 +24,5 @@ public interface BusinessLocationDao {
 	
 	public List<BusinessLocation> findByExample(BusinessLocation example);
 	
-	public List<BusinessLocation> findAll();
-	public void save(BusinessLocation entity);
-	public void delete(BusinessLocation entity);
+
 }

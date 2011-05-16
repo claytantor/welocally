@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sightlyinc.ratecred.model.Place;
 
-public interface PlaceDao {
+public interface PlaceDao extends BaseDao<Place>{
 	public Place findByTwitterId(String id);	
 
     public Place findBySimpleGeoId(String simpleGeoId);
@@ -25,11 +25,7 @@ public interface PlaceDao {
 	
 	public Long findByCityStateCount(String city, String state);
 	
-	public Place findByPrimaryKey(Long id);	
 	public List<Place> findByPrimaryKeys(List<Long> ids);	
-	
-	public List<Place> findAll();
-	public void save(Place entity);
-	public void delete(Place entity);
+
 
 }

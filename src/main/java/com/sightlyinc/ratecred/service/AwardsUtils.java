@@ -11,7 +11,7 @@ import org.apache.http.NameValuePair;
 import com.noi.utility.string.StringUtils;
 import com.noi.utility.web.UrlUtils;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 
 public class AwardsUtils {
@@ -53,7 +53,7 @@ public class AwardsUtils {
 		}
 	}
 	
-	public static List<PlaceCityState> getCitiesRated(Rater r)
+	public static List<PlaceCityState> getCitiesRated(Patron r)
 	{
 		List<PlaceCityState> allcs = new ArrayList<PlaceCityState>();
 		for (Rating rating : r.getRatings()) {

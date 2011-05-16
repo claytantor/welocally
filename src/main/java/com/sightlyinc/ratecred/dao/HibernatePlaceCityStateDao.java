@@ -4,22 +4,45 @@ package com.sightlyinc.ratecred.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
 
+/**
+ * special implementation to find city states out of ratings, there isnt 
+ * a place city state table, and it could be argued that this is required but
+ * this will require a refactor
+ * 
+ * @author claygraham
+ *
+ */
+@Repository("placeCityStateDao")
 public class HibernatePlaceCityStateDao 
 	extends HibernateDaoSupport 
 	implements PlaceCityStateDao {
-
+	
 	static Logger logger = Logger.getLogger(HibernatePlaceCityStateDao.class);
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@PostConstruct
+	private void initSessionFactory(){
+		super.setSessionFactory(sessionFactory);
+	}
+	
     
     public HibernateTemplate getHibernateTemplateOverride() {
         HibernateTemplate template = getHibernateTemplate();
@@ -28,7 +51,7 @@ public class HibernatePlaceCityStateDao
     }
 
 	@Override
-	public List<PlaceCityState> findByRater(final Rater t) {
+	public List<PlaceCityState> findByRater(final Patron t) {
 		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 				throws HibernateException, SQLException 

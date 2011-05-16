@@ -2,11 +2,9 @@ package com.sightlyinc.ratecred.client.link;
 
 import java.util.List;
 
-import com.sightlyinc.ratecred.model.AffiliateLink;
-
 public class Links {
 	
-	private List<AffiliateLink> links;
+	//private List<AffiliateLink> links;
 	
 	//total-matched="15" 
 	private Integer totalMatched;
@@ -43,12 +41,12 @@ public class Links {
 		this.pageNumber = pageNumber;
 	}
 
-	public List<AffiliateLink> getLinks() {
+/*	public List<AffiliateLink> getLinks() {
 		return links;
 	}
 
 	public void setLinks(List<AffiliateLink> links) {
 		this.links = links;
-	}
+	}*/
 	
 }

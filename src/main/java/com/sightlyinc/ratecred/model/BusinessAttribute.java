@@ -1,6 +1,12 @@
 package com.sightlyinc.ratecred.model;
 
-public class BusinessAttribute {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="business_attribute")
+public class BusinessAttribute extends BaseEntity{
 
 	public BusinessAttribute() {
 		super();
@@ -12,17 +18,11 @@ public class BusinessAttribute {
 		this.value = value;
 	}
 
-	private Long id;
 	private String name;
+	
+	@Column(name="attribute_value")
 	private String value;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -43,7 +43,7 @@ public class BusinessAttribute {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
-		buf.append("[id=" + this.id + " ");
+		buf.append("[id=" + super.getId() + " ");
 		buf.append("name=" + this.name + " ");
 		buf.append("value=" + this.value + "]");
 

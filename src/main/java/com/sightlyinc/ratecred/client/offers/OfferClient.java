@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface OfferClient {
 	
-	public List<Offer> getOffers() throws OfferFeedException;
+	public List<OfferOld> getOffers() throws OfferFeedException;
 
 }

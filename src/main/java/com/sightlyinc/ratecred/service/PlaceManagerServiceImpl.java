@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
@@ -31,7 +30,6 @@ import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparito
 import com.sightlyinc.ratecred.dao.PlaceAttributeDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
-import com.sightlyinc.ratecred.dao.PlaceRatingDao;
 import com.sightlyinc.ratecred.index.PlaceDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
@@ -56,8 +54,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	@Autowired
 	private PlaceAttributeDao placeAttributeDao;
 	
-	@Autowired
-	private PlaceRatingDao placeRatingDao;
+	//@Autowired
+	//private PlaceRatingDao placeRatingDao;
 	
 	@Autowired
 	@Qualifier("PlaceDirectory")
@@ -199,7 +197,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			boolean isAcending)
 			throws BLServiceException {
 		
-		PlacePage tp = new PlacePage(); 
+		/*PlacePage tp = new PlacePage(); 
 		tp.setPageSize(pageSize);
 		tp.setAscending(isAcending);
 				
@@ -212,7 +210,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		}
 	
 		
-		return tp;
+		return tp;*/
+		throw new RuntimeException("TODO REMOVE PLACE RATING CONCEPT");
 
 	}
 	
@@ -220,7 +219,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	@Override
 	public PlacePage findPlacesRated(Integer pageNum, Integer pageSize,
 			boolean isAcending) throws BLServiceException {
-		PlacePage tp = new PlacePage(); 
+		/*PlacePage tp = new PlacePage(); 
 		tp.setPageSize(pageSize);
 		tp.setAscending(isAcending);
 				
@@ -231,7 +230,9 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			tp.getPlaces().add(placeRating.getPlace());
 		}
 		
-		return tp;
+		return tp;*/
+		throw new RuntimeException("TODO REMOVE PLACE RATING CONCEPT");
+
 	}
 
 
@@ -299,7 +300,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	public PlacePage findCityStatePlacesRatedByType(PlaceCityState cs,
 			String type, Integer pageNum, Integer pageSize, boolean isAscending)
 			throws BLServiceException {
-		PlacePage tp = new PlacePage(); 
+		
+		/*PlacePage tp = new PlacePage(); 
 		tp.setPageSize(pageSize);
 		tp.setAscending(isAscending);
 		
@@ -328,7 +330,9 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			tp.getPlaces().add(placeRating.getPlace());
 		}
 			
-		return tp;
+		return tp;*/
+		throw new RuntimeException("TODO REMOVE PLACE RATING CONCEPT");
+
 	}
 
 
@@ -338,7 +342,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	public PlacePage findCityStatePlacesRated(PlaceCityState cs,
 			Integer pageNum, Integer pageSize, boolean isAscending)
 			throws BLServiceException {
-		PlacePage tp = new PlacePage(); 
+		
+		/*PlacePage tp = new PlacePage(); 
 		tp.setPageSize(pageSize);
 		tp.setAscending(isAscending);
 		
@@ -367,7 +372,9 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			tp.getPlaces().add(placeRating.getPlace());
 		}
 			
-		return tp;
+		return tp;*/
+		throw new RuntimeException("TODO REMOVE PLACE RATING CONCEPT");
+
 	}
 
 

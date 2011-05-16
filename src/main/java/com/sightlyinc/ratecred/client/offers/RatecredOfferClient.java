@@ -54,9 +54,9 @@ public class RatecredOfferClient implements OfferClient {
 
 
 	@Override
-	public List<Offer> getOffers() throws OfferFeedException {
+	public List<OfferOld> getOffers() throws OfferFeedException {
 		
-		final List<Offer> offers = new ArrayList<Offer>();
+		final List<OfferOld> offers = new ArrayList<OfferOld>();
 		
 		try {
 			
@@ -70,7 +70,7 @@ public class RatecredOfferClient implements OfferClient {
 				FeatureCollection collection = 
 					client.search(lat, lon, layers[i],radiusInKMeters, 100, cursor);
 				for (Feature feature : collection.getFeatures()) {
-					Offer o = transformOffer(feature);
+					OfferOld o = transformOffer(feature);
 					if(o != null)
 						offers.add(o);
 				}
@@ -151,10 +151,10 @@ public class RatecredOfferClient implements OfferClient {
 	
 	
  */
-	private Offer transformOffer(Feature f) {
+	private OfferOld transformOffer(Feature f) {
 		try {
 			JSONObject offerObject = (JSONObject)f.getProperties().get("offer");
-			Offer o = new Offer();
+			OfferOld o = new OfferOld();
 			o.setBeginDateString(offerObject.getString("beginDateString"));
 			o.setCity(offerObject.getString("city"));
 			o.setDescription(offerObject.getString("description"));

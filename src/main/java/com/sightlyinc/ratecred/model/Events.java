@@ -2,7 +2,7 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.List;
 
-
+/*non transient type*/
 public class Events {
 	
 	private List<Event> events;

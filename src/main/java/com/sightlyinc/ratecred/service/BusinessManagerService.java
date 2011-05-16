@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessAttribute;
@@ -13,8 +13,8 @@ import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.BusinessMetrics;
 import com.sightlyinc.ratecred.model.BusinessMetricsMetadata;
 import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.model.Rater;
-import com.sightlyinc.ratecred.model.RaterBusinessMetrics;
+import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
 
 public interface BusinessManagerService {
 		
@@ -44,16 +44,16 @@ public interface BusinessManagerService {
 	public List<BusinessMetrics> findBusinesssLocationMetricsTrailingDays(
 			BusinessLocation bl, int days) throws BLServiceException;
 
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDays(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDays(
 			BusinessLocation bl, int days) throws BLServiceException;	
 	
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDaysRaters(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssLocationMetricsTrailingDaysRaters(
 			BusinessLocation bl, int days, Long[] raterIds) throws BLServiceException;	
 
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDaysRaters(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDaysRaters(
 			Business b, int days, Long[] raterIds) throws BLServiceException;	 
 
-	public List<RaterBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDays(
+	public List<PatronBusinessMetrics> findMinedRaterBusinesssMetricsTrailingDays(
 			Business b, int days) throws BLServiceException;	
 	
 	public List<BusinessMetrics> findMinedBusinesssLocationMetricsSince(
@@ -77,25 +77,25 @@ public interface BusinessManagerService {
 		throws BLServiceException;
 	
 	
-	public List<Rater> findBusinessRatersOverPeriod(Business b, Date stateDate, Date endDate)
+	public List<Patron> findBusinessRatersOverPeriod(Business b, Date stateDate, Date endDate)
 		throws BLServiceException;
 	
-	public List<Rater> findBusinessLocationRatersOverPeriod(BusinessLocation bl, Date stateDate, Date endDate)
+	public List<Patron> findBusinessLocationRatersOverPeriod(BusinessLocation bl, Date stateDate, Date endDate)
 		throws BLServiceException;
 
 	
-	public List<Rater> findBusinessRatersDaysTrailing(Business b, Integer period)
+	public List<Patron> findBusinessRatersDaysTrailing(Business b, Integer period)
 		throws BLServiceException;
 
-	public List<Rater> findBusinessLocationRatersDaysTrailing(BusinessLocation bl, Integer period)
+	public List<Patron> findBusinessLocationRatersDaysTrailing(BusinessLocation bl, Integer period)
 		throws BLServiceException;	
 	
 	public List<AwardType> findBusinessAwardTypes() throws BLServiceException;
-	public List<AwardOffer> findBusinessAwardOffers(Business b) throws BLServiceException;
+	public List<Offer> findBusinessAwardOffers(Business b) throws BLServiceException;
 	
 	public List<Award> findBusinessAwards(Business b) throws BLServiceException;
 	
-	public AwardOffer findAwardOfferByPrimaryKey(Long awardOfferId) throws BLServiceException;
+	public Offer findAwardOfferByPrimaryKey(Long awardOfferId) throws BLServiceException;
 	
 	public AwardType findAwardTypeByKey(String key) throws BLServiceException;
 	
@@ -106,8 +106,8 @@ public interface BusinessManagerService {
 	public void savePlaceForBusinessLocation(Business b, Place p) throws BLServiceException;
 	public void saveBusinessLocation(BusinessLocation location) throws BLServiceException;
 	
-	public void saveBusinessAwardOffer(AwardOffer ao) throws BLServiceException;
-	public void saveBusinessAward(AwardOffer ao, String notes, Date expires, Rater t) throws BLServiceException;
+	public void saveBusinessAwardOffer(Offer ao) throws BLServiceException;
+	public void saveBusinessAward(Offer ao, String notes, Date expires, Patron t) throws BLServiceException;
 	public Long saveBusinessMetrics(BusinessMetrics bm) throws BLServiceException; 
 
 	public void deleteBusinessAttribute(Business p, BusinessAttribute attrs) throws BLServiceException;

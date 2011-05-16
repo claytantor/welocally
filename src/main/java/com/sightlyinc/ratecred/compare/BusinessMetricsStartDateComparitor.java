@@ -8,7 +8,7 @@ public class BusinessMetricsStartDateComparitor implements Comparator<BusinessMe
 
 	@Override
 	public int compare(BusinessMetrics o1, BusinessMetrics o2) {
-		return o1.getStartTimeMills().compareTo(o2.getStartTimeMills());
+		return o1.getStartTime().compareTo(o2.getStartTime());
 	}
 
 }

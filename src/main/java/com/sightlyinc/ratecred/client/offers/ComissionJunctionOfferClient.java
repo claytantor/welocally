@@ -18,7 +18,7 @@ import com.noi.utility.xml.XmlEncoder;
 import com.sightlyinc.ratecred.client.link.LinkClient;
 import com.sightlyinc.ratecred.client.link.LinkClientRequest;
 import com.sightlyinc.ratecred.client.link.NetworkResponse;
-import com.sightlyinc.ratecred.model.AffiliateLink;
+
 
 /**
  * URL url = new URL("http", "feeds.pepperjamnetwork.com", 80, "/coupon/download/?affiliate_id=59161&program_ids=259-1687-1801-2110-2708-2803-3456-4750-4826-5173");			
@@ -37,13 +37,13 @@ public class ComissionJunctionOfferClient implements OfferClient {
 	private String sourceName;
 	
 	@Override
-	public List<Offer> getOffers() throws OfferFeedException {
+	public List<OfferOld> getOffers() throws OfferFeedException {
 		
-		List<Offer> offers = new ArrayList<Offer>();
+		/*List<OfferOld> offers = new ArrayList<OfferOld>();
 		//LinkClientRequest requestModel = new LinkClientRequest();
 		NetworkResponse response = linkClient.getNetworkResponse(webLinksRequest);
 		for (AffiliateLink link : response.getLinks().getLinks()) {
-			Offer o = new Offer();
+			OfferOld o = new OfferOld();
 			o.setExternalSource(sourceName);
 			if(StringUtils.isEmpty(link.getStartDateString()))
 			{
@@ -91,7 +91,8 @@ public class ComissionJunctionOfferClient implements OfferClient {
 			
 		}
 		
-		return offers;
+		return offers;*/
+		throw new RuntimeException("OBSOLETE");
 	}
 
 

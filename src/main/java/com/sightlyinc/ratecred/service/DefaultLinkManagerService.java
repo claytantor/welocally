@@ -1,7 +1,5 @@
 package com.sightlyinc.ratecred.service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +12,6 @@ import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.client.link.LinkClient;
 import com.sightlyinc.ratecred.client.link.LinkClientRequest;
 import com.sightlyinc.ratecred.client.link.NetworkResponse;
-import com.sightlyinc.ratecred.model.AffiliateLink;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 
@@ -24,11 +21,11 @@ public class DefaultLinkManagerService implements LinkManagerService {
 	static Logger logger = 
 		Logger.getLogger(DefaultLinkManagerService.class);
 	
-	private LinkClient linkClient;
+	/*private LinkClient linkClient;
 	
 	private LinkClientRequest webLinksRequest;
 	
-	private List<AffiliateLink> linksCache =  new ArrayList<AffiliateLink>();
+	//private List<AffiliateLink> linksCache =  new ArrayList<AffiliateLink>();
 	
 	private int maxLinks = 4;
 	
@@ -67,9 +64,9 @@ public class DefaultLinkManagerService implements LinkManagerService {
 	}
 	
 
-	/**
+	*//**
 	 * LAME
-	 */
+	 *//*
 	@Override
 	public List<AffiliateLink> getLinksForCityState(PlaceCityState pcs)
 			throws BLServiceException {
@@ -125,7 +122,7 @@ public class DefaultLinkManagerService implements LinkManagerService {
 
 	public void setFetchDisabled(Boolean fetchDisabled) {
 		this.fetchDisabled = fetchDisabled;
-	}	
+	}	*/
 	
 
 

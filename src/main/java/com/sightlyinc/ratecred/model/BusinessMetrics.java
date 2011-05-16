@@ -1,51 +1,46 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-public class BusinessMetrics {
+/**
+ * 
+ *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `yays` INT(11) NOT NULL ,
+  `boos` INT(11) NOT NULL ,
+  `ratings` INT(11) NOT NULL ,
+  `rating_avg` FLOAT(11) NULL DEFAULT NULL ,
+  `start_time` BIGINT(20) NULL DEFAULT NULL ,
+  `end_time` BIGINT(20) NULL DEFAULT NULL ,
+  `business_location_id` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+ * 
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="business_metrics")
+public class BusinessMetrics extends BaseEntity {
 	
-	private Long id;
-	private Integer version = new Integer(0);
 	private Integer yays;
 	private Integer boos;
 	private Integer ratings;
+	
+	@Column(name="rating_avg")
 	private Float ratingAverage;
 	
-	private Date startTime;
-	private Long startTimeMills;
-	private Date endTime;
-	private Long endTimeMills;
-
-	private Long businessId;
-	private Long businessLocationId;
+	private Long startTime;
+	private Long endTime;
 	
-
+	@ManyToOne
+	@JoinColumn(name = "business_location_id")
+	private BusinessLocation businessLocation;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public Integer getVersion() {
-		return version;
-	}
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	public Long getStartTimeMills() {
-		return startTimeMills;
-	}
-	public void setStartTimeMills(Long startTimeMills) {
-		this.startTimeMills = startTimeMills;
-	}
-	public Long getEndTimeMills() {
-		return endTimeMills;
-	}
-	public void setEndTimeMills(Long endTimeMills) {
-		this.endTimeMills = endTimeMills;
-	}
 	public Integer getYays() {
 		return yays;
 	}
@@ -64,8 +59,6 @@ public class BusinessMetrics {
 	public void setRatings(Integer ratings) {
 		this.ratings = ratings;
 	}
-
-	
 	
 	public Float getRatingAverage() {
 		return ratingAverage;
@@ -73,47 +66,29 @@ public class BusinessMetrics {
 	public void setRatingAverage(Float ratingAverage) {
 		this.ratingAverage = ratingAverage;
 	}
-	public Date getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-	public Date getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-	public Long getBusinessId() {
-		return businessId;
-	}
-	public void setBusinessId(Long businessId) {
-		this.businessId = businessId;
-	}
-	public Long getBusinessLocationId() {
-		return businessLocationId;
-	}
-	public void setBusinessLocationId(Long businessLocationId) {
-		this.businessLocationId = businessLocationId;
-	}
-	
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		BusinessMetrics clone = new BusinessMetrics();
-		clone.setBoos(this.boos);
-		clone.setBusinessId(this.businessId);
-		clone.setBusinessLocationId(this.businessLocationId);
-		clone.setEndTime(this.endTime);
-		clone.setEndTimeMills(this.endTimeMills);
-		clone.setId(this.id);
-		clone.setRatingAverage(this.ratingAverage);
-		clone.setStartTime(this.startTime);
-		clone.setStartTimeMills(this.startTimeMills);
-		clone.setRatings(this.ratings);
-		clone.setVersion(this.version);
-		clone.setYays(this.yays);
 		return clone;
+	}
+	public Long getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Long startTime) {
+		this.startTime = startTime;
+	}
+	public Long getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Long endTime) {
+		this.endTime = endTime;
+	}
+	public BusinessLocation getBusinessLocation() {
+		return businessLocation;
+	}
+	public void setBusinessLocation(BusinessLocation businessLocation) {
+		this.businessLocation = businessLocation;
 	}
 
 	

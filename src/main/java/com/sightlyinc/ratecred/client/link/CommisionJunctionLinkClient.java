@@ -1,19 +1,15 @@
 package com.sightlyinc.ratecred.client.link;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
-import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.model.AffiliateLink;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -22,9 +18,9 @@ import com.thoughtworks.xstream.XStream;
  * @author claygraham
  *
  */
-public class CommisionJunctionLinkClient implements LinkClient {
+public class CommisionJunctionLinkClient  {
 	
-	private String apiKey;
+	/*private String apiKey;
 			
 	private List<AffiliateLink> links;
 	
@@ -97,14 +93,14 @@ public class CommisionJunctionLinkClient implements LinkClient {
 		
 	}
 
-	/**
+	*//**
 	 * we do this to handle a single page
 	 * 
 	 * @param requestModel
 	 * @return
 	 * @throws MalformedURLException
 	 * @throws IOException
-	 */
+	 *//*
 	private NetworkResponse getNetworkResponseImpl(LinkClientRequest requestModel) 
 	throws MalformedURLException, IOException {
 		
@@ -166,7 +162,7 @@ public class CommisionJunctionLinkClient implements LinkClient {
 		xstream.omitField(AffiliateLink.class, "three-month-epc");
 		
 		return (NetworkResponse)xstream.fromXML(new String(cresponse.getResponse()));
-	}
+	}*/
 	
 	
 

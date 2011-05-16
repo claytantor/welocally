@@ -26,13 +26,13 @@ import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;
-import com.sightlyinc.ratecred.dao.AwardOfferDao;
+import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.ComplimentDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
-import com.sightlyinc.ratecred.dao.RaterDao;
-import com.sightlyinc.ratecred.dao.RaterMetricsDao;
+import com.sightlyinc.ratecred.dao.PatronDao;
+import com.sightlyinc.ratecred.dao.PatronMetricsDao;
 import com.sightlyinc.ratecred.dao.RatingDao;
 import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
@@ -41,8 +41,8 @@ import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.PlaceRating;
-import com.sightlyinc.ratecred.model.Rater;
-import com.sightlyinc.ratecred.model.RaterMetrics;
+import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingPage;
 
@@ -52,11 +52,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		Logger.getLogger(RatingManagerServiceImpl.class);
 	
 	private RatingDao ratingDao;
-	private RaterMetricsDao raterMetricsDao;
+	private PatronMetricsDao raterMetricsDao;
 	private AwardTypeDao awardTypeDao; 
 	private AwardDao awardDao;
-	private AwardOfferDao awardOfferDao;
-	private RaterDao raterDao;
+	private OfferDao awardOfferDao;
+	private PatronDao raterDao;
     private ComplimentDao complimentDao;
     private PlaceCityStateDao placeCityStateDao;
 	private PlaceDao placeDao;
@@ -148,14 +148,14 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 
 	@Override
-	public List<Rater> findRatersRatedSince(Long millis)
+	public List<Patron> findRatersRatedSince(Long millis)
 			throws BLServiceException {
-		Set<Rater> since = new HashSet<Rater>();
+		Set<Patron> since = new HashSet<Patron>();
 		List<Rating> ratingSince = ratingDao.findSince(millis);
 		for (Rating rating : ratingSince) {
 			since.add(rating.getOwner());
 		}
-		return new ArrayList<Rater>(since);
+		return new ArrayList<Patron>(since);
 		
 	}
 
@@ -167,23 +167,23 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 
 	@Override
-	public List<Rater> findRatersByPrimaryKeys(Long[] ids)
+	public List<Patron> findRatersByPrimaryKeys(Long[] ids)
 			throws BLServiceException {
 		return raterDao.findByPrimaryKeys(ids);
 	}
 
 	@Override
-	public List<Rater> findRatersByScreenNames(String[] screenNames)
+	public List<Patron> findRatersByScreenNames(String[] screenNames)
 			throws BLServiceException {
 		if(screenNames != null && screenNames.length>0)
 			return raterDao.findByUserNames(screenNames);
-		else return new ArrayList<Rater>();
+		else return new ArrayList<Patron>();
 	}
 	
 	
 
 	@Override
-	public void saveConvertRater(Rater fromRater, Rater toRater)
+	public void saveConvertRater(Patron fromRater, Patron toRater)
 			throws BLServiceException {
 		
 		//ratings
@@ -216,7 +216,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public List<Rater> findRatersByStatus(String status)
+	public List<Patron> findRatersByStatus(String status)
 			throws BLServiceException {
 		return raterDao.findByStatus(status);
 	}
@@ -233,19 +233,19 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 
 	@Override
-	public Long findAwardCountByOwnerBetweenTimes(Rater towards, Date startTime,
+	public Long findAwardCountByOwnerBetweenTimes(Patron towards, Date startTime,
 			Date endTime) throws BLServiceException {
 		return awardDao.findCountByOwnerBetweenTimes(towards, startTime, endTime);
 	}
 
 	@Override
-	public List<Award> findBusinessAwardsByRaterBetweenTimes(Rater towards,
+	public List<Award> findBusinessAwardsByRaterBetweenTimes(Patron towards,
 			Date startTime, Date endTime) throws BLServiceException {
 		return awardDao.findByOwnerBetweenTimes(towards, startTime, endTime);
 	}
 
 	@Override
-	public RaterMetrics findMetricsByRater(Rater t) {
+	public PatronMetrics findMetricsByRater(Patron t) {
 		return findMetricsByRater(t, null);
 	}
 	
@@ -257,9 +257,9 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	 * @param currentStatus
 	 * @return
 	 */
-	private RaterMetrics findMetricsByRater(Rater t, String currentStatus) {
+	private PatronMetrics findMetricsByRater(Patron t, String currentStatus) {
 		
-		RaterMetrics tm = raterMetricsDao.findByRater(t);
+		PatronMetrics tm = raterMetricsDao.findByRater(t);
 		
 		if(tm == null)
 			return null;
@@ -271,8 +271,8 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public Rater createAnonymousRater() {
-		Rater anonRater = new Rater();
+	public Patron createAnonymousRater() {
+		Patron anonRater = new Patron();
 		String uuid = UUID.randomUUID().toString();
 		String[] parts = uuid.split("-");
 		anonRater.setSecretKey(parts[0]);
@@ -284,24 +284,24 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public List<Rater> findRatersByCityStateScoreDesc(PlaceCityState cs,
+	public List<Patron> findRatersByCityStateScoreDesc(PlaceCityState cs,
 			int size) throws BLServiceException {
 		
 		//first find all the ratings by a city state
-		List<Rater> areaLeaders 
+		List<Patron> areaLeaders 
 			= raterDao.findByCityStateScorePaged(cs.getCity(), cs.getState(), 1, size, false);
 
 		return areaLeaders;
 	}
 
 	@Override
-	public List<Compliment> findComplimentsByRaterBetweenTimes(Rater towards,
+	public List<Compliment> findComplimentsByRaterBetweenTimes(Patron towards,
 			Date startTime, Date endTime) throws BLServiceException {
 		return complimentDao.findByRaterBetweenTimes(towards, startTime, endTime);
 	}
 
 	@Override
-	public Long findComplimentCountByRaterBetweenTimes(Rater towards, Date startTime,
+	public Long findComplimentCountByRaterBetweenTimes(Patron towards, Date startTime,
 			Date endTime) throws BLServiceException {
 		if(startTime == null)
 			startTime = DateUtils.stringToDate("2010-01-01", DateUtils.DESC_SIMPLE_FORMAT);
@@ -311,7 +311,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public void saveCompliment(Compliment c, Rating towards, Rater complementor)
+	public void saveCompliment(Compliment c, Rating towards, Patron complementor)
 			throws BLServiceException {		
 		try {
 			//should be this simple
@@ -360,12 +360,12 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public void deleteRater(Rater entity) {
+	public void deleteRater(Patron entity) {
 		raterDao.delete(entity);
 	}
 
 	@Override
-	public List<Rater> findAllRaters() {
+	public List<Patron> findAllRaters() {
 		return raterDao.findAll();
 	}
 
@@ -490,7 +490,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	@Override
 	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage, String sortField,
-			boolean isAcending, Rater rater)
+			boolean isAcending, Patron rater)
 			throws BLServiceException {
 		logger.debug("pagenum:"+pageNum);
 		
@@ -526,7 +526,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 	@Override
 	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage, String sortField,
-			boolean isAcending, List<Rater> raters)
+			boolean isAcending, List<Patron> raters)
 			throws BLServiceException {
 		
 		RatingPage tp = new RatingPage(); 
@@ -537,7 +537,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		{
 			Long[] ownerIds = new Long[raters.size()];
 			int i=0;
-			for (Rater rater : raters) 
+			for (Patron rater : raters) 
 			{
 				ownerIds[i] = rater.getId();
 				i++;
@@ -561,14 +561,14 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public Rater findRaterByPrimaryKey(Long id) {
-		Rater t = raterDao.findByPrimaryKey(id);
+	public Patron findRaterByPrimaryKey(Long id) {
+		Patron t = raterDao.findByPrimaryKey(id);
 		//findRaterAwards(t);
 		return t;
 	}
 
 	@Override
-	public List<Award> findAwardsLocalByRater(Rater t)
+	public List<Award> findAwardsLocalByRater(Patron t)
 	{
 		
 		Date gmtCreated = Calendar.getInstance().getTime();		
@@ -579,10 +579,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		List<Award> all = new ArrayList<Award>();
 		
 		//find the network awards
-		List<Rater> stars =
+		List<Patron> stars =
 			raterDao.findByScorePaged(1, 10, false);
 		int index =0;
-		for (Rater rater : stars) {
+		for (Patron rater : stars) {
 			if(rater.getId().equals(t.getId()))
 			{
 				//give the star award 
@@ -593,8 +593,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				award.setMetadata("imageUrl=/images/awards/award_star.png");
 				award.setOwner(t);
 				award.setStatus("ACTIVE");
-				award.setTimeCreated(gmtCreated);
-				award.setTimeCreatedMills(gmtCreated.getTime());
+				
+				//done with interceptor
+				//award.setTimeCreated(gmtCreated);
+				//award.setTimeCreatedMills(gmtCreated.getTime());
+				
 				all.add(award);
 				if(index==0) //give the super star award 
 				{
@@ -604,8 +607,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 					saward.setAwardType(sawardType);
 					saward.setNotes("Network Number One");
 					saward.setMetadata("imageUrl=/images/awards/award_superstar.png");
-					saward.setTimeCreated(gmtCreated);
-					saward.setTimeCreatedMills(gmtCreated.getTime());
+					
+					//done with interceptor
+					//saward.setTimeCreated(gmtCreated);
+					//saward.setTimeCreatedMills(gmtCreated.getTime());
+				
 					saward.setOwner(t);
 					all.add(saward);
 				}
@@ -620,7 +626,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		
 		for (PlaceCityState cs : raterCities) {
 			//check if this rater is the leader in each city
-			List<Rater> leaders = 
+			List<Patron> leaders = 
 				raterDao.findByCityStateScorePaged(
 						cs.getCity(), cs.getState(), 
 						1, 1, false);
@@ -638,8 +644,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				mayorAward.setNotes("Ranked First "+cs.getCity());
 				mayorAward.setMetadata("city="+cs.getCity()+"&state="+cs.getState()+"&imageUrl=/images/awards/award_citystar.png");
 				mayorAward.setOwner(t);
-				mayorAward.setTimeCreated(gmtCreated);
-				mayorAward.setTimeCreatedMills(gmtCreated.getTime());
+				
+				//done with interceptor
+				//mayorAward.setTimeCreated(gmtCreated);
+				//mayorAward.setTimeCreatedMills(gmtCreated.getTime());
+				
 				all.add(mayorAward);
 			}
 				
@@ -654,24 +663,24 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 	
 	@Override
-	public List<Award> findAwardsByOwner(Rater t)
+	public List<Award> findAwardsByOwner(Patron t)
 			throws BLServiceException {
 		return awardDao.findByOwner(t);
 	}
 
 	@Override
-	public Rater findRaterByAuthId(String authId)
+	public Patron findRaterByAuthId(String authId)
 			throws BLServiceException {
-		Rater t = raterDao.findByAuthId(authId);
+		Patron t = raterDao.findByAuthId(authId);
 		//findRaterAwards(t);
 		return t;
 	}
 
 	@Override
-	public Rater findRaterByUsername(String userName)
+	public Patron findRaterByUsername(String userName)
 			throws BLServiceException {
 		
-		Rater t = raterDao.findByUserName(userName);
+		Patron t = raterDao.findByUserName(userName);
 		return t;
 	}
 
@@ -689,7 +698,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	public Long saveRating(Rating entity) throws BLServiceException {
 
 		try {
-			Rater owner = entity.getOwner();
+			Patron owner = entity.getOwner();
 			Place p = entity.getPlace();
 
 			
@@ -722,7 +731,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			}
 			
 
-			RaterMetrics tmcomp = findMetricsByRater(owner);
+			PatronMetrics tmcomp = findMetricsByRater(owner);
 			if (tmcomp != null)
 				owner.setScore(tmcomp.getScore());
 
@@ -851,13 +860,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public void saveRater(Rater entity) {
+	public void saveRater(Patron entity) {
 		
 		//compute score
 		//get the metrics 
 		if(entity.getId() != null)
 		{
-			RaterMetrics tm =
+			PatronMetrics tm =
 				findMetricsByRater(entity);
 			entity.setScore(tm.getScore());
 		}
@@ -872,7 +881,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 
-	public void setRaterDao(RaterDao raterDao) {
+	public void setRaterDao(PatronDao raterDao) {
 		this.raterDao = raterDao;
 	}
 
@@ -896,7 +905,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 
 	@Override
-	public List<Rater> findRatersByScoreDesc(int size)
+	public List<Patron> findRatersByScoreDesc(int size)
 			throws BLServiceException {
 		return raterDao.findByScorePaged(1, size, false);
 	}
@@ -936,7 +945,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		this.awardTypeDao = awardTypeDao;
 	}
 
-	public void setRaterMetricsDao(RaterMetricsDao raterMetricsDao) {
+	public void setRaterMetricsDao(PatronMetricsDao raterMetricsDao) {
 		this.raterMetricsDao = raterMetricsDao;
 	}
 
@@ -957,7 +966,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 
-	public void setAwardOfferDao(AwardOfferDao awardOfferDao) {
+	public void setAwardOfferDao(OfferDao awardOfferDao) {
 		this.awardOfferDao = awardOfferDao;
 	}
 	

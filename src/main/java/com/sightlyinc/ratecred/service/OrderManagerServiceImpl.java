@@ -9,7 +9,7 @@ import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.OrderDao;
 import com.sightlyinc.ratecred.dao.VoucherDao;
 import com.sightlyinc.ratecred.model.Order;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Voucher;
 
 
@@ -27,7 +27,7 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 	
 	
 	@Override
-	public List<Order> findOrdersByRater(Rater rater) throws BLServiceException {
+	public List<Order> findOrdersByRater(Patron rater) throws BLServiceException {
 		return orderDao.findByOwner(rater);
 	}
 

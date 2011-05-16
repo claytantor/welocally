@@ -4,35 +4,30 @@ import java.util.Date;
 import java.util.List;
 
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
+import com.sightlyinc.ratecred.model.Offer;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
 
-public interface AwardDao {
+public interface AwardDao extends BaseDao<Award> {
 	
-	public Award findByPrimaryKey(Long id);	
 	public Award findByKeyname(String kn);
 	
-	public List<Award> findByOwnerBetweenTimes(Rater towards, Date startTime, Date endTime);
-	public List<Award> findByOwner(Rater towards);
+	public List<Award> findByOwnerBetweenTimes(Patron towards, Date startTime, Date endTime);
+	public List<Award> findByOwner(Patron towards);
 	
-	public List<Award> findByOffer(AwardOffer offer);
-	public List<Award> findByOfferRater(AwardOffer offer, Rater r);
-	//public List<Award> findByOfferExpired();
+	public List<Award> findByOffer(Offer offer);
+	public List<Award> findByOfferRater(Offer offer, Patron r);
 	
-	public List<Award> findByOwnerAwardType(Rater towards, AwardType at);
-	public List<Award> findByOwnerTypePlaceCityState(Rater towards, AwardType at, PlaceCityState pcs);
+	public List<Award> findByOwnerAwardType(Patron towards, AwardType at);
+	public List<Award> findByOwnerTypePlaceCityState(Patron towards, AwardType at, PlaceCityState pcs);
 	
-	public Long findCountByOwnerBetweenTimes(final Rater towards,
+	public Long findCountByOwnerBetweenTimes(final Patron towards,
 			final Date startTime, final Date endTime);
 	
 	public List<Award> findByBusiness(Business b);
 	
-	public void delete(Award entity);	
-	public void save(Award entity);
-	public List<Award> findAll();		
 	
 
 }
