@@ -62,26 +62,26 @@ import com.sightlyinc.ratecred.admin.model.TargetModel;
 import com.sightlyinc.ratecred.admin.velocity.BusinessServicesPlaceAwardGenerator;
 import com.sightlyinc.ratecred.client.offers.Advertiser;
 import com.sightlyinc.ratecred.client.offers.Item;
-import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.dao.UserDao;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
-import com.sightlyinc.ratecred.model.AwardOfferItem;
+import com.sightlyinc.ratecred.model.Offer;
+import com.sightlyinc.ratecred.model.OfferItem;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.Location;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.User;
 
 @Service("raterAwardsService")
 @Transactional(readOnly = true)
-public class DefaultRaterAwardsService implements RaterAwardsService {
+public class DefaultPatronAwardsService implements PatronAwardsService {
 
-	static Logger logger = Logger.getLogger(DefaultRaterAwardsService.class);
+	static Logger logger = Logger.getLogger(DefaultPatronAwardsService.class);
 
 	@Autowired
 	@Qualifier("RatingManagerService")
@@ -178,8 +178,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void reassignAllOffers() throws BLServiceException {
-		List<Rater> allRaters = ratingManagerService.findRatersByStatus("USER");
-		for (Rater rater : allRaters) {
+		List<Patron> allRaters = ratingManagerService.findRatersByStatus("USER");
+		for (Patron rater : allRaters) {
 			deleteRaterAwardOffers(rater.getId());
 			for (Award award : rater.getAwards()) {
 				targetAwardById(award.getId());
@@ -191,8 +191,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void removeAllOffers() throws BLServiceException {
-		List<Rater> allRaters = ratingManagerService.findRatersByStatus("USER");
-		for (Rater rater : allRaters) {
+		List<Patron> allRaters = ratingManagerService.findRatersByStatus("USER");
+		for (Patron rater : allRaters) {
 			deleteRaterAwardOffers(rater.getId());
 		}
 		
@@ -221,13 +221,13 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	}
 	
 	@Override
-	public Offer targetOfferByTargetingModel(TargetModel targetModel) throws BLServiceException {
+	public OfferOld targetOfferByTargetingModel(TargetModel targetModel) throws BLServiceException {
 		
 		try {			
 
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 			
-			List<Offer> offersRaw = offerPoolService.getOfferPool();
+			List<OfferOld> offersRaw = offerPoolService.getOfferPool();
 			
 			
 			boolean dynamic = true;
@@ -235,12 +235,12 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			//only do this if there are offers to work with
 			if(offersRaw.size()>0)
 			{
-				for (Offer offer : offersRaw) {
+				for (OfferOld offer : offersRaw) {
 					logger.debug("asserting offer:"+offer.getName());
 					
 				
 					//use a cloned offer
-					workingMemory.assertObject((Offer)offer.clone(), dynamic);
+					workingMemory.assertObject((OfferOld)offer.clone(), dynamic);
 				}
 				
 				
@@ -258,14 +258,14 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				//this really should not just return the 
 				//offer but set it to the award based on the award type
 				if(awardOfferEval.getTargetedOffers().size()>0) {					
-					Offer bestOffer = awardOfferEval.getTargetedOffers().get(0);
+					OfferOld bestOffer = awardOfferEval.getTargetedOffers().get(0);
 					logger.debug("best offer found:"+bestOffer.toString());
 					return bestOffer;
 				}
 				else //backup plan
 				{
-					List<Offer> offersFiltered = new ArrayList<Offer>();
-					for (Offer offer : offersRaw) {
+					List<OfferOld> offersFiltered = new ArrayList<OfferOld>();
+					for (OfferOld offer : offersRaw) {
 						if (offer.isVisible())
 							offersFiltered.add(offer);
 					}
@@ -291,11 +291,11 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	}
 	
 	
-	public Offer getRandomOffer(List<Offer> offers) {
+	public OfferOld getRandomOffer(List<OfferOld> offers) {
 		int size = offers.size();
 		int item = new Random().nextInt(size); 
 		int i = 0;
-		for(Offer obj : offers) {
+		for(OfferOld obj : offers) {
 		    if (i == item)
 		        return obj;
 		    i = i + 1;
@@ -307,13 +307,13 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void deleteRaterAwardOffers(Long raterId) {
 		try {
-			Rater r = ratingManagerService.findRaterByPrimaryKey(raterId);
-			Set<AwardOffer> offers = new HashSet<AwardOffer>();
+			Patron r = ratingManagerService.findRaterByPrimaryKey(raterId);
+			Set<Offer> offers = new HashSet<Offer>();
 			
 			for (Award award : r.getAwards()) 
 				offers.addAll(award.getOffers());
 			
-			for (AwardOffer awardOffer : offers) {
+			for (Offer awardOffer : offers) {
 				Award a = awardOffer.getAward();
 				a.getOffers().remove(awardOffer);
 				awardManagerService.saveAward(a);
@@ -423,7 +423,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	 */
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	public Long saveNewAward(Award award, AwardType awardType, Rater r, AwardOffer aoffer) 
+	public Long saveNewAward(Award award, AwardType awardType, Patron r, Offer aoffer) 
 		throws BLServiceException {
 		
 		PlaceCityState pcs = null;
@@ -458,7 +458,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		award.setAwardType(awardType);
 		award.setOwner(r);
 		award.setStatus("GIVEN");
-		award.setExpiresMills(0l);
+		award.setExpires(0l);
 		
 		if(aoffer == null)
 			giveAwardOffer( award,  awardType,  r,  p,  pcs) ;
@@ -498,7 +498,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	 * send this to queue daily by a quartz job
 	 * 
 	 */
-	public Long saveUpdateAwardOffer(Award award, AwardType awardType, Rater r) 
+	public Long saveUpdateAwardOffer(Award award, AwardType awardType, Patron r) 
 	throws BLServiceException {
 		
 		logger.debug("saveUpdateAwardOffer");
@@ -527,10 +527,10 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		return award.getId();
 	}
 	
-	private void giveAwardOffer(Award award, AwardType awardType, Rater r, Place p, PlaceCityState pcs) 
+	private void giveAwardOffer(Award award, AwardType awardType, Patron r, Place p, PlaceCityState pcs) 
 		throws BLServiceException {
 		if (award.getGiveOffer()) {
-			Offer offer = targetOfferForRater(award, 
+			OfferOld offer = targetOfferForRater(award, 
 					awardType, 
 					r,
 					p,
@@ -538,7 +538,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			
 			if(offer != null) {
 				try {
-					AwardOffer aoffer = transformOffer(offer);
+					Offer aoffer = transformOffer(offer);
 					aoffer.setAwardType(awardType);
 					awardManagerService.saveAwardOffer(aoffer);
 					award.getOffers().add(aoffer);
@@ -548,27 +548,16 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				}
 			}
 			
-			
-			
-			//should we send an email here?
-			/*		//this is a place award override the offer
-			if(p!=null && p.getBusinessServices().equals("true")) {
-				aoffer.setUrl(this.useAwardOfferUrl+"/"+aoffer.getId());
-				sendOfferAwardedEmail(p.getEmail(), aoffer, r);
-			}*/
-						
-			
 		}
 	}
 	
-	private AwardOffer transformOffer(Offer offer) {
+	private Offer transformOffer(OfferOld offer) {
 		
-		AwardOffer awardOffer = new AwardOffer();
+		Offer awardOffer = new Offer();
 		
 		awardOffer.setCouponCode(offer.getCouponCode());
-		awardOffer.setBeginDateMillis(offer.getBegin().getTime());
-		awardOffer.setExpireDateMillis(offer.getExpire().getTime());
-		awardOffer.setEndDateMillis(offer.getEnds().getTime());
+		awardOffer.setBeginTime(offer.getBegin().getTime());
+		awardOffer.setEndTime(offer.getExpire().getTime());
 		awardOffer.setDescription(offer.getDescription());
 		awardOffer.setExtraDetails(offer.getExtraDetails());
 		awardOffer.setExternalId(offer.getExternalId().toString());
@@ -578,7 +567,6 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		awardOffer.setProgramName(offer.getProgramName());
 		awardOffer.setStatus("GIVEN");
 		awardOffer.setType(offer.getType());
-		awardOffer.setTimeCreated(Calendar.getInstance().getTime());
 		awardOffer.setUrl(offer.getUrl());
 		awardOffer.setIllustrationUrl(offer.getIllustrationUrl());
 		awardOffer.setPrice(offer.getPrice());
@@ -588,7 +576,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 		
 		//offer items
 		for (Item item : offer.getItems()) {
-			AwardOfferItem offerItem = new AwardOfferItem();
+			OfferItem offerItem = new OfferItem();
 			offerItem.setDescription(item.getDescription());
 			offerItem.setTitle(item.getTitle());
 			offerItem.setQuantity(item.getQuantity());	
@@ -609,11 +597,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				if(b == null) {
 					b = new Business();
 					Advertiser advertiser = offer.getAdvertiser();
-					b.setAdvertiserId(advertiser.getExternalId());
-					b.setAdvertiserSource(offer.getExternalSource());
 					b.setDescription(advertiser.getDescription());
 					b.setName(advertiser.getName());
-					b.setWebsite(advertiser.getSiteUrl());
+					b.setUrl(advertiser.getSiteUrl());
 					
 					//do locations
 					if(advertiser.getLocations().size()>0) {
@@ -632,13 +618,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 							{
 								BusinessLocation bloc = new BusinessLocation();
 								bloc.setName(advertiser.getName());
-								bloc.setAddress(location.getAddressOne());
-								bloc.setCity(location.getCity());
-								bloc.setState(location.getState());
-								bloc.setZip(location.getPostalCode());
 								bloc.setDescription(location.getComments());
-								bloc.setLatitude(location.getLat());
-								bloc.setLongitude(location.getLng());
 								
 								//make the place
 								Place p = new Place();
@@ -681,7 +661,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 
 
 	
-	private void sendOfferAwardedEmail(String emailTo, AwardOffer ao, Rater rater) 
+	private void sendOfferAwardedEmail(String emailTo, OfferOld ao, Patron rater) 
 	{
 				
 		Map model = new HashMap();
@@ -747,9 +727,9 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	 * @return
 	 * @throws BLServiceException
 	 */
-	private Offer targetOfferForRater(Award award, 
+	private OfferOld targetOfferForRater(Award award, 
 			AwardType awardType, 
-			Rater r,
+			Patron r,
 			Place p,
 			PlaceCityState pcs) throws BLServiceException {
 
@@ -764,7 +744,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			//we dont want to add these too the pool yet
 			//List<Offer> offersRaw = offerPoolService.getOfferPool();
 			
-			List<Offer> offersRaw = new ArrayList<Offer>();
+			List<OfferOld> offersRaw = new ArrayList<OfferOld>();
 						
 			offersRaw.addAll(getLocalOffersForAward( award, 
 					 awardType, 
@@ -777,7 +757,7 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 			//only do this if there are offers to work with
 			if(offersRaw.size()>0)
 			{
-				for (Offer offer : offersRaw) {
+				for (OfferOld offer : offersRaw) {
 					logger.debug("asserting offer:"+offer.getName());
 					workingMemory.assertObject(offer, dynamic);
 				}
@@ -808,14 +788,14 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 				//this really should not just return the 
 				//offer but set it to the award based on the award type
 				if(awardOfferEval.getTargetedOffers().size()>0) {
-					Offer bestOffer = awardOfferEval.getTargetedOffers().get(0);
+					OfferOld bestOffer = awardOfferEval.getTargetedOffers().get(0);
 					logger.debug("best offer found:"+bestOffer.toString());
 					return bestOffer;
 				}
 				else //backup plan
 				{
-					List<Offer> offersFiltered = new ArrayList<Offer>();
-					for (Offer offer : offersRaw) {
+					List<OfferOld> offersFiltered = new ArrayList<OfferOld>();
+					for (OfferOld offer : offersRaw) {
 						if (offer.isVisible())
 							offersFiltered.add(offer);
 					}
@@ -843,15 +823,15 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 
 	}
 	
-	private List<Offer> getLocalOffersForAward(Award award, 
+	private List<OfferOld> getLocalOffersForAward(Award award, 
 			AwardType awardType, 
-			Rater r,
+			Patron r,
 			Place p,
 			PlaceCityState pcs) {
 		
 		logger.debug("getting adility offers");
 		
-		List<Offer> offersForAward = new ArrayList<Offer>();
+		List<OfferOld> offersForAward = new ArrayList<OfferOld>();
 		Map<String, String> params = new HashMap<String,String>();
 		
 		//try to target available offers in pool
@@ -886,8 +866,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 
 	}
 	
-	private List<Offer> findOffersForArea(RequestModel model, Integer max, Integer minOffers) {
-		List<Offer> offersFound = new ArrayList<Offer>();
+	private List<OfferOld> findOffersForArea(RequestModel model, Integer max, Integer minOffers) {
+		List<OfferOld> offersFound = new ArrayList<OfferOld>();
 		try {
 			
 			Integer modelDistance = 
@@ -933,8 +913,8 @@ public class DefaultRaterAwardsService implements RaterAwardsService {
 	 * @param aoffer
 	 * @return
 	 */
-	private Offer transformAdilityOffer(com.adility.resources.model.Offer aoffer) {
-		Offer offer = new Offer();
+	private OfferOld transformAdilityOffer(com.adility.resources.model.Offer aoffer) {
+		OfferOld offer = new OfferOld();
 		offer.setExternalId(aoffer.getId());
 		offer.setBeginDateString(aoffer.getStartDate());
 		

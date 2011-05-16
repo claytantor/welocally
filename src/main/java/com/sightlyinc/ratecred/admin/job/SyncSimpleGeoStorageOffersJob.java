@@ -22,7 +22,7 @@ import com.noi.utility.date.DateUtils;
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
 import com.sightlyinc.ratecred.client.offers.Advertiser;
-import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Location;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
@@ -71,7 +71,7 @@ public class SyncSimpleGeoStorageOffersJob  {
 			    	if(offerLine[1].equals("ACTIVE"))
 			    	{
 			    		logger.debug("data has changed UPDATE");
-			    		Offer o = transformOffer(offerLine);
+			    		OfferOld o = transformOffer(offerLine);
 				        
 				        Point p = new Point();			        
 				        p.setLat(Double.parseDouble(offerLine[14]));
@@ -117,7 +117,7 @@ public class SyncSimpleGeoStorageOffersJob  {
 	}
 	
 	private void saveOfferToStorage(
-			Offer o, 
+			OfferOld o, 
 			Point p,
 			String layerId,
 			String recordId) {
@@ -166,8 +166,8 @@ public class SyncSimpleGeoStorageOffersJob  {
 			20	programName
 			21	programId
 	 */
-	private Offer transformOffer(String [] offerLine) {
-		Offer o = new Offer();
+	private OfferOld transformOffer(String [] offerLine) {
+		OfferOld o = new OfferOld();
 		o.setExternalId(offerLine[0]);
 		
 		//4/10/2011 beginDate [6]
@@ -211,7 +211,7 @@ public class SyncSimpleGeoStorageOffersJob  {
 		return o;
 	}
 	
-	private static JSONObject serializeOffer(Offer o) 
+	private static JSONObject serializeOffer(OfferOld o) 
 	 throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, JSONException {
 		
 		JSONObject jOffer = 

@@ -29,7 +29,7 @@ import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.admin.mvc.controller.TestRulesController;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 
 
@@ -63,7 +63,7 @@ public class RaterAwardsRuleTest extends TestCase{
 					getRaterByName("/com/sightlyinc/ratecred/admin/rules/showymilkweed.json"));			
 			RaterAwards r3 = new RaterAwards(
 					getRaterByName("/com/sightlyinc/ratecred/admin/rules/ElijahIsMe.json"));			
-			List<Rater> allRaters = new ArrayList<Rater>();
+			List<Patron> allRaters = new ArrayList<Patron>();
 			allRaters.add(raclaytantor.getRater());
 			allRaters.add(rashowymilkweed.getRater());
 			allRaters.add(r3.getRater());
@@ -147,11 +147,11 @@ public class RaterAwardsRuleTest extends TestCase{
 		logger.debug("=====");
 	}
 	
-	private Rater getRaterByName(String name) 
+	private Patron getRaterByName(String name) 
 	throws JsonParseException, JsonMappingException, IOException
 	{
 		ObjectMapper mapper = new ObjectMapper();		
-		Rater r = mapper.readValue(RaterAwardsRuleTest.class.getResourceAsStream(name), Rater.class);
+		Patron r = mapper.readValue(RaterAwardsRuleTest.class.getResourceAsStream(name), Patron.class);
 		return r;
 
 	}
@@ -165,7 +165,7 @@ public class RaterAwardsRuleTest extends TestCase{
 		}
 	}
 	
-	private List<PlaceCityState> getCitiesRated(Rater r)
+	private List<PlaceCityState> getCitiesRated(Patron r)
 	{
 		List<PlaceCityState> allcs = new ArrayList<PlaceCityState>();
 		for (Rating rating : r.getRatings()) {

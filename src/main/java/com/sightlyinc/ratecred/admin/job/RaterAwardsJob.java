@@ -36,13 +36,13 @@ import com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator;
 import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
-import com.sightlyinc.ratecred.model.RaterMetrics;
+import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 import com.sightlyinc.ratecred.service.OfferPoolService;
-import com.sightlyinc.ratecred.service.RaterAwardsService;
+import com.sightlyinc.ratecred.service.PatronAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Component("raterAwardsJob")
@@ -60,7 +60,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 	
 	private AwardManagerService awardManagerService;
 	
-	RaterAwardsService raterAwardsService;
+	PatronAwardsService raterAwardsService;
 	
 	private String ratingRulesUrl;
 	
@@ -91,7 +91,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 			boolean dynamic = true;
 			
-			Set<Rater> allRaters = new HashSet<Rater>();
+			Set<Patron> allRaters = new HashSet<Patron>();
 			Long since = Calendar.getInstance().getTimeInMillis()-millisSince;
 			logger.debug("finding ratings since:"+new Date(since));
 			List<Rating> ratingsSince = 
@@ -106,7 +106,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 			for (Rating rating : ratingsSince) {
 				allPlaces.add(rating.getPlace());
 				
-				Rater r =  null;
+				Patron r =  null;
 				try {
 					r = rating.getOwner();
 					allRaters.add(r);
@@ -122,9 +122,9 @@ public class RaterAwardsJob extends QuartzJobBean {
 							null);
 				
 				logger.debug("adding cs:"+pcs.getCity()+pcs.getState());
-				List<Rater> topCsRaters = ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10);
+				List<Patron> topCsRaters = ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10);
 				CityStateEvaluator cseval = new CityStateEvaluator(
-						pcs, new ArrayList<Rater>(topCsRaters));
+						pcs, new ArrayList<Patron>(topCsRaters));
 				allCityStates.put(pcs.getCity()+pcs.getState(),cseval);
 				
 				//top ten raters in city state
@@ -135,9 +135,9 @@ public class RaterAwardsJob extends QuartzJobBean {
 			List<RaterAwards> raList = new ArrayList<RaterAwards>();
 			
 						
-			for (Rater rater : allRaters) {				
+			for (Patron rater : allRaters) {				
 				
-				RaterMetrics rm = ratingManagerService.findMetricsByRater(rater);
+				PatronMetrics rm = ratingManagerService.findMetricsByRater(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
 				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
@@ -213,7 +213,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 		this.awardManagerService = awardManagerService;
 	}
 
-	public void setRaterAwardsService(RaterAwardsService raterAwardsService) {
+	public void setRaterAwardsService(PatronAwardsService raterAwardsService) {
 		this.raterAwardsService = raterAwardsService;
 	}
 

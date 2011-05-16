@@ -19,13 +19,13 @@ import org.mcavallo.opencloud.filters.TagFilter;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.compare.OfferScoreComparitor;
 import com.sightlyinc.ratecred.admin.compare.TagScoreComparitor;
-import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Location;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 
@@ -35,8 +35,8 @@ public class OfferTargetEvaluator {
 
 
 	private PlaceCityState pcs;
-	private Map<String,Offer> offerCache = new HashMap<String,Offer>();
-	private List<Offer> targetedOffers = new ArrayList<Offer>();
+	private Map<String,OfferOld> offerCache = new HashMap<String,OfferOld>();
+	private List<OfferOld> targetedOffers = new ArrayList<OfferOld>();
 	private Cloud ratingCloud = new Cloud();
 	
 	private static String TERMS = "a,about,all,and,are,as,at,back,be,because,been," +
@@ -76,9 +76,9 @@ public class OfferTargetEvaluator {
 
 	}
 	
-	public void addOfferToCache(Offer o) {
+	public void addOfferToCache(OfferOld o) {
 		String key = o.getExternalSource()+o.getExternalId();
-		Offer o2 = offerCache.get(key);
+		OfferOld o2 = offerCache.get(key);
 		if(o2 == null) {
 			
 			//make a cloud for the offer and then score this 
@@ -121,18 +121,18 @@ public class OfferTargetEvaluator {
 		return offerCache.size()>0;
 	}
 	
-	public boolean isExternalSource(String name, Offer offer) {
+	public boolean isExternalSource(String name, OfferOld offer) {
 		return offer.getExternalSource().equalsIgnoreCase(name);
 	}
 	
-	public boolean isRatedInCityOffer(Offer offer) {
+	public boolean isRatedInCityOffer(OfferOld offer) {
 		if(isLocalOffer(offer))
 			return true;
 		else
 			return false;
 	}
 	
-	public boolean isLocalOffer(Offer offer) {
+	public boolean isLocalOffer(OfferOld offer) {
 		
 		try {			
 			if(pcs != null && offer.getCity().equalsIgnoreCase(pcs.getCity()) && 
@@ -149,7 +149,7 @@ public class OfferTargetEvaluator {
 		}
 	}
 	
-	private boolean hasCityStateLocation(Offer offer, PlaceCityState pcs) {
+	private boolean hasCityStateLocation(OfferOld offer, PlaceCityState pcs) {
 		List<Location> locations = offer.getAdvertiser().getLocations();
 		for (Location location : locations) {
 			if(pcs != null && location.getCity().equalsIgnoreCase(pcs.getCity()) && 
@@ -161,25 +161,25 @@ public class OfferTargetEvaluator {
 	}
 		
 	public void chooseBestOffers() {
-		List<Offer> sortedOffers = new ArrayList<Offer>(this.offerCache.values()); 
+		List<OfferOld> sortedOffers = new ArrayList<OfferOld>(this.offerCache.values()); 
 		Collections.sort(
 				sortedOffers, 
 				new OfferScoreComparitor());
 		
-		for (Offer offer : sortedOffers) {
+		for (OfferOld offer : sortedOffers) {
 			logger.debug("offer score:"+offer.getScore()+" name:"+offer.getName());
 		}
 		
 		//only choose best offer for now
 		if(sortedOffers.size()>0) {
-			Offer bestOffer = sortedOffers.get(0);
+			OfferOld bestOffer = sortedOffers.get(0);
 			logger.debug("best offer:"+bestOffer.toString());
 			targetedOffers.add(bestOffer);
 		}
 		
 	}
 
-	public List<Offer> getTargetedOffers() {
+	public List<OfferOld> getTargetedOffers() {
 		return targetedOffers;
 	}
 	

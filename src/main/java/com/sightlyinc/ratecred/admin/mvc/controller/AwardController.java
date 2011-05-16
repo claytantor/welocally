@@ -20,14 +20,14 @@ import com.noi.utility.date.DateUtils;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.model.AwardForm;
 import com.sightlyinc.ratecred.admin.model.CustomAwardForm;
-import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
-import com.sightlyinc.ratecred.service.RaterAwardsService;
+import com.sightlyinc.ratecred.service.PatronAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Controller
@@ -49,7 +49,7 @@ public class AwardController {
 	private AwardManagerService awardManagerService;
 	
 	@Autowired
-	RaterAwardsService raterAwardsService;
+	PatronAwardsService raterAwardsService;
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(Model model) {
@@ -57,8 +57,8 @@ public class AwardController {
 		
 		try {
 			StringBuffer buf = new StringBuffer();
-			List<Rater> users = ratingManagerService.findRatersByStatus("USER");
-			for (Rater rater : users) {
+			List<Patron> users = ratingManagerService.findRatersByStatus("USER");
+			for (Patron rater : users) {
 				buf.append(rater.getUserName()+",");
 			}
 			model.addAttribute("users", buf.toString());
@@ -70,9 +70,9 @@ public class AwardController {
 			}
 			model.addAttribute("awardTypes", buf2.toString());
 			
-			List<Offer> offersRaw = offerPoolService.getOfferPool();
-			List<Offer> offersFiltered = new ArrayList<Offer>();
-			for (Offer offer : offersRaw) {
+			List<OfferOld> offersRaw = offerPoolService.getOfferPool();
+			List<OfferOld> offersFiltered = new ArrayList<OfferOld>();
+			for (OfferOld offer : offersRaw) {
 				if(offer.getCouponCode() != null 
 						&& !offer.getCouponCode().contains("No")
 						&& !offer.getCouponCode().contains("no")
@@ -90,7 +90,7 @@ public class AwardController {
 			model.addAttribute("offers", offersFiltered);
 			
 			StringBuffer bufOfferIds = new StringBuffer();
-			for (Offer offer : offersFiltered) {
+			for (OfferOld offer : offersFiltered) {
 				bufOfferIds.append(offer.getExternalId()+":"+offer.getExternalSource()+",");
 			}
 			model.addAttribute("offerIds", bufOfferIds.toString());			
@@ -110,8 +110,8 @@ public class AwardController {
 		
 		try {
 			StringBuffer buf = new StringBuffer();
-			List<Rater> users = ratingManagerService.findRatersByStatus("USER");
-			for (Rater rater : users) {
+			List<Patron> users = ratingManagerService.findRatersByStatus("USER");
+			for (Patron rater : users) {
 				buf.append(rater.getUserName()+",");
 			}
 			model.addAttribute("users", buf.toString());
@@ -140,34 +140,34 @@ public class AwardController {
 		try {
 			AwardType awardType = awardManagerService.findAwardTypeByKey(awardForm.getType());
 			award.setAwardType(awardType);
-			Rater r = ratingManagerService.findRaterByUsername(awardForm.getUsername());
+			Patron r = ratingManagerService.findRaterByUsername(awardForm.getUsername());
 			award.setOwner(r);			
 			award.setNotes(awardForm.getNote());
 			award.setStatus("GIVEN");
 			award.setMetadata("imageUrl=/images/awards/award_"+awardForm.getType()+".png");
-			award.setExpiresMills(0l);
+			award.setExpires(0l);
 			
 			String[] offerInfo = awardForm.getOfferId().split(":");
 			
 			//offer stuff
-			Offer offer = offerPoolService.getOfferByExternalIdSource(offerInfo[0], offerInfo[1]);
+			OfferOld offer = offerPoolService.getOfferByExternalIdSource(offerInfo[0], offerInfo[1]);
 			
 			if(offer != null)
 			{
-				AwardOffer aoffer = new AwardOffer();
+				Offer aoffer = new Offer();
 				award.setGiveOffer(true);
 				aoffer.setAwardType(awardType);
 				aoffer.setCouponCode(offer.getCouponCode());
-				aoffer.setBeginDateMillis(offer.getBegin().getTime());
+				aoffer.setBeginTime(offer.getBegin().getTime());
 				aoffer.setDescription(offer.getDescription());
-				aoffer.setExpireDateMillis(offer.getExpire().getTime());
+				aoffer.setEndTime(offer.getExpire().getTime());
 				aoffer.setExternalId(offer.getExternalId().toString());
 				aoffer.setExternalSource(offer.getExternalSource());
 				aoffer.setName(offer.getName());
 				aoffer.setProgramId(offer.getProgramId().toString());
 				aoffer.setProgramName(offer.getProgramName());
 				aoffer.setStatus("GIVEN");
-				aoffer.setTimeCreated(Calendar.getInstance().getTime());
+				//aoffer.setTimeCreated(Calendar.getInstance().getTime());
 				aoffer.setUrl(offer.getUrl());
 				awardManagerService.saveAwardOffer(aoffer);
 				
@@ -197,26 +197,26 @@ public class AwardController {
 		try {
 			AwardType awardType = awardManagerService.findAwardTypeByKey(customAwardForm.getType());
 			award.setAwardType(awardType);
-			Rater r = ratingManagerService.findRaterByUsername(customAwardForm.getUsername());
+			Patron r = ratingManagerService.findRaterByUsername(customAwardForm.getUsername());
 			award.setOwner(r);			
 			award.setNotes(customAwardForm.getNote());
 			award.setStatus("GIVEN");
 			award.setMetadata("imageUrl=/images/awards/award_"+customAwardForm.getType()+".png");
-			award.setExpiresMills(0l);
+			award.setExpires(0l);
 			if(Boolean.parseBoolean(customAwardForm.getGiveAward()))
 			{
-				AwardOffer aoffer = new AwardOffer();
+				Offer aoffer = new Offer();
 				
 				//dont auto assign
 				award.setGiveOffer(false);
 				
 				aoffer.setAwardType(awardType);
 				aoffer.setCouponCode(customAwardForm.getCouponCode());
-				aoffer.setBeginDateMillis(
+				aoffer.setBeginTime(
 						DateUtils.stringToDate(
 								customAwardForm.getBeginDateString(), 
 								DateUtils.DESC_SIMPLE_FORMAT).getTime());
-				aoffer.setExpireDateMillis(
+				aoffer.setEndTime(
 						DateUtils.stringToDate(customAwardForm.getExpireDateString(), 
 						DateUtils.DESC_SIMPLE_FORMAT).getTime());
 				
@@ -228,7 +228,6 @@ public class AwardController {
 				aoffer.setProgramId(customAwardForm.getProgramId().toString());
 				aoffer.setProgramName(customAwardForm.getProgramName());
 				aoffer.setStatus("GIVEN");
-				aoffer.setTimeCreated(Calendar.getInstance().getTime());
 				aoffer.setUrl(customAwardForm.getUrl());
 				awardManagerService.saveAwardOffer(aoffer);
 				

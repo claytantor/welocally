@@ -33,11 +33,11 @@ import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.jms.SaveArticleLocationMessageProducer;
 import com.sightlyinc.ratecred.admin.model.Article;
 import com.sightlyinc.ratecred.admin.model.TargetModel;
-import com.sightlyinc.ratecred.client.offers.Offer;
+import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Location;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
-import com.sightlyinc.ratecred.service.RaterAwardsService;
+import com.sightlyinc.ratecred.service.PatronAwardsService;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Record;
 
@@ -61,7 +61,7 @@ public class OfferController {
 	private AwardManagerService awardManagerService;
 	
 	@Autowired
-	RaterAwardsService raterAwardsService;
+	PatronAwardsService raterAwardsService;
 	
 	@Value("${simpleGeo.rateCredOAuth.appConsumerKey}")
 	private String authConsumerKey;
@@ -119,7 +119,7 @@ public class OfferController {
 		
 		try {
 			
-			Offer offer = raterAwardsService.targetOfferByTargetingModel(tmodel);
+			OfferOld offer = raterAwardsService.targetOfferByTargetingModel(tmodel);
 			model.addAttribute("offer", offer);
 			model.addAttribute("css", css);
 			
@@ -208,10 +208,10 @@ public class OfferController {
 			model.addAttribute("offer",o);*/
 			
 			//deserialize the json
-			Offer o = 
+			OfferOld o = 
         		jacksonMapper.readValue(
         				new ByteArrayInputStream(
-        						offerRecord.toString().getBytes()), Offer.class);
+        						offerRecord.toString().getBytes()), OfferOld.class);
 			
 			model.addAttribute("offer",o);
 			

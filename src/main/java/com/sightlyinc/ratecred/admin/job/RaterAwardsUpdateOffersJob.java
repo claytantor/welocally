@@ -22,7 +22,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageProducer;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 
 @Component("raterAwardsUpdateOffersJob")
@@ -60,7 +60,7 @@ public class RaterAwardsUpdateOffersJob extends QuartzJobBean {
         	//really should fire working memory rules against rater that has expired 
         	//awards
 
-			List<AwardOffer> expired = awardManagerService.findExpiredAwardOffers();
+			List<Offer> expired = awardManagerService.findExpiredAwardOffers();
 			
 			logger.debug("number of expired offers:"+expired.size());
 			

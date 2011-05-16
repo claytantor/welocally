@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.compare.DescendingRateMapStringComparitor;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
 
 public class CityStateEvaluator {
@@ -23,13 +23,13 @@ public class CityStateEvaluator {
 	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
 	
 	private PlaceCityState placeCityState;
-	private Rater[] topRaters;
+	private Patron[] topRaters;
 	
 	
 	//heavy lifting in constructor this may be served better by
 	//sending all ratings for the city state
-	public CityStateEvaluator(PlaceCityState placeCityState, List<Rater> topRatersList) {
-		this.topRaters = (Rater[])topRatersList.toArray(new Rater[topRatersList.size()]); 
+	public CityStateEvaluator(PlaceCityState placeCityState, List<Patron> topRatersList) {
+		this.topRaters = (Patron[])topRatersList.toArray(new Patron[topRatersList.size()]); 
 		this.placeCityState = placeCityState;
 	}
 	
@@ -41,7 +41,7 @@ public class CityStateEvaluator {
 			return false;
 	}
 	
-	public boolean isLeadRater(Rater r)
+	public boolean isLeadRater(Patron r)
 	{
 		
 		/*logger.debug("rater:"+r.getUserName()+" isLeadRater:"+topRaters[0].getUserName()+

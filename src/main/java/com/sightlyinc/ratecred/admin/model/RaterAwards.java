@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 
 public class RaterAwards {
@@ -20,13 +20,13 @@ public class RaterAwards {
 	
 	private PropertyChangeSupport changes = new PropertyChangeSupport( this );
 	
-	private Rater rater;
+	private Patron rater;
 	private List<Award> awards = new ArrayList<Award>();
 	private List<Award> removeAwards = new ArrayList<Award>();
 	private Set<String> keys = new HashSet<String>();
 	private Set<String> citykeys = new HashSet<String>();
 	
-	public RaterAwards(Rater rater) {
+	public RaterAwards(Patron rater) {
 		super();
 		this.rater = rater;
 		for (Award award : rater.getAwards())
@@ -144,7 +144,7 @@ public class RaterAwards {
 	}
 
 
-	public Rater getRater() {
+	public Patron getRater() {
 		return rater;
 	}
 	

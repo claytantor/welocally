@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.noi.utility.xml.JsonEncoder;
 import com.sightlyinc.ratecred.compare.ModelSort;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Controller
@@ -38,7 +38,7 @@ public class RaterController {
 	@RequestMapping(value = "/status/{status}", method = RequestMethod.GET)
 	public String getAllRaters(@PathVariable("status") String status, Model model, HttpServletRequest request) {
 		try {
-			List<Rater> raters = ratingManagerService.findRatersByStatus(status);
+			List<Patron> raters = ratingManagerService.findRatersByStatus(status);
 			model.addAttribute("raters", raters);
 			return "raters";
 			
@@ -56,7 +56,7 @@ public class RaterController {
 		try {
 
 
-			Rater r = ratingManagerService.findRaterByUsername(uname);
+			Patron r = ratingManagerService.findRaterByUsername(uname);
 			
 			if(r != null)
 				return getProfile(r.getId(),  model, request);
@@ -81,7 +81,7 @@ public class RaterController {
 		try {
 			
 			
-			Rater rater = ratingManagerService.findRaterByPrimaryKey(id);
+			Patron rater = ratingManagerService.findRaterByPrimaryKey(id);
 			
 			
 			model.addAttribute("ratings", ModelSort.getInstance().sortRating(
@@ -112,7 +112,7 @@ public class RaterController {
 		logger.debug("getRaterByTwitterScreenName");
 
 		try {
-			Rater rater = ratingManagerService
+			Patron rater = ratingManagerService
 					.findRaterByUsername(twitterScreenName);
 
 			/*rater.getAwards().addAll(
@@ -140,7 +140,7 @@ public class RaterController {
 				size = 10;
 
 			// get the leaders
-			List<Rater> leaders = ratingManagerService
+			List<Patron> leaders = ratingManagerService
 					.findRatersByScoreDesc(size);
 			
 			model.addAttribute("raters", leaders);

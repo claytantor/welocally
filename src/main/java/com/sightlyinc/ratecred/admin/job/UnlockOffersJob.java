@@ -31,11 +31,11 @@ import com.noi.utility.date.DateUtils;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.AwardOffer;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
-import com.sightlyinc.ratecred.service.RaterAwardsService;
+import com.sightlyinc.ratecred.service.PatronAwardsService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Component("unlockOffersJob")
@@ -47,7 +47,7 @@ public class UnlockOffersJob extends QuartzJobBean {
 	
 	private RatingManagerService ratingManagerService;
 	
-	private RaterAwardsService raterAwardsService;
+	private PatronAwardsService raterAwardsService;
 		
 	private SessionFactory sessionFactory;
 	
@@ -111,10 +111,10 @@ public class UnlockOffersJob extends QuartzJobBean {
 				if(holderItem.isUnlocked()) {
 					Tweet request = holderItem.getOfferUnlockRequest();
 					
-					AwardOffer offerUnlocked = 
+					Offer offerUnlocked = 
 						awardManagerService.findAwardOfferByPrimaryKey(offerId);
 					
-					Rater raterWhoRequested = 
+					Patron raterWhoRequested = 
 						ratingManagerService.findRaterByUsername(request.getFromUser());
 					
 					if(offerUnlocked != null && raterWhoRequested !=null)
@@ -132,11 +132,13 @@ public class UnlockOffersJob extends QuartzJobBean {
 							unlockAward.setStatus("GIVEN");
 							unlockAward.setNotes("@"+request.getToUser()+" has unlocked an offer for you.");
 							Long now = Calendar.getInstance().getTimeInMillis();
-							unlockAward.setTimeCreatedMills(now);
 							
-							raterAwardsService.saveNewAward(
+							//done with interceptor
+							//unlockAward.setTimeCreatedMills(now);
+							
+/*							raterAwardsService.saveNewAward(
 									unlockAward, awardType, raterWhoRequested, offerUnlocked);
-							
+							*/
 						}
 					}
 					
@@ -218,9 +220,9 @@ public class UnlockOffersJob extends QuartzJobBean {
 			return false;
 	}
 	
-	private AwardOffer getAwardOfferForTweet(Tweet t) {
+	private Offer getAwardOfferForTweet(Tweet t) {
 		try {
-			AwardOffer unlockedOffer = 
+			Offer unlockedOffer = 
 				awardManagerService.findAwardOfferByPrimaryKey(getOfferIdFromTweet(t));
 			
 			return unlockedOffer;
@@ -260,11 +262,11 @@ public class UnlockOffersJob extends QuartzJobBean {
 	}
 	
 
-	public RaterAwardsService getRaterAwardsService() {
+	public PatronAwardsService getRaterAwardsService() {
 		return raterAwardsService;
 	}
 
-	public void setRaterAwardsService(RaterAwardsService raterAwardsService) {
+	public void setRaterAwardsService(PatronAwardsService raterAwardsService) {
 		this.raterAwardsService = raterAwardsService;
 	}
 

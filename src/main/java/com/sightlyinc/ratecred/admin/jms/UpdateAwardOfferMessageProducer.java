@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Rater;
+import com.sightlyinc.ratecred.model.Patron;
 
 @Component("updateAwardOfferMessageProducer")
 public class UpdateAwardOfferMessageProducer {
@@ -37,7 +37,7 @@ public class UpdateAwardOfferMessageProducer {
     @Qualifier("jacksonMapper")
     private ObjectMapper jacksonMapper;
 
-    public void generateMessage(Award award, AwardType awardType, Rater r) 
+    public void generateMessage(Award award, AwardType awardType, Patron r) 
     	throws JMSException, JsonGenerationException, JsonMappingException, IOException {
     		logger.debug("generating message");
     		
