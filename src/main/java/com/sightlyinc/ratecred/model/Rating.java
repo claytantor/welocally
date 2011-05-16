@@ -1,9 +1,15 @@
 package com.sightlyinc.ratecred.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -17,7 +23,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
   `notes` LONGTEXT NULL DEFAULT NULL ,
   `twitter_status_id` BIGINT(20) NULL DEFAULT NULL ,
   `patron_rating` FLOAT(11) NULL DEFAULT NULL ,
-  `user_rating` FLOAT(11) NULL DEFAULT NULL ,
   `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
   `referral_url` VARCHAR(1024) NULL DEFAULT NULL ,
   `referral_token` VARCHAR(255) NULL DEFAULT NULL ,
@@ -30,8 +35,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author claygraham
  *
  */
+@Entity
+@Table(name="rating")
 public class Rating extends BaseEntity implements Serializable {
-	
 	
 	@JsonProperty
 	private String type;
@@ -39,17 +45,12 @@ public class Rating extends BaseEntity implements Serializable {
 	@JsonProperty
 	private String notes;
 	
-	
 	@JsonProperty
 	private Long twitterStatusId;
 	
-	
 	@JsonProperty
-	private Float raterRating;
-	
-	@JsonProperty
-	private Float userRating;
-	
+	private Float patronRating;
+		
 	@JsonProperty
 	private String referalUrl;
 	
@@ -57,50 +58,46 @@ public class Rating extends BaseEntity implements Serializable {
 	private String referalToken;
 	
 	@JsonProperty
+	@Column(name="checkin_foursquare")
 	private String checkedinFoursquare;
 	
 	@JsonProperty
+	@Column(name="txid_foursquare")
 	private String txIdFoursquare;
 	
 	@JsonProperty
+	@Column(name="checkin_gowalla")
 	private String checkedinGowalla;
 	
 	@JsonProperty
+	@Column(name="txid_gowalla")
 	private String txIdGowalla;
 
 	@JsonProperty
-	private transient Set<RatingAttribute> attributes = new HashSet<RatingAttribute>();
+	@OneToMany(mappedBy = "rating")
+	private transient Set<RatingAttribute> attributes;
 
 	
 	@JsonProperty
+	@OneToMany(mappedBy = "rating")
 	private transient Set<Compliment> compliments;
 	
 	@JsonProperty
+	@ManyToOne
+	@JoinColumn(name = "patron_id")
 	private transient Patron owner;
 	
 	@JsonProperty
+	@ManyToOne
+	@JoinColumn(name = "place_id")
 	private transient Place place;
 	
+	
 
-
-	@JsonProperty
-	public Float getRaterRating() {
-		return raterRating;
-	}
-
-	@JsonProperty
-	public void setRaterRating(Float raterRating) {
-		this.raterRating = raterRating;
-	}
-
-	@JsonProperty
-	public Float getUserRating() {
-		return userRating;
-	}
-
-	@JsonProperty
-	public void setUserRating(Float userRating) {
-		this.userRating = userRating;
+	public Rating() {
+		super();
+		attributes = new HashSet<RatingAttribute>();
+		compliments = new HashSet<Compliment>();		
 	}
 
 	@JsonProperty
@@ -236,6 +233,14 @@ public class Rating extends BaseEntity implements Serializable {
 	@JsonProperty
 	public void setTxIdGowalla(String txIdGowalla) {
 		this.txIdGowalla = txIdGowalla;
+	}
+
+	public Float getPatronRating() {
+		return patronRating;
+	}
+
+	public void setPatronRating(Float patronRating) {
+		this.patronRating = patronRating;
 	}
 
 	/*@Override

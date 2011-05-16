@@ -1,21 +1,16 @@
 package com.sightlyinc.ratecred.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.sightlyinc.ratecred.model.PlaceRating;
-import com.sightlyinc.ratecred.model.Rating;
 
 public class RatingHelper {
 	
-	public static PlaceRating computeNewRatingAdd(
+/*	public static PlaceRating computeNewRatingAdd(
 			List<PlaceRating> placeRatings, 
 			List<Rating> ratings, 
 			String ratingType, 
 			Float ratingRatingToAdd)
 	{
 		PlaceRating ratingForType = new PlaceRating();
-		/*//find by type
+		//find by type
 		for (PlaceRating placeRating : placeRatings) {
 			if(placeRating.getType().equals(ratingType))
 				ratingForType = placeRating;
@@ -27,15 +22,15 @@ public class RatingHelper {
 			ratingForType.setType(ratingType);
 			ratingForType.setRating(ratingRatingToAdd);
 			//ratings.add(ratingForType);
-		} else {*/
+		} else {
 			//recompute based on all ratings for type, plus the new one
 			List<Rating> allRates = 
 				new ArrayList<Rating>(ratings);
 			Float sum = 0.0f;
-			/*for (Rating rating : allRates) {
+			for (Rating rating : allRates) {
 				if(rating.getType().equals(ratingType) && rating.getRaterRating()!=null)
 					sum+=rating.getRaterRating();
-			}*/
+			}
 			for (Rating rating : allRates) {
 					sum+=rating.getRaterRating();
 			}
@@ -86,6 +81,6 @@ public class RatingHelper {
 		}
 		return ratingForType;
 		//p.setRatings(ratings);
-	}
+	}*/
 
 }

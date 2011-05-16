@@ -72,8 +72,8 @@ public class Place extends BaseEntity {
 	@OneToMany(mappedBy = "place")
 	private Set<PlaceAttribute> attributes;
 	
-	@OneToMany(mappedBy = "place")
-	private Set<PlaceRating> placeRatings;
+	//@OneToMany(mappedBy = "place")
+	//private Set<PlaceRating> placeRatings;
 	
 	@ManyToOne
 	@JoinColumn(name = "business_location_id")
@@ -96,12 +96,12 @@ public class Place extends BaseEntity {
 		this.simpleGeoId = simpleGeoId;
 	}
 	
-	public Set<PlaceRating> getPlaceRatings() {
+	/*public Set<PlaceRating> getPlaceRatings() {
 		return placeRatings;
 	}
 	public void setPlaceRatings(Set<PlaceRating> ratings) {
 		this.placeRatings = ratings;
-	}
+	}*/
 
 	public String getType() {
 		return type;

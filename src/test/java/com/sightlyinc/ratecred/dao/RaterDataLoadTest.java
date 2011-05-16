@@ -3,7 +3,6 @@ package com.sightlyinc.ratecred.dao;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,12 +19,10 @@ import org.hibernate.cfg.Configuration;
 import com.noi.utility.random.RandomMaker;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingAttribute;
-import com.sightlyinc.ratecred.service.RatingHelper;
 
 
 public class RaterDataLoadTest extends TestCase {
@@ -215,17 +212,17 @@ public class RaterDataLoadTest extends TestCase {
 		t.setPlace(p);
 		t.setNotes(RandomMaker.makeSentance(128));
 		t.setType("service");
-		t.setUserRating(RandomMaker.getFloat());
+		//t.setUserRating(RandomMaker.getFloat());
 		
 		DecimalFormat df2 = new DecimalFormat( "#,###,###,##0.00" );
 		double dd = RandomMaker.getFloat()*5.0f;
 		Double dd2dec = new Double(df2.format(dd)).doubleValue();
 		
-		t.setRaterRating(dd2dec.floatValue());		
+		t.setPatronRating(dd2dec.floatValue());		
 		t.setAttributes(generateAttributes());
 		
 		//change the rating
-		Set<PlaceRating> ratings = p.getPlaceRatings();
+		/*Set<PlaceRating> ratings = p.getPlaceRatings();
 		PlaceRating ratingForType = 
 			RatingHelper.computeNewRatingAdd(
 					new ArrayList<PlaceRating>(ratings), 
@@ -235,7 +232,8 @@ public class RaterDataLoadTest extends TestCase {
 		
 		//this needs to be tested
 		ratings.add(ratingForType);
-		p.setPlaceRatings(ratings);
+		p.setPlaceRatings(ratings);*/
+		
 		session.save(p);
 		
 		
@@ -249,12 +247,12 @@ public class RaterDataLoadTest extends TestCase {
 			RatingAttribute attribute = new RatingAttribute();
 			if(RandomMaker.getBoolean())
 			{
-				attribute.setType("Yay");
+				attribute.setValue("Yay");
 				attribute.setName(yays[RandomMaker.nextInt(0, yays.length)]);
 			}
 			else
 			{
-				attribute.setType("Boo");
+				attribute.setValue("Boo");
 				attribute.setName(boos[RandomMaker.nextInt(0, boos.length)]);
 			}
 			attributes.add(attribute);

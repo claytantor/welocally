@@ -35,7 +35,6 @@ import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rating;
 
 @Service("PlaceManagerService")
@@ -396,18 +395,18 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 		for (Rating rating : ratings) {
 			duplicatePlace.getRatings().remove(rating);
 			
-			//now reconcile rating for place
+			/*//now reconcile rating for place
 			Set<PlaceRating> placeRatings = p.getPlaceRatings();
 			PlaceRating ratingForType = 
 				RatingHelper.computeNewRatingAdd(
 						new ArrayList<PlaceRating>(placeRatings), 
 						new ArrayList<Rating>(p.getRatings()), 
 						rating.getType(), 
-						rating.getRaterRating());
+						rating.getPatronRating());*/
 			
 			//this needs to be tested
-			placeRatings.add(ratingForType);
-			p.setPlaceRatings(placeRatings);
+			//placeRatings.add(ratingForType);
+			//p.setPlaceRatings(placeRatings);
 			
 			
 			rating.setPlace(p);

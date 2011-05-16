@@ -1,81 +1,46 @@
 package com.sightlyinc.ratecred.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import com.noi.utility.string.StringUtils;
-
-public class RatingAttribute {
+/**
+ *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT,
+  `name` VARCHAR(255) NOT NULL ,
+  `attribute_value` TEXT NULL DEFAULT NULL ,
+  `rating_id` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="rating_attribute")
+public class RatingAttribute extends BaseEntity {
 	
-	private Long id;
 	private String name;
-	private String type;
 	
-	@JsonProperty
-	public Long getId() {
-		return id;
-	}
-	
-	@JsonProperty
-	public void setId(Long id) {
-		this.id = id;
-	}	
+	@Column(name="attribute_value")
+	private String value;
 
-	@JsonProperty
 	public String getName() {
 		return name;
 	}
-	
-	@JsonProperty
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@JsonProperty
-	public String getType() {
-		return type;
-	}
-	
-	@JsonProperty
-	public void setType(String type) {
-		this.type = type;
-	}
-	
 
-	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		
-		try {
-			buf.append("[");
-			Map<String,String> description = 
-				BeanUtils.describe(this);
-			
-			for (String key : description.keySet()) {
-				buf.append("[");
-				buf.append(key);
-				buf.append("=");
-				if(!key.equals("ratings"))
-				{					
-					if(description.get(key) != null && 
-							StringUtils.isNotEmpty(description.get(key).toString()))
-						buf.append(description.get(key).toString());
-				}
-				buf.append("]");
-			}
-			buf.append("]");
-			
-		} catch (IllegalAccessException e) {
-			
-		} catch (InvocationTargetException e) {
-			
-		} catch (NoSuchMethodException e) {
-			
-		}
-		
-		return buf.toString();
+	public String getValue() {
+		return value;
 	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}		
+
+	
 
 }

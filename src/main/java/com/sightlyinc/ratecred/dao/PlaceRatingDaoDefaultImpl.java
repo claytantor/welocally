@@ -12,14 +12,10 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.model.PlaceRating;
 
-@Repository("placeRatingDao")
-public class PlaceRatingDaoDefaultImpl 
-extends AbstractDao<PlaceRating>  
-	implements PlaceRatingDaoOLD {
+public class PlaceRatingDaoDefaultImpl  { }
 
-	static Logger logger = Logger.getLogger(PlaceRatingDaoDefaultImpl.class);
+	/*static Logger logger = Logger.getLogger(PlaceRatingDaoDefaultImpl.class);
 	
 	public PlaceRatingDaoDefaultImpl() {
 		super(PlaceRating.class);
@@ -219,3 +215,4 @@ extends AbstractDao<PlaceRating>
 	
 	  
 }
+*/

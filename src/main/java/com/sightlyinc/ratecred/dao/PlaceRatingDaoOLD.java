@@ -1,12 +1,9 @@
 package com.sightlyinc.ratecred.dao;
 
-import java.util.List;
 
-import com.sightlyinc.ratecred.model.PlaceRating;
-
-public interface PlaceRatingDaoOLD extends BaseDao<PlaceRating> {
+public interface PlaceRatingDaoOLD  {
 	
-	public List<PlaceRating> findByCityStateTypePaged(
+/*	public List<PlaceRating> findByCityStateTypePaged(
 			String city,  String state, String type,
 			int pageNum,  int pageSize,   String sortField,  boolean isAscending);
 	
@@ -21,7 +18,7 @@ public interface PlaceRatingDaoOLD extends BaseDao<PlaceRating> {
 	public List<PlaceRating> findAllPaged(
 			int pageNum,  int pageSize,    boolean isAscending);
 	
-	public Long findByCityStateCount(String city, String state);
+	public Long findByCityStateCount(String city, String state);*/
 	
 	
 }

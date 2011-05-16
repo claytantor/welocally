@@ -315,7 +315,6 @@ CREATE  TABLE IF NOT EXISTS `rating` (
   `notes` TEXT NULL DEFAULT NULL ,
   `twitter_status_id` BIGINT(20) NULL DEFAULT NULL ,
   `patron_rating` FLOAT(11) NULL DEFAULT NULL ,
-  `user_rating` FLOAT(11) NULL DEFAULT NULL ,
   `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
   `referral_url` VARCHAR(1024) NULL DEFAULT NULL ,
   `referral_token` VARCHAR(255) NULL DEFAULT NULL ,
@@ -500,9 +499,12 @@ DROP TABLE IF EXISTS `rating_attribute` ;
 
 CREATE  TABLE IF NOT EXISTS `rating_attribute` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(255) NULL DEFAULT NULL ,
-  `type` VARCHAR(255) NULL DEFAULT NULL ,
+  `version` INT,
+  `name` VARCHAR(255) NOT NULL ,
+  `attribute_value` TEXT NULL DEFAULT NULL ,
   `rating_id` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL , 
   PRIMARY KEY (`id`) ,
   INDEX `rating_attribute_rating_fk` (`rating_id` ASC) ,
   CONSTRAINT `fk_rating_attribute_rating1`

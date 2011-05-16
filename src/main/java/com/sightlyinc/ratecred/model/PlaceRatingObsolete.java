@@ -1,7 +1,7 @@
 package com.sightlyinc.ratecred.model;
 
 
-public class PlaceRating {
+public class PlaceRatingObsolete {
 	
 	private Long id;
 	private Integer version = new Integer(0);

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SimpleTimeZone;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -27,7 +26,6 @@ import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.AwardDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.ComplimentDao;
-import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.PatronDao;
 import com.sightlyinc.ratecred.dao.PatronMetricsDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
@@ -41,7 +39,6 @@ import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.PlaceRating;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.RatingPage;
 
@@ -82,18 +79,18 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		// should be one field, I will probably
 		// add it to the row but for now lets just
 		// get this working
-		if(p.getPlaceRatings() == null) 			
-			p.setPlaceRatings(new HashSet<PlaceRating>());
+		//if(p.getPlaceRatings() == null) 			
+		//	p.setPlaceRatings(new HashSet<PlaceRating>());
 		
 		if(p.getRatings() == null)
 			p.setRatings(new HashSet<Rating>());
 		
-		PlaceRating ratingForType = new PlaceRating();
+		//PlaceRating ratingForType = new PlaceRating();
 
 		Float sum = 0.0f;
 
 		for (Rating rating : p.getRatings()) {
-				sum+=rating.getRaterRating();
+				sum+=rating.getPatronRating();
 		}
 
 		Float avg = 2.5f;
@@ -103,7 +100,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			logger.error("NaN", e);
 			avg = 2.5f;
 		}
-		if(!avg.isNaN())
+		/*if(!avg.isNaN())
 			ratingForType.setRating(avg);
 		else
 			ratingForType.setRating(2.5f);
@@ -117,10 +114,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		} else {
 			PlaceRating pr = p.getPlaceRatings().iterator().next();
 			pr.setRating(ratingForType.getRating());				
-		}
+		}*/
 
 		placeDao.save(p);
-
+		throw new RuntimeException("NEED TO DEAL WITH NEW RATING MODEL");
 	}
 	
 	@Override
@@ -339,7 +336,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		
 		//need to re compute place rating
 		Place p = placeDao.findByPrimaryKey(entity.getPlace().getId());
-		Set<PlaceRating> ratings = p.getPlaceRatings();
+		/*Set<PlaceRating> ratings = p.getPlaceRatings();
 		PlaceRating ratingForType = 
 			RatingHelper.computeNewRatingRemove(
 					new ArrayList<PlaceRating>(ratings), 
@@ -349,7 +346,8 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		
 		//this needs to be tested
 		ratings.add(ratingForType);
-		p.setPlaceRatings(ratings);
+		p.setPlaceRatings(ratings);*/
+
 		p.getRatings().remove(entity);
 		placeDao.save(p);
 		
@@ -707,7 +705,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			// should be one field, I will probably
 			// add it to the row but for now lets just
 			// get this working
-			if(p.getPlaceRatings() == null) 			
+			/*if(p.getPlaceRatings() == null) 			
 				p.setPlaceRatings(new HashSet<PlaceRating>());
 			
 			if(p.getRatings() == null)
@@ -728,7 +726,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			} else {
 				PlaceRating pr = p.getPlaceRatings().iterator().next();
 				pr.setRating(ratingForType.getRating());				
-			}
+			}*/
 			
 
 			PatronMetrics tmcomp = findMetricsByRater(owner);
@@ -769,9 +767,9 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				}
 			}*/
 			
-			return entity.getId();
+			//return entity.getId();
 
-			
+			throw new RuntimeException("NEED TO DEAL WITH NEW RATING MODEL");
 			
 			
 		} catch (Exception e) {
