@@ -42,8 +42,12 @@ public class OfferEconomics extends BaseEntity {
 	private Offer offer;
 	
 	private Float publisherRevenuePercentage;
+	
 	private Float merchantRevenuePercentage;
+	
 	private Float affiliateRevenuePercentage;
+	
+	
 	public Publisher getPublisher() {
 		return publisher;
 	}

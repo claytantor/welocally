@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 public class Merchant extends BaseEntity {
+	
+	private String voucherVerificationPhone;
 
 	@ManyToOne
 	@JoinColumn(name = "network_member_id")
@@ -18,6 +20,15 @@ public class Merchant extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "business_id")
 	private Business business;
+	
+
+	public String getVoucherVerificationPhone() {
+		return voucherVerificationPhone;
+	}
+
+	public void setVoucherVerificationPhone(String voucherVerificationPhone) {
+		this.voucherVerificationPhone = voucherVerificationPhone;
+	}
 
 	public NetworkMember getNetworkMember() {
 		return networkMember;

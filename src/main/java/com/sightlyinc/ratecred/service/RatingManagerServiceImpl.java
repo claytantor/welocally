@@ -35,12 +35,12 @@ import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
+import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
-import com.sightlyinc.ratecred.model.RatingPage;
 
 public class RatingManagerServiceImpl implements RatingManagerService {
 	
@@ -373,13 +373,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public RatingPage findAllRatingsAsPage(
+	public Page<Rating> findAllRatingsAsPage(
 			Integer pageNum, Integer ratingsPerPage, String sortField, boolean isAcending) 
 	throws BLServiceException 
 	{
 		logger.debug("pagenum:"+pageNum);
 		
-		RatingPage tp = new RatingPage(); 
+		Page<Rating> tp = new Page<Rating>(); 
 		tp.setPageSize(ratingsPerPage);
 		tp.setSortField(sortField);
 		tp.setAscending(isAcending);
@@ -401,7 +401,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		tp.setPageNumber(pageNum);			
 		tp.setTotalPages(pages.intValue());			
 	
-		tp.setRatings(
+		tp.setItems(
 				ratingDao.findAllPaged(
 						pageNum, ratingsPerPage, sortField, isAcending));
 		
@@ -410,13 +410,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		
 	
 	@Override
-	public RatingPage findRatingsByCityState(
+	public Page<Rating> findRatingsByCityState(
 			PlaceCityState cs, Integer pageNum, Integer ratingsPerPage, String sortField, boolean isAcending)
 			throws BLServiceException {
 		
 		logger.debug("pagenum:"+pageNum);
 		
-		RatingPage tp = new RatingPage(); 
+		Page<Rating> tp = new Page<Rating>(); 
 		tp.setPageSize(ratingsPerPage);
 		tp.setSortField(sortField);
 		tp.setAscending(isAcending);
@@ -438,7 +438,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		tp.setPageNumber(pageNum);			
 		tp.setTotalPages(pages.intValue());			
 	
-		tp.setRatings(
+		tp.setItems(
 				ratingDao.findByCityStatePaged(
 						cs.getCity(), cs.getState(), pageNum, ratingsPerPage, sortField, isAcending));
 		
@@ -446,13 +446,13 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 	@Override
-	public RatingPage findRatingsByCityStatePlaceInfo(
+	public Page<Rating> findRatingsByCityStatePlaceInfo(
 			Integer pageNum, Integer ratingsPerPage, String sortField, boolean isAcending,
 			PlaceCityState cs, Place tplace)
 			throws BLServiceException {
 		logger.debug("pagenum:"+pageNum);
 		
-		RatingPage tp = new RatingPage(); 
+		Page<Rating> tp = new Page<Rating>(); 
 		tp.setPageSize(ratingsPerPage);
 		tp.setSortField(sortField);
 		tp.setAscending(isAcending);
@@ -476,7 +476,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		tp.setPageNumber(pageNum);			
 		tp.setTotalPages(pages.intValue());			
 	
-		tp.setRatings(
+		tp.setItems(
 				ratingDao.findByCityStatePlaceInfoPaged(
 						cs.getCity(), cs.getState(), tplace.getName(), 
 						pageNum, ratingsPerPage, sortField, isAcending));
@@ -487,12 +487,12 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 
 	@Override
-	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage, String sortField,
+	public Page<Rating> findRatingsByOwner(Integer pageNum, Integer ratingsPerPage, String sortField,
 			boolean isAcending, Patron rater)
 			throws BLServiceException {
 		logger.debug("pagenum:"+pageNum);
 		
-		RatingPage tp = new RatingPage(); 
+		Page<Rating> tp = new Page<Rating>(); 
 		tp.setPageSize(ratingsPerPage);
 		tp.setSortField(sortField);
 		tp.setAscending(isAcending);
@@ -514,7 +514,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		tp.setPageNumber(pageNum);			
 		tp.setTotalPages(pages.intValue());			
 	
-		tp.setRatings(
+		tp.setItems(
 				ratingDao.findByOwner(
 						rater.getId(), pageNum, ratingsPerPage, sortField, isAcending));
 		
@@ -523,11 +523,11 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 	
 	@Override
-	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage, String sortField,
+	public Page<Rating> findRatingsByOwners(Integer pageNum, Integer ratingsPerPage, String sortField,
 			boolean isAcending, List<Patron> raters)
 			throws BLServiceException {
 		
-		RatingPage tp = new RatingPage(); 
+		Page<Rating> tp = new Page<Rating>(); 
 		tp.setPageSize(ratingsPerPage);
 		tp.setSortField(sortField);
 		tp.setAscending(isAcending);		
@@ -541,12 +541,12 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				i++;
 			}
 	
-			tp.setRatings(ratingDao.findByOwners(
+			tp.setItems(ratingDao.findByOwners(
 					ownerIds, pageNum, ratingsPerPage, sortField, isAcending));
 		
 		}
 		else
-			tp.setRatings(new ArrayList<Rating>());
+			tp.setItems(new ArrayList<Rating>());
 		
 		return tp;
 
@@ -810,10 +810,10 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	
 	
 	@Override
-	public RatingPage findRatesByText(String text, Integer pageNum,
+	public Page<Rating> findRatesByText(String text, Integer pageNum,
 			Integer pageSize, boolean b) throws BLServiceException {
 
-		RatingPage page = new RatingPage();
+		Page<Rating> page = new Page<Rating>();
 		try {
 			Map<String,Rating> ratingResult = new HashMap<String,Rating>();
 			Query q = new QueryParser("indexContent", new StandardAnalyzer())
@@ -836,7 +836,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			}
 			
 			if(ratingIds.size()>0)
-				page.setRatings(ratingDao.findByPrimaryKeys(new ArrayList(ratingIds)));
+				page.setItems(ratingDao.findByPrimaryKeys(new ArrayList(ratingIds)));
 
 		} catch (ParseException e) {
 			throw new BLServiceException(e);

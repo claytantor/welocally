@@ -1,98 +1,69 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-public class Voucher {
+import com.adility.resources.model.OrderItem;
+
+/**
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
+  `offer_id` BIGINT(20) NULL DEFAULT NULL ,
+  `cust_order_id` BIGINT(20) NULL DEFAULT NULL ,
+  `order_item_id` BIGINT(20) NULL DEFAULT NULL ,
+  `redemption_code` VARCHAR(255) NULL DEFAULT NULL ,
+  `metadata` TEXT NULL DEFAULT NULL ,
+  `notes` TEXT NULL DEFAULT NULL ,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL ,
+  `status` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_expires` BIGINT(20) NULL DEFAULT NULL ,
+  `time_aquired` BIGINT(20) NULL DEFAULT NULL ,
+  `time_redeemed` BIGINT(20) NULL DEFAULT NULL ,
+  `time_cancelled` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+ * @author claygraham
+ *
+ */
+@Entity
+@Table(name="voucher")
+public class Voucher extends BaseEntity{
 	
-	/*"redemption_code": "unique_code",
-    "offer_id": "id_of_offer",
-    "reservation_id": "id_of_reservation",
-    "barcode": "",
-    "print_url" "http://voucher_print_url",
-    "status": "acquired",
-    "expiration_date": "",
-    "acquired_at": "YYYY-MM-DD HH:MM",
-    "redeemed_at": "YYYY-MM-DD HH:MM",
-    "cancelled_at": "YYYY-MM-DD HH:MM"*/
-	
-	protected Long id;
-	protected Integer version = new Integer(0);
-	
-	private Long timeCreated;
-	private Long timeUpdated;
 	
 	private String redemptionCode;
-	private String externalOfferId;
-	private String externalSource;
-	private String reservationId;
-	private String barcode;
-	private String printUrl;
+	     
+	private String metadata;
+	private String notes;
+	private String imageUrl;
 	private String status;
-	private Long expirationAtDate;
-	private Long acquiredAtDate;
-	private Long redeemedAtDate;
-	private Long cancelledAtDate;
+	private String printUrl;
+	private Long timeExpires;
+	private Long timeAquired;
+	private Long timeRedeemed;
+	private Long timeCancelled;
+	
+	@ManyToOne
+	@JoinColumn(name = "offer_id")
+	private Offer offer;
+	
+	@ManyToOne
+	@JoinColumn(name = "cust_order_id")
+	private Order order;
+	
+	@ManyToOne
+	@JoinColumn(name = "order_item_id")
+	private OrderItem orderItem;
+	
 
-	
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Integer getVersion() {
-		return version;
-	}
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	
-	
-	public Long getTimeCreated() {
-		return timeCreated;
-	}
-	public void setTimeCreated(Long timeCreated) {
-		this.timeCreated = timeCreated;
-	}
-	public Long getTimeUpdated() {
-		return timeUpdated;
-	}
-	public void setTimeUpdated(Long timeUpdated) {
-		this.timeUpdated = timeUpdated;
-	}
 	public String getRedemptionCode() {
 		return redemptionCode;
 	}
 	public void setRedemptionCode(String redemptionCode) {
 		this.redemptionCode = redemptionCode;
 	}
-	public String getExternalOfferId() {
-		return externalOfferId;
-	}
-	public void setExternalOfferId(String externalOfferId) {
-		this.externalOfferId = externalOfferId;
-	}
 	
-	
-	public String getExternalSource() {
-		return externalSource;
-	}
-	public void setExternalSource(String externalSource) {
-		this.externalSource = externalSource;
-	}
-	public String getReservationId() {
-		return reservationId;
-	}
-	public void setReservationId(String reservationId) {
-		this.reservationId = reservationId;
-	}
-	public String getBarcode() {
-		return barcode;
-	}
-	public void setBarcode(String barcode) {
-		this.barcode = barcode;
-	}
 	public String getPrintUrl() {
 		return printUrl;
 	}
@@ -105,30 +76,65 @@ public class Voucher {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	public Long getExpirationAtDate() {
-		return expirationAtDate;
+	public String getMetadata() {
+		return metadata;
 	}
-	public void setExpirationAtDate(Long expirationAtDate) {
-		this.expirationAtDate = expirationAtDate;
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
 	}
-	public Long getAcquiredAtDate() {
-		return acquiredAtDate;
+	public String getNotes() {
+		return notes;
 	}
-	public void setAcquiredAtDate(Long acquiredAtDate) {
-		this.acquiredAtDate = acquiredAtDate;
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
-	public Long getRedeemedAtDate() {
-		return redeemedAtDate;
+	public String getImageUrl() {
+		return imageUrl;
 	}
-	public void setRedeemedAtDate(Long redeemedAtDate) {
-		this.redeemedAtDate = redeemedAtDate;
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
-	public Long getCancelledAtDate() {
-		return cancelledAtDate;
+	public Long getTimeExpires() {
+		return timeExpires;
 	}
-	public void setCancelledAtDate(Long cancelledAtDate) {
-		this.cancelledAtDate = cancelledAtDate;
+	public void setTimeExpires(Long timeExpires) {
+		this.timeExpires = timeExpires;
+	}
+	public Long getTimeAquired() {
+		return timeAquired;
+	}
+	public void setTimeAquired(Long timeAquired) {
+		this.timeAquired = timeAquired;
+	}
+	public Long getTimeRedeemed() {
+		return timeRedeemed;
+	}
+	public void setTimeRedeemed(Long timeRedeemed) {
+		this.timeRedeemed = timeRedeemed;
+	}
+	public Long getTimeCancelled() {
+		return timeCancelled;
+	}
+	public void setTimeCancelled(Long timeCancelled) {
+		this.timeCancelled = timeCancelled;
+	}
+	public Offer getOffer() {
+		return offer;
+	}
+	public void setOffer(Offer offer) {
+		this.offer = offer;
+	}
+	public Order getOrder() {
+		return order;
+	}
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+	public OrderItem getOrderItem() {
+		return orderItem;
+	}
+	public void setOrderItem(OrderItem orderItem) {
+		this.orderItem = orderItem;
 	}
 
 	

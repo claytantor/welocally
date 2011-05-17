@@ -93,7 +93,7 @@ CREATE  TABLE IF NOT EXISTS `offer` (
   `code` VARCHAR(45) NULL DEFAULT NULL ,
   `url` VARCHAR(1024) NULL DEFAULT NULL ,
   `discount_type` ENUM('DISCOUNT','COMP','PROMOCODE') NULL DEFAULT NULL ,
-  `offer_type` ENUM('DEAL','VOUCHER','EVOUCHER','GIFTCARD','ADVERTISMENT') NULL DEFAULT NULL ,
+  `offer_type` ENUM('DEAL','VOUCHER','EVOUCHER','SMSVOUCHER','CALLVOUCHER','GIFTCARD','ADVERTISMENT') NULL DEFAULT NULL ,
   `quantity` INT(11) NULL DEFAULT NULL ,
   `price` FLOAT(11) NULL DEFAULT NULL ,
   `offer_value` FLOAT(11) NULL DEFAULT NULL ,
@@ -341,7 +341,6 @@ ENGINE = MyISAM
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci;
 
-
 -- -----------------------------------------------------
 -- Table `compliment`
 -- -----------------------------------------------------
@@ -375,11 +374,13 @@ DROP TABLE IF EXISTS `voucher` ;
 CREATE  TABLE IF NOT EXISTS `voucher` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NULL DEFAULT NULL ,
-  `external_offerid` VARCHAR(255) NULL DEFAULT NULL ,
-  `external_source` VARCHAR(45) NULL DEFAULT NULL ,
-  `reservation_id` VARCHAR(255) NULL DEFAULT NULL ,
-  `barcode` VARCHAR(255) NULL DEFAULT NULL ,
-  `print_url` VARCHAR(255) NULL DEFAULT NULL ,
+  `offer_id` BIGINT(20) NULL DEFAULT NULL ,
+  `cust_order_id` BIGINT(20) NULL DEFAULT NULL ,
+  `order_item_id` BIGINT(20) NULL DEFAULT NULL ,
+  `redemption_code` VARCHAR(255) NULL DEFAULT NULL ,
+  `metadata` TEXT NULL DEFAULT NULL ,
+  `notes` TEXT NULL DEFAULT NULL ,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL ,
   `status` VARCHAR(45) NULL DEFAULT NULL ,
   `time_expires` BIGINT(20) NULL DEFAULT NULL ,
   `time_aquired` BIGINT(20) NULL DEFAULT NULL ,
@@ -387,7 +388,25 @@ CREATE  TABLE IF NOT EXISTS `voucher` (
   `time_cancelled` BIGINT(20) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`),
+  INDEX `fk_voucher_offer1` (`offer_id` ASC) ,
+  INDEX `fk_voucher_order1` (`order_id` ASC) ,
+  INDEX `fk_voucher_order_item1` (`order_item_id` ASC) ,
+  CONSTRAINT `fk_voucher_offer1`
+    FOREIGN KEY (`offer_id` )
+    REFERENCES `offer` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_voucher_order_item1`
+    FOREIGN KEY (`order_item_id` )
+    REFERENCES `order_item` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_voucher_order1`
+    FOREIGN KEY (`order_id` )
+    REFERENCES `cust_order` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -401,7 +420,6 @@ CREATE  TABLE IF NOT EXISTS `cust_order` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NULL DEFAULT NULL ,
   `offer_id` BIGINT(20) NOT NULL ,
-  `voucher_id` BIGINT(20) NOT NULL ,
   `patron_id` BIGINT(20) NOT NULL ,
   `external_id` VARCHAR(255) NULL DEFAULT NULL ,
   `external_txid` VARCHAR(255) NULL DEFAULT NULL ,
@@ -425,14 +443,8 @@ CREATE  TABLE IF NOT EXISTS `cust_order` (
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
   PRIMARY KEY (`id`) ,
-  INDEX `cust_order_voucher_fk` (`voucher_id` ASC) ,
   INDEX `fk_cust_order_offer1` (`offer_id` ASC) ,
   INDEX `cust_order_patron_fk` (`patron_id` ASC) ,
-  CONSTRAINT `fk_cust_order_voucher1`
-    FOREIGN KEY (`voucher_id` )
-    REFERENCES `voucher` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_cust_order_offer1`
     FOREIGN KEY (`offer_id` )
     REFERENCES `offer` (`id` )
@@ -625,6 +637,7 @@ CREATE  TABLE IF NOT EXISTS `merchant` (
   `version` INT(11) NOT NULL ,
   `network_member_id` BIGINT(20) NOT NULL ,
   `business_id` BIGINT(20) NOT NULL ,
+  `voucher_verification_phone` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
   PRIMARY KEY (`id`) ,

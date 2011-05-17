@@ -6,12 +6,12 @@ import java.util.List;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Compliment;
-import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
+import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
-import com.sightlyinc.ratecred.model.RatingPage;
 
 public interface RatingManagerService {
 	
@@ -24,23 +24,23 @@ public interface RatingManagerService {
 	
 	public Rating findRateByTime(Long time);
 	public List<Rating> findAllRates() throws BLServiceException;	
-	public RatingPage findAllRatingsAsPage(
+	public Page<Rating> findAllRatingsAsPage(
 			Integer pageNum, Integer ratingsPerPage, String sortField, boolean isAcending) 
 			throws BLServiceException;
 	
 	public List<Rating> findRatingsByCityState(PlaceCityState cs) throws BLServiceException;
 	
-	public RatingPage findRatingsByCityState(
+	public Page<Rating> findRatingsByCityState(
 			PlaceCityState cs, Integer pageNum, Integer ratingsPerPage, String sortField, boolean isAcending)
 			throws BLServiceException;
 	
 	public List<Rating> findRatingsByCityStatePlaceInfo(PlaceCityState cs, Place tp) throws BLServiceException;
-	public RatingPage findRatingsByCityStatePlaceInfo(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, PlaceCityState cs, Place tp) throws BLServiceException;
+	public Page<Rating> findRatingsByCityStatePlaceInfo(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, PlaceCityState cs, Place tp) throws BLServiceException;
 	
 	public List<Rating> findRatingsSince(Long millis) throws BLServiceException;
 	
-	public RatingPage findRatingsByOwner(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, Patron rater) throws BLServiceException;
-	public RatingPage findRatingsByOwners(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, List<Patron> raters) throws BLServiceException;
+	public Page<Rating> findRatingsByOwner(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, Patron rater) throws BLServiceException;
+	public Page<Rating> findRatingsByOwners(Integer pageNum, Integer ratingsPerPage,  String sortField, boolean isAcending, List<Patron> raters) throws BLServiceException;
 
 	//awards THESE SHOULD MOVE
 	public List<Award> findAwardsLocalByRater(Patron t) throws BLServiceException;
@@ -51,7 +51,7 @@ public interface RatingManagerService {
 	
 	//search functions
 	public List<Rating> findRatesByText(String text) throws BLServiceException;
-	public RatingPage findRatesByText(String text, 
+	public Page<Rating> findRatesByText(String text, 
 			Integer pageNum, 
 			Integer pageSize, 
 			boolean b) throws BLServiceException;
