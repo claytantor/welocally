@@ -3,7 +3,6 @@ package com.sightlyinc.ratecred.authentication;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sightlyinc.ratecred.model.BaseEntity;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
