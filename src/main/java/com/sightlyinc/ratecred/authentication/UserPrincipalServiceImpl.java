@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
@@ -17,16 +18,20 @@ import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.security.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service("userPrincipalService")
+@Transactional(readOnly = true)
+public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincipalService, AuthenticationProvider {
 
-public class PrincipalBasedUserDetailsService implements UserDetailsService, UserPrincipalService, AuthenticationProvider {
-
+    @Autowired
 	private UserPrincipalDao userPrincipalDao;
+    @Autowired
 	private RoleDao roleDao;
 	
-	static Logger logger = Logger.getLogger(PrincipalBasedUserDetailsService.class);
-	
-	
+	static Logger logger = Logger.getLogger(UserPrincipalServiceImpl.class);
+
 	@Override
 	public UserPrincipal loadUserEmail(String email)
 			throws UserPrincipalServiceException, UserNotFoundException {
@@ -39,6 +44,7 @@ public class PrincipalBasedUserDetailsService implements UserDetailsService, Use
 	}
 
 	@Override
+    @Transactional(readOnly = false)
 	public void deleteUserPrincipal(UserPrincipal up)
 			throws UserPrincipalServiceException {
 		userPrincipalDao.delete(up);
@@ -92,7 +98,7 @@ public class PrincipalBasedUserDetailsService implements UserDetailsService, Use
 	/* (non-Javadoc)
 	 * @see org.acegisecurity.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
 	 */
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		UserDetails details = null;
 		List<UserPrincipal> users = 
@@ -190,6 +196,7 @@ public class PrincipalBasedUserDetailsService implements UserDetailsService, Use
 	/* (non-Javadoc)
 	 * @see com.noi.utility.spring.UserPrincipalService#saveUserPrincipal(com.noi.utility.spring.UserPrincipal)
 	 */
+    @Transactional(readOnly = false)
 	public Long saveUserPrincipal(UserPrincipal up) throws UserPrincipalServiceException {
 		//roles
 		Set<Role> roles = up.getRoles();
@@ -207,6 +214,7 @@ public class PrincipalBasedUserDetailsService implements UserDetailsService, Use
 	 * 
 	 */
 	@Override
+    @Transactional(readOnly = false)
 	public void saveUserPrincipalRoles(UserPrincipal up, Set<Role> roles)
 			throws UserPrincipalServiceException {
 		
@@ -226,6 +234,7 @@ public class PrincipalBasedUserDetailsService implements UserDetailsService, Use
 	}
 
 	@Override
+    @Transactional(readOnly = false)
 	public void deleteUserPrincipalRole(UserPrincipal up, Role role)
 			throws UserPrincipalServiceException {
 		if(role.getId() != null)

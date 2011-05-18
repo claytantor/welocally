@@ -1,11 +1,6 @@
 package com.sightlyinc.ratecred.authentication;
 
-import java.util.List;
+import com.sightlyinc.ratecred.dao.BaseDao;
 
-public interface RoleDao {
-	public void save(Role role);
-	public void delete(Role role);
-	public Role findByPrimaryKey(Long id);
-	public List<Role> findAll();
-	
+public interface RoleDao extends BaseDao<Role> {
 }
