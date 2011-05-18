@@ -3,25 +3,35 @@ package com.sightlyinc.ratecred.authentication;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.sightlyinc.ratecred.model.BaseEntity;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.userdetails.UserDetails;
+
+import javax.persistence.*;
 
 /**
  * 
  * @author cgraham
  * 
  */
+@Entity
+@Table(name="user_principal")
 public class UserPrincipal implements Authentication, UserDetails {
 
 	// id for entity
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
 	private Long id;
 
+    @Transient
 	private Boolean authenticated;
 
 	// properties
 	private java.lang.Integer version = new Integer(0);
+    
 	private String username;
 	private String password;
 	private String email;
@@ -32,8 +42,10 @@ public class UserPrincipal implements Authentication, UserDetails {
 	private Boolean locked;
 	private Boolean enabled;
 
+    @Column(name = "guid")
 	private String authGuid;
 
+    @OneToMany(mappedBy = "principal_id", fetch = FetchType.EAGER)
 	private Set<Role> roles = new HashSet<Role>();
 
 	public String getAuthGuid() {

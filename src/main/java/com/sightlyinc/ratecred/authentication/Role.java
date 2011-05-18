@@ -1,7 +1,13 @@
 package com.sightlyinc.ratecred.authentication;
 
+import javax.persistence.*;
+
+@Entity
 public class Role {
-//	id for entity
+    //	id for entity
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
 	private Long id;
 
 
