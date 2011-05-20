@@ -15,32 +15,35 @@
         <property name="annotatedClasses">
             <list>
 	            <!-- list of annotated classes should be here -->
-	            <value>com.sightlyinc.ratecred.model.Award</value>
- 	            <value>com.sightlyinc.ratecred.model.AwardType</value>
- 	            <value>com.sightlyinc.ratecred.model.Business</value>
-	            <value>com.sightlyinc.ratecred.model.BusinessLocation</value>
- 	            <value>com.sightlyinc.ratecred.model.BusinessMetrics</value>
-	            <value>com.sightlyinc.ratecred.model.Compliment</value>
- 	            <value>com.sightlyinc.ratecred.model.PatronBusinessMetrics</value>
-	            <value>com.sightlyinc.ratecred.model.PlaceCityState</value>
- 	            <value>com.sightlyinc.ratecred.model.PatronMetrics</value>
-	            <value>com.sightlyinc.ratecred.model.Offer</value>
- 	            <value>com.sightlyinc.ratecred.model.Order</value>
-	            <value>com.sightlyinc.ratecred.model.Patron</value>
- 	            <value>com.sightlyinc.ratecred.model.Place</value>
-	            <value>com.sightlyinc.ratecred.model.PlaceAttribute</value>
- 	            <value>com.sightlyinc.ratecred.model.PlaceRating</value>
-	            <value>com.sightlyinc.ratecred.model.Patron</value>
- 	            <value>com.sightlyinc.ratecred.model.Place</value>
-	            <value>com.sightlyinc.ratecred.model.Offer</value>
- 	            <value>com.sightlyinc.ratecred.model.Order</value>
-	            <value>com.sightlyinc.ratecred.model.Patron</value>
- 	            <value>com.sightlyinc.ratecred.model.Place</value>
+				<value>com.sightlyinc.ratecred.model.Affiliate</value>
+				<value>com.sightlyinc.ratecred.model.Award</value>
+				<value>com.sightlyinc.ratecred.model.AwardType</value>
+				<value>com.sightlyinc.ratecred.model.Business</value>
+				<value>com.sightlyinc.ratecred.model.BusinessAttribute</value>
+				<value>com.sightlyinc.ratecred.model.BusinessLocation</value>
+				<value>com.sightlyinc.ratecred.model.BusinessMetrics</value>
+				<value>com.sightlyinc.ratecred.model.Compliment</value>
+				<value>com.sightlyinc.ratecred.model.Event</value>
+				<value>com.sightlyinc.ratecred.model.Merchant</value>
+				<value>com.sightlyinc.ratecred.model.NetworkMember</value>
+				<value>com.sightlyinc.ratecred.model.Offer</value>
+				<value>com.sightlyinc.ratecred.model.OfferEconomics</value>
+				<value>com.sightlyinc.ratecred.model.OfferItem</value>
+				<value>com.sightlyinc.ratecred.model.Order</value>
+				<value>com.sightlyinc.ratecred.model.Patron</value>
+				<value>com.sightlyinc.ratecred.model.PatronMetrics</value>
+				<value>com.sightlyinc.ratecred.model.Place</value>
+				<value>com.sightlyinc.ratecred.model.PlaceAttribute</value>
+				<value>com.sightlyinc.ratecred.model.PlaceCityState</value>
+				<value>com.sightlyinc.ratecred.model.Publisher</value>
+				<value>com.sightlyinc.ratecred.model.Rating</value>
+				<value>com.sightlyinc.ratecred.model.RatingAttribute</value>
+				<value>com.sightlyinc.ratecred.model.Voucher</value>
             </list>
         </property>
 		<property name="hibernateProperties">
-			<ref bean="HibernateDatabaseProperties"/>
-		</property>	
+			<ref bean="hibernateDatabaseProperties"/>
+		</property>	 
 		<property name="dataSource">
 			<ref bean="DBCPLocalDS"/>
 		</property>	
