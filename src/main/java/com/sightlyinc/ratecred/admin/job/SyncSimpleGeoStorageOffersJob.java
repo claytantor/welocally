@@ -23,7 +23,7 @@ import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
 import com.sightlyinc.ratecred.client.offers.Advertiser;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Location;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
 import com.simplegeo.client.types.Point;

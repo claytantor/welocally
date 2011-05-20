@@ -22,10 +22,10 @@ import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Location;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Rating;
+import com.sightlyinc.ratecred.pojo.Location;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 
 public class AwardOfferEvaluator {

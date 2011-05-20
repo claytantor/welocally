@@ -9,8 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sightlyinc.ratecred.admin.harvest.EventHarvester;
-import com.sightlyinc.ratecred.model.Events;
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Events;
+import com.sightlyinc.ratecred.pojo.Location;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { 

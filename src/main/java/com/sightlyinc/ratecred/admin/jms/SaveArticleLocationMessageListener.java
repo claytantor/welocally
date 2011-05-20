@@ -36,7 +36,7 @@ import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.admin.model.Article;
 import com.sightlyinc.ratecred.admin.model.Site;
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Location;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
 import com.simplegeo.client.types.Point;

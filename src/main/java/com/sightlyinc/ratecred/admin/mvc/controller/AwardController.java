@@ -156,7 +156,7 @@ public class AwardController {
 			{
 				Offer aoffer = new Offer();
 				award.setGiveOffer(true);
-				aoffer.setAwardType(awardType);
+				//aoffer.setAwardType(awardType);
 				
 				aoffer.setCode(offer.getCouponCode());
 				aoffer.setTimeStarts(offer.getBegin().getTime());
@@ -166,7 +166,7 @@ public class AwardController {
 				aoffer.setName(offer.getName());
 				aoffer.setStatus("GIVEN");
 				aoffer.setUrl(offer.getUrl());
-				aoffer.setIllustrationUrl(offer.getIllustrationUrl());
+				//aoffer.setIllustrationUrl(offer.getIllustrationUrl());
 				aoffer.setPrice(offer.getPrice());
 				aoffer.setOfferValue(offer.getValue());
 				aoffer.setQuantity(offer.getQuantity());
@@ -212,7 +212,7 @@ public class AwardController {
 				//dont auto assign
 				award.setGiveOffer(false);
 				
-				aoffer.setAwardType(awardType);
+				//aoffer.setAwardType(awardType);
 				
 				aoffer.setCode(customAwardForm.getCouponCode());
 				aoffer.setTimeStarts(

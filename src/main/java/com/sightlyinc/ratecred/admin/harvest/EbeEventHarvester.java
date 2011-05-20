@@ -17,9 +17,9 @@ import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.geocoding.Geocoder;
 import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
 import com.sightlyinc.ratecred.model.Event;
-import com.sightlyinc.ratecred.model.Events;
-import com.sightlyinc.ratecred.model.Location;
 import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.pojo.Events;
+import com.sightlyinc.ratecred.pojo.Location;
 import com.thoughtworks.xstream.XStream;
 
 @Component("ebeEventHarvester")

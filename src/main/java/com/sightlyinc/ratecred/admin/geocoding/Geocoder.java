@@ -1,6 +1,6 @@
 package com.sightlyinc.ratecred.admin.geocoding;
 
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Location;
 
 
 public interface Geocoder {

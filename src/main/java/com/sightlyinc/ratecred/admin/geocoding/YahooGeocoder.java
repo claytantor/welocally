@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Location;
 
 /**
  * probably does not behave as one would like in multi threaded 

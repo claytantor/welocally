@@ -68,13 +68,13 @@ import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.Location;
 import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.User;
+import com.sightlyinc.ratecred.pojo.Location;
 
 @Service("raterAwardsService")
 @Transactional(readOnly = true)
@@ -462,7 +462,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 		if(aoffer == null)
 			giveAwardOffer( award,  awardType,  r,  p,  pcs) ;
 		else {
-			aoffer.setAwardType(awardType);
+			//aoffer.setAwardType(awardType);
 			awardManagerService.saveAwardOffer(aoffer);
 			award.getOffers().add(aoffer);
 		}
@@ -538,7 +538,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 			if(offer != null) {
 				try {
 					Offer aoffer = transformOffer(offer);
-					aoffer.setAwardType(awardType);
+					//aoffer.setAwardType(awardType);
 					awardManagerService.saveAwardOffer(aoffer);
 					award.getOffers().add(aoffer);
 					
@@ -562,7 +562,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 		awardOffer.setName(offer.getName());
 		awardOffer.setStatus("GIVEN");
 		awardOffer.setUrl(offer.getUrl());
-		awardOffer.setIllustrationUrl(offer.getIllustrationUrl());
+		//awardOffer.setIllustrationUrl(offer.getIllustrationUrl());
 		awardOffer.setPrice(offer.getPrice());
 		awardOffer.setOfferValue(offer.getValue());
 		awardOffer.setQuantity(offer.getQuantity());

@@ -34,7 +34,7 @@ import com.sightlyinc.ratecred.admin.jms.SaveArticleLocationMessageProducer;
 import com.sightlyinc.ratecred.admin.model.Article;
 import com.sightlyinc.ratecred.admin.model.TargetModel;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Location;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
