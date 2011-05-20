@@ -44,7 +44,7 @@ public class PlaceController {
 			Place p = 
 				placeManagerService.findPlaceByPrimaryKey(placeForm.getPlaceId());
 			p.setEmail(placeForm.getEmail());
-			p.setBusinessServices(placeForm.getBusinessServices());
+			//p.setBusinessServices(placeForm.getBusinessServices());
 			placeManagerService.savePlace(p);
 			return "redirect:/do/admin/place/" + p.getId();
 			
