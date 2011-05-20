@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,7 +27,10 @@ public class BusinessLocation extends BaseEntity {
 	
 	private String phone;
 	private String name;
+	
+	@Column(columnDefinition="TEXT")
 	private String description;
+	
 	private String url;
 	private String flag;
 

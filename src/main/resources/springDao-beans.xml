@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-	<bean id="RaterBusinessMetricsDao" 
+	<!-- <bean id="RaterBusinessMetricsDao" 
 		lazy-init="true" 
 		class="com.sightlyinc.ratecred.dao.HibernateRaterBusinessMetricsDao">
 		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
@@ -103,6 +103,6 @@
 		lazy-init="true" 
 		class="com.sightlyinc.ratecred.dao.HibernateVoucherDao">
 		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
-	</bean>
+	</bean> -->
 
 </beans>

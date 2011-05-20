@@ -11,10 +11,10 @@ import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessAttribute;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.BusinessMetrics;
-import com.sightlyinc.ratecred.model.BusinessMetricsMetadata;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
+import com.sightlyinc.ratecred.pojo.BusinessMetricsMetadata;
+import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
 public interface BusinessManagerService {
 		

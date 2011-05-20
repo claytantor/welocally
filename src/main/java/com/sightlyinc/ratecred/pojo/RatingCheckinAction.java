@@ -1,4 +1,4 @@
-package com.sightlyinc.ratecred.model;
+package com.sightlyinc.ratecred.pojo;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -6,6 +6,7 @@ import java.io.Serializable;
 import org.apache.log4j.Logger;
 
 import com.noi.utility.data.Base64Utils;
+import com.sightlyinc.ratecred.model.Rating;
 
 public class RatingCheckinAction {
 	

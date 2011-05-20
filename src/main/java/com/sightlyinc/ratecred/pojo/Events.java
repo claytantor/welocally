@@ -1,6 +1,8 @@
-package com.sightlyinc.ratecred.model;
+package com.sightlyinc.ratecred.pojo;
 
 import java.util.List;
+
+import com.sightlyinc.ratecred.model.Event;
 
 /*non transient type*/
 public class Events {

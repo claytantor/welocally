@@ -23,7 +23,7 @@ extends AbstractDao<Offer>
 
 	static Logger logger = Logger.getLogger(OfferDaoDefaultImpl.class);
 	
-	public OfferDaoDefaultImpl(Class<Order> persistentClass) {
+	public OfferDaoDefaultImpl() {
 		super(Offer.class);
 	}
 

@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,9 +25,8 @@ import javax.persistence.Table;
 @Table(name="offer_item")
 public class OfferItem extends BaseEntity {
 	
+	@Column(columnDefinition="TEXT")
 	private String description;
-	
-	private String extraDetails;
 
 	private String title;
 		
@@ -54,14 +54,6 @@ public class OfferItem extends BaseEntity {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getExtraDetails() {
-		return extraDetails;
-	}
-
-	public void setExtraDetails(String extraDetails) {
-		this.extraDetails = extraDetails;
 	}
 
 	public void setQuantity(Integer quantity) {

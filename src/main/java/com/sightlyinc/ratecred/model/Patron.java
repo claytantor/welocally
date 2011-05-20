@@ -5,12 +5,14 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-
-import com.noi.utility.hibernate.ImageValue;
 
 /**
  * `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
@@ -58,9 +60,6 @@ public class Patron extends BaseEntity {
 	@JsonProperty
 	protected String categoryAttachmentKey;
 	
-	@JsonProperty
-	protected java.lang.Long imageValueId;
-	
 	@JsonIgnore
 	private String authFoursquare = "false";
 	
@@ -68,34 +67,24 @@ public class Patron extends BaseEntity {
 	private String authGowalla = "false";
 	
 	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name = "patron_id")
 	protected Set<Rating> ratings= new HashSet<Rating>();
 	
 	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name = "patron_id")
 	protected Set<Award> awards = new HashSet<Award>();
 	
 	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name = "patron_id")
 	protected Set<Compliment> compliments = new HashSet<Compliment>();
 	
 	@JsonIgnore
+	@Transient
 	protected PatronMetrics metrics;
 	
-
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#getImageValueId()
-	 */
-	@JsonProperty
-	public java.lang.Long getImageValueId() {
-		return imageValueId;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#setImageValueId(java.lang.Long)
-	 */
-	@JsonProperty
-	public void setImageValueId(java.lang.Long imageValueId) {
-		this.imageValueId = imageValueId;
-	}
-
 
 	@JsonIgnore
 	public Set<Compliment> getCompliments() {

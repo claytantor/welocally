@@ -8,6 +8,9 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.sightlyinc.ratecred.dao.RatingDao;
 import com.sightlyinc.ratecred.model.Rating;
@@ -18,6 +21,7 @@ import com.sightlyinc.ratecred.model.Rating;
  * @author cgraham
  *
  */
+@Component
 public class DefaultRatingDirectoryIndexer implements RatingDirectoryIndexer {
 	
 	static boolean initialized = false;
@@ -25,8 +29,11 @@ public class DefaultRatingDirectoryIndexer implements RatingDirectoryIndexer {
 	static Logger logger = 
 		Logger.getLogger(DefaultRatingDirectoryIndexer.class);
 	
-	private Directory directory;
+	@Autowired
+	@Qualifier("ratingIndexWriter")
 	private IndexWriter indexWriter;
+	
+	@Autowired
 	private RatingDao ratingDao;
 	
 	public void initIndex()
@@ -95,9 +102,6 @@ public class DefaultRatingDirectoryIndexer implements RatingDirectoryIndexer {
 		
 	}
 
-	public void setDirectory( Directory directory) {
-		this.directory = directory;
-	}
 
 	public void setIndexWriter( IndexWriter indexWriter) {
 		this.indexWriter = indexWriter;

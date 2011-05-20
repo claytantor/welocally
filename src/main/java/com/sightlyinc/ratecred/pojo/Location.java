@@ -1,4 +1,4 @@
-package com.sightlyinc.ratecred.model;
+package com.sightlyinc.ratecred.pojo;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

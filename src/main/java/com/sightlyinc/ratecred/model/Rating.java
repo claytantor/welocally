@@ -74,23 +74,25 @@ public class Rating extends BaseEntity implements Serializable {
 	private String txIdGowalla;
 
 	@JsonProperty
-	@OneToMany(mappedBy = "rating")
-	private transient Set<RatingAttribute> attributes;
+	@OneToMany
+	@JoinColumn(name = "rating_id")
+	private Set<RatingAttribute> attributes;
 
 	
 	@JsonProperty
-	@OneToMany(mappedBy = "rating")
-	private transient Set<Compliment> compliments;
+	@OneToMany
+	@JoinColumn(name = "rating_id")
+	private Set<Compliment> compliments;
 	
 	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name = "patron_id")
-	private transient Patron owner;
+	private Patron owner;
 	
 	@JsonProperty
 	@ManyToOne
 	@JoinColumn(name = "place_id")
-	private transient Place place;
+	private Place place;
 	
 	
 

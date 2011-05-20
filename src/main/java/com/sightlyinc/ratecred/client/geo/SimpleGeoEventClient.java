@@ -12,7 +12,7 @@ import com.rosaloves.net.shorturl.bitly.Bitly;
 import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
 import com.sightlyinc.ratecred.model.Event;
-import com.sightlyinc.ratecred.model.Events;
+import com.sightlyinc.ratecred.pojo.Events;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
 import com.simplegeo.client.types.Point;

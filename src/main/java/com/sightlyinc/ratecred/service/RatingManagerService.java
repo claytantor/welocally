@@ -6,12 +6,12 @@ import java.util.List;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Compliment;
-import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
+import com.sightlyinc.ratecred.pojo.Page;
 
 public interface RatingManagerService {
 	

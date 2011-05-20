@@ -2,42 +2,42 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-	<bean name="PlaceDirectoryIndexer"
+	<!--  <bean name="PlaceDirectoryIndexer"
 		class="com.sightlyinc.ratecred.index.DefaultPlaceDirectoryIndexer"
 		singleton="true"
 		init-method="initIndex">
 		<property name="indexWriter"><ref bean="PlaceIndexWriter"/></property>
 		<property name="directory"><ref bean="PlaceDirectory"/></property>
 		<property name="placeDao"><ref bean="PlaceDao"/></property> 
-	</bean>	
+	</bean>	-->
 
-	<bean name="PlaceDirectory"
+	<bean name="placeDirectory"
 		class="org.apache.lucene.store.RAMDirectory"
 		singleton="true"/>
 
-	<bean name="PlaceAnalyzer"
+	<bean name="placeAnalyzer"
 		class="org.apache.lucene.analysis.standard.StandardAnalyzer"
 		singleton="true"/>
 		
-	<bean name="KeepOnlyLastCommitDeletionPolicy"
+	<bean name="keepOnlyLastCommitDeletionPolicy"
 		class="org.apache.lucene.index.KeepOnlyLastCommitDeletionPolicy"
 		singleton="true"/>
 		
 		
-	<bean name="PlaceIndexWriter"
+	<bean name="placeIndexWriter"
           class="org.apache.lucene.index.IndexWriter" 
           singleton="true">
           <constructor-arg>
-               <ref bean="PlaceDirectory"/>
+               <ref bean="placeDirectory"/>
           </constructor-arg>  
           <constructor-arg>
                <value>true</value>
           </constructor-arg>            
           <constructor-arg>
-               <ref bean="PlaceAnalyzer"/>
+               <ref bean="placeAnalyzer"/>
           </constructor-arg>    
           <constructor-arg>
-               <ref bean="KeepOnlyLastCommitDeletionPolicy"/>
+               <ref bean="keepOnlyLastCommitDeletionPolicy"/>
           </constructor-arg>              
      </bean>
      

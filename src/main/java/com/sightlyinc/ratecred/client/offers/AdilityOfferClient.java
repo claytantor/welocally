@@ -22,7 +22,7 @@ import com.adility.resources.model.OffersResponse;
 import com.adility.resources.model.RequestModel;
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.string.StringUtils;
-import com.sightlyinc.ratecred.model.Location;
+import com.sightlyinc.ratecred.pojo.Location;
 
 
 public class AdilityOfferClient implements OfferClient {

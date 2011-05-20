@@ -87,6 +87,7 @@ CREATE  TABLE IF NOT EXISTS `offer` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NOT NULL ,
   `merchant_id` BIGINT(20) NOT NULL ,
+  `award_id` BIGINT(20) NOT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `description` TEXT NULL DEFAULT NULL ,
   `status` VARCHAR(45) NULL DEFAULT NULL ,
@@ -106,11 +107,17 @@ CREATE  TABLE IF NOT EXISTS `offer` (
   `time_updated` BIGINT NULL DEFAULT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_offer_merchant1` (`merchant_id` ASC) ,
+  INDEX `fk_offer_award1` (`award_id` ASC) ,
   CONSTRAINT `fk_offer_merchant1`
     FOREIGN KEY (`merchant_id` )
     REFERENCES `merchant` (`id` )
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_offer_award1`
+    FOREIGN KEY (`award_id` )
+    REFERENCES `award` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION  )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -216,6 +223,7 @@ DROP TABLE IF EXISTS `business_attribute` ;
 
 CREATE  TABLE IF NOT EXISTS `business_attribute` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NULL DEFAULT NULL ,
   `name` VARCHAR(255) NOT NULL ,
   `attribute_value` TEXT NULL DEFAULT NULL ,
   `business_id` BIGINT(20) NULL DEFAULT NULL ,
@@ -300,6 +308,24 @@ CREATE  TABLE IF NOT EXISTS `place` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- -----------------------------------------------------
+-- Table `place_city_state`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `place_city_state` ;
+
+CREATE  TABLE IF NOT EXISTS `place_city_state` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NOT NULL ,
+  `city` VARCHAR(255) NOT NULL ,
+  `state` VARCHAR(255) NULL DEFAULT NULL ,
+  `count` INT DEFAULT 0 ,
+  `time_created` BIGINT NULL DEFAULT NULL ,
+  `time_updated` BIGINT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
 
 -- -----------------------------------------------------
 -- Table `rating`
@@ -349,8 +375,8 @@ DROP TABLE IF EXISTS `compliment` ;
 CREATE  TABLE IF NOT EXISTS `compliment` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NOT NULL ,
-  `patron_id` BIGINT(20) NOT NULL ,
-  `rating_id` BIGINT(20) NOT NULL ,
+  `patron_id` BIGINT(20),
+  `rating_id` BIGINT(20),
   `note` TEXT NULL DEFAULT NULL ,
   `time_created` BIGINT NULL DEFAULT NULL ,
   `time_updated` BIGINT NULL DEFAULT NULL ,
@@ -361,7 +387,12 @@ CREATE  TABLE IF NOT EXISTS `compliment` (
     FOREIGN KEY (`rating_id` )
     REFERENCES `rating` (`id` )
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_compliment_patron1`
+    FOREIGN KEY (`patron_id` )
+    REFERENCES `patron` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION  )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -376,7 +407,6 @@ CREATE  TABLE IF NOT EXISTS `voucher` (
   `version` INT(11) NULL DEFAULT NULL ,
   `offer_id` BIGINT(20) NULL DEFAULT NULL ,
   `cust_order_id` BIGINT(20) NULL DEFAULT NULL ,
-  `order_item_id` BIGINT(20) NULL DEFAULT NULL ,
   `redemption_code` VARCHAR(255) NULL DEFAULT NULL ,
   `metadata` TEXT NULL DEFAULT NULL ,
   `notes` TEXT NULL DEFAULT NULL ,
@@ -390,20 +420,14 @@ CREATE  TABLE IF NOT EXISTS `voucher` (
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
   PRIMARY KEY (`id`),
   INDEX `fk_voucher_offer1` (`offer_id` ASC) ,
-  INDEX `fk_voucher_order1` (`order_id` ASC) ,
-  INDEX `fk_voucher_order_item1` (`order_item_id` ASC) ,
+  INDEX `fk_voucher_order1` (`cust_order_id` ASC) ,
   CONSTRAINT `fk_voucher_offer1`
     FOREIGN KEY (`offer_id` )
     REFERENCES `offer` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_voucher_order_item1`
-    FOREIGN KEY (`order_item_id` )
-    REFERENCES `order_item` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_voucher_order1`
-    FOREIGN KEY (`order_id` )
+    FOREIGN KEY (`cust_order_id` )
     REFERENCES `cust_order` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -557,7 +581,6 @@ CREATE  TABLE IF NOT EXISTS `patron` (
   `user_principal_id` BIGINT(20) NOT NULL ,
   `username` VARCHAR(255) NULL DEFAULT NULL ,
   `secretkey` VARCHAR(255) NULL DEFAULT NULL ,
-  `time_created` DATETIME NULL DEFAULT NULL ,
   `score` BIGINT(20) NULL DEFAULT '0' ,
   `profile_image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
@@ -566,6 +589,8 @@ CREATE  TABLE IF NOT EXISTS `patron` (
   `status` VARCHAR(12) NULL DEFAULT NULL ,
   `auth_foursquare` VARCHAR(12) NULL DEFAULT 'false' ,
   `auth_gowalla` VARCHAR(12) NULL DEFAULT 'false' ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,   
   PRIMARY KEY (`id`) ,
   INDEX `fk_patron_user_principal1` (`user_principal_id` ASC) ,
   CONSTRAINT `fk_patron_user_principal1`
@@ -713,7 +738,7 @@ CREATE  TABLE IF NOT EXISTS `business_location` (
   `phone` VARCHAR(16) NULL DEFAULT NULL ,
   `url` VARCHAR(1024) NULL DEFAULT NULL ,
   `flag` VARCHAR(16) NULL DEFAULT 'ACTIVE' ,
-  `descr` TEXT NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,  

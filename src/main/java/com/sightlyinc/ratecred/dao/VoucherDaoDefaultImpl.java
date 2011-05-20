@@ -13,7 +13,7 @@ extends AbstractDao<Voucher>
 
 	static Logger logger = Logger.getLogger(VoucherDaoDefaultImpl.class);
 
-	public VoucherDaoDefaultImpl(Class<Voucher> persistentClass) {
+	public VoucherDaoDefaultImpl() {
 		super(Voucher.class);
 	}
  	  

@@ -1,12 +1,18 @@
 package com.sightlyinc.ratecred.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
  *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NOT NULL ,
   `merchant_id` BIGINT(20) NOT NULL ,
+  `award_id` BIGINT(20) NOT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `description` TEXT NULL DEFAULT NULL ,
   `status` VARCHAR(45) NULL DEFAULT NULL ,
@@ -37,30 +43,48 @@ public class Offer extends BaseEntity {
 	
 	private String name;
 	private String code;
+	
+	@Column(columnDefinition="TEXT")
 	private String description;
 	
 	private String url;
+	
+	@Column(name="time_starts")
 	private Long timeStarts;
+	
+	@Column(name="time_ends")
 	private Long timeEnds;
 	
 	private Float price;
+	
+	@Column(name="offer_value")
 	private Float offerValue;
+	
+	@Column(name="extra_details", columnDefinition="TEXT")
 	private String extraDetails;
-	private String illustrationUrl;
+	
 	private Integer quantity;
 	private String status;
+	
+	@Column(name="image_attachment_key")
 	private String imageAttachmentKey;
+	
+	@Column(name="category_attachment_key")
 	private String categoryAttachmentKey;
 	
 
 	//relationships
+	@ManyToOne
+	@JoinColumn(name = "award_id")
 	private Award award;
 	
-	private AwardType awardType;
-	
+	@ManyToOne
+	@JoinColumn(name = "merchant_id")
 	private Merchant merchant;
 	
-	private OfferEconomics offerEconomics;
+	//cant get this mapping working..help
+	/*@OneToOne(cascade = CascadeType.ALL)
+	private OfferEconomics offerEconomics;*/
 			
 	public Offer() {
 		super();
@@ -85,14 +109,6 @@ public class Offer extends BaseEntity {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	public AwardType getAwardType() {
-		return awardType;
-	}
-	public void setAwardType(AwardType awardType) {
-		this.awardType = awardType;
-	}
-
 	
 
 	public String getUrl() {
@@ -120,13 +136,7 @@ public class Offer extends BaseEntity {
 	public void setExtraDetails(String extraDetails) {
 		this.extraDetails = extraDetails;
 	}
-	public String getIllustrationUrl() {
-		return illustrationUrl;
-	}
-	public void setIllustrationUrl(String illustrationUrl) {
-		this.illustrationUrl = illustrationUrl;
-	}
-	
+
 	public Integer getQuantity() {
 		return quantity;
 	}
@@ -134,13 +144,13 @@ public class Offer extends BaseEntity {
 		this.quantity = quantity;
 	}
 
-	public OfferEconomics getOfferEconomics() {
+	/*public OfferEconomics getOfferEconomics() {
 		return offerEconomics;
 	}
 
 	public void setOfferEconomics(OfferEconomics offerEconomics) {
 		this.offerEconomics = offerEconomics;
-	}
+	}*/
 
 	public String getCode() {
 		return code;

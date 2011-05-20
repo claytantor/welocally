@@ -13,7 +13,7 @@ public class AwardType extends BaseEntity{
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "description")
+	@Column(name = "description", columnDefinition="TEXT")
 	private String description;
 	
 	@Column(name = "class_type")
@@ -27,10 +27,6 @@ public class AwardType extends BaseEntity{
 	
 	@Column(name = "next")
 	private String next;
-	
-	@Column(name = "category_attachment_key")
-	private String categoryAttachmentKey;
-	
 
 	public String getName() {
 		return name;
@@ -74,12 +70,7 @@ public class AwardType extends BaseEntity{
 	public void setNext(String next) {
 		this.next = next;
 	}
-	public String getCategoryAttachmentKey() {
-		return categoryAttachmentKey;
-	}
-	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
-		this.categoryAttachmentKey = categoryAttachmentKey;
-	}
+
 	
 	
 	

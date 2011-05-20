@@ -31,11 +31,11 @@ import com.sightlyinc.ratecred.dao.PlaceAttributeDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.index.PlaceDirectoryIndexer;
-import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
+import com.sightlyinc.ratecred.pojo.Page;
 
 @Service("PlaceManagerService")
 @Transactional(readOnly = true)
@@ -57,12 +57,12 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	//private PlaceRatingDao placeRatingDao;
 	
 	@Autowired
-	@Qualifier("PlaceDirectory")
+	@Qualifier("placeDirectory")
 	private Directory placeSearchDirectory;	
 	
-	@Autowired
-	@Qualifier("PlaceDirectoryIndexer")
-	private PlaceDirectoryIndexer placeDirectoryIndexer;
+	//@Autowired
+	//@Qualifier("placeDirectoryIndexer")
+	//private PlaceDirectoryIndexer placeDirectoryIndexer;
 	
 	@Autowired
 	@Qualifier("locationPlacesClient")

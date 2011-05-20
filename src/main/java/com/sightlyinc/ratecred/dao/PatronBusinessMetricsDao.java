@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
+import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
 public interface PatronBusinessMetricsDao {
 	

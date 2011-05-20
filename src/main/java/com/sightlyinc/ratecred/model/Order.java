@@ -1,9 +1,12 @@
 package com.sightlyinc.ratecred.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -43,26 +46,35 @@ import javax.persistence.Table;
 @Table(name="cust_order")
 public class Order extends BaseEntity {
 
-	//order id
-	private String externalId;
 	
 	//this is the id that is used to get the voucher
+	@Column(name="external_txid")
 	private String externalTxId;
 	
 	private String channel;
+	
+	@Column(name="buyer_name")
 	private String buyerName;
-	private String buyerEmail;	
+	
+	@Column(name="buyer_email")
+	private String buyerEmail;
+	
+	@Column(name="shipping_name")
 	private String shippingName;
 
 	@Column(name="address_one")
 	private String addressFieldOne;
 	
-	@Column(name="address_one")
+	@Column(name="address_two")
 	private String addressFieldTwo;
 	
 	private String city;
 	private String state;
+	
+	@Column(name="postal_code")
 	private String postalCode;
+	
+	@Column(name="country_code")
 	private String countryCode;
 	
 	//amazon  order item id
@@ -71,7 +83,10 @@ public class Order extends BaseEntity {
 	
 	private String sku;
 	private String title;
+	
+	@Column(columnDefinition="TEXT")
 	private String description;
+	
 	private Float price;
 	private String status;
 	
@@ -85,9 +100,9 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "offer_id")
 	private Offer offer;
 	
-	@ManyToOne
-	@JoinColumn(name = "voucher_id")
-	private Voucher voucher;
+	@OneToMany
+	@JoinColumn(name = "order_id")
+	private Set<Voucher> voucher;
 
 
 	public String getStatus() {
@@ -96,12 +111,7 @@ public class Order extends BaseEntity {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getExternalId() {
-		return externalId;
-	}
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
-	}
+
 	
 	
 	public String getExternalTxId() {
@@ -220,14 +230,14 @@ public class Order extends BaseEntity {
 	public void setOffer(Offer offer) {
 		this.offer = offer;
 	}
-	public Voucher getVoucher() {
+
+
+	public Set<Voucher> getVoucher() {
 		return voucher;
 	}
-	public void setVoucher(Voucher voucher) {
+	public void setVoucher(Set<Voucher> voucher) {
 		this.voucher = voucher;
 	}
-
-
 	public String getBuyerEmail() {
 		return buyerEmail;
 	}

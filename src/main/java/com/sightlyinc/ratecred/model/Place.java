@@ -66,14 +66,13 @@ public class Place extends BaseEntity {
 	private String addressFull;
 	
 	// relations
-	@OneToMany(mappedBy = "place")
+	@OneToMany
+	@JoinColumn(name="place_id")
 	private Set<Rating> ratings;
 	
-	@OneToMany(mappedBy = "place")
+	@OneToMany
+	@JoinColumn(name="place_id")
 	private Set<PlaceAttribute> attributes;
-	
-	//@OneToMany(mappedBy = "place")
-	//private Set<PlaceRating> placeRatings;
 	
 	@ManyToOne
 	@JoinColumn(name = "business_location_id")

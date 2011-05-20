@@ -11,7 +11,7 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
            
 	
-	<bean id="awardManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+<!-- 	<bean id="awardManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
 		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
 		<property name="target"><ref local="AwardManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
@@ -27,7 +27,7 @@
 		<property name="awardDao" ref="AwardDao"/>				
 		<property name="awardTypeDao" ref="AwardTypeDao"/>				
 		<property name="awardOfferDao" ref="AwardOfferDao"/>				
-	</bean>
+	</bean> -->
 	
 
 </beans>

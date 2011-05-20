@@ -12,10 +12,10 @@
         http://spring-security-oauth.codehaus.org/3.0 
         http://spring-security-oauth.codehaus.org/schema/spring-security-oauth-3.0.xsd">
 	<!-- property placeholder -->
-	<bean
+	<!-- <bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
 			<value>classpath:/com/sightlyinc/ratecred/client/link/linktest.properties</value>
 		</property>
-	</bean>
+	</bean> -->
 </beans>

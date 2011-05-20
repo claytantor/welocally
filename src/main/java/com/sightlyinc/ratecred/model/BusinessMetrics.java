@@ -34,7 +34,10 @@ public class BusinessMetrics extends BaseEntity {
 	@Column(name="rating_avg")
 	private Float ratingAverage;
 	
+	@Column(name="start_time")
 	private Long startTime;
+	
+	@Column(name="end_time")
 	private Long endTime;
 	
 	@ManyToOne

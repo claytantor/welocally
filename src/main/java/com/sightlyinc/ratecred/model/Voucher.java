@@ -5,14 +5,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.adility.resources.model.OrderItem;
-
 /**
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NULL DEFAULT NULL ,
   `offer_id` BIGINT(20) NULL DEFAULT NULL ,
   `cust_order_id` BIGINT(20) NULL DEFAULT NULL ,
-  `order_item_id` BIGINT(20) NULL DEFAULT NULL ,
   `redemption_code` VARCHAR(255) NULL DEFAULT NULL ,
   `metadata` TEXT NULL DEFAULT NULL ,
   `notes` TEXT NULL DEFAULT NULL ,
@@ -52,10 +49,7 @@ public class Voucher extends BaseEntity{
 	@JoinColumn(name = "cust_order_id")
 	private Order order;
 	
-	@ManyToOne
-	@JoinColumn(name = "order_item_id")
-	private OrderItem orderItem;
-	
+
 
 	public String getRedemptionCode() {
 		return redemptionCode;
@@ -130,13 +124,7 @@ public class Voucher extends BaseEntity{
 	public void setOrder(Order order) {
 		this.order = order;
 	}
-	public OrderItem getOrderItem() {
-		return orderItem;
-	}
-	public void setOrderItem(OrderItem orderItem) {
-		this.orderItem = orderItem;
-	}
-
+	
 	
 	
 

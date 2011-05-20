@@ -35,6 +35,7 @@ import com.sightlyinc.ratecred.model.Rating;
  * @author claygraham
  *
  */
+@Transactional
 public class RaptiveCheckinService implements CheckinService {
 	
 	private static final Log logger = LogFactory.getLog(RaptiveCheckinService.class);
@@ -60,6 +61,7 @@ public class RaptiveCheckinService implements CheckinService {
 	@Value("${aggegator.checkinCallbackUrl}")
 	private String checkinCallbackUrl;
 	
+	@Autowired
 	private RatingDao ratingDao;
 	
 	/**

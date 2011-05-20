@@ -11,7 +11,7 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
 	
 	
-	<bean id="linkClient" 
+	<!-- <bean id="linkClient" 
 		class="com.sightlyinc.ratecred.client.link.CommisionJunctionLinkClient">
 		<property name="apiKey" value="${linkClient.apiKey}"/>
 	</bean>
@@ -46,7 +46,7 @@
 		        </entry> 		        
 		   </map>		
 		</property>
-	</bean>
+	</bean> -->
 	 
 
 </beans>

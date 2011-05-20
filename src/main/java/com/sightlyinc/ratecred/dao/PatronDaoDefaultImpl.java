@@ -108,7 +108,7 @@ extends AbstractDao<Patron>
 		
 		if(oScalar[6] != null)
 		{
-			t.setImageValueId(((BigInteger)oScalar[6]).longValue());	
+			//t.setImageValueId(((BigInteger)oScalar[6]).longValue());	
 			//get the image value
 			Query queryImage = session.createQuery(
 					"select entityimpl from "+ImageValue.class.getName()+

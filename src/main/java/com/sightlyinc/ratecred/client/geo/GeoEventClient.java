@@ -1,7 +1,7 @@
 package com.sightlyinc.ratecred.client.geo;
 
 import com.sightlyinc.ratecred.model.Event;
-import com.sightlyinc.ratecred.model.Events;
+import com.sightlyinc.ratecred.pojo.Events;
 
 public interface GeoEventClient {
 	public Event findById(String id);

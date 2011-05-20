@@ -16,7 +16,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
+import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
 public class HibernatePatronBusinessMetricsDao 
 	extends HibernateDaoSupport 

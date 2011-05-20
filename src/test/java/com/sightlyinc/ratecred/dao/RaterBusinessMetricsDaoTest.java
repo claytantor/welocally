@@ -14,7 +14,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import com.noi.utility.spring.test.AbstractBeanFactoryTestCase;
 import com.sightlyinc.ratecred.model.BusinessLocation;
-import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
+import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
 public class RaterBusinessMetricsDaoTest extends AbstractBeanFactoryTestCase {
 	

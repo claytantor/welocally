@@ -10,7 +10,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
 	
-	<bean id="RatingManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+	<!-- <bean id="RatingManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
 		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
 		<property name="target"><ref local="RatingManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
@@ -34,9 +34,8 @@
 		<property name="placeCityStateDao"><ref bean="PlaceCityStateDao"/></property>
 		<property name="ratingDirectoryIndexer"><ref bean="RatingDirectoryIndexer"/></property>
 		<property name="ratingSearchDirectory"><ref bean="RatingDirectory"/></property>				
-			
-		<!-- <property name="ratingsPerPage" value="${rating-services.RatingManagerService.ratingsPerPage}"/> -->	
-	</bean>
+
+	</bean> -->
 	
 
 </beans>

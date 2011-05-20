@@ -19,6 +19,9 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.math.Rounding;
@@ -35,40 +38,50 @@ import com.sightlyinc.ratecred.index.RatingDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Compliment;
-import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
+import com.sightlyinc.ratecred.pojo.Page;
 
+@Transactional
 public class RatingManagerServiceImpl implements RatingManagerService {
 	
 	static Logger logger = 
 		Logger.getLogger(RatingManagerServiceImpl.class);
 	
+	@Autowired
 	private RatingDao ratingDao;
+	
+	@Autowired
 	private PatronMetricsDao raterMetricsDao;
+	
+	@Autowired
 	private AwardTypeDao awardTypeDao; 
+	
+	@Autowired
 	private AwardDao awardDao;
-	//private OfferDao awardOfferDao;
+
+	@Autowired
 	private PatronDao raterDao;
-    private ComplimentDao complimentDao;
-    private PlaceCityStateDao placeCityStateDao;
+    
+	@Autowired
+	private ComplimentDao complimentDao;
+    
+	@Autowired
+	private PlaceCityStateDao placeCityStateDao;
+	
+	@Autowired
 	private PlaceDao placeDao;
 	
-	//private String appConsumerKey;
-	//private String appSecretKey;
-	//private String ratingUrlPrefix;
-	
-	
+	@Autowired
+	@Qualifier("ratingDirectory")
 	private Directory ratingDirectory;	
+	
+	@Autowired
 	private RatingDirectoryIndexer ratingDirectoryIndexer;
-	
-	
-	//@Autowired
-	//private CheckinService checkinService;
-	
+		
 	
 	public void saveUpdatePlaceRating(Long id)  {
 		Place p = placeDao.findByPrimaryKey(id);
@@ -907,7 +920,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	 * 
 	 * @param ratingSearchDirectory
 	 */
-	public void setRatingSearchDirectory(Directory ratingSearchDirectory) {
+/*	public void setRatingSearchDirectory(Directory ratingSearchDirectory) {
 		this.ratingDirectory = ratingSearchDirectory;
 	}
 
@@ -939,25 +952,9 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 
 	public void setAwardDao(AwardDao awardDao) {
 		this.awardDao = awardDao;
-	}
-
-	/*public void setAppConsumerKey(String appConsumerKey) {
-		this.appConsumerKey = appConsumerKey;
-	}
-
-	public void setAppSecretKey(String appSecretKey) {
-		this.appSecretKey = appSecretKey;
-	}
-
-	public void setRatingUrlPrefix(String ratingUrlPrefix) {
-		this.ratingUrlPrefix = ratingUrlPrefix;
-	}
-
-
-	public void setAwardOfferDao(OfferDao awardOfferDao) {
-		this.awardOfferDao = awardOfferDao;
 	}*/
-	
+
+
 	
 
 	

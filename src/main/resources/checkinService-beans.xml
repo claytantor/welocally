@@ -10,7 +10,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
 	
-	<bean id="checkinService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+	<!-- <bean id="checkinService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
 		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
 		<property name="target"><ref local="checkinServiceTarget"/></property>
 		<property name="transactionAttributes">
@@ -22,7 +22,7 @@
 	
 	<bean id="checkinServiceTarget" class="com.sightlyinc.ratecred.service.RaptiveCheckinService">
 		<property name="ratingDao"><ref bean="RatingDao"/></property>			
-	</bean>
+	</bean> -->
 	
 
 </beans>

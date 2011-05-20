@@ -27,7 +27,17 @@
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-surefire-plugin</artifactId>
       <configuration>
-        <skip>true</skip>
+        <skip>false</skip>
+        <excludes>
+        	<exclude>**/*RaterHibernateInitTest.java</exclude>
+        	<exclude>**/*RaterDataLoadTest.java</exclude>
+        	<exclude>**/*SimpleGeoLocationClientTest.java</exclude>
+        	<exclude>**/*CommisionJunctionLinkClientTest.java</exclude>
+        	<exclude>**/*BusinessMetricsJobTest.java</exclude>
+        	<exclude>**/*RaterDaoTest.java</exclude>
+        	<exclude>**/*RaterDaoTest.java</exclude>
+        	<exclude>**/*BaseTest.java</exclude>      	
+        </excludes>        
       </configuration>
     </plugin> 
     
@@ -369,6 +379,16 @@
     	<artifactId>junit</artifactId>
     	<version>4.8.2</version>
     	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>oauth.signpost</groupId>
+    	<artifactId>signpost-core</artifactId>
+    	<version>1.2.1.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>oauth.signpost</groupId>
+    	<artifactId>signpost-commonshttp4</artifactId>
+    	<version>1.2.1.1</version>
     </dependency>
   </dependencies>
 

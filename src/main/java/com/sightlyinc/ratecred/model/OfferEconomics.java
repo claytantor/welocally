@@ -1,8 +1,10 @@
 package com.sightlyinc.ratecred.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -37,14 +39,17 @@ public class OfferEconomics extends BaseEntity {
 	@JoinColumn(name = "affiliate_id")
 	private Affiliate affiliate;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "offer_id")
 	private Offer offer;
 	
+	@Column(name="publisher_revenue_percentage")
 	private Float publisherRevenuePercentage;
 	
+	@Column(name="merchant_revenue_percentage")
 	private Float merchantRevenuePercentage;
 	
+	@Column(name="affiliate_revenue_percentage")
 	private Float affiliateRevenuePercentage;
 	
 	

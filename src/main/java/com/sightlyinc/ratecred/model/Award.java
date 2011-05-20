@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -25,11 +26,11 @@ public class Award extends BaseEntity {
 	private Long expires;	
 	
 	@JsonProperty
-	@Column(name = "notes")
+	@Column(name = "notes", columnDefinition="TEXT")
 	private String notes;
 	
 	@JsonProperty
-	@Column(name = "metadata")
+	@Column(name="metadata", columnDefinition="TEXT")
 	private String metadata;
 	
 	@JsonProperty
@@ -38,6 +39,7 @@ public class Award extends BaseEntity {
 	
 	//not persistent
 	@JsonProperty
+	@Transient
 	private Boolean giveOffer = true;
 		
 	@JsonIgnore

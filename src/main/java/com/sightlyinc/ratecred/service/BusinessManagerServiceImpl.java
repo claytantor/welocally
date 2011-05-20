@@ -13,32 +13,35 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.date.DateUtils;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.compare.BusinessMetricsStartDateComparitor;
 import com.sightlyinc.ratecred.dao.AwardDao;
-import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.AwardTypeDao;
 import com.sightlyinc.ratecred.dao.BusinessDao;
 import com.sightlyinc.ratecred.dao.BusinessLocationDao;
 import com.sightlyinc.ratecred.dao.BusinessMetricsDao;
-import com.sightlyinc.ratecred.dao.PlaceDao;
+import com.sightlyinc.ratecred.dao.OfferDao;
 import com.sightlyinc.ratecred.dao.PatronBusinessMetricsDao;
 import com.sightlyinc.ratecred.dao.PatronDao;
+import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessAttribute;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.model.BusinessMetrics;
-import com.sightlyinc.ratecred.model.BusinessMetricsMetadata;
-import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.PatronBusinessMetrics;
+import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.pojo.BusinessMetricsMetadata;
+import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
+@Transactional
 public class BusinessManagerServiceImpl implements BusinessManagerService {
 	
 	private static final long MILLS_DAY = 86400000l;
@@ -46,21 +49,38 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	static Logger logger = 
 		Logger.getLogger(BusinessManagerServiceImpl.class);
 	
-	
+	@Autowired
 	private BusinessDao businessDao;
+	
+	@Autowired
 	private BusinessLocationDao businessLocationDao;
+	
+	@Autowired
 	private BusinessMetricsDao businessMetricsDao;
+	
+	@Autowired
 	private PatronBusinessMetricsDao raterBusinessMetricsDao;
 	
+	@Autowired
 	private PatronDao raterDao;	
+	
+	@Autowired
 	private PlaceDao placeDao;
+	
+	@Autowired
 	private AwardTypeDao awardTypeDao;
+	
+	@Autowired
 	private AwardDao awardDao;
+	
+	@Autowired
 	private OfferDao awardOfferDao; 
 	
+	@Autowired
 	private String imageBase;
-	private String imageBaseType;
 	
+	@Autowired
+	private String imageBaseType;
 	
 
 	@Override
@@ -365,8 +385,8 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	public void saveBusinessAward(Offer ao, String notes, Date expires, Patron t)
 			throws BLServiceException {
 		Award a = new Award();
-		a.setAwardType(ao.getAwardType());
-		a.setMetadata(imageBase+ao.getAwardType().getKeyname()+imageBaseType);
+		a.setAwardType(ao.getAward().getAwardType());
+		a.setMetadata(imageBase+ao.getAward().getAwardType().getKeyname()+imageBaseType);
 		a.getOffers().add(ao);
 		a.setOwner(t);
 		

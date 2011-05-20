@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.OrderDao;
@@ -13,7 +14,7 @@ import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Voucher;
 
 
-
+@Transactional
 public class OrderManagerServiceImpl implements OrderManagerService {
 	
 	static Logger logger = 

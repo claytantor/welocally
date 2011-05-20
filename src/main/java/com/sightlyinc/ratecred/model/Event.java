@@ -48,7 +48,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="entity")
+@Table(name="event")
 public class Event extends BaseEntity {
 	
 	private enum RecurranceType {DAILY,WEEKLY,MONTHLY,YEARLY,HOURLY,MINUTELY}
@@ -59,6 +59,7 @@ public class Event extends BaseEntity {
 	
 	private Float cost;
 	
+	@Column(columnDefinition="TEXT")
 	private String description;
 	
 	private String whenText;
@@ -69,21 +70,24 @@ public class Event extends BaseEntity {
 	@Column(name="image_attachment_key")
 	private String imageAttachmentKey;
 
+	@Column(name="time_starts")
 	private Long timeStarts;
 	
+	@Column(name="time_ends")
 	private Long timeEnds;
 	
-	@Column(name="recurrance_type")
-	@Enumerated(EnumType.STRING)
-	private RecurranceType recurranceType;
+//	@Column(name="recurrance_type")
+//	@Enumerated(EnumType.STRING)
+//	private RecurranceType recurranceType;
 	
+	@Column(name="recurrance_interval")
 	private Integer recurranceInterval;
 	
+	@Column(name="recurrance_data")
 	private String recurranceData;
 	
+	@Column(name="recurrance_end")
 	private Long recurranceEnd;
-	
-	private String categories;
 	
 	private String phone;
 	
@@ -107,12 +111,7 @@ public class Event extends BaseEntity {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public String getCategories() {
-		return categories;
-	}
-	public void setCategories(String categories) {
-		this.categories = categories;
-	}
+	
 	
 	public String getPhone() {
 		return phone;
@@ -163,12 +162,12 @@ public class Event extends BaseEntity {
 	public void setTimeEnds(Long timeEnds) {
 		this.timeEnds = timeEnds;
 	}
-	public RecurranceType getRecurranceType() {
-		return recurranceType;
-	}
-	public void setRecurranceType(RecurranceType recurranceType) {
-		this.recurranceType = recurranceType;
-	}
+//	public RecurranceType getRecurranceType() {
+//		return recurranceType;
+//	}
+//	public void setRecurranceType(RecurranceType recurranceType) {
+//		this.recurranceType = recurranceType;
+//	}
 	public Integer getRecurranceInterval() {
 		return recurranceInterval;
 	}

@@ -1,18 +1,16 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
-public class Publisher {
-	
-	private Long id;
-		
+@Entity
+@Table(name="publisher")
+public class Publisher extends BaseEntity {
 	
 	private String token;
 	private String url;
@@ -21,20 +19,13 @@ public class Publisher {
 	private Integer monthlyPageviews;
 	
 	
-	@ManyToOne
-	@JoinColumn(name = "network_member_id")
+	@ManyToOne	
 	private NetworkMember networkMember;
 	 
-	@OneToMany(mappedBy = "affiliate")
+	@OneToMany
+	@JoinColumn(name = "publisher_id")
 	private Set<OfferEconomics> offerEconomics;
 
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public String getToken() {
 		return token;
 	}

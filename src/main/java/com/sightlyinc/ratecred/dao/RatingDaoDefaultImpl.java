@@ -29,7 +29,7 @@ extends AbstractDao<Rating>
 
 	static Logger logger = Logger.getLogger(RatingDaoDefaultImpl.class);
     
-    public RatingDaoDefaultImpl(Class<Rating> persistentClass) {
+    public RatingDaoDefaultImpl() {
 		super(Rating.class);
 	}
 

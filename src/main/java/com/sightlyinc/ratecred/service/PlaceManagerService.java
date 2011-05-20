@@ -3,10 +3,10 @@ package com.sightlyinc.ratecred.service;
 import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.model.Page;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
 import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.pojo.Page;
 
 public interface PlaceManagerService {
 	

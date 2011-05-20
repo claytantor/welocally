@@ -11,7 +11,7 @@
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
            
 	
-	<bean id="orderManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
+	<!-- <bean id="orderManagerService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">	
 		<property name="transactionManager"><ref bean="ApplicationTransactionManager"/></property>
 		<property name="target"><ref local="OrderManagerServiceTarget"/></property>
 		<property name="transactionAttributes">
@@ -26,7 +26,7 @@
 	<bean id="OrderManagerServiceTarget" class="com.sightlyinc.ratecred.service.OrderManagerServiceImpl">
 		<property name="orderDao" ref="OrderDao"/>				
 		<property name="voucherDao" ref="VoucherDao"/>								
-	</bean>
+	</bean> -->
 	
 
 </beans>

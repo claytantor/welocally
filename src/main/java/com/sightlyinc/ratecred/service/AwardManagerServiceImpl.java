@@ -19,7 +19,7 @@ import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Patron;
 
 
-
+@Transactional
 public class AwardManagerServiceImpl implements AwardManagerService {
 	
 	static Logger logger = 

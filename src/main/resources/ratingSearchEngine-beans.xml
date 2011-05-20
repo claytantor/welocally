@@ -2,84 +2,45 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-	<bean name="KeepOnlyLastCommitDeletionPolicy"
+	<bean name="keepOnlyLastCommitDeletionPolicy"
 		class="org.apache.lucene.index.KeepOnlyLastCommitDeletionPolicy"
 		singleton="true"/>
 
 	<!-- rating search -->
-	<bean name="RatingDirectoryIndexer"
+	<!-- <bean name="RatingDirectoryIndexer"
 		class="com.sightlyinc.ratecred.index.DefaultRatingDirectoryIndexer"
 		singleton="true"
 		init-method="initIndex">
 		<property name="indexWriter"><ref bean="RatingIndexWriter"/></property>
 		<property name="directory"><ref bean="RatingDirectory"/></property>
 		<property name="ratingDao"><ref bean="RatingDao"/></property> 
-	</bean>	
+	</bean>	 -->
 
-	<bean name="RatingDirectory"
+	<bean name="ratingDirectory"
 		class="org.apache.lucene.store.RAMDirectory"
 		singleton="true"/>
 
-	<bean name="RatingAnalyzer"
+	<bean name="ratingAnalyzer"
 		class="org.apache.lucene.analysis.standard.StandardAnalyzer"
 		singleton="true"/>
-		
-
-		
-		
-	<bean name="RatingIndexWriter"
+			
+	<bean name="ratingIndexWriter"
           class="org.apache.lucene.index.IndexWriter" 
           singleton="true">
           <constructor-arg>
-               <ref bean="RatingDirectory"/>
+               <ref bean="ratingDirectory"/>
           </constructor-arg>  
           <constructor-arg>
                <value>true</value>
           </constructor-arg>            
           <constructor-arg>
-               <ref bean="RatingAnalyzer"/>
+               <ref bean="ratingAnalyzer"/>
           </constructor-arg>    
           <constructor-arg>
-               <ref bean="KeepOnlyLastCommitDeletionPolicy"/>
+               <ref bean="keepOnlyLastCommitDeletionPolicy"/>
           </constructor-arg>              
      </bean>
      
-	<!-- place search -->
-	<bean name="PlaceDirectoryIndexer"
-		class="com.sightlyinc.ratecred.index.DefaultPlaceDirectoryIndexer"
-		singleton="true"
-		init-method="initIndex">
-		<property name="indexWriter"><ref bean="PlaceIndexWriter"/></property>
-		<property name="directory"><ref bean="PlaceDirectory"/></property>
-		<property name="placeDao"><ref bean="PlaceDao"/></property> 
-	</bean>	
-
-	<bean name="PlaceDirectory"
-		class="org.apache.lucene.store.RAMDirectory"
-		singleton="true"/>
-
-	<bean name="PlaceAnalyzer"
-		class="org.apache.lucene.analysis.standard.StandardAnalyzer"
-		singleton="true"/>
-		
-		
-		
-	<bean name="PlaceIndexWriter"
-          class="org.apache.lucene.index.IndexWriter" 
-          singleton="true">
-          <constructor-arg>
-               <ref bean="PlaceDirectory"/>
-          </constructor-arg>  
-          <constructor-arg>
-               <value>true</value>
-          </constructor-arg>            
-          <constructor-arg>
-               <ref bean="PlaceAnalyzer"/>
-          </constructor-arg>    
-          <constructor-arg>
-               <ref bean="KeepOnlyLastCommitDeletionPolicy"/>
-          </constructor-arg>              
-     </bean>
 
 
 </beans>

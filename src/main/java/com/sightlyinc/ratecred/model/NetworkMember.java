@@ -31,20 +31,32 @@ public class NetworkMember extends BaseEntity {
 	public enum MemberType{PUBLISHER,AFFILIATE,MERCHANT}
 	
 	private String name;
+	
+	@Column(name="member_key")
 	private String memberKey;
+	
+	@Column(columnDefinition="TEXT")
 	private String description;
+	
+	@Column(name="icon_url")
 	private String iconUrl;
+	
+	@Column(name="map_icon_url")
 	private String mapIconUrl;
+	
+	@Column(name="primary_email")
 	private String primaryEmail;
+	
+	@Column(name="paypal_email")
 	private String paypalEmail;
 	
-	@Column(name = "member_type")
+	@Column(name = "member_type", columnDefinition="enum ('PUBLISHER','AFFILIATE','MERCHANT')")
 	@Enumerated(EnumType.STRING)
 	private MemberType type;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name = "user_principal_id")
-	private UserPrincipal principal;
+	private UserPrincipal principal;*/
 
 	public String getName() {
 		return name;
@@ -94,13 +106,13 @@ public class NetworkMember extends BaseEntity {
 		this.type = type;
 	}
 
-	public UserPrincipal getPrincipal() {
+	/*public UserPrincipal getPrincipal() {
 		return principal;
 	}
 
 	public void setPrincipal(UserPrincipal principal) {
 		this.principal = principal;
-	}
+	}*/
 
 	public String getPrimaryEmail() {
 		return primaryEmail;

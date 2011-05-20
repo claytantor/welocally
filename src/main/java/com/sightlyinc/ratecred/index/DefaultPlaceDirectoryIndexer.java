@@ -8,6 +8,9 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.model.Place;
@@ -18,6 +21,7 @@ import com.sightlyinc.ratecred.model.Place;
  * @author cgraham
  *
  */
+@Component("placeDirectoryIndexer")
 public class DefaultPlaceDirectoryIndexer implements PlaceDirectoryIndexer {
 	
 	static boolean initialized = false;
@@ -25,8 +29,11 @@ public class DefaultPlaceDirectoryIndexer implements PlaceDirectoryIndexer {
 	static Logger logger = 
 		Logger.getLogger(DefaultPlaceDirectoryIndexer.class);
 	
-	private Directory directory;
+	@Autowired
+	@Qualifier("placeIndexWriter")
 	private IndexWriter indexWriter;
+	
+	@Autowired
 	private PlaceDao placeDao;
 		
 	@Override
@@ -93,16 +100,16 @@ public class DefaultPlaceDirectoryIndexer implements PlaceDirectoryIndexer {
 		}
 	}
 	
-	public void setDirectory( Directory directory) {
-		this.directory = directory;
-	}
-
-	public void setIndexWriter( IndexWriter indexWriter) {
-		this.indexWriter = indexWriter;
-	}
-
-	public void setPlaceDao(PlaceDao placeDao) {
-		this.placeDao = placeDao;
-	}	
+//	public void setDirectory( Directory directory) {
+//		this.directory = directory;
+//	}
+//
+//	public void setIndexWriter( IndexWriter indexWriter) {
+//		this.indexWriter = indexWriter;
+//	}
+//
+//	public void setPlaceDao(PlaceDao placeDao) {
+//		this.placeDao = placeDao;
+//	}	
 		
 }
