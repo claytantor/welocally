@@ -101,7 +101,7 @@ public class Order extends BaseEntity {
 	private Offer offer;
 	
 	@OneToMany
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "cust_order_id")
 	private Set<Voucher> voucher;
 
 

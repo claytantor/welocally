@@ -30,6 +30,7 @@
         <skip>false</skip>
         <excludes>
         	<exclude>**/*RaterHibernateInitTest.java</exclude>
+        	<exclude>**/*RaterBusinessMetricsDaoTest.java</exclude>      	
         	<exclude>**/*RaterDataLoadTest.java</exclude>
         	<exclude>**/*SimpleGeoLocationClientTest.java</exclude>
         	<exclude>**/*CommisionJunctionLinkClientTest.java</exclude>

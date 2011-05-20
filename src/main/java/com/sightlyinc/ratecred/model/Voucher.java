@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,17 +29,26 @@ import javax.persistence.Table;
 @Table(name="voucher")
 public class Voucher extends BaseEntity{
 	
-	
+	@Column(name="redemption_code")
 	private String redemptionCode;
 	     
+	@Column(columnDefinition="TEXT")
 	private String metadata;
+	@Column(columnDefinition="TEXT")
 	private String notes;
+	
+	@Column(name="image_url")
 	private String imageUrl;
 	private String status;
-	private String printUrl;
+
+	@Column(name="time_expires")
 	private Long timeExpires;
+	@Column(name="time_aquired")
 	private Long timeAquired;
+	@Column(name="time_redeemed")
 	private Long timeRedeemed;
+	
+	@Column(name="time_cancelled")
 	private Long timeCancelled;
 	
 	@ManyToOne
@@ -58,12 +68,7 @@ public class Voucher extends BaseEntity{
 		this.redemptionCode = redemptionCode;
 	}
 	
-	public String getPrintUrl() {
-		return printUrl;
-	}
-	public void setPrintUrl(String printUrl) {
-		this.printUrl = printUrl;
-	}
+
 	public String getStatus() {
 		return status;
 	}

@@ -28,7 +28,7 @@ public class PlaceAttribute  extends BaseEntity {
 	
 	private String name;
 	
-	@Column(name="attribute_value")
+	@Column(name="attribute_value", columnDefinition="TEXT")
 	private String value;
 
 	@ManyToOne

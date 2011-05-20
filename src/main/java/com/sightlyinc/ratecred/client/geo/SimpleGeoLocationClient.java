@@ -152,18 +152,18 @@ public class SimpleGeoLocationClient implements GeoPlacesClient {
 			p.setState(f.getProperties().get("province").toString());
 		if(f.getProperties().get("phone") != null)
 			p.setPhone(f.getProperties().get("phone").toString());
-		if(f.getProperties().get("website") != null && f.getProperties().get("website").toString().startsWith("http"))
-			p.setWebsite(f.getProperties().get("website").toString().toLowerCase());
+		if(f.getProperties().get("url") != null && f.getProperties().get("website").toString().startsWith("http"))
+			p.setUrl(f.getProperties().get("website").toString().toLowerCase());
 		else if(f.getProperties().get("website") != null)
-			p.setWebsite("http://"+f.getProperties().get("website").toString().toLowerCase());
+			p.setUrl("http://"+f.getProperties().get("website").toString().toLowerCase());
 		
 		//use first cat
 		JSONArray classifiers = (JSONArray)f.getProperties().get("classifiers");
 		try {
 			if(classifiers != null && !classifiers.isNull(0)) {
 				JSONObject first = classifiers.getJSONObject(0);
-				p.setCategory(first.getString("category"));
-				p.setSubcategory(first.getString("subcategory"));
+				//p.setCategory(first.getString("category"));
+				//p.setSubcategory(first.getString("subcategory"));
 				//p.setCategoryType(first.getString("type"));
 			}
 		} catch (JSONException e) {

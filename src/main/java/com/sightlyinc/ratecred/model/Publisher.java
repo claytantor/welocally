@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,26 +13,23 @@ import javax.persistence.Table;
 @Table(name="publisher")
 public class Publisher extends BaseEntity {
 	
-	private String token;
 	private String url;
+	
+	@Column(name="site_name")
 	private String siteName;
-	private String description;
+	
+	@Column(name="monthly_pageviews")
 	private Integer monthlyPageviews;
 	
 	
 	@ManyToOne	
+	@JoinColumn(name = "network_member_id")
 	private NetworkMember networkMember;
 	 
 	@OneToMany
 	@JoinColumn(name = "publisher_id")
 	private Set<OfferEconomics> offerEconomics;
 
-	public String getToken() {
-		return token;
-	}
-	public void setToken(String token) {
-		this.token = token;
-	}
 
 	public String getSiteName() {
 		return siteName;
@@ -39,12 +37,7 @@ public class Publisher extends BaseEntity {
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+
 
 	public Integer getMonthlyPageviews() {
 		return monthlyPageviews;

@@ -43,19 +43,21 @@ public class Rating extends BaseEntity implements Serializable {
 	private String type;
 	
 	@JsonProperty
+	@Column(columnDefinition="TEXT")
 	private String notes;
 	
 	@JsonProperty
+	@Column(name="twitter_status_id")
 	private Long twitterStatusId;
 	
 	@JsonProperty
+	@Column(name="patron_rating")
 	private Float patronRating;
 		
 	@JsonProperty
-	private String referalUrl;
+	@Column(name="referral_url")
+	private String referralUrl;
 	
-	@JsonProperty
-	private String referalToken;
 	
 	@JsonProperty
 	@Column(name="checkin_foursquare")
@@ -179,23 +181,14 @@ public class Rating extends BaseEntity implements Serializable {
 
 	@JsonProperty
 	public String getReferalUrl() {
-		return referalUrl;
+		return referralUrl;
 	}
 
 	@JsonProperty
 	public void setReferalUrl(String referalUrl) {
-		this.referalUrl = referalUrl;
+		this.referralUrl = referalUrl;
 	}
 
-	@JsonProperty
-	public String getReferalToken() {
-		return referalToken;
-	}
-
-	@JsonProperty
-	public void setReferalToken(String referalToken) {
-		this.referalToken = referalToken;
-	}
 
 	@JsonProperty
 	public String getCheckedinFoursquare() {

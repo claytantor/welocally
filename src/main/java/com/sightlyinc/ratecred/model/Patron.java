@@ -52,18 +52,23 @@ public class Patron extends BaseEntity {
 	protected String status;	
 	
 	@JsonProperty
+	@Column(name="profile_image_attachment_key")
 	protected String profileImageAttachmentKey;
 	
 	@JsonProperty
+	@Column(name="image_attachment_key")
 	protected String imageAttachmentKey;
 	
 	@JsonProperty
+	@Column(name="category_attachment_key")
 	protected String categoryAttachmentKey;
 	
 	@JsonIgnore
+	@Column(name="auth_foursquare")
 	private String authFoursquare = "false";
 	
 	@JsonIgnore
+	@Column(name="auth_gowalla")
 	private String authGowalla = "false";
 	
 	@JsonIgnore

@@ -81,8 +81,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			Place top = nPlaces.get(0);
 			if(top.getAddress() != null)
 				p.setAddress(top.getAddress());
-			if(top.getCategory() != null)
-				p.setCategory(top.getCategory());
+			/*if(top.getCategory() != null)
+				p.setCategory(top.getCategory());*/
 			//if(top.getCategoryType() != null)
 			//	p.setCategoryType(top.getCategoryType());
 			if(top.getCity() != null)
@@ -92,8 +92,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			p.setLatitude(top.getLatitude());
 			p.setLongitude(top.getLongitude());
 			p.setSimpleGeoId(top.getSimpleGeoId());
-			p.setSubcategory(top.getSubcategory());
-			p.setWebsite(top.getWebsite());
+			//p.setSubcategory(top.getSubcategory());
+			p.setUrl(top.getUrl());
 			placeDao.save(p);
 							
 		}

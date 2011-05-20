@@ -1,13 +1,16 @@
 package com.sightlyinc.ratecred.model;
 
-import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 
 /**
@@ -43,26 +46,39 @@ import javax.persistence.Table;
 public class Place extends BaseEntity {
 	
 	private String type;
+	
+	@Column(name="address1")
 	private String address;
 	private String city;
 	private String state;
 	private String zip;
+	@Column(name="twitter_id")
 	private String twitterId;
+	@Column(name="simple_geo_id")
 	private String simpleGeoId;
 	private String email;
-	private String businessServices;	
+	//@Column(name="business_services")
+	//private String businessServices;	
 	private String phone;
 	private String name;
 	private Double latitude;
 	private Double longitude;
-	private String description;
-	private String website;
-	private String flag;
-	private String category;
-	private String subcategory;
-	private String categoryAttachmentKey;
-	private String imageAttachmentKey;
 	
+	@Column(columnDefinition="TEXT")
+	private String description;
+	
+	private String url;
+	private String flag;
+
+	@JsonProperty
+	@Column(name="image_attachment_key")
+	protected String imageAttachmentKey;
+	
+	@JsonProperty
+	@Column(name="category_attachment_key")
+	protected String categoryAttachmentKey;
+	
+	@Transient
 	private String addressFull;
 	
 	// relations
@@ -178,16 +194,14 @@ public class Place extends BaseEntity {
 	public Set<PlaceAttribute> getAttributes() {
 		return attributes;
 	}
-	public void setAttributes(Set<PlaceAttribute> attributes) {
-		this.attributes = attributes;
-	}
-	public String getWebsite() {
-		return website;
-	}
-	public void setWebsite(String website) {
-		this.website = website;
-	}
+	
 		
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
 	public BusinessLocation getBusinessLocation() {
 		return businessLocation;
 	}
@@ -201,26 +215,13 @@ public class Place extends BaseEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getBusinessServices() {
-		return businessServices;
-	}
-	public void setBusinessServices(String businessServices) {
-		this.businessServices = businessServices;
-	}
-	
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public String getSubcategory() {
-		return subcategory;
-	}
-	public void setSubcategory(String subcategory) {
-		this.subcategory = subcategory;
-	}
-
+//	public String getBusinessServices() {
+//		return businessServices;
+//	}
+//	public void setBusinessServices(String businessServices) {
+//		this.businessServices = businessServices;
+//	}
+//	
 	
 	public String getAddressFull() {
 		return addressFull;
