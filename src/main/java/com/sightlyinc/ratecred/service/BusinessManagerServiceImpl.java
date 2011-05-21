@@ -14,6 +14,8 @@ import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.date.DateUtils;
@@ -41,6 +43,9 @@ import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.pojo.BusinessMetricsMetadata;
 import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
+// TODO remove @Qualifier annotations that are forcing the setting of a service
+// bean id that matches the interface short class name? - sam 5/21/11
+@Service("BusinessManagerService")
 @Transactional
 public class BusinessManagerServiceImpl implements BusinessManagerService {
 	
@@ -76,10 +81,10 @@ public class BusinessManagerServiceImpl implements BusinessManagerService {
 	@Autowired
 	private OfferDao awardOfferDao; 
 	
-	@Autowired
+	@Value("imageUrl=/images/awards/award_")
 	private String imageBase;
 	
-	@Autowired
+	@Value("_64.png")
 	private String imageBaseType;
 	
 
