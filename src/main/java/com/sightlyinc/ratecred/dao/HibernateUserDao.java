@@ -12,13 +12,18 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.User;
+import org.springframework.stereotype.Repository;
 
-
-public class HibernateUserDao extends HibernateDaoSupport implements UserDao {
+@Repository
+public class HibernateUserDao extends AbstractDao<User> implements UserDao {
 	
 	static Logger logger = Logger.getLogger(HibernateUserDao.class);
-	
-	public HibernateTemplate getHibernateTemplateOverride() {
+
+    public HibernateUserDao() {
+        super(User.class);
+    }
+
+    public HibernateTemplate getHibernateTemplateOverride() {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         return template;
