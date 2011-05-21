@@ -121,36 +121,6 @@ CREATE  TABLE IF NOT EXISTS `offer` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
--- -----------------------------------------------------
--- Table `offer_item`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `offer_item` ;
-
-CREATE  TABLE IF NOT EXISTS `offer_item` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
-  `offer_id` BIGINT(20) NOT NULL ,
-  `name` VARCHAR(255) NULL DEFAULT NULL ,
-  `description` TEXT NULL DEFAULT NULL ,
-  `status` VARCHAR(45) NULL DEFAULT NULL ,
-  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
-  `quantity` INT(11) NULL DEFAULT NULL ,
-  `item_value` FLOAT(11) NULL DEFAULT NULL ,
-  `extra_details` TEXT NULL DEFAULT NULL ,
-  `time_created` BIGINT NULL DEFAULT NULL ,
-  `time_updated` BIGINT NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_order` (`offer_id` ASC) ,
-  CONSTRAINT `fk_offer`
-    FOREIGN KEY (`offer_id` )
-    REFERENCES `offer` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-
 -- -----------------------------------------------------
 -- Table `award`
 -- -----------------------------------------------------
