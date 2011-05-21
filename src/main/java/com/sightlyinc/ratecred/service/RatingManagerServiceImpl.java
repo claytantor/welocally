@@ -21,6 +21,7 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.date.DateUtils;
@@ -45,6 +46,9 @@ import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.pojo.Page;
 
+// TODO remove @Qualifier annotations that are forcing the setting of a service
+// bean id that matches the interface short class name? - sam 5/21/11
+@Service("RatingManagerService")
 @Transactional
 public class RatingManagerServiceImpl implements RatingManagerService {
 	
