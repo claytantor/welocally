@@ -17,10 +17,8 @@ import net.oauth.OAuth.Parameter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.net.ClientResponse;
@@ -35,6 +33,9 @@ import com.sightlyinc.ratecred.model.Rating;
  * @author claygraham
  *
  */
+// TODO remove @Qualifier annotations that are forcing the setting of a service
+// bean id that matches the interface short class name? - sam 5/21/11
+@Service("CheckInService")
 @Transactional
 public class RaptiveCheckinService implements CheckinService {
 	
