@@ -12,18 +12,23 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
+import org.springframework.stereotype.Repository;
 
-public class HibernatePatronBusinessMetricsDao 
-	extends HibernateDaoSupport 
+@Repository
+public class PatronBusinessMetricsDaoDefaultImpl
+	extends AbstractDao<PatronBusinessMetrics>
 	implements PatronBusinessMetricsDao {
 
-	static Logger logger = Logger.getLogger(HibernatePatronBusinessMetricsDao.class);
-    
+	static Logger logger = Logger.getLogger(PatronBusinessMetricsDaoDefaultImpl.class);
+
+    public PatronBusinessMetricsDaoDefaultImpl() {
+        super(PatronBusinessMetrics.class);
+    }
+
     public HibernateTemplate getHibernateTemplateOverride() {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
