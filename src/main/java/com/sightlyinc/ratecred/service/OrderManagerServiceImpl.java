@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
@@ -14,6 +15,9 @@ import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Voucher;
 
 
+// TODO remove @Qualifier annotations that are forcing the setting of a service
+// bean id that matches the interface short class name? - sam 5/21/11
+@Service("OrderManagerService")
 @Transactional
 public class OrderManagerServiceImpl implements OrderManagerService {
 	
