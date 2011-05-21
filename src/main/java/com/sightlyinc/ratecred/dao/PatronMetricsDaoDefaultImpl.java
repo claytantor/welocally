@@ -10,17 +10,20 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
+import org.springframework.stereotype.Repository;
 
-public class HibernatePatronMetricsDao 
-	extends HibernateDaoSupport 
-	implements PatronMetricsDao {
+@Repository("personMetricsDao")
+public class PatronMetricsDaoDefaultImpl extends AbstractDao<PatronMetrics> implements PatronMetricsDao {
 
-	static Logger logger = Logger.getLogger(HibernatePatronMetricsDao.class);
-    
+	static Logger logger = Logger.getLogger(PatronMetricsDaoDefaultImpl.class);
+
+    public PatronMetricsDaoDefaultImpl() {
+        super(PatronMetrics.class);
+    }
+
     public HibernateTemplate getHibernateTemplateOverride() {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
