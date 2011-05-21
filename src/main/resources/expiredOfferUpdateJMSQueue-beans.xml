@@ -25,7 +25,7 @@
 	<!-- this is the Message Driven POJO (MDP) -->
 	<bean id="expiredOfferUpdateMessageListener"
 		class="com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageListener">
-		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 		<property name="mapper"><ref bean="jacksonMapper"/></property>
 		<property name="raterAwardsService"><ref bean="raterAwardsService"/></property>
 		<property name="ratingManagerService"><ref bean="RatingManagerService"/></property>
@@ -40,7 +40,7 @@
 	    <property name="destination" ref="expiredOfferUpdateDestination"/>
 	    <property name="messageListener" ref="expiredOfferUpdateMessageListener" />
 	    <property name="sessionTransacted" value="true"/>
-	    <property name="transactionManager" ref="ApplicationTransactionManager"/>	    
+	    <property name="transactionManager" ref="transactionManager"/>
 	</bean>	
 
 </beans>
