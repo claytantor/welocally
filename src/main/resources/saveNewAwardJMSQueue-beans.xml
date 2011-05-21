@@ -25,7 +25,7 @@
 	<!-- this is the Message Driven POJO (MDP) -->
 	<bean id="saveNewAwardMessageListener"
 		class="com.sightlyinc.ratecred.admin.jms.SaveNewAwardMessageListener">
-		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 		<property name="mapper"><ref bean="jacksonMapper"/></property>
 		<property name="raterAwardsService"><ref bean="raterAwardsService"/></property>
 		<property name="ratingManagerService"><ref bean="RatingManagerService"/></property>
