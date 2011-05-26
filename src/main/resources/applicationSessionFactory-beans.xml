@@ -39,6 +39,8 @@
 				<value>com.sightlyinc.ratecred.model.Rating</value>
 				<value>com.sightlyinc.ratecred.model.RatingAttribute</value>
 				<value>com.sightlyinc.ratecred.model.Voucher</value>
+				<value>com.sightlyinc.ratecred.authentication.UserPrincipal</value>
+				<value>com.sightlyinc.ratecred.authentication.Role</value>
             </list>
         </property>
 		<property name="hibernateProperties">

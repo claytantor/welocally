@@ -12,11 +12,14 @@ public class Role {
 
 
 	//properties
+    @Column(name = "role_group")
 	private java.lang.String roleGroup;	
 	private java.lang.String role;	
 	private java.lang.Integer version = new Integer(0);
-	/**
-	
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="principal_id")
+    private UserPrincipal user;
 
 
 	/**
@@ -74,6 +77,13 @@ public class Role {
 		}
 		else return false;
 	}*/
-	
 
+
+    public UserPrincipal getUser() {
+        return user;
+    }
+
+    public void setUser(UserPrincipal user) {
+        this.user = user;
+    }
 }

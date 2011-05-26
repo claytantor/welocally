@@ -31,20 +31,26 @@ public class UserPrincipal implements Authentication, UserDetails {
 	// properties
 	private java.lang.Integer version = new Integer(0);
     
+    @Column(name = "user_name")
 	private String username;
 	private String password;
 	private String email;
+    @Column(name = "user_class")
 	private String userClass;
 
+    @Column(columnDefinition = "tinyint")
 	private Boolean expired;
+    @Column(name = "credentials_expired", columnDefinition = "tinyint")
 	private Boolean credentialsExpired;
+    @Column(columnDefinition = "tinyint")
 	private Boolean locked;
+    @Column(columnDefinition = "tinyint")
 	private Boolean enabled;
 
     @Column(name = "guid")
 	private String authGuid;
 
-    @OneToMany(mappedBy = "principal_id", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Role> roles = new HashSet<Role>();
 
 	public String getAuthGuid() {
