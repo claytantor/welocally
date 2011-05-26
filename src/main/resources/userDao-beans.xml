@@ -9,7 +9,7 @@
 	<bean id="userDao" 
 		lazy-init="true" 
 		class="com.sightlyinc.ratecred.dao.HibernateUserDao">
-		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 	</bean>	
 	
 

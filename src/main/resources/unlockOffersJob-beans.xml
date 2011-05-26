@@ -8,7 +8,7 @@
 	  <property name="jobDataAsMap">
 	    <map>
 	      <entry key="sessionFactory">
-	      		<ref bean="ApplicationSessionFactory" />
+	      		<ref bean="sessionFactory" />
 	      </entry>	    
 	      <entry key="ratingManagerService">
 	      		<ref bean="RatingManagerService" />

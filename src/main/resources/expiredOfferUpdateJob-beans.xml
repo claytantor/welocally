@@ -13,7 +13,7 @@
 	      		<ref bean="awardManagerService" />
 	      </entry>
 	      <entry key="sessionFactory">
-	      		<ref bean="ApplicationSessionFactory" />
+	      		<ref bean="sessionFactory" />
 	      </entry>	      	      	      	      	       	       	          
 	    </map>
 	  </property>

@@ -7,7 +7,7 @@
 	<bean id="imageValueDao" 
 		lazy-init="true" 
 		class="com.noi.utility.spring.dao.HibernateImageValueDao">
-		<property name="sessionFactory"><ref bean="ApplicationSessionFactory"/></property>
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 	</bean>	
 
 </beans>
