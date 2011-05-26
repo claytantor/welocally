@@ -165,13 +165,16 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 			} catch (IntegrationException e) {
 				logger.error("IntegrationException", e);
 			} catch (MalformedURLException e) {
-				logger.error("IntegrationException", e);
+				logger.error("MalformedURLException", e);
 			} catch (SAXException e) {
-				logger.error("IntegrationException", e);
+				logger.error("SAXException", e);
 			} catch (IOException e) {
-				logger.error("IntegrationException", e);
-			}
-        
+				logger.error("IOException", e);
+			} catch (Exception e) {
+                logger.error("Exception", e);
+            }
+
+
     }
 
 	@Override
