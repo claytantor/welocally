@@ -15,10 +15,13 @@
         <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?login_error=1" />
 	</http>
 
-    <authentication-provider>
+    <authentication-provider user-service-ref="userPrincipalService">
+<!--
         <password-encoder hash="md5"/>
         <user-service>
+            <
             <user name="clay" password="c361dad4b598b51a80b501668e988387" authorities="ROLE_ADMIN" />
 	    </user-service>
+-->
 	</authentication-provider>
 </beans:beans>
