@@ -46,19 +46,19 @@ public class DefaultUserDetails implements UserDetails {
 	}
 
 	public boolean isAccountNonExpired() {
-		return !expired;
+		return expired == null || !expired;
 	}
 
 	public boolean isAccountNonLocked() {
-		return !locked;
+		return locked == null || !locked;
 	}
 
 	public boolean isCredentialsNonExpired() {
-		return !credentialsExpired;
+		return credentialsExpired == null || !credentialsExpired;
 	}
 
 	public boolean isEnabled() {
-		return enabled;
+		return enabled != null && enabled;
 	}
 
 }
