@@ -93,7 +93,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	private BusinessManagerService businessManagerService;
 	
 	@Autowired
-	@Qualifier("offerPoolService")
+//	@Qualifier("offerPoolService")
 	private OfferPoolService offerPoolService;
 
 	@Autowired
@@ -103,11 +103,11 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	private UserDao userDao;
 	
 	@Autowired
-	@Qualifier("mailerQueueService")
+//	@Qualifier("mailerQueueService")
 	private MailerQueueService mailerQueueService;
 	
 	@Autowired
-    @Qualifier("saveNewAwardMessageProducer")
+//    @Qualifier("saveNewAwardMessageProducer")
     private SaveNewAwardMessageProducer saveNewAwardMessageProducer;
 	
 	@Autowired
@@ -118,7 +118,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
     private ResourcesClient resourcesClient;*/
 	
 	@Autowired
-    @Qualifier("updateAwardOfferMessageProducer")
+//    @Qualifier("updateAwardOfferMessageProducer")
 	private UpdateAwardOfferMessageProducer updateAwardOfferMessageProducer;
 	
 	@Value("${twitter.rateCredOAuth.appConsumerKey}")
