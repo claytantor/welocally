@@ -78,12 +78,6 @@
 		<servlet-class>
 			org.springframework.web.servlet.DispatcherServlet
 		</servlet-class>	
-		<init-param>
-	        <param-name>contextConfigLocation</param-name>
-	        <param-value>
-			/WEB-INF/dispatcher-servlet.xml
-	      </param-value>	      
-	    </init-param>	
         <init-param>
             <param-name>namespace</param-name>
             <param-value>mvc-config</param-value>

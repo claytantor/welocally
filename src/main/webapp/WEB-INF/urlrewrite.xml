@@ -14,11 +14,11 @@
 	</rule>
 	<rule>
 		<from>/js/**</from>
-		<to>/scripts/$1</to>
+		<to>/js/$1</to>
 	</rule>
 	<rule>
 		<from>/css/**</from>
-		<to>/styles/$1</to>
+		<to>/css/$1</to>
 	</rule>
 
 	<rule>
