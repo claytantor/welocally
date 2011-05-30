@@ -77,6 +77,7 @@
               <srcFiles>
                 <srcFile>src/main/sql/create_ratecred.sql</srcFile>
                 <srcFile>src/main/sql/ratecred.sql</srcFile>
+                <srcFile>src/main/sql/data.sql</srcFile>
               </srcFiles>
             </configuration>
           </execution>
