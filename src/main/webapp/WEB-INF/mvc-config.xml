@@ -14,6 +14,9 @@
         
 
 	<!-- Configures the @Controller programming model -->
+	<!-- the component scan for the controller is required for the dispatch model, since we
+	     load this as part of the filter it must be aware of the controllers -->
+	<context:component-scan base-package="com.sightlyinc.ratecred.admin.mvc" />
 	<mvc:annotation-driven />
 				
 	<!-- Forwards requests to the "/" resource to the "welcome" view -->
