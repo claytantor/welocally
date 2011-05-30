@@ -14,16 +14,13 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2>admin home</h2>
+		<h1>admin home</h1>
 		<hr/>
-		<div class="text-14">Awards</div>
-		<div><a href="<c:url value='/admin/award'/>">give award</a></div>
-		<div><a href="<c:url value='/admin/award/custom'/>">give custom award</a></div>
-		<div><a href="<c:url value='/admin/award/type'/>">create award type</a></div>
-		<div class="text-14">Users</div>
-		<div><a href="<c:url value='/admin/rater/status/USER'/>">users</a></div>
-		<div class="text-14">Places</div>
-		<div><a href="<c:url value='/admin/place'/>">edit place</a></div>
+		<div class="span-24">
+			<h2>publisher</h2>
+			<div><a href="<c:url value='/admin/publisher/list'/>">list all</a></div>
+			<div><a href="<c:url value='/admin/publisher'/>">create</a></div>
+		</div>
 	</div>
 </div>
 

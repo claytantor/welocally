@@ -7,9 +7,6 @@
 <head>
 	<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>${pageTitle}</title>
-	
-	
-  	
 	<link rel="stylesheet" href="<c:url value='/css/blueprint/screen.css' />" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="<c:url value='/css/blueprint/print.css' />" type="text/css" media="print">
 	<!--[if lt IE 8]>
@@ -21,8 +18,4 @@
 	
 	<script type="text/javascript" src="<c:url value='/js/jquery-1.4.2.min.js' />"></script>
 	<script type="text/javascript" src="<c:url value='/js/jquery-ui-1.8.2.custom.min.js' />"></script>
-  	
-  	
-        
-    
-</head>
+</head> 
