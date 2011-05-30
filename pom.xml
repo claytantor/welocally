@@ -399,7 +399,7 @@
 		</repository>
 	</repositories>
 	<build>
-		<finalName>${web.war}</finalName>
+		<finalName>${web.finalName}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -422,7 +422,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warName>${web.war}</warName>
+					<warName>${web.finalName}</warName>
 				</configuration>
 			</plugin>
 			<plugin>
