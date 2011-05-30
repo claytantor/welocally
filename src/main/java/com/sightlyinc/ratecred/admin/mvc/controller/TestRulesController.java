@@ -38,6 +38,7 @@ import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Controller
@@ -48,7 +49,6 @@ public class TestRulesController {
 	static Logger logger = Logger.getLogger(TestRulesController.class);
 
 	@Autowired
-	@Qualifier("RatingManagerService")
 	private RatingManagerService ratingManagerService;
 	
 	@Autowired
@@ -56,7 +56,10 @@ public class TestRulesController {
 	private OfferPoolService offerPoolService;
 	
 	@Autowired
-	private AwardManagerService awardManagerService;
+	private PatronManagerService patronManagerService;
+	
+//	@Autowired
+//	private AwardManagerService awardManagerService;
 	
 	@Autowired
 	PatronAwardsService raterAwardsService;
@@ -109,8 +112,8 @@ public class TestRulesController {
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
 			boolean dynamic = true;
 			
-			Patron r = ratingManagerService.findRaterByUsername(rater);
-			PatronMetrics rm = ratingManagerService.findMetricsByRater(r);
+			Patron r = patronManagerService.findPatronByUsername(rater);
+			PatronMetrics rm = patronManagerService.findMetricsByPatron(r);
 			r.setMetrics(rm);
 			RaterAwards ra = new RaterAwards(r);
 			workingMemory.assertObject( ra, true );
@@ -150,7 +153,7 @@ public class TestRulesController {
 			
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory( );
 			
-			List<Patron> raters = ratingManagerService.findRatersByStatus(status);
+			List<Patron> raters = patronManagerService.findPatronByStatus(status);
 			for (Patron rater : raters) {
 				
 			}
@@ -197,13 +200,13 @@ public class TestRulesController {
 			WorkingMemory workingMemory = ruleBase.newWorkingMemory();
 			boolean dynamic = true;
 
-			List<Patron> allRaters = ratingManagerService.findAllRaters();
+			List<Patron> allRaters = patronManagerService.findAllPatrons();
 			Map<String, PlaceCityState> allcs = new HashMap<String, PlaceCityState>();
 			List<RaterAwards> raList = new ArrayList<RaterAwards>();
 			
 			
 			for (Patron rater : allRaters) {
-				PatronMetrics rm = ratingManagerService.findMetricsByRater(rater);
+				PatronMetrics rm = patronManagerService.findMetricsByPatron(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
 				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
@@ -231,7 +234,7 @@ public class TestRulesController {
 				raterAwardsService.proccessAwardsForRater(raterAwards);
 			}
 			
-			List<Patron> raters = ratingManagerService.findRatersByStatus("USER");
+			List<Patron> raters = patronManagerService.findPatronByStatus("USER");
 			model.addAttribute("raters", raters);
 			
 			Long t2 = Calendar.getInstance().getTimeInMillis();
@@ -296,14 +299,14 @@ public class TestRulesController {
 							null);
 				
 				allRaters.addAll(
-						ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10));
+						patronManagerService.findPatronsByCityStateScoreDesc(pcs, 10));
 			}
 						
 			Map<String, PlaceCityState> allcs = new HashMap<String, PlaceCityState>();
 			List<RaterAwards> raList = new ArrayList<RaterAwards>();
 						
 			for (Patron rater : allRaters) {
-				PatronMetrics rm = ratingManagerService.findMetricsByRater(rater);
+				PatronMetrics rm = patronManagerService.findMetricsByPatron(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
 				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
@@ -329,7 +332,7 @@ public class TestRulesController {
 				raterAwardsService.proccessAwardsForRater(raterAwards);
 			}
 			
-			List<Patron> raters = ratingManagerService.findRatersByStatus("USER");
+			List<Patron> raters = patronManagerService.findPatronByStatus("USER");
 			model.addAttribute("raters", raters);
 			
 			Long t2 = Calendar.getInstance().getTimeInMillis();

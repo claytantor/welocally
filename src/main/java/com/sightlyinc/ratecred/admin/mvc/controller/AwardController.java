@@ -28,6 +28,7 @@ import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Controller
@@ -37,13 +38,14 @@ public class AwardController {
 	
 	static Logger logger = Logger.getLogger(AwardController.class);
 
-	@Autowired
-	@Qualifier("RatingManagerService")
-	private RatingManagerService ratingManagerService;
+//	@Autowired
+//	private RatingManagerService ratingManagerService;
 	
 	@Autowired
-	@Qualifier("offerPoolService")
 	private OfferPoolService offerPoolService;
+	
+	@Autowired
+	private PatronManagerService patronManagerService;
 	
 	@Autowired
 	private AwardManagerService awardManagerService;
@@ -55,51 +57,51 @@ public class AwardController {
 	public String getCreateForm(Model model) {
 		model.addAttribute("awardForm",new AwardForm());
 		
-		try {
-			StringBuffer buf = new StringBuffer();
-			List<Patron> users = ratingManagerService.findRatersByStatus("USER");
-			for (Patron rater : users) {
-				buf.append(rater.getUserName()+",");
-			}
-			model.addAttribute("users", buf.toString());
-			
-			List<AwardType> awardTypes = awardManagerService.findAllAwardTypes();
-			StringBuffer buf2 = new StringBuffer();
-			for (AwardType awardType : awardTypes) {
-				buf2.append(awardType.getKeyname()+",");
-			}
-			model.addAttribute("awardTypes", buf2.toString());
-			
-			List<OfferOld> offersRaw = offerPoolService.getOfferPool();
-			List<OfferOld> offersFiltered = new ArrayList<OfferOld>();
-			for (OfferOld offer : offersRaw) {
-				if(offer.getCouponCode() != null 
-						&& !offer.getCouponCode().contains("No")
-						&& !offer.getCouponCode().contains("no")
-						&& !offer.getDescription().contains("Gay")
-						&& !offer.getDescription().contains("Lesbian")
-						&& !offer.getDescription().contains("shipping")
-						&& !offer.getDescription().contains("Shipping")
-						&& !offer.getName().contains("shipping")
-						&& !offer.getName().contains("Shipping")
-						&& !offer.getName().contains("SHIPPING")
-						
-				)
-					offersFiltered.add(offer);
-			}
-			model.addAttribute("offers", offersFiltered);
-			
-			StringBuffer bufOfferIds = new StringBuffer();
-			for (OfferOld offer : offersFiltered) {
-				bufOfferIds.append(offer.getExternalId()+":"+offer.getExternalSource()+",");
-			}
-			model.addAttribute("offerIds", bufOfferIds.toString());			
-			
-			
-		} catch (BLServiceException e) {
-			logger.error("problem",e);
-			return "error";
-		}	
+//		try {
+//			StringBuffer buf = new StringBuffer();
+//			List<Patron> users = patronManagerService.findPatronByStatus("USER");
+//			for (Patron rater : users) {
+//				buf.append(rater.getUserName()+",");
+//			}
+//			model.addAttribute("users", buf.toString());
+//			
+//			List<AwardType> awardTypes = awardManagerService.findAllAwardTypes();
+//			StringBuffer buf2 = new StringBuffer();
+//			for (AwardType awardType : awardTypes) {
+//				buf2.append(awardType.getKeyname()+",");
+//			}
+//			model.addAttribute("awardTypes", buf2.toString());
+//			
+//			List<OfferOld> offersRaw = offerPoolService.getOfferPool();
+//			List<OfferOld> offersFiltered = new ArrayList<OfferOld>();
+//			for (OfferOld offer : offersRaw) {
+//				if(offer.getCouponCode() != null 
+//						&& !offer.getCouponCode().contains("No")
+//						&& !offer.getCouponCode().contains("no")
+//						&& !offer.getDescription().contains("Gay")
+//						&& !offer.getDescription().contains("Lesbian")
+//						&& !offer.getDescription().contains("shipping")
+//						&& !offer.getDescription().contains("Shipping")
+//						&& !offer.getName().contains("shipping")
+//						&& !offer.getName().contains("Shipping")
+//						&& !offer.getName().contains("SHIPPING")
+//						
+//				)
+//					offersFiltered.add(offer);
+//			}
+//			model.addAttribute("offers", offersFiltered);
+//			
+//			StringBuffer bufOfferIds = new StringBuffer();
+//			for (OfferOld offer : offersFiltered) {
+//				bufOfferIds.append(offer.getExternalId()+":"+offer.getExternalSource()+",");
+//			}
+//			model.addAttribute("offerIds", bufOfferIds.toString());			
+//			
+//			
+//		} catch (BLServiceException e) {
+//			logger.error("problem",e);
+//			return "error";
+//		}	
 		
 		return "award_form";
 	}
@@ -110,7 +112,7 @@ public class AwardController {
 		
 		try {
 			StringBuffer buf = new StringBuffer();
-			List<Patron> users = ratingManagerService.findRatersByStatus("USER");
+			List<Patron> users = patronManagerService.findPatronByStatus("USER");
 			for (Patron rater : users) {
 				buf.append(rater.getUserName()+",");
 			}
@@ -140,7 +142,7 @@ public class AwardController {
 		try {
 			AwardType awardType = awardManagerService.findAwardTypeByKey(awardForm.getType());
 			award.setAwardType(awardType);
-			Patron r = ratingManagerService.findRaterByUsername(awardForm.getUsername());
+			Patron r = patronManagerService.findPatronByUsername(awardForm.getUsername());
 			award.setOwner(r);			
 			award.setNotes(awardForm.getNote());
 			award.setStatus("GIVEN");
@@ -199,7 +201,7 @@ public class AwardController {
 		try {
 			AwardType awardType = awardManagerService.findAwardTypeByKey(customAwardForm.getType());
 			award.setAwardType(awardType);
-			Patron r = ratingManagerService.findRaterByUsername(customAwardForm.getUsername());
+			Patron r = patronManagerService.findPatronByUsername(customAwardForm.getUsername());
 			award.setOwner(r);			
 			award.setNotes(customAwardForm.getNote());
 			award.setStatus("GIVEN");

@@ -28,7 +28,7 @@
 		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
 		<property name="mapper"><ref bean="jacksonMapper"/></property>
 		<property name="raterAwardsService"><ref bean="raterAwardsService"/></property>
-		<property name="ratingManagerService"><ref bean="RatingManagerService"/></property>
+		<property name="ratingManagerService"><ref bean="ratingManagerService"/></property>
 		<property name="awardManagerService"><ref bean="awardManagerService"/></property>
 		<property name="sleepInSeconds" value="4"/>
 	</bean>

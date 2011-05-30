@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.IteratorTool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.HttpSessionRequiredException;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.noi.utility.xml.JsonEncoder;
 import com.sightlyinc.ratecred.compare.ModelSort;
 import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.service.RatingManagerService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 
 @Controller
 @RequestMapping(value = "/admin/rater")
@@ -30,15 +30,18 @@ public class RaterController {
 
 	static Logger logger = Logger.getLogger(RaterController.class);
 
+//	@Autowired
+//	@Qualifier("RatingManagerService")
+//	private RatingManagerService ratingManagerService;
+	
 	@Autowired
-	@Qualifier("RatingManagerService")
-	private RatingManagerService ratingManagerService;
+	private PatronManagerService patronManagerService;
 
 
 	@RequestMapping(value = "/status/{status}", method = RequestMethod.GET)
 	public String getAllRaters(@PathVariable("status") String status, Model model, HttpServletRequest request) {
 		try {
-			List<Patron> raters = ratingManagerService.findRatersByStatus(status);
+			List<Patron> raters = patronManagerService.findPatronByStatus(status);
 			model.addAttribute("raters", raters);
 			return "raters";
 			
@@ -56,7 +59,7 @@ public class RaterController {
 		try {
 
 
-			Patron r = ratingManagerService.findRaterByUsername(uname);
+			Patron r = patronManagerService.findPatronByUsername(uname);
 			
 			if(r != null)
 				return getProfile(r.getId(),  model, request);
@@ -81,17 +84,16 @@ public class RaterController {
 		try {
 			
 			
-			Patron rater = ratingManagerService.findRaterByPrimaryKey(id);
+			Patron rater = patronManagerService.findPatronByPrimaryKey(id);
 			
 			
-			model.addAttribute("ratings", ModelSort.getInstance().sortRating(
-					rater.getRatings()));
+			model.addAttribute("ratings", new ArrayList());
 
 			/*rater.getAwards().addAll(
 					ratingManagerService.findAwardsLocalByRater(rater));*/
 
 			model.addAttribute("rater", rater);
-			model.addAttribute("raterMetrics", ratingManagerService.findMetricsByRater(rater));
+			model.addAttribute("raterMetrics", patronManagerService.findMetricsByPatron(rater));
 			
 			return "rater_profile";
 		} catch (com.noi.utility.spring.service.BLServiceException e) {
@@ -112,8 +114,8 @@ public class RaterController {
 		logger.debug("getRaterByTwitterScreenName");
 
 		try {
-			Patron rater = ratingManagerService
-					.findRaterByUsername(twitterScreenName);
+			Patron rater = patronManagerService
+					.findPatronByUsername(twitterScreenName);
 
 			/*rater.getAwards().addAll(
 			  ratingManagerService.findAwardsLocalByRater(rater));*/
@@ -140,8 +142,8 @@ public class RaterController {
 				size = 10;
 
 			// get the leaders
-			List<Patron> leaders = ratingManagerService
-					.findRatersByScoreDesc(size);
+			List<Patron> leaders = patronManagerService
+					.findPatronsByScoreDesc(size);
 			
 			model.addAttribute("raters", leaders);
 			model.addAttribute("itool", new IteratorTool());

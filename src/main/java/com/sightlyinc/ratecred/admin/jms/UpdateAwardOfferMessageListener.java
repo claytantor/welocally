@@ -24,6 +24,7 @@ import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 
@@ -32,13 +33,15 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
 
 	static Logger logger = Logger.getLogger(UpdateAwardOfferMessageListener.class);
 
-	private SessionFactory sessionFactory;
+	//private SessionFactory sessionFactory;
 	
 	private ObjectMapper mapper;
 	
 	private PatronAwardsService raterAwardsService;
 	
-	private RatingManagerService ratingManagerService;
+	//private RatingManagerService ratingManagerService;
+
+	private PatronManagerService patronManagerService;
 
 	private AwardManagerService awardManagerService;
 	
@@ -87,7 +90,7 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
             		new Long(userData.get("raterId").toString());
             	
             	AwardType awardType = awardManagerService.findAwardTypeByPrimaryKey(awardTypePk);
-            	Patron r = ratingManagerService.findRaterByPrimaryKey(raterPk);            	
+            	Patron r = patronManagerService.findPatronByPrimaryKey(raterPk);            	
             	Map<String,Object> awardModel = (Map<String,Object>)userData.get("award");
             	Award award = awardManagerService.findAwardByPrimaryKey(new Long(awardModel.get("id").toString()));
             
@@ -113,9 +116,9 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
     }
 
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+//	public void setSessionFactory(SessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
 
 
 	public void setMapper(ObjectMapper mapper) {
@@ -128,8 +131,10 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
 	}
 
 
-	public void setRatingManagerService(RatingManagerService ratingManagerService) {
-		this.ratingManagerService = ratingManagerService;
+
+
+	public void setPatronManagerService(PatronManagerService patronManagerService) {
+		this.patronManagerService = patronManagerService;
 	}
 
 

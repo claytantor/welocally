@@ -25,7 +25,6 @@ public class PlaceController {
 	static Logger logger = Logger.getLogger(PlaceController.class);
 
 	@Autowired
-	@Qualifier("PlaceManagerService")
 	private PlaceManagerService placeManagerService;
 	
 		

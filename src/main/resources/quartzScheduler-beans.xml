@@ -12,7 +12,7 @@
 	        </list>
 	    </property>
 		<!-- <property name="dataSource" ref="LocalDS"/> -->
-	    <property name="transactionManager" ref="ApplicationTransactionManager"/>
+	    <property name="transactionManager" ref="transactionManager"/>
 	</bean>
 	
 	

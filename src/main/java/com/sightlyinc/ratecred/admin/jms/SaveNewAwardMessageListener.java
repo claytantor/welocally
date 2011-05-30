@@ -23,8 +23,8 @@ import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
-
 
 
 public class SaveNewAwardMessageListener implements MessageListener { 
@@ -38,6 +38,8 @@ public class SaveNewAwardMessageListener implements MessageListener {
 	private PatronAwardsService raterAwardsService;
 	
 	private RatingManagerService ratingManagerService;
+
+	private PatronManagerService patronManagerService;
 
 	private AwardManagerService awardManagerService;
 	
@@ -80,7 +82,7 @@ public class SaveNewAwardMessageListener implements MessageListener {
             		new Long(userData.get("awardTypeId").toString());
             	
             	AwardType awardType = awardManagerService.findAwardTypeByPrimaryKey(awardTypePk);
-            	Patron r = ratingManagerService.findRaterByPrimaryKey(raterPk);
+            	Patron r = patronManagerService.findPatronByPrimaryKey(raterPk);
             	Award award = (Award)userData.get("award");
             	
             	//null offer will automatically target
@@ -134,6 +136,11 @@ public class SaveNewAwardMessageListener implements MessageListener {
 
 	public void setSleepInSeconds(Integer sleepInSeconds) {
 		this.sleepInSeconds = sleepInSeconds;
+	}
+
+
+	public void setPatronManagerService(PatronManagerService patronManagerService) {
+		this.patronManagerService = patronManagerService;
 	}
     
     

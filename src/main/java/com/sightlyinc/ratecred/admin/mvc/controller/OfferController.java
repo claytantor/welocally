@@ -49,16 +49,16 @@ public class OfferController {
 	static Logger logger = Logger.getLogger(OfferController.class);
 
 	
-	@Autowired
-	@Qualifier("offerPoolService")
-	private OfferPoolService offerPoolService;
+//	@Autowired
+//	@Qualifier("offerPoolService")
+//	private OfferPoolService offerPoolService;
 	
 	@Autowired
 	@Qualifier("saveArticleLocationMessageProducer")
 	private SaveArticleLocationMessageProducer saveArticleLocationMessageProducer;
 	
-	@Autowired
-	private AwardManagerService awardManagerService;
+//	@Autowired
+//	private AwardManagerService awardManagerService;
 	
 	@Autowired
 	PatronAwardsService raterAwardsService;

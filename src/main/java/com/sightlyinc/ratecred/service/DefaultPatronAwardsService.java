@@ -83,11 +83,9 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	static Logger logger = Logger.getLogger(DefaultPatronAwardsService.class);
 
 	@Autowired
-	@Qualifier("RatingManagerService")
 	private RatingManagerService ratingManagerService;
 	
 	@Autowired
-	@Qualifier("PlaceManagerService")
 	private PlaceManagerService placeManagerService;
 	
 	@Autowired
@@ -113,8 +111,11 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
     private SaveNewAwardMessageProducer saveNewAwardMessageProducer;
 	
 	@Autowired
+	private PatronManagerService patronManagerService;
+	
+	/*@Autowired
     @Qualifier("resourcesClient")
-    private ResourcesClient resourcesClient;
+    private ResourcesClient resourcesClient;*/
 	
 	@Autowired
     @Qualifier("updateAwardOfferMessageProducer")
@@ -180,7 +181,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void reassignAllOffers() throws BLServiceException {
-		List<Patron> allRaters = ratingManagerService.findRatersByStatus("USER");
+		List<Patron> allRaters = patronManagerService.findPatronByStatus("USER");
 		for (Patron rater : allRaters) {
 			deleteRaterAwardOffers(rater.getId());
 			for (Award award : rater.getAwards()) {
@@ -193,7 +194,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void removeAllOffers() throws BLServiceException {
-		List<Patron> allRaters = ratingManagerService.findRatersByStatus("USER");
+		List<Patron> allRaters = patronManagerService.findPatronByStatus("USER");
 		for (Patron rater : allRaters) {
 			deleteRaterAwardOffers(rater.getId());
 		}
@@ -309,7 +310,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void deleteRaterAwardOffers(Long raterId) {
 		try {
-			Patron r = ratingManagerService.findRaterByPrimaryKey(raterId);
+			Patron r = patronManagerService.findPatronByPrimaryKey(raterId);
 			Set<Offer> offers = new HashSet<Offer>();
 			
 			for (Award award : r.getAwards()) 
@@ -864,43 +865,45 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 	}
 	
 	private List<OfferOld> findOffersForArea(RequestModel model, Integer max, Integer minOffers) {
-		List<OfferOld> offersFound = new ArrayList<OfferOld>();
-		try {
-			
-			Integer modelDistance = 
-				Integer.parseInt(model.getParams().get("distance"));
-			
-			if(modelDistance<max) {
-				modelDistance++;
-				
-				model.getParams().put("distance", modelDistance.toString());
-				Thread.sleep(3000);
-				OffersResponse response = resourcesClient.getOffers(model);
-				logger.debug("trying distance:"+modelDistance+" offers:"+response.getOffers().size());
-				if(response.getOffers().size()<minOffers && modelDistance <= max)
-					return findOffersForArea(model, max, minOffers);
-				else
-				{
-					//Offer [beginDateString=2009-12-15, couponCode=null, description=null, expireDateString=2012-10-13, id=null, name=$34.99 For Four Visits, programId=null, programName=null, url=null]
-					for (com.adility.resources.model.Offer aoffer : response.getOffers()) { 
-						logger.debug(aoffer.toString());
-											
-						offersFound.add(transformAdilityOffer(aoffer) );					
-					}
-				}
-			}
-			
-				
-			
-			
-		} catch (AudilityClientException e) {
-			logger.error("cannot get response from client", e);
-		} catch (InterruptedException e) {
-			logger.error("cannot get response from client", e);
-		} catch (Exception e) {
-			logger.error("cannot get response from client", e);
-		}
-		return offersFound;
+		
+		throw new RuntimeException("NO IMPL FOR ADILITY");
+//		List<OfferOld> offersFound = new ArrayList<OfferOld>();
+//		try {
+//			
+//			Integer modelDistance = 
+//				Integer.parseInt(model.getParams().get("distance"));
+//			
+//			if(modelDistance<max) {
+//				modelDistance++;
+//				
+//				model.getParams().put("distance", modelDistance.toString());
+//				Thread.sleep(3000);
+//				OffersResponse response = resourcesClient.getOffers(model);
+//				logger.debug("trying distance:"+modelDistance+" offers:"+response.getOffers().size());
+//				if(response.getOffers().size()<minOffers && modelDistance <= max)
+//					return findOffersForArea(model, max, minOffers);
+//				else
+//				{
+//					//Offer [beginDateString=2009-12-15, couponCode=null, description=null, expireDateString=2012-10-13, id=null, name=$34.99 For Four Visits, programId=null, programName=null, url=null]
+//					for (com.adility.resources.model.Offer aoffer : response.getOffers()) { 
+//						logger.debug(aoffer.toString());
+//											
+//						offersFound.add(transformAdilityOffer(aoffer) );					
+//					}
+//				}
+//			}
+//			
+//				
+//			
+//			
+//		} catch (AudilityClientException e) {
+//			logger.error("cannot get response from client", e);
+//		} catch (InterruptedException e) {
+//			logger.error("cannot get response from client", e);
+//		} catch (Exception e) {
+//			logger.error("cannot get response from client", e);
+//		}
+//		return offersFound;
 	}
 	
 	/**

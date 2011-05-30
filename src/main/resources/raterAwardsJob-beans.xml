@@ -14,7 +14,7 @@
 	      		<ref bean="offerPoolService" />
 	      </entry> 
 	      <entry key="ratingManagerService">
-	      		<ref bean="RatingManagerService" />
+	      		<ref bean="ratingManagerService" />
 	      </entry>
 	      <entry key="awardManagerService">
 	      		<ref bean="awardManagerService" />

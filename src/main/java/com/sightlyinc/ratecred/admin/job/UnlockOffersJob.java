@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.SessionHolder;
@@ -36,6 +37,7 @@ import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Component("unlockOffersJob")
@@ -48,6 +50,9 @@ public class UnlockOffersJob extends QuartzJobBean {
 	private RatingManagerService ratingManagerService;
 	
 	private PatronAwardsService raterAwardsService;
+	
+	@Autowired
+	private PatronManagerService patronManagerService;
 		
 	private SessionFactory sessionFactory;
 	
@@ -115,7 +120,7 @@ public class UnlockOffersJob extends QuartzJobBean {
 						awardManagerService.findAwardOfferByPrimaryKey(offerId);
 					
 					Patron raterWhoRequested = 
-						ratingManagerService.findRaterByUsername(request.getFromUser());
+						patronManagerService.findPatronByUsername(request.getFromUser());
 					
 					if(offerUnlocked != null && raterWhoRequested !=null)
 					{

@@ -43,6 +43,7 @@ import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
+import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 @Component("raterAwardsJob")
@@ -50,15 +51,22 @@ public class RaterAwardsJob extends QuartzJobBean {
 	
 	static Logger logger = Logger.getLogger(RaterAwardsJob.class);
 	
+	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Autowired
 	private RatingManagerService ratingManagerService;
 	
 	@Autowired
+	private PatronManagerService patronManagerService;
+	
+	
+	
+/*	@Autowired
 	@Qualifier("offerPoolService")
 	private OfferPoolService offerPoolService;
 	
-	private AwardManagerService awardManagerService;
+	private AwardManagerService awardManagerService;*/
 	
 	PatronAwardsService raterAwardsService;
 	
@@ -122,7 +130,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 							null);
 				
 				logger.debug("adding cs:"+pcs.getCity()+pcs.getState());
-				List<Patron> topCsRaters = ratingManagerService.findRatersByCityStateScoreDesc(pcs, 10);
+				List<Patron> topCsRaters = patronManagerService.findPatronsByCityStateScoreDesc(pcs, 10);
 				CityStateEvaluator cseval = new CityStateEvaluator(
 						pcs, new ArrayList<Patron>(topCsRaters));
 				allCityStates.put(pcs.getCity()+pcs.getState(),cseval);
@@ -137,7 +145,7 @@ public class RaterAwardsJob extends QuartzJobBean {
 						
 			for (Patron rater : allRaters) {				
 				
-				PatronMetrics rm = ratingManagerService.findMetricsByRater(rater);
+				PatronMetrics rm = patronManagerService.findMetricsByPatron(rater);
 				rater.setMetrics(rm);
 				RaterAwards ra = new RaterAwards(rater);
 				List<PlaceCityState> cities = AwardsUtils.getCitiesRated(rater);
@@ -205,13 +213,13 @@ public class RaterAwardsJob extends QuartzJobBean {
 		this.ratingManagerService = ratingManagerService;
 	}
 
-	public void setOfferPoolService(OfferPoolService offerPoolService) {
+	/*public void setOfferPoolService(OfferPoolService offerPoolService) {
 		this.offerPoolService = offerPoolService;
 	}
 
 	public void setAwardManagerService(AwardManagerService awardManagerService) {
 		this.awardManagerService = awardManagerService;
-	}
+	}*/
 
 	public void setRaterAwardsService(PatronAwardsService raterAwardsService) {
 		this.raterAwardsService = raterAwardsService;

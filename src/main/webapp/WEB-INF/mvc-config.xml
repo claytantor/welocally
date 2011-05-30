@@ -12,13 +12,14 @@
 		http://www.springframework.org/schema/mvc 
 		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
         
+
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />
-    <context:component-scan base-package="com.sightlyinc.ratecred.admin.mvc" />
-
-			
+				
 	<!-- Forwards requests to the "/" resource to the "welcome" view -->
-	<mvc:view-controller path="/" view-name="welcome"/>
+	<mvc:view-controller path="/" view-name="index"/>
+	<mvc:view-controller path="/index.html" view-name="index"/>
+	<mvc:view-controller path="/login.html" view-name="login"/>
 
 	<!-- Configures Handler Interceptors -->	
 	<mvc:interceptors>
