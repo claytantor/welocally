@@ -33,8 +33,7 @@ public class PlaceServiceTest {
 	
 	@Autowired
 	private PlaceManagerService placeManagerService;
-	
-	
+		
 	@Before
 	public void setup(){
 		logger.debug("setup");

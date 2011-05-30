@@ -24,10 +24,10 @@ public class UserPrincipalDaoDefaultImpl extends AbstractDao<UserPrincipal> impl
 	/* (non-Javadoc)
 	 * @see com.noi.utility.spring.UserPrincipalDao#findByUserName(java.lang.String)
 	 */
-	public List<UserPrincipal> findByUserName(final String username) {
+	public UserPrincipal findByUserName(final String username) {
         Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(UserPrincipal.class);
         criteria.add(Restrictions.eq("username", username));
-        return ((List<UserPrincipal>) criteria.list());
+        return ((UserPrincipal) criteria.uniqueResult());
 	}
 
 	@Override

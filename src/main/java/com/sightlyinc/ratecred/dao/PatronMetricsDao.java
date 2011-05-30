@@ -5,6 +5,6 @@ import com.sightlyinc.ratecred.model.PatronMetrics;
 
 public interface PatronMetricsDao {
 	
-	public PatronMetrics findByRater(Patron t);
+	public PatronMetrics findByPatron(Patron t);
 
 }

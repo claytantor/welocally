@@ -1,6 +1,9 @@
 package com.sightlyinc.ratecred.authentication;
 
+import java.util.List;
 import java.util.Set;
+
+import com.noi.utility.spring.service.BLServiceException;
 
 public interface UserPrincipalService {
 	public Long saveUserPrincipal(UserPrincipal up) throws UserPrincipalServiceException;
@@ -13,5 +16,10 @@ public interface UserPrincipalService {
 	
 	public void saveUserPrincipalRoles(UserPrincipal up, Set<Role> roles) throws UserPrincipalServiceException;
 	public void deleteUserPrincipalRole(UserPrincipal up, Role role) throws UserPrincipalServiceException;
+	
+	//move this back to services
+	public UserPrincipal findUserByTwitterScreenName(String twitterScreenName) throws BLServiceException;
+	public List<UserPrincipal> findUsersByTwitterIds(Long[] twiiterids) throws BLServiceException;
+	public UserPrincipal findUserByPrimaryKey(Long id) throws BLServiceException;
 	
 }

@@ -21,6 +21,8 @@ import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.noi.utility.spring.service.BLServiceException;
+
 @Service("userPrincipalService")
 @Transactional(readOnly = true)
 public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincipalService, AuthenticationProvider {
@@ -77,16 +79,12 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	public UserPrincipal loadUser(String username) 
 	throws UserPrincipalServiceException,UserNotFoundException
 	{
-		UserPrincipal principal =null;
-		List<UserPrincipal> users = 
+		UserPrincipal principal = 
 			getUserPrincipalDao().findByUserName(username);
 		
-		if(users==null || users.size()==0)
+		if(principal==null )
 			throw new UsernameNotFoundException("cannot find user:"+username);
-		else
-		{
-			principal = users.get(0);
-		}		
+
 		
 		return principal;
 		
@@ -101,18 +99,18 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		UserDetails details = null;
-		List<UserPrincipal> users = 
+		UserPrincipal principal = 
 			getUserPrincipalDao().findByUserName(username);
 		
-		if(users==null || users.size()==0)
+		if(principal==null )
 			throw new UsernameNotFoundException("cannot find user:"+username);
 		else
 		{
-			UserPrincipal user = users.get(0);
+			//UserPrincipal user = users.get(0);
 			
 			Set<GrantedAuthority> auths = new HashSet<GrantedAuthority>();
 
-	        for (Iterator<Role> iter = user.getRoles().iterator(); iter.hasNext();) {
+	        for (Iterator<Role> iter = principal.getRoles().iterator(); iter.hasNext();) {
 	          Role role = iter.next();
 	          auths.add(new GrantedAuthorityImpl(role.getRole()));
 	        }
@@ -125,12 +123,12 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	        GrantedAuthority[] authArray = (GrantedAuthority[])auths.toArray(new GrantedAuthority[auths.size()]);
 	        details = new DefaultUserDetails(
 	        		authArray,
-	    			user.getCredentialsExpired(), 
-	    			user.getEnabled(), 
-	    			user.getExpired(), 
-	    			user.getLocked(), 
-	    			user.getPassword(), 
-	    			user.getUsername());
+	        		principal.getCredentialsExpired(), 
+	        		principal.getEnabled(), 
+	        		principal.getExpired(), 
+	        		principal.getLocked(), 
+	        		principal.getPassword(), 
+	        		principal.getUsername());
 			
 		}
 		
@@ -265,6 +263,25 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 
 	public void setRoleDao(RoleDao roleDao) {
 		this.roleDao = roleDao;
+	}
+
+	@Override
+	public UserPrincipal findUserByPrimaryKey(Long id)
+			throws BLServiceException {
+		return userPrincipalDao.findByPrimaryKey(id);
+	}
+
+	@Override
+	public UserPrincipal findUserByTwitterScreenName(String twitterScreenName)
+			throws BLServiceException {
+		return null;
+	}
+
+	@Override
+	public List<UserPrincipal> findUsersByTwitterIds(Long[] twiiterids)
+			throws BLServiceException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

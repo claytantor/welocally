@@ -47,8 +47,8 @@ import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.pojo.Page;
 
 // TODO remove @Qualifier annotations that are forcing the setting of a service
-// bean id that matches the interface short class name? - sam 5/21/11
-@Service("RatingManagerService")
+// bean id that matches the interface short class name? - sam 5/21/11 YUP!, clay
+@Service("ratingManagerService")
 @Transactional
 public class RatingManagerServiceImpl implements RatingManagerService {
 	
@@ -59,7 +59,8 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	private RatingDao ratingDao;
 	
 	@Autowired
-	private PatronMetricsDao raterMetricsDao;
+	private PatronMetricsDao patronMetricsDao;
+	
 	
 	@Autowired
 	private AwardTypeDao awardTypeDao; 
@@ -160,18 +161,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 
-	@Override
-	public List<Patron> findRatersRatedSince(Long millis)
-			throws BLServiceException {
-		Set<Patron> since = new HashSet<Patron>();
-		List<Rating> ratingSince = ratingDao.findSince(millis);
-		for (Rating rating : ratingSince) {
-			since.add(rating.getOwner());
-		}
-		return new ArrayList<Patron>(since);
-		
-	}
-
+	
 
 	@Override
 	public Rating findRateByTime(Long time) {
@@ -179,60 +169,9 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 
 
-	@Override
-	public List<Patron> findRatersByPrimaryKeys(Long[] ids)
-			throws BLServiceException {
-		return raterDao.findByPrimaryKeys(ids);
-	}
-
-	@Override
-	public List<Patron> findRatersByScreenNames(String[] screenNames)
-			throws BLServiceException {
-		if(screenNames != null && screenNames.length>0)
-			return raterDao.findByUserNames(screenNames);
-		else return new ArrayList<Patron>();
-	}
-	
 	
 
-	@Override
-	public void saveConvertRater(Patron fromRater, Patron toRater)
-			throws BLServiceException {
-		
-		//ratings
-		Set<Rating> ratings = fromRater.getRatings();
-		for (Rating ratingFrom : ratings) {
-			ratingFrom.setOwner(toRater);
-		}		
-		fromRater.setRatings(new HashSet<Rating>());
-		
-		//awards
-		Set<Award> awards = fromRater.getAwards();
-		for (Award awardFrom : awards) {
-			awardFrom.setOwner(toRater);
-		}
-		fromRater.setAwards(new HashSet<Award>());
-		
-		//compliments
-		Set<Compliment> compliments = fromRater.getCompliments();
-		for (Compliment complimentFrom : compliments) {
-			complimentFrom.setOwner(toRater);
-		}
-		fromRater.setCompliments(new HashSet<Compliment>());
-		
-		toRater.setScore(toRater.getScore()+fromRater.getScore());
-		toRater.setTimeCreated(fromRater.getTimeCreated());
-		
-		raterDao.save(fromRater);
-		raterDao.save(toRater);
-		
-	}
-
-	@Override
-	public List<Patron> findRatersByStatus(String status)
-			throws BLServiceException {
-		return raterDao.findByStatus(status);
-	}
+	
 
 	@Override
 	public Award findAwardById(Long awardId) throws BLServiceException {
@@ -256,32 +195,8 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 			Date startTime, Date endTime) throws BLServiceException {
 		return awardDao.findByOwnerBetweenTimes(towards, startTime, endTime);
 	}
-
-	@Override
-	public PatronMetrics findMetricsByRater(Patron t) {
-		return findMetricsByRater(t, null);
-	}
 	
-	/**
-	 * the business logic here is a little wonky and has
-	 * some legacy to it
-	 * 
-	 * @param t
-	 * @param currentStatus
-	 * @return
-	 */
-	private PatronMetrics findMetricsByRater(Patron t, String currentStatus) {
-		
-		PatronMetrics tm = raterMetricsDao.findByRater(t);
-		
-		if(tm == null)
-			return null;
-		
-		Long score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
-				
-		tm.setScore(score);
-		return tm;
-	}
+
 
 	/*@Override
 	public Patron createAnonymousRater() {
@@ -297,16 +212,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		throw new RuntimeException("NOT ALLOWED");
 	}*/
 
-	@Override
-	public List<Patron> findRatersByCityStateScoreDesc(PlaceCityState cs,
-			int size) throws BLServiceException {
-		
-		//first find all the ratings by a city state
-		List<Patron> areaLeaders 
-			= raterDao.findByCityStateScorePaged(cs.getCity(), cs.getState(), 1, size, false);
-
-		return areaLeaders;
-	}
+	
 
 	@Override
 	public List<Compliment> findComplimentsByRaterBetweenTimes(Patron towards,
@@ -374,15 +280,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		ratingDao.delete(entity);
 	}
 
-	@Override
-	public void deleteRater(Patron entity) {
-		raterDao.delete(entity);
-	}
 
-	@Override
-	public List<Patron> findAllRaters() {
-		return raterDao.findAll();
-	}
 
 	@Override
 	public List<Rating> findAllRates() {
@@ -575,12 +473,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return ratingDao.findByPrimaryKey(id);
 	}
 
-	@Override
-	public Patron findRaterByPrimaryKey(Long id) {
-		Patron t = raterDao.findByPrimaryKey(id);
-		//findRaterAwards(t);
-		return t;
-	}
+	
 
 	@Override
 	public List<Award> findAwardsLocalByRater(Patron t)
@@ -683,22 +576,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return awardDao.findByOwner(t);
 	}
 
-	@Override
-	public Patron findRaterByAuthId(String authId)
-			throws BLServiceException {
-		Patron t = raterDao.findByAuthId(authId);
-		//findRaterAwards(t);
-		return t;
-	}
-
-	@Override
-	public Patron findRaterByUsername(String userName)
-			throws BLServiceException {
-		
-		Patron t = raterDao.findByUserName(userName);
-		return t;
-	}
-
+	
 
 	/**
 	 * same operation with different name so that
@@ -745,10 +623,16 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 				pr.setRating(ratingForType.getRating());				
 			}*/
 			
+			PatronMetrics tm = patronMetricsDao.findByPatron(owner);
 
-			PatronMetrics tmcomp = findMetricsByRater(owner);
-			if (tmcomp != null)
-				owner.setScore(tmcomp.getScore());
+			if (tm != null) {
+
+				Long score = (tm.getRatings()*10l)+(tm.getGiven()*5l)+(tm.getReceived()*5l);
+						
+				tm.setScore(score);
+				
+				owner.setScore(tm.getScore());
+			}
 
 			raterDao.save(owner);
 			entity.setOwner(owner);
@@ -864,20 +748,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 		return page;
 	}
 
-	@Override
-	public void saveRater(Patron entity) {
-		
-		//compute score
-		//get the metrics 
-		if(entity.getId() != null)
-		{
-			PatronMetrics tm =
-				findMetricsByRater(entity);
-			entity.setScore(tm.getScore());
-		}
-		
-		raterDao.save(entity);
-	}
+	
 	
 	//------------- injection ----------------//
 	
@@ -909,11 +780,7 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	}
 	
 
-	@Override
-	public List<Patron> findRatersByScoreDesc(int size)
-			throws BLServiceException {
-		return raterDao.findByScorePaged(1, size, false);
-	}
+	
 	
 	
 	

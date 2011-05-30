@@ -30,14 +30,13 @@ import com.sightlyinc.ratecred.compare.PobabilisticNameAndLocationPlaceComparito
 import com.sightlyinc.ratecred.dao.PlaceAttributeDao;
 import com.sightlyinc.ratecred.dao.PlaceCityStateDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
-import com.sightlyinc.ratecred.index.PlaceDirectoryIndexer;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.PlaceAttribute;
 import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.pojo.Page;
 
-@Service("PlaceManagerService")
+@Service("placeManagerService")
 @Transactional(readOnly = true)
 public class PlaceManagerServiceImpl implements PlaceManagerService {
 	

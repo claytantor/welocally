@@ -40,7 +40,7 @@ public class PatronMetricsDaoDefaultImpl extends AbstractDao<PatronMetrics> impl
      * 
      */
 	@Override
-	public PatronMetrics findByRater(final Patron t) {
+	public PatronMetrics findByPatron(final Patron t) {
 		PatronMetrics result = (PatronMetrics)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 				throws HibernateException, SQLException 

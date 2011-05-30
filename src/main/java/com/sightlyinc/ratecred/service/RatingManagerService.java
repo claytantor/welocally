@@ -76,40 +76,40 @@ public interface RatingManagerService {
 			Patron towards, Date startTime, Date endTime) throws BLServiceException;
 		
 	
-	//rater functions
-	public Patron findRaterByPrimaryKey(Long string) throws BLServiceException;			
-	public List<Patron> findRatersByPrimaryKeys(final Long[] ids) throws BLServiceException;
-	public List<Patron> findRatersByStatus(String status) throws BLServiceException;
+	/*//patron functions
+	public Patron findPatronByPrimaryKey(Long string) throws BLServiceException;			
+	public List<Patron> findPatronByPrimaryKeys(final Long[] ids) throws BLServiceException;
+	public List<Patron> findPatronByStatus(String status) throws BLServiceException;
 	
-	public void saveConvertRater(Patron fromRater, Patron toRater) throws BLServiceException;
+	public void saveConvertPatron(Patron fromRater, Patron toRater) throws BLServiceException;
 
 	
-	public Patron findRaterByUsername(String userName) throws BLServiceException;
+	public Patron findPatronByUsername(String userName) throws BLServiceException;
 	//public Rater findRaterByTwitterScreenName(String twitterScreenName) throws BLServiceException;
 	
-	public Patron findRaterByAuthId(String authId) throws BLServiceException;	
+	public Patron findPatronByAuthId(String authId) throws BLServiceException;	
 	
 	//create anonymous rater, must be saved
 	//public Patron createAnonymousRater();
 	
-	public List<Patron> findAllRaters() throws BLServiceException;	
+	public List<Patron> findAllPatrons() throws BLServiceException;	
 	
-	public List<Patron> findRatersRatedSince(Long millis) throws BLServiceException;
+	public List<Patron> findPatronsRatedSince(Long millis) throws BLServiceException;
 	
-	public List<Patron> findRatersByScreenNames(String[] screenNames) throws BLServiceException;
+	public List<Patron> findPatronsByScreenNames(String[] screenNames) throws BLServiceException;
 				
-	public void deleteRater(Patron entity) throws BLServiceException;
+	public void deletePatron(Patron entity) throws BLServiceException;
 	
-	public void saveRater(Patron entity) throws BLServiceException;
+	public void savePatron(Patron entity) throws BLServiceException;
 	
 	
 			
-	public List<Patron> findRatersByScoreDesc(int size) throws BLServiceException;
+	public List<Patron> findPatronsByScoreDesc(int size) throws BLServiceException;
 	
-	public List<Patron> findRatersByCityStateScoreDesc(PlaceCityState cs, int size) throws BLServiceException;
+	public List<Patron> findPatronsByCityStateScoreDesc(PlaceCityState cs, int size) throws BLServiceException;
 		
 	//rater metrics
-	public PatronMetrics findMetricsByRater(Patron t);
+	public PatronMetrics findMetricsByRater(Patron t);*/
 	
 	
 }

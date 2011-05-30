@@ -12,6 +12,7 @@ import javax.persistence.*;
 
 /**
  * 
+ * 
  * @author cgraham
  * 
  */
@@ -46,6 +47,36 @@ public class UserPrincipal implements Authentication, UserDetails {
 	private Boolean locked;
     @Column(columnDefinition = "tinyint")
 	private Boolean enabled;
+    
+    
+    /**
+     * 
+     *  * twitter_id` BIGINT(20) NULL DEFAULT NULL ,
+  `twitter_username` VARCHAR(45) NULL DEFAULT NULL ,
+  `twitter_token` VARCHAR(255) NULL DEFAULT NULL ,
+  `twitter_secret` VARCHAR(255) NULL DEFAULT NULL ,
+  `twitter_verify` VARCHAR(255) NULL DEFAULT NULL ,
+  `twitter_profile_img` VARCHAR(255) NULL DEFAULT NULL ,
+     * 
+     */
+    @Column(name = "twitter_id")
+    private Long twitterId;
+    
+    @Column(name = "twitter_username")
+    private String twitterUsername;
+    
+    @Column(name = "twitter_profile_img")
+    private String twitterProfileImg;
+    
+    @Column(name = "twitter_token")
+    private String twitterToken;
+    
+    @Column(name = "twitter_secret")
+    private String twitterSecret;
+    
+    @Column(name = "twitter_verify")
+    private String twitterVerify;
+       
 
     @Column(name = "guid")
 	private String authGuid;
@@ -251,6 +282,56 @@ public class UserPrincipal implements Authentication, UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return getEnabled();
+	}
+
+
+
+	public Long getTwitterId() {
+		return twitterId;
+	}
+
+	public void setTwitterId(Long twitterId) {
+		this.twitterId = twitterId;
+	}
+
+	public String getTwitterUsername() {
+		return twitterUsername;
+	}
+
+	public void setTwitterUsername(String twitterUsername) {
+		this.twitterUsername = twitterUsername;
+	}
+
+	public String getTwitterProfileImg() {
+		return twitterProfileImg;
+	}
+
+	public void setTwitterProfileImg(String twitterProfileImg) {
+		this.twitterProfileImg = twitterProfileImg;
+	}
+
+	public String getTwitterToken() {
+		return twitterToken;
+	}
+
+	public void setTwitterToken(String twitterToken) {
+		this.twitterToken = twitterToken;
+	}
+
+	public String getTwitterVerify() {
+		return twitterVerify;
+	}
+
+	public void setTwitterVerify(String twitterVerify) {
+		this.twitterVerify = twitterVerify;
+	}
+
+	public String getTwitterSecret() {
+		return twitterSecret;
+	}
+
+	public void setTwitterSecret(String twitterSecret) {
+		this.twitterSecret = twitterSecret;
 	}
 	
 	

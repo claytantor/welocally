@@ -17,7 +17,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>classpath:sightly-ratecred.properties</value>
+				<value>classpath:${core_application.properties}</value>
 			</list>
 			
 		</property>

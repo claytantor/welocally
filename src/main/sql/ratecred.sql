@@ -48,7 +48,6 @@ CREATE  TABLE IF NOT EXISTS `user_principal` (
   `twitter_token` VARCHAR(255) NULL DEFAULT NULL ,
   `twitter_secret` VARCHAR(255) NULL DEFAULT NULL ,
   `twitter_verify` VARCHAR(255) NULL DEFAULT NULL ,
-  `time_created_mills` BIGINT(20) NULL DEFAULT NULL ,
   `twitter_profile_img` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` BIGINT NULL DEFAULT NULL ,
   `time_updated` BIGINT NULL DEFAULT NULL ,
