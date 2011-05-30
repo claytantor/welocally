@@ -64,7 +64,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	//private PlaceDirectoryIndexer placeDirectoryIndexer;
 	
 	@Autowired
-	@Qualifier("locationPlacesClient")
+//	@Qualifier("locationPlacesClient")
 	private GeoPlacesClient locationClient;
 		
 	@Transactional(readOnly = false)

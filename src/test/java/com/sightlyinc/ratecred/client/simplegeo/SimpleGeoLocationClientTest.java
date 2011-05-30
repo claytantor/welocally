@@ -21,7 +21,7 @@ public class SimpleGeoLocationClientTest extends BaseTest {
 		Logger.getLogger(SimpleGeoLocationClient.class);
 	
 	@Autowired
-	@Qualifier("locationPlacesClient")
+//	@Qualifier("locationPlacesClient")
 	private GeoPlacesClient locationClient;
 	
 	@Before
