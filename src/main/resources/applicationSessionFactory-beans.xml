@@ -16,6 +16,7 @@
             <list>
 	            <!-- list of annotated classes should be here -->
 				<value>com.sightlyinc.ratecred.model.Affiliate</value>
+				<value>com.sightlyinc.ratecred.model.Article</value>
 				<value>com.sightlyinc.ratecred.model.Award</value>
 				<value>com.sightlyinc.ratecred.model.AwardType</value>
 				<value>com.sightlyinc.ratecred.model.Business</value>
@@ -38,6 +39,7 @@
 				<value>com.sightlyinc.ratecred.model.Publisher</value>
 				<value>com.sightlyinc.ratecred.model.Rating</value>
 				<value>com.sightlyinc.ratecred.model.RatingAttribute</value>
+				<value>com.sightlyinc.ratecred.model.Review</value>
 				<value>com.sightlyinc.ratecred.model.Voucher</value>
 				<value>com.sightlyinc.ratecred.authentication.UserPrincipal</value>
 				<value>com.sightlyinc.ratecred.authentication.Role</value>

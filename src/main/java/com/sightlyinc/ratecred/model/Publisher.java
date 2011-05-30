@@ -18,6 +18,11 @@ public class Publisher extends BaseEntity {
 	@Column(name="site_name")
 	private String siteName;
 	
+	@Column(name="description",columnDefinition="TEXT")
+	private String description;	
+
+	private String summary;	
+	
 	@Column(name="monthly_pageviews")
 	private Integer monthlyPageviews;
 	
@@ -62,6 +67,18 @@ public class Publisher extends BaseEntity {
 	}
 	public void setOfferEconomics(Set<OfferEconomics> offerEconomics) {
 		this.offerEconomics = offerEconomics;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 	
 	

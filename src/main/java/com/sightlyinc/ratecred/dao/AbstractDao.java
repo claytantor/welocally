@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,13 +10,14 @@ import javax.annotation.PostConstruct;
 
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.sightlyinc.ratecred.model.BaseEntity;
 
 
 public abstract class AbstractDao<T> extends HibernateDaoSupport implements  BaseDao<T> {
@@ -65,7 +67,7 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
     }
     
     public List<T> findAll() {
-        return findAll();
+        return getHibernateTemplateOverride().loadAll(this.persistentClass);
     }
 
     public List<T> findByExample(T exampleInstance, String[] excludeProperty) {
@@ -79,6 +81,9 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
     }
     
     public Long save(T entity) {
+    	if(entity instanceof BaseEntity && ((BaseEntity)entity).getId() == null)
+    		((BaseEntity)entity).setTimeCreated(Calendar.getInstance().getTimeInMillis());
+    	
     	return (Long)getSession().save(entity);
     }
     

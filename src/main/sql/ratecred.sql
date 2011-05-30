@@ -600,29 +600,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
--- -----------------------------------------------------
--- Table `publisher`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `publisher` ;
-
-CREATE  TABLE IF NOT EXISTS `publisher` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
-  `url` VARCHAR(1024) NULL DEFAULT NULL ,
-  `site_name` VARCHAR(255) NULL DEFAULT NULL ,
-  `monthly_pageviews` INT NULL DEFAULT NULL ,
-  `network_member_id` BIGINT(20) NOT NULL ,
-  `time_created` BIGINT(20) NULL DEFAULT NULL ,
-  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `publisher_network_member1_fk` (`network_member_id` ASC) ,
-  CONSTRAINT `fk_publisher_network_member1`
-    FOREIGN KEY (`network_member_id` )
-    REFERENCES `network_member` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
 -- Table `merchant`
@@ -652,49 +629,6 @@ CREATE  TABLE IF NOT EXISTS `merchant` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
--- -----------------------------------------------------
--- Table `event`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `event` ;
-
-CREATE  TABLE IF NOT EXISTS `event` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT NULL ,
-  `publisher_id` BIGINT(20) NOT NULL ,
-  `place_id` BIGINT(20) NOT NULL ,
-  `name` VARCHAR(255) NULL DEFAULT NULL ,
-  `phone` VARCHAR(32) NULL DEFAULT NULL ,
-  `whenText` VARCHAR(255) NULL DEFAULT NULL ,
-  `url` VARCHAR(1024) NULL DEFAULT NULL ,
-  `cost` FLOAT(11) NULL DEFAULT NULL ,
-  `description` TEXT NULL DEFAULT NULL ,
-  `category_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
-  `image_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
-  `time_starts` BIGINT(20) NULL DEFAULT NULL ,
-  `time_ends` BIGINT(20) NULL DEFAULT NULL ,
-  `alarm_data` VARCHAR(1024) NULL DEFAULT NULL ,
-  `alarm_time` BIGINT(20) NULL DEFAULT NULL ,
-  `recurrance_type` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY','HOURLY','MINUTELY') NULL DEFAULT NULL ,
-  `recurrance_interval` INT(11) NULL DEFAULT NULL ,
-  `recurrance_data` VARCHAR(1024) NULL DEFAULT NULL ,
-  `recurrance_end` BIGINT(20) NULL DEFAULT NULL ,
-  `time_created` BIGINT(20) NULL DEFAULT NULL ,
-  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_event_publisher` (`publisher_id` ASC) ,
-  INDEX `fk_event_place` (`place_id` ASC) ,
-  CONSTRAINT `fk_event_publisher`
-    FOREIGN KEY (`publisher_id` )
-    REFERENCES `publisher` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_event_place`
-    FOREIGN KEY (`place_id` )
-    REFERENCES `place` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -843,6 +777,32 @@ CREATE  TABLE IF NOT EXISTS `affiliate_has_business` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `publisher`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `publisher` ;
+
+CREATE  TABLE IF NOT EXISTS `publisher` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT(11) NOT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `site_name` VARCHAR(255) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `summary` VARCHAR(1024) NULL DEFAULT NULL ,
+  `monthly_pageviews` INT NULL DEFAULT NULL ,
+  `network_member_id` BIGINT(20) DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `publisher_network_member1_fk` (`network_member_id` ASC) ,
+  CONSTRAINT `fk_publisher_network_member1`
+    FOREIGN KEY (`network_member_id` )
+    REFERENCES `network_member` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
 
 -- -----------------------------------------------------
 -- Table `article`
@@ -851,16 +811,102 @@ DROP TABLE IF EXISTS `article` ;
 
 CREATE  TABLE IF NOT EXISTS `article` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NULL ,
   `publisher_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `summary` VARCHAR(1024) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,   
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
   PRIMARY KEY (`id`) ,
   INDEX `fk_article_publisher1` (`publisher_id` ASC) ,
+  INDEX `fk_article_place` (`place_id` ASC) ,
   CONSTRAINT `fk_article_publisher1`
     FOREIGN KEY (`publisher_id` )
     REFERENCES `publisher` (`id` )
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_article_place`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `article`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `review` ;
+
+CREATE  TABLE IF NOT EXISTS `review` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NULL ,
+  `publisher_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `summary` VARCHAR(1024) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL , 
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_review_publisher1` (`publisher_id` ASC) ,
+  INDEX `fk_review_place` (`place_id` ASC) ,
+  CONSTRAINT `fk_review_publisher1`
+    FOREIGN KEY (`publisher_id` )
+    REFERENCES `publisher` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_review_place`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)    
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `event`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `event` ;
+
+CREATE  TABLE IF NOT EXISTS `event` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NULL ,
+  `publisher_id` BIGINT(20) NOT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `phone` VARCHAR(32) NULL DEFAULT NULL ,
+  `whenText` VARCHAR(255) NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `cost` FLOAT(11) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(45) NULL DEFAULT NULL ,
+  `time_starts` BIGINT(20) NULL DEFAULT NULL ,
+  `time_ends` BIGINT(20) NULL DEFAULT NULL ,
+  `alarm_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `alarm_time` BIGINT(20) NULL DEFAULT NULL ,
+  `recurrance_type` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY','HOURLY','MINUTELY') NULL DEFAULT NULL ,
+  `recurrance_interval` INT(11) NULL DEFAULT NULL ,
+  `recurrance_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `recurrance_end` BIGINT(20) NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_event_publisher` (`publisher_id` ASC) ,
+  INDEX `fk_event_place` (`place_id` ASC) ,
+  CONSTRAINT `fk_event_publisher`
+    FOREIGN KEY (`publisher_id` )
+    REFERENCES `publisher` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_event_place`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

@@ -23,10 +23,10 @@ import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 
 @Service("patronManagerService")
-public class DefaultPatronManagerService implements PatronManagerService {
+public class PatronManagerServiceImpl implements PatronManagerService {
 	
 
-	static Logger logger = Logger.getLogger(DefaultPatronManagerService.class);
+	static Logger logger = Logger.getLogger(PatronManagerServiceImpl.class);
 	
 	@Autowired
 	private UserPrincipalDao userPrincipalDao;

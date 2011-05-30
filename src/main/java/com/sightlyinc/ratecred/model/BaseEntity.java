@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
 @MappedSuperclass
 public abstract class BaseEntity {
@@ -14,6 +15,7 @@ public abstract class BaseEntity {
 	@Column(name = "id")
 	private Long id;
 	
+	@Version
 	@Column(name = "version")
 	private Integer version = new Integer(0);
 	
