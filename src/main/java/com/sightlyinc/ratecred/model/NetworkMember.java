@@ -5,7 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.noi.utility.spring.UserPrincipal;
@@ -50,9 +52,36 @@ public class NetworkMember extends BaseEntity {
 	@Column(name="paypal_email")
 	private String paypalEmail;
 	
+	/**
+	 * so we are choosing to have three foreign keys to the entity types
+	 * possible for a member and then letting business logic manage what 
+	 * entity it is, this may be a good use case for table inheritance 
+	 * with hibernate. right now we are going to have three keys to support it
+	 * but they will live in the external table that is being referenced
+	 * 
+	 * http://docs.jboss.org/hibernate/core/3.3/reference/en/html/inheritance.html
+	 * 
+	 */
 	@Column(name = "member_type", columnDefinition="enum ('PUBLISHER','AFFILIATE','MERCHANT')")
 	@Enumerated(EnumType.STRING)
 	private MemberType type;
+	
+	@OneToOne
+	@JoinTable(name="publisher")
+	@JoinColumn(name="network_member_id")
+	private Publisher publisher;
+	
+	@OneToOne
+	@JoinTable(name="affiliate")
+	@JoinColumn(name="network_member_id")
+	private Affiliate affiliate;
+
+	@OneToOne
+	@JoinTable(name="merchant")
+	@JoinColumn(name="network_member_id")
+	private Merchant merchant;
+		
+	
 	
 	/*@ManyToOne
 	@JoinColumn(name = "user_principal_id")
@@ -128,6 +157,30 @@ public class NetworkMember extends BaseEntity {
 
 	public void setPaypalEmail(String paypalEmail) {
 		this.paypalEmail = paypalEmail;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public Affiliate getAffiliate() {
+		return affiliate;
+	}
+
+	public void setAffiliate(Affiliate affiliate) {
+		this.affiliate = affiliate;
+	}
+
+	public Merchant getMerchant() {
+		return merchant;
+	}
+
+	public void setMerchant(Merchant merchant) {
+		this.merchant = merchant;
 	}
 	
 	

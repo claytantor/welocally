@@ -578,7 +578,7 @@ DROP TABLE IF EXISTS `network_member` ;
 CREATE  TABLE IF NOT EXISTS `network_member` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT(11) NOT NULL ,
-  `user_principal_id` BIGINT(20) NOT NULL ,
+  `user_principal_id` BIGINT(20)  DEFAULT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `primary_email` VARCHAR(255) NULL DEFAULT NULL ,
   `paypal_email` VARCHAR(255) NULL DEFAULT NULL ,  
