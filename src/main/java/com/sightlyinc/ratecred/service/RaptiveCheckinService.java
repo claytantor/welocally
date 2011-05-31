@@ -33,8 +33,6 @@ import com.sightlyinc.ratecred.model.Rating;
  * @author claygraham
  *
  */
-// TODO remove @Qualifier annotations that are forcing the setting of a service
-// bean id that matches the interface short class name? - sam 5/21/11
 @Service("checkinService")
 @Transactional
 public class RaptiveCheckinService implements CheckinService {

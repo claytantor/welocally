@@ -15,8 +15,6 @@ import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Voucher;
 
 
-// TODO remove @Qualifier annotations that are forcing the setting of a service
-// bean id that matches the interface short class name? - sam 5/21/11
 @Service("orderManagerService")
 @Transactional
 public class OrderManagerServiceImpl implements OrderManagerService {

@@ -46,8 +46,6 @@ import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.pojo.Page;
 
-// TODO remove @Qualifier annotations that are forcing the setting of a service
-// bean id that matches the interface short class name? - sam 5/21/11 YUP!, clay
 @Service("ratingManagerService")
 @Transactional
 public class RatingManagerServiceImpl implements RatingManagerService {

@@ -43,8 +43,6 @@ import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.pojo.BusinessMetricsMetadata;
 import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
 
-// TODO remove @Qualifier annotations that are forcing the setting of a service
-// bean id that matches the interface short class name? - sam 5/21/11
 @Service("BusinessManagerService")
 @Transactional
 public class BusinessManagerServiceImpl implements BusinessManagerService {
