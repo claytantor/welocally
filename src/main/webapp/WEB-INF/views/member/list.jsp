@@ -19,21 +19,27 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2><a href="<c:url value='/' />">home</a> : list of publishers</h2>
+		<h2><a href="<c:url value='/' />">home</a> : list of members</h2>
 		<hr/>
 		<div class="actions span-24 last">
 			<a href="<c:url value='/admin/publisher' />" class="button">create</a>
 		</div>		
 		<div class="span-24 last">
-			<c:forEach var="publisher" items="${publishers}">
+			<c:forEach var="member" items="${members}">
+
 			<div class="span-24 last">
-				<div class="strong-12 span-1">${publisher.id}</div>
-				<div class="strong-12 span-6"><a href="<c:url value='/admin/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>
-				<div class="span-10">
-					<div class="span-10"><a href="${publisher.url}">${publisher.url}</a></div>
-					<div class="span-10">${publisher.description}</div>				
+				<div class="strong-12 span-1">${member.id}</div>
+				<div class="strong-12 span-2">${member.type}</div>
+				<div class="strong-12 span-4"><a href="<c:url value='/admin/member/${member.id}'/>">${member.name}</a></div>
+				<div class="span-8">
+					<div class="span-8">${member.description}</div>	
+					<div class="span-8"><a href="${member.iconUrl}">${member.iconUrl}</a></div>
+					<div class="span-8"><a href="${member.mapIconUrl}">${member.mapIconUrl}</a></div>
+				</div>			
+				<div class="span-4 last">
+					<div class="span-4 last">${member.primaryEmail}</div>
+					<div class="span-4 last">${member.paypalEmail}</div>	
 				</div>
-				<div class="span-2 last">${publisher.monthlyPageviews}</div>	
 			</div>
 			</c:forEach>
 		</div>	

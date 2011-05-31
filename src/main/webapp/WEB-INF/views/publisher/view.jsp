@@ -13,16 +13,18 @@
 <script>
 	$(function() {
 		$( "a", ".actions" ).button();
-		$( "a", ".actions" ).click(function() { return false; });
 	});
-	</script>
+</script>
 <body>
 
 <div class="container">
 	<div class="span-24">
-		<h2>${publisher.siteName}</h2>
+		<h2><a href="<c:url value='/admin/publisher/list' />">all publishers</a> : ${publisher.siteName}</h2>
 		<hr/>
-		<div class="actions span-24 last"><a href="" class="button">edit</a><a href="" class="button">delete</a></div>
+		<div class="actions span-24 last">
+			<a href="<c:url value='/admin/publisher/edit/${publisher.id}' />" class="button">edit</a>
+			<a href="<c:url value='/admin/publisher/delete/${publisher.id}' />" class="button">delete</a>
+		</div>
 		<div class="span-24 last">
 			<div class="strong-12 span-4">${publisher.id}</div>
 			<div class="span-10">

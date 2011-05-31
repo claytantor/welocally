@@ -1,7 +1,16 @@
 package com.sightlyinc.ratecred.admin.model;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.log4j.Logger;
+
+import com.sightlyinc.ratecred.model.Publisher;
+
 
 public class PublisherForm {
+	
+	static Logger logger = Logger.getLogger(PublisherForm.class);
 
 	private Long id;
 	
@@ -16,6 +25,20 @@ public class PublisherForm {
 	private String summary;
 	
 	private Integer monthlyPageviews;
+
+	public PublisherForm() {
+		super();
+	}
+	
+	public PublisherForm(Publisher p) {
+		try {
+			BeanUtils.copyProperties(this, p);
+		} catch (IllegalAccessException e) {
+			logger.error("load error", e);
+		} catch (InvocationTargetException e) {
+			logger.error("load error", e);
+		}
+	}
 
 	public String getUrl() {
 		return url;

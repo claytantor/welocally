@@ -47,6 +47,8 @@ public class PublisherController {
 		{
 			p.setMonthlyPageviews(form.getMonthlyPageviews());
 			p.setSiteName(form.getSiteName());
+			p.setDescription(form.getDescription());
+			p.setSummary(form.getSummary());
 			p.setUrl(form.getUrl());
 			Long id = publisherService.save(p);
 			return "redirect:/admin/publisher/"+id.toString();
@@ -67,8 +69,9 @@ public class PublisherController {
 	@RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
 	public String editPublisher(@PathVariable Long id, Model model) {
 		logger.debug("edit");
-		model.addAttribute("publisher", publisherService.findByPrimaryKey(id));
-		model.addAttribute("publisherForm",new PublisherForm());
+		model.addAttribute(
+				"publisherForm",
+				new PublisherForm(publisherService.findByPrimaryKey(id)));
 		return "publisher/edit";
 	}
 	
@@ -77,7 +80,7 @@ public class PublisherController {
 		logger.debug("delete");
 		Publisher p = publisherService.findByPrimaryKey(id);
 		publisherService.delete(p);
-		return "publisher/list";
+		return "redirect:/admin/publisher/list";
 	}
 	
 	@RequestMapping(value="/list", method=RequestMethod.GET)

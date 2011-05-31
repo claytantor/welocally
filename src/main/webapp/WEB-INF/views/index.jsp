@@ -17,6 +17,11 @@
 		<h1>admin home</h1>
 		<hr/>
 		<div class="span-24">
+			<h2>network member</h2>
+			<div><a href="<c:url value='/admin/member/list'/>">list all</a></div>
+			<div><a href="<c:url value='/admin/member'/>">create</a></div>
+		</div>		
+		<div class="span-24">
 			<h2>publisher</h2>
 			<div><a href="<c:url value='/admin/publisher/list'/>">list all</a></div>
 			<div><a href="<c:url value='/admin/publisher'/>">create</a></div>

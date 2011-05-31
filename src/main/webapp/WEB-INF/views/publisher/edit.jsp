@@ -15,7 +15,10 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2>edit publisher</h2>
+		<h2>
+		<c:if test="${not empty(publisherForm.id)}">edit publisher</c:if>
+		<c:if test="${empty(publisherForm.id)}">create publisher</c:if>
+		</h2>
 
 		<c:url value='/admin/publisher' var="publisherAction"/>		
 		<form:form modelAttribute="publisherForm" action="${publisherAction}" method="post">
