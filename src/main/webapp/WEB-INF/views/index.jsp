@@ -1,8 +1,6 @@
 <%@ page 
 	contentType="text/html; charset=iso-8859-1" 
-	language="java" 
-	import="javax.servlet.jsp.*" 
-	errorPage="" %>
+	language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -25,6 +23,11 @@
 			<h2>publisher</h2>
 			<div><a href="<c:url value='/admin/publisher/list'/>">list all</a></div>
 			<div><a href="<c:url value='/admin/publisher'/>">create</a></div>
+		</div>
+		<div class="span-24">
+			<h2>event</h2>
+			<div><a href="<c:url value='/admin/event/list'/>">list all</a></div>
+			<div><a href="<c:url value='/admin/event'/>">create</a></div>
 		</div>
 	</div>
 </div>
