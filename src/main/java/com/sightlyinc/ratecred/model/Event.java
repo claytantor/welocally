@@ -36,10 +36,10 @@ import javax.persistence.Table;
   `time_ends` BIGINT(20) NULL DEFAULT NULL ,
   `alarm_data` VARCHAR(1024) NULL DEFAULT NULL ,
   `alarm_time` BIGINT(20) NULL DEFAULT NULL ,
-  `recurrance_type` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY','HOURLY','MINUTELY') NULL DEFAULT NULL ,
-  `recurrance_interval` INT(11) NULL DEFAULT NULL ,
-  `recurrance_data` VARCHAR(1024) NULL DEFAULT NULL ,
-  `recurrance_end` BIGINT(20) NULL DEFAULT NULL ,
+  `recurrence_type` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY','HOURLY','MINUTELY') NULL DEFAULT NULL ,
+  `recurrence_interval` INT(11) NULL DEFAULT NULL ,
+  `recurrence_data` VARCHAR(1024) NULL DEFAULT NULL ,
+  `recurrence_end` BIGINT(20) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
 
@@ -51,7 +51,7 @@ import javax.persistence.Table;
 @Table(name="event")
 public class Event extends BaseEntity {
 	
-	private enum RecurranceType {DAILY,WEEKLY,MONTHLY,YEARLY,HOURLY,MINUTELY}
+	private enum RecurrenceType {DAILY,WEEKLY,MONTHLY,YEARLY,HOURLY,MINUTELY}
 	
 	private String name;
 	
@@ -76,18 +76,18 @@ public class Event extends BaseEntity {
 	@Column(name="time_ends")
 	private Long timeEnds;
 	
-//	@Column(name="recurrance_type")
+//	@Column(name="recurrence_type")
 //	@Enumerated(EnumType.STRING)
-//	private RecurranceType recurranceType;
+//	private RecurrenceType recurrenceType;
 	
-	@Column(name="recurrance_interval")
-	private Integer recurranceInterval;
+	@Column(name="recurrence_interval")
+	private Integer recurrenceInterval;
 	
-	@Column(name="recurrance_data")
-	private String recurranceData;
+	@Column(name="recurrence_data")
+	private String recurrenceData;
 	
-	@Column(name="recurrance_end")
-	private Long recurranceEnd;
+	@Column(name="recurrence_end")
+	private Long recurrenceEnd;
 	
 	private String phone;
 	
@@ -162,29 +162,29 @@ public class Event extends BaseEntity {
 	public void setTimeEnds(Long timeEnds) {
 		this.timeEnds = timeEnds;
 	}
-//	public RecurranceType getRecurranceType() {
-//		return recurranceType;
+//	public RecurrenceType getRecurrenceType() {
+//		return recurrenceType;
 //	}
-//	public void setRecurranceType(RecurranceType recurranceType) {
-//		this.recurranceType = recurranceType;
+//	public void setRecurrenceType(RecurrenceType recurrenceType) {
+//		this.recurrenceType = recurrenceType;
 //	}
-	public Integer getRecurranceInterval() {
-		return recurranceInterval;
+	public Integer getrecurrenceInterval() {
+		return recurrenceInterval;
 	}
-	public void setRecurranceInterval(Integer recurranceInterval) {
-		this.recurranceInterval = recurranceInterval;
+	public void setrecurrenceInterval(Integer recurrenceInterval) {
+		this.recurrenceInterval = recurrenceInterval;
 	}
-	public String getRecurranceData() {
-		return recurranceData;
+	public String getrecurrenceData() {
+		return recurrenceData;
 	}
-	public void setRecurranceData(String recurranceData) {
-		this.recurranceData = recurranceData;
+	public void setrecurrenceData(String recurrenceData) {
+		this.recurrenceData = recurrenceData;
 	}
-	public Long getRecurranceEnd() {
-		return recurranceEnd;
+	public Long getrecurrenceEnd() {
+		return recurrenceEnd;
 	}
-	public void setRecurranceEnd(Long recurranceEnd) {
-		this.recurranceEnd = recurranceEnd;
+	public void setrecurrenceEnd(Long recurrenceEnd) {
+		this.recurrenceEnd = recurrenceEnd;
 	}
 	public Publisher getPublisher() {
 		return publisher;
