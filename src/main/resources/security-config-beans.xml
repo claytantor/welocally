@@ -11,7 +11,10 @@
 
 	<http auto-config="true">
     	<intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
+    	<intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    	<intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/**" access="ROLE_ADMIN" />
         <form-login login-page="/login.html" authentication-failure-url="/login.html?login_error=1" />
 	</http>
 
