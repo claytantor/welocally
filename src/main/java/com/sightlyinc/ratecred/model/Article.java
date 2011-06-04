@@ -26,6 +26,8 @@ import javax.persistence.Table;
 @Table(name="article")
 public class Article extends BaseEntity {
 
+    private String url;
+
 	@Column(columnDefinition="TEXT")
 	private String summary;
 	
@@ -39,8 +41,16 @@ public class Article extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "publisher_id")
 	private Publisher publisher;
-	
-	public String getSummary() {
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getSummary() {
 		return summary;
 	}
 
