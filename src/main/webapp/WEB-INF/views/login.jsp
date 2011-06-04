@@ -43,6 +43,7 @@
                 </c:if>
             
                 <form name="f" action="<c:url value='j_spring_security_check'/>" method="POST">
+                  <input type="hidden" id="_spring_security_remember_me" name="_spring_security_remember_me" value="true">
                   <table>
                     <tr><td align="right">User:</td><td><input type='text' name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/></td></tr>
                     <tr><td align="right">Password:</td><td><input type='password' name='j_password' ></td></tr>
