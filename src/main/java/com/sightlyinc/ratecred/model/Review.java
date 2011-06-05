@@ -10,6 +10,8 @@ import javax.persistence.Table;
 @Table(name="review")
 public class Review extends BaseEntity {
 
+    private String url;
+
 	@Column(columnDefinition="TEXT")
 	private String summary;
 	
@@ -24,7 +26,15 @@ public class Review extends BaseEntity {
 	@JoinColumn(name = "publisher_id")
 	private Publisher publisher;
 
-	public String getSummary() {
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getSummary() {
 		return summary;
 	}
 
