@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.sightlyinc.ratecred.admin.model.PublisherForm;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.PublisherService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(value="/admin/publisher")
@@ -90,4 +91,11 @@ public class PublisherController {
 		return "publisher/list";
 	}
 
+    @RequestMapping("/search")
+    public String searchByName(@RequestParam("siteName") String siteName, Model model) {
+        logger.debug("search by siteName");
+        List<Publisher> publisers = publisherService.findBySiteName(siteName);
+        model.addAttribute("publishers", publisers);
+        return "publisher/list_json";
+    }
 }

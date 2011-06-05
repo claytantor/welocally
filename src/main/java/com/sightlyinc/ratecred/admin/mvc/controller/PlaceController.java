@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.service.PlaceManagerService;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("admin/place")
@@ -97,5 +100,18 @@ public class PlaceController {
             throw new RuntimeException(e);
         }
         return "place/list";
+    }
+
+    @RequestMapping("/search")
+    public String searchByName(@RequestParam("name") String name, Model model) {
+        logger.debug("search by name");
+        List<Place> places;
+        try {
+            places = placeManagerService.findPlacesByNamePrefix(name);
+        } catch (BLServiceException e) {
+            throw new RuntimeException(e);
+        }
+        model.addAttribute("places", places);
+        return "place/list_json";
     }
 }
