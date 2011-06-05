@@ -24,6 +24,11 @@
 			<div><a href="<c:url value='/admin/publisher/list'/>">list all</a></div>
 			<div><a href="<c:url value='/admin/publisher'/>">create</a></div>
 		</div>
+        <div class="span-24">
+            <h2>place</h2>
+            <div><a href="<c:url value='/admin/place/list'/>">list all</a></div>
+            <div><a href="<c:url value='/admin/place'/>">create</a></div>
+        </div>
 		<div class="span-24">
 			<h2>event</h2>
 			<div><a href="<c:url value='/admin/event/list'/>">list all</a></div>
