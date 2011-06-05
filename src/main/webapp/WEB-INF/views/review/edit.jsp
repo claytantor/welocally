@@ -9,6 +9,48 @@
 <html>
 <c:set var="pageTitle" value="Review Edit"/>
 <jsp:include page="../head.jsp"/>
+<script>
+    var placesUrl = "<c:url value="/admin/place/search?name="/>";
+    var placeSource = function(req, add) {
+        $.getJSON(placesUrl + req.term, function(data) {
+            var suggestions = [];
+            for (var i = 0; i < data.places.length; i++) {
+                suggestions.push({'label':data.places[i].name,'value':data.places[i].id});
+            }
+            add(suggestions);
+        });
+    };
+    var publishersUrl = "<c:url value="/admin/publisher/search?siteName="/>";
+    var publisherSource = function(req, add) {
+        $.getJSON(publishersUrl + req.term, function(data) {
+            var suggestions = [];
+            for (var i = 0; i < data.publishers.length; i++) {
+                suggestions.push({'label':data.publishers[i].siteName,'value':data.publishers[i].id});
+            }
+            add(suggestions);
+        });
+    };
+	$(function() {
+		$("#place").autocomplete({
+            minLength:3,
+            source:placeSource,
+            select:function(event,ui) {
+                $('#place').val(ui.item.label);
+                $('#place_id').val(ui.item.value);
+                return false;
+            }
+        });
+		$("#publisher").autocomplete({
+            minLength:3,
+            source:publisherSource,
+            select:function(event,ui) {
+                $('#publisher').val(ui.item.label);
+                $('#publisher_id').val(ui.item.value);
+                return false;
+            }
+        });
+	});
+</script>
 <body>
 
 <div class="container">
@@ -24,6 +66,8 @@
 				<legend>Review Info</legend>
 				<form:hidden path="id" />
 				<form:hidden path="version" />
+                <form:hidden id="place_id" path="place.id" />
+                <form:hidden id="publisher_id" path="publisher.id" />
                   <p>
                       <form:label for="url" path="url" cssErrorClass="error">URL:</form:label><br/>
                       <form:input path="url" id="url"/> <form:errors path="url" class="error" />
@@ -45,6 +89,14 @@
                   <p>
                       <form:label for="summary" path="summary" cssErrorClass="error">Summary</form:label><br/>
                       <form:textarea path="summary" rows="1" cols="10" /> <form:errors path="summary" class="error" />
+                  </p>
+                  <p>
+                      <label for="place">Place:</label><br/>
+                      <input id="place" />
+                  </p>
+                  <p>
+                      <label for="publisher">Publisher:</label><br/>
+                      <input id="publisher" />
                   </p>
 
 				<p>	
