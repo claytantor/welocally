@@ -2,6 +2,9 @@ package com.sightlyinc.ratecred.dao;
 
 import com.sightlyinc.ratecred.model.Publisher;
 
-public interface PublisherDao  extends BaseDao<Publisher> {
+import java.util.List;
 
+public interface PublisherDao extends BaseDao<Publisher> {
+
+    List<Publisher> findBySiteName(String name);
 }

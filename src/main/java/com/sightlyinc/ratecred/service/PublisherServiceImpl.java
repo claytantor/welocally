@@ -7,6 +7,8 @@ import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.dao.PublisherDao;
 import com.sightlyinc.ratecred.model.Publisher;
 
+import java.util.List;
+
 @Service
 public class PublisherServiceImpl extends AbstractTransactionalService<Publisher>
 		implements PublisherService {
@@ -19,4 +21,8 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 		return publisherDao;
 	}
 
+    @Override
+    public List<Publisher> findBySiteName(String siteName) {
+        return publisherDao.findBySiteName(siteName);
+    }
 }

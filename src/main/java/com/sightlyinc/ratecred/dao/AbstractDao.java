@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
@@ -30,7 +31,7 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
     public AbstractDao(Class<T> persistentClass) {
         this.persistentClass = persistentClass;        
     }
-    
+
     @PostConstruct
     private void initSessionFactory() {
     	super.setSessionFactory(sessionFactory);
@@ -41,7 +42,7 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         return template;
     }
-    
+
     
     public Class<T> getPersistentClass() {
         return persistentClass;
@@ -129,7 +130,9 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
         return new ArrayList<T>(objs);
     }
 
-
+    public Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 	
 	
 
