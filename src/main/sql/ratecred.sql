@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `offer` ;
 
 CREATE  TABLE IF NOT EXISTS `offer` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `merchant_id` BIGINT(20) NOT NULL ,
   `award_id` BIGINT(20) NOT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
@@ -130,7 +130,7 @@ CREATE  TABLE IF NOT EXISTS `award` (
   `award_type_id` BIGINT(20) NOT NULL ,
   `award_offer_id` BIGINT(20) NOT NULL ,
   `patron_id` BIGINT(20) NOT NULL ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `expires` BIGINT NULL DEFAULT NULL ,
   `notes` TEXT NULL DEFAULT NULL ,
   `metadata` TEXT NULL DEFAULT NULL ,
@@ -217,7 +217,7 @@ DROP TABLE IF EXISTS `business_metrics` ;
 
 CREATE  TABLE IF NOT EXISTS `business_metrics` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `yays` INT(11) NOT NULL ,
   `boos` INT(11) NOT NULL ,
   `ratings` INT(11) NOT NULL ,
@@ -303,7 +303,7 @@ DROP TABLE IF EXISTS `rating` ;
 
 CREATE  TABLE IF NOT EXISTS `rating` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `patron_id` BIGINT(20) NOT NULL ,
   `place_id` BIGINT(20) NOT NULL ,
   `type` VARCHAR(255) NULL DEFAULT NULL ,
@@ -343,7 +343,7 @@ DROP TABLE IF EXISTS `compliment` ;
 
 CREATE  TABLE IF NOT EXISTS `compliment` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `patron_id` BIGINT(20),
   `rating_id` BIGINT(20),
   `note` TEXT NULL DEFAULT NULL ,
@@ -546,7 +546,7 @@ DROP TABLE IF EXISTS `patron` ;
 
 CREATE  TABLE IF NOT EXISTS `patron` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `user_principal_id` BIGINT(20) NOT NULL ,
   `username` VARCHAR(255) NULL DEFAULT NULL ,
   `secretkey` VARCHAR(255) NULL DEFAULT NULL ,
@@ -577,7 +577,7 @@ DROP TABLE IF EXISTS `network_member` ;
 
 CREATE  TABLE IF NOT EXISTS `network_member` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `user_principal_id` BIGINT(20)  DEFAULT NULL ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `primary_email` VARCHAR(255) NULL DEFAULT NULL ,
@@ -586,7 +586,6 @@ CREATE  TABLE IF NOT EXISTS `network_member` (
   `description` TEXT NULL DEFAULT NULL ,
   `icon_url` VARCHAR(1024) NULL DEFAULT NULL ,
   `map_icon_url` VARCHAR(1024) NULL DEFAULT NULL ,
-  `member_type` ENUM('PUBLISHER','AFFILIATE','MERCHANT') NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
   PRIMARY KEY (`id`) ,
@@ -608,7 +607,7 @@ DROP TABLE IF EXISTS `merchant` ;
 
 CREATE  TABLE IF NOT EXISTS `merchant` (
   `id` BIGINT NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `network_member_id` BIGINT(20) NOT NULL ,
   `business_id` BIGINT(20) NOT NULL ,
   `voucher_verification_phone` VARCHAR(255) NULL DEFAULT NULL ,
@@ -638,7 +637,7 @@ DROP TABLE IF EXISTS `business_location` ;
 
 CREATE  TABLE IF NOT EXISTS `business_location` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `place_id` BIGINT(20) NOT NULL ,
   `business_id` BIGINT(20) NULL DEFAULT NULL ,  
   `phone` VARCHAR(16) NULL DEFAULT NULL ,
@@ -784,7 +783,7 @@ DROP TABLE IF EXISTS `publisher` ;
 
 CREATE  TABLE IF NOT EXISTS `publisher` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `version` INT(11) NOT NULL ,
+  `version` INT(11) DEFAULT NULL ,
   `url` VARCHAR(1024) NULL DEFAULT NULL ,
   `site_name` VARCHAR(255) NULL DEFAULT NULL ,
   `description` TEXT NULL DEFAULT NULL ,

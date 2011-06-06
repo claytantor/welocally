@@ -20,6 +20,13 @@ public interface UserPrincipalService {
 	//move this back to services
 	public UserPrincipal findUserByTwitterScreenName(String twitterScreenName) throws BLServiceException;
 	public List<UserPrincipal> findUsersByTwitterIds(Long[] twiiterids) throws BLServiceException;
+	public List<UserPrincipal> findAll() throws BLServiceException;
 	public UserPrincipal findUserByPrimaryKey(Long id) throws BLServiceException;
+	
+	
+	//roles
+	public List<Role> findAllRoles() throws UserPrincipalServiceException;
+	
+	//public Long saveUserRole(Role r) throws UserPrincipalServiceException;
 	
 }

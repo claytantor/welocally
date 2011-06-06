@@ -1,16 +1,19 @@
 package com.sightlyinc.ratecred.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.noi.utility.spring.UserPrincipal;
+import com.sightlyinc.ratecred.authentication.UserPrincipal;
+
 
 /**
  * `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
@@ -22,6 +25,19 @@ import com.noi.utility.spring.UserPrincipal;
   `member_type` ENUM('PUBLISHER','AFFILIATE','MERCHANT') NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  
+  properties
+  	"name",	
+	"memberKey",	
+	"description",	
+	"iconUrl",	
+	"mapIconUrl",	
+	"primaryEmail",	
+	"paypalEmail",
+	"publishers",	
+	"affiliates",	
+	"merchants",
+  
  * 
  * @author claygraham
  *
@@ -52,7 +68,7 @@ public class NetworkMember extends BaseEntity {
 	@Column(name="paypal_email")
 	private String paypalEmail;
 	
-	/**
+/*	*//**
 	 * so we are choosing to have three foreign keys to the entity types
 	 * possible for a member and then letting business logic manage what 
 	 * entity it is, this may be a good use case for table inheritance 
@@ -61,31 +77,34 @@ public class NetworkMember extends BaseEntity {
 	 * 
 	 * http://docs.jboss.org/hibernate/core/3.3/reference/en/html/inheritance.html
 	 * 
-	 */
+	 *//*
 	@Column(name = "member_type", columnDefinition="enum ('PUBLISHER','AFFILIATE','MERCHANT')")
 	@Enumerated(EnumType.STRING)
-	private MemberType type;
+	private MemberType type;*/
 	
-	@OneToOne
-	@JoinTable(name="publisher")
+	@OneToMany
 	@JoinColumn(name="network_member_id")
-	private Publisher publisher;
+	private Set<Publisher> publishers;
 	
-	@OneToOne
-	@JoinTable(name="affiliate")
+	@OneToMany
 	@JoinColumn(name="network_member_id")
-	private Affiliate affiliate;
+	private Set<Affiliate> affiliates;
+	
+	@OneToMany
+	@JoinColumn(name="network_member_id")
+	private Set<Merchant> merchants;
 
+	
 	@OneToOne
-	@JoinTable(name="merchant")
-	@JoinColumn(name="network_member_id")
-	private Merchant merchant;
-		
+	@JoinColumn(name="user_principal_id")
+	private UserPrincipal userPrincipal;
 	
-	
-	/*@ManyToOne
-	@JoinColumn(name = "user_principal_id")
-	private UserPrincipal principal;*/
+
+
+	public NetworkMember() {
+		super();
+		this.publishers = new HashSet<Publisher>();
+	}
 
 	public String getName() {
 		return name;
@@ -127,13 +146,13 @@ public class NetworkMember extends BaseEntity {
 		this.mapIconUrl = mapIconUrl;
 	}
 
-	public MemberType getType() {
-		return type;
-	}
-
-	public void setType(MemberType type) {
-		this.type = type;
-	}
+//	public MemberType getType() {
+//		return type;
+//	}
+//
+//	public void setType(MemberType type) {
+//		this.type = type;
+//	}
 
 	/*public UserPrincipal getPrincipal() {
 		return principal;
@@ -159,30 +178,39 @@ public class NetworkMember extends BaseEntity {
 		this.paypalEmail = paypalEmail;
 	}
 
-	public Publisher getPublisher() {
-		return publisher;
+	public UserPrincipal getUserPrincipal() {
+		return userPrincipal;
 	}
 
-	public void setPublisher(Publisher publisher) {
-		this.publisher = publisher;
+	public void setUserPrincipal(UserPrincipal userPrincipal) {
+		this.userPrincipal = userPrincipal;
 	}
 
-	public Affiliate getAffiliate() {
-		return affiliate;
+	public Set<Publisher> getPublishers() {
+		return publishers;
 	}
 
-	public void setAffiliate(Affiliate affiliate) {
-		this.affiliate = affiliate;
+	public void setPublishers(Set<Publisher> publishers) {
+		this.publishers = publishers;
 	}
 
-	public Merchant getMerchant() {
-		return merchant;
+	public Set<Affiliate> getAffiliates() {
+		return affiliates;
 	}
 
-	public void setMerchant(Merchant merchant) {
-		this.merchant = merchant;
+	public void setAffiliates(Set<Affiliate> affiliates) {
+		this.affiliates = affiliates;
 	}
-	
+
+	public Set<Merchant> getMerchants() {
+		return merchants;
+	}
+
+	public void setMerchants(Set<Merchant> merchants) {
+		this.merchants = merchants;
+	}
+
+
 	
 	
 }

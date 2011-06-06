@@ -61,7 +61,9 @@ public class Place extends BaseEntity {
 	//private String businessServices;	
 	private String phone;
 	private String name;
+	
 	private Double latitude;
+	
 	private Double longitude;
 	
 	@Column(columnDefinition="TEXT")
@@ -215,13 +217,7 @@ public class Place extends BaseEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-//	public String getBusinessServices() {
-//		return businessServices;
-//	}
-//	public void setBusinessServices(String businessServices) {
-//		this.businessServices = businessServices;
-//	}
-//	
+
 	
 	public String getAddressFull() {
 		return addressFull;

@@ -31,7 +31,7 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
     public AbstractDao(Class<T> persistentClass) {
         this.persistentClass = persistentClass;        
     }
-
+    
     @PostConstruct
     private void initSessionFactory() {
     	super.setSessionFactory(sessionFactory);
@@ -42,7 +42,7 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         return template;
     }
-
+    
     
     public Class<T> getPersistentClass() {
         return persistentClass;
@@ -82,10 +82,23 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
     }
     
     public Long save(T entity) {
-    	if(entity instanceof BaseEntity && ((BaseEntity)entity).getId() == null)
-    		((BaseEntity)entity).setTimeCreated(Calendar.getInstance().getTimeInMillis());
     	
-    	return (Long)getSession().save(entity);
+    	if(entity instanceof BaseEntity && ((BaseEntity)entity).getId() == null) {
+    		long now = Calendar.getInstance().getTimeInMillis();
+    		((BaseEntity)entity).setTimeCreated(now);
+    		((BaseEntity)entity).setTimeUpdated(now);
+    	}
+    	
+    	if(entity instanceof BaseEntity && ((BaseEntity)entity).getId() != null)
+    		((BaseEntity)entity).setTimeUpdated(Calendar.getInstance().getTimeInMillis());
+    	
+    	if(((BaseEntity)entity).getId() == null) {
+    		getSession().persist(entity);
+    		return ((BaseEntity)entity).getId();
+    	}
+    	else
+    		return ((BaseEntity)getSession().merge(entity)).getId();
+    	
     }
     
     public void delete(T entity) {

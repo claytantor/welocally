@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
+
 /**
  * <event>
    <name>Sun Prairie</name>
@@ -47,6 +49,7 @@ import javax.persistence.Table;
  * @author claygraham
  *
  */
+@PersistenceObservable
 @Entity
 @Table(name="event")
 public class Event extends BaseEntity {

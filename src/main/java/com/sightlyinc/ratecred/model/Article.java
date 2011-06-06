@@ -6,6 +6,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
+
 /**
  *   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT NULL ,
@@ -21,7 +23,7 @@ import javax.persistence.Table;
  *
  */
 
-
+@PersistenceObservable
 @Entity
 @Table(name="article")
 public class Article extends BaseEntity {

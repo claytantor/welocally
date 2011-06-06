@@ -6,6 +6,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
+
+@PersistenceObservable
 @Entity
 @Table(name="review")
 public class Review extends BaseEntity {

@@ -8,5 +8,6 @@ public interface BaseDao<T> {
 	public List<T> findAll();
 	public void delete(T entity);
 	public Long save(T entity);
+	public List<T> findByExample(T exampleInstance, String[] excludeProperty);
 
 }

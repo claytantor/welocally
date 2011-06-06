@@ -33,6 +33,16 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	private RoleDao roleDao;
 	
 	static Logger logger = Logger.getLogger(UserPrincipalServiceImpl.class);
+	
+	@Override
+	public List<Role> findAllRoles() throws UserPrincipalServiceException {
+		return roleDao.findAll();
+	}
+
+	@Override
+	public List<UserPrincipal> findAll() throws BLServiceException {
+		return userPrincipalDao.findAll();
+	}
 
 	@Override
 	public UserPrincipal loadUserEmail(String email)
