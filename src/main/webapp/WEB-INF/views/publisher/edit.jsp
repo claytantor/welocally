@@ -15,6 +15,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
 		<h2>
 		<c:if test="${not empty(publisherForm.id)}">edit publisher</c:if>
 		<c:if test="${empty(publisherForm.id)}">create publisher</c:if>

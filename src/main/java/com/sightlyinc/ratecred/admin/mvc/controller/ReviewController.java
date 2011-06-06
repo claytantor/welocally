@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("admin/review")
+@RequestMapping("publisher/review")
 public class ReviewController {
 
     static Logger logger = Logger.getLogger(ReviewController.class);
@@ -41,7 +41,7 @@ public class ReviewController {
         logger.debug("got post action");
 
         Long id = reviewService.save(review);
-        return "redirect:/admin/review/"+id.toString();
+        return "redirect:/publisher/review/"+id.toString();
 
     }
 	
@@ -57,7 +57,7 @@ public class ReviewController {
         logger.debug("delete");
         Review review = reviewService.findByPrimaryKey(id);
         reviewService.delete(review);
-        return "redirect:/admin/review/list";
+        return "redirect:/publisher/review/list";
     }
 	
     @RequestMapping(value="/list", method=RequestMethod.GET)

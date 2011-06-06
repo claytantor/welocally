@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("admin/article")
+@RequestMapping("/publisher/article")
 public class ArticleController {
 
     static Logger logger = Logger.getLogger(ArticleController.class);
@@ -41,7 +41,7 @@ public class ArticleController {
         logger.debug("got post action");
 
         Long id = articleService.save(article);
-        return "redirect:/admin/article/"+id.toString();
+        return "redirect:/publisher/article/"+id.toString();
 
     }
 	
@@ -57,7 +57,7 @@ public class ArticleController {
         logger.debug("delete");
         Article article = articleService.findByPrimaryKey(id);
         articleService.delete(article);
-        return "redirect:/admin/article/list";
+        return "redirect:/publisher/article/list";
     }
 	
     @RequestMapping(value="/list", method=RequestMethod.GET)

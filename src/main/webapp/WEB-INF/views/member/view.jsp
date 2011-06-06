@@ -19,6 +19,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
 		<h2><a href="<c:url value='/admin/member/list' />">all members</a> : ${member.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">
@@ -28,7 +31,6 @@
 		<div class="span-24 last">
 			<div class="span-24 last">
 				<div class="strong-12 span-1">${member.id}</div>
-				<div class="strong-12 span-2">${member.type}</div>
 				<div class="strong-12 span-4"><a href="<c:url value='/admin/member/${member.id}'/>">${member.name}</a></div>
 				<div class="span-8">
 					<div class="span-8">${member.description}</div>	

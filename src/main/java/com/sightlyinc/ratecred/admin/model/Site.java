@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author claygraham
  *
  */
+@Deprecated
 public class Site {
 	
 	@JsonProperty

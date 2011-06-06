@@ -17,16 +17,16 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2><a href="<c:url value='/' />">home</a> : list of places</h2>
+		<h2><a href="<c:url value='/home' />">home</a> : list of places</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/admin/place' />" class="button">create</a>
+			<a href="<c:url value='/publisher/place' />" class="button">create</a>
 		</div>		
 		<div class="span-24 last">
 			<c:forEach var="place" items="${places}">
 			<div class="span-24 last">
 				<div class="strong-12 span-1">${place.id}</div>
-				<div class="strong-12 span-6"><a href="<c:url value='/admin/place/${place.id}'/>">${place.name}</a></div>
+				<div class="strong-12 span-6"><a href="<c:url value='/publisher/place/${place.id}'/>">${place.name}</a></div>
 				<div class="span-10">
 					<div class="span-10"><a href="${place.url}">${place.url}</a></div>
 					<div class="span-10">${place.description}</div>

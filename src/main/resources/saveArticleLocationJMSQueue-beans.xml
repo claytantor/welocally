@@ -19,7 +19,7 @@
 		<property name="defaultDestination">
 			<ref bean="saveArticleLocationDestination" />
 		</property>
-		<property name="connectionFactory" ref="jmsFactory"/>
+		<property name="connectionFactory" ref="pooledFactory"/>
 	</bean>
 
 	<!-- this is the Message Driven POJO (MDP) -->

@@ -10,7 +10,7 @@
 <c:set var="pageTitle" value="Review Edit"/>
 <jsp:include page="../head.jsp"/>
 <script>
-    var placesUrl = "<c:url value="/admin/place/search?name="/>";
+    var placesUrl = "<c:url value="/publisher/place/search?name="/>";
     var placeSource = function(req, add) {
         $.getJSON(placesUrl + req.term, function(data) {
             var suggestions = [];
@@ -20,7 +20,7 @@
             add(suggestions);
         });
     };
-    var publishersUrl = "<c:url value="/admin/publisher/search?siteName="/>";
+    var publishersUrl = "<c:url value="/publisher/publisher/search?siteName="/>";
     var publisherSource = function(req, add) {
         $.getJSON(publishersUrl + req.term, function(data) {
             var suggestions = [];
@@ -55,12 +55,12 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2>
+		<h2><a href="<c:url value='/home' />">home</a> :
 		<c:if test="${not empty(reviewForm.id)}">edit review</c:if>
 		<c:if test="${empty(reviewForm.id)}">create review</c:if>
 		</h2>
 
-		<c:url value='/admin/review' var="reviewAction"/>
+		<c:url value='/publisher/review' var="reviewAction"/>
 		<form:form modelAttribute="reviewForm" action="${reviewAction}" method="post">
 		  	<fieldset>		
 				<legend>Review Info</legend>
@@ -95,7 +95,7 @@
                       <input id="place" />
                   </p>
                   <p>
-                      <label for="publisher">Publisher:</label><br/>
+                      <label for="publisher">Site Name:</label><br/>
                       <input id="publisher" />
                   </p>
 

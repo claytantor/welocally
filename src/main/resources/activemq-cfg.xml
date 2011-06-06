@@ -5,13 +5,9 @@
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://activemq.apache.org/schema/core 
-		http://activemq.apache.org/schema/core/activemq-core-5.1.0.xsd">
-		
-  <!-- Allows us to use system properties as variables in this configuration file --> 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/> 
+		http://activemq.apache.org/schema/core/activemq-core-5.4.2.xsd"> 
   
-  
-  <!--  lets create an embedded ActiveMQ Broker -->
+  <!--  lets create an embedded ActiveMQ Broker! -->
 	<amq:broker id="broker" useJmx="false" persistent="false">
 		<amq:managementContext>
 			<amq:managementContext connectorPort="1199" jmxDomainName="org.apache.activemq"/>
@@ -20,8 +16,17 @@
 			<amq:networkConnector name="pool" uri="static:(tcp://localhost:61617)"/>
 		</amq:networkConnectors>		
 		<amq:transportConnectors>
-			<amq:transportConnector uri="tcp://localhost:61616" />
+			<amq:transportConnector uri="tcp://localhost:61617" />
 		</amq:transportConnectors>		
 	</amq:broker>
+	
+	<!-- <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+		<value>file:${activemq.base}/conf/credentials.properties</value>
+		</property>
+	</bean> -->
+	
+	<!-- your broker config goes here -->	
+	<!-- <import resource="${activemq.base}/conf/jetty.xml" /> -->
 
 </beans> 

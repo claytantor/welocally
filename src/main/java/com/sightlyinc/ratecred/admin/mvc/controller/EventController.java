@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("admin/event")
+@RequestMapping("publisher/event")
 public class EventController {
 	
 	
@@ -42,7 +42,7 @@ public class EventController {
 		logger.debug("got post action");
 
         Long id = eventService.save(event);
-        return "redirect:/admin/event/"+id.toString();
+        return "redirect:/publisher/event/"+id.toString();
 
 	}
 	
@@ -58,7 +58,7 @@ public class EventController {
 		logger.debug("delete");
 		Event event = eventService.findByPrimaryKey(id);
 		eventService.delete(event);
-		return "redirect:/admin/event/list";
+		return "redirect:/publisher/event/list";
 	}
 	
 	@RequestMapping(value="/list", method=RequestMethod.GET)

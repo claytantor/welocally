@@ -10,7 +10,7 @@
 <c:set var="pageTitle" value="Article Edit"/>
 <jsp:include page="../head.jsp"/>
 <script>
-    var placesUrl = "<c:url value="/admin/place/search?name="/>";
+    var placesUrl = "<c:url value="/publisher/place/search?name="/>";
     var placeSource = function(req, add) {
         $.getJSON(placesUrl + req.term, function(data) {
             var suggestions = [];
@@ -20,7 +20,7 @@
             add(suggestions);
         });
     };
-    var publishersUrl = "<c:url value="/admin/publisher/search?siteName="/>";
+    var publishersUrl = "<c:url value="/publisher/publisher/search?siteName="/>";
     var publisherSource = function(req, add) {
         $.getJSON(publishersUrl + req.term, function(data) {
             var suggestions = [];
@@ -60,7 +60,7 @@
 		<c:if test="${empty(articleForm.id)}">create article</c:if>
 		</h2>
 
-		<c:url value='/admin/article' var="articleAction"/>
+		<c:url value='/publisher/article' var="articleAction"/>
 		<form:form modelAttribute="articleForm" action="${articleAction}" method="post">
 		  	<fieldset>
 				<legend>Article Info</legend>

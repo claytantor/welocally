@@ -19,7 +19,7 @@ import com.sightlyinc.ratecred.service.PublisherService;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping(value="/admin/publisher")
+@RequestMapping(value="/publisher/publisher")
 public class PublisherController {
 	
 	

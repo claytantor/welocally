@@ -12,32 +12,26 @@
 		http://activemq.apache.org/schema/core/activemq-core-5.1.0.xsd">
 
 	<!--  ActiveMQ destinations to use  -->
-	<amq:queue id="saveNewAwardDestination" physicalName="com.sightlyinc.ratecred.award.new" />
+	<amq:queue id="persistenceActivityDestination" physicalName="com.sightlyinc.ratecred.persistence.activity" />
  
  	<!-- Spring JMS Template -->
-	<bean id="saveNewAwardJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<bean id="persistenceMessageJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="defaultDestination">
-			<ref bean="saveNewAwardDestination" />
+			<ref bean="persistenceActivityDestination" />
 		</property>
 		<property name="connectionFactory" ref="pooledFactory"/>
 	</bean>
 
 	<!-- this is the Message Driven POJO (MDP) -->
-	<bean id="saveNewAwardMessageListener"
-		class="com.sightlyinc.ratecred.admin.jms.SaveNewAwardMessageListener">
-		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
-		<property name="mapper"><ref bean="jacksonMapper"/></property>
-		<property name="raterAwardsService"><ref bean="raterAwardsService"/></property>
-		<property name="ratingManagerService"><ref bean="ratingManagerService"/></property>
-		<property name="awardManagerService"><ref bean="awardManagerService"/></property>
-		<property name="sleepInSeconds" value="4"/>
+	<bean id="persistenceActivityMessageListener"
+		class="com.sightlyinc.ratecred.admin.jms.PersistenceMessageListener">
 	</bean>
 	
 	<!-- and this is the message listener container -->
-	<bean id="saveNewAwardContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	<bean id="persistenceActivityContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 	    <property name="connectionFactory" ref="jmsFactory"/>
-	    <property name="destination" ref="saveNewAwardDestination"/>
-	    <property name="messageListener" ref="saveNewAwardMessageListener" />
+	    <property name="destination" ref="persistenceActivityDestination"/>
+	    <property name="messageListener" ref="persistenceActivityMessageListener" />
 	</bean>	
 
 </beans>

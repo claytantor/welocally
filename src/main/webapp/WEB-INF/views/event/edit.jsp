@@ -10,7 +10,7 @@
 <c:set var="pageTitle" value="Event Edit"/>
 <jsp:include page="../head.jsp"/>
 <script>
-    var placesUrl = "<c:url value="/admin/place/search?name="/>";
+    var placesUrl = "<c:url value="/publisher/place/search?name="/>";
     var placeSource = function(req, add) {
         $.getJSON(placesUrl + req.term, function(data) {
             var suggestions = [];
@@ -20,7 +20,7 @@
             add(suggestions);
         });
     };
-    var publishersUrl = "<c:url value="/admin/publisher/search?siteName="/>";
+    var publishersUrl = "<c:url value="/publisher/publisher/search?siteName="/>";
     var publisherSource = function(req, add) {
         $.getJSON(publishersUrl + req.term, function(data) {
             var suggestions = [];
@@ -55,12 +55,12 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2>
+		<h2><a href="<c:url value='/home' />">home</a> :
 		<c:if test="${not empty(eventForm.id)}">edit event</c:if>
 		<c:if test="${empty(eventForm.id)}">create event</c:if>
 		</h2>
 
-		<c:url value='/admin/event' var="eventAction"/>
+		<c:url value='/publisher/event' var="eventAction"/>
 		<form:form modelAttribute="eventForm" action="${eventAction}" method="post">
 		  	<fieldset>		
 				<legend>Event Info</legend>

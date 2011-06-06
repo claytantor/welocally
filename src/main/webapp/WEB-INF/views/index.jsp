@@ -9,41 +9,13 @@
 <c:set var="pageTitle" value="Admin Home"/>
 <jsp:include page="head.jsp"/>
 <body>
-
 <div class="container">
 	<div class="span-24">
-		<h1>admin home</h1>
+		<jsp:include page="header.jsp"/>
+	</div>
+	<div class="span-24">
+		<h1>welcome!</h1>
 		<hr/>
-		<div class="span-24">
-			<h2>network member</h2>
-			<div><a href="<c:url value='/admin/member/list'/>">list all</a></div>
-			<div><a href="<c:url value='/admin/member'/>">create</a></div>
-		</div>		
-		<div class="span-24">
-			<h2>publisher</h2>
-			<div><a href="<c:url value='/admin/publisher/list'/>">list all</a></div>
-			<div><a href="<c:url value='/admin/publisher'/>">create</a></div>
-		</div>
-        <div class="span-24">
-            <h2>place</h2>
-            <div><a href="<c:url value='/admin/place/list'/>">list all</a></div>
-            <div><a href="<c:url value='/admin/place'/>">create</a></div>
-        </div>
-		<div class="span-24">
-			<h2>event</h2>
-			<div><a href="<c:url value='/admin/event/list'/>">list all</a></div>
-			<div><a href="<c:url value='/admin/event'/>">create</a></div>
-		</div>
-		<div class="span-24">
-			<h2>article</h2>
-			<div><a href="<c:url value='/admin/article/list'/>">list all</a></div>
-			<div><a href="<c:url value='/admin/article'/>">create</a></div>
-		</div>
-		<div class="span-24">
-			<h2>review</h2>
-			<div><a href="<c:url value='/admin/review/list'/>">list all</a></div>
-			<div><a href="<c:url value='/admin/review'/>">create</a></div>
-		</div>
 	</div>
 </div>
 

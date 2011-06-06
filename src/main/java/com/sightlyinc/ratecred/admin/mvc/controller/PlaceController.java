@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("admin/place")
+@RequestMapping("/publisher/place")
 public class PlaceController {
 
 	static Logger logger = Logger.getLogger(PlaceController.class);
@@ -49,16 +49,9 @@ public class PlaceController {
 	@RequestMapping(method=RequestMethod.POST)
 	public String create(@Valid Place placeForm, BindingResult result) {
 		logger.debug("got post action");
-		try {
-			
-//			Place p =
-//				placeManagerService.findPlaceByPrimaryKey(placeForm.getPlaceId());
-//			p.setEmail(placeForm.getEmail());
-			//p.setBusinessServices(placeForm.getBusinessServices());
-//			placeManagerService.savePlace(p);
+		try {			
 			placeManagerService.savePlace(placeForm);
-//			return "redirect:/admin/place/" + p.getId();
-			return "redirect:/admin/place/" + placeForm.getId();
+			return "redirect:/publisher/place/" + placeForm.getId();
 
 		} catch (BLServiceException e) {
 			logger.error("problem saving place", e);
@@ -70,6 +63,7 @@ public class PlaceController {
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public String getPlaceById(@PathVariable Long id, Model model) {
         logger.debug("view");
+        
         try {
             model.addAttribute("place", placeManagerService.findPlaceByPrimaryKey(id));
         } catch (BLServiceException e) {
@@ -88,7 +82,7 @@ public class PlaceController {
         } catch (BLServiceException e) {
             throw new RuntimeException(e);
         }
-        return "redirect:/admin/place/list";
+        return "redirect:/publisher/place/list";
     }
 
     @RequestMapping(value="/list", method=RequestMethod.GET)

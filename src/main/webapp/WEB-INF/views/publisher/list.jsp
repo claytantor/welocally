@@ -10,14 +10,12 @@
 <html>
 <c:set var="pageTitle" value="Publisher List"/>
 <jsp:include page="../head.jsp"/>
-<script>
-	$(function() {
-		$( "a", ".actions" ).button();
-	});
-</script>
 <body>
 
 <div class="container">
+	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
 	<div class="span-24">
 		<h2><a href="<c:url value='/' />">home</a> : list of publishers</h2>
 		<hr/>

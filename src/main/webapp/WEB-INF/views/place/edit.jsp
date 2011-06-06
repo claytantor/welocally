@@ -13,12 +13,12 @@
 
 <div class="container">
 	<div class="span-24">
-        <h2>
-        <c:if test="${not empty(articleForm.id)}">edit article</c:if>
-        <c:if test="${empty(articleForm.id)}">create article</c:if>
+        <h2><a href="<c:url value='/home' />">home</a> : 
+        <c:if test="${not empty(articleForm.id)}">edit place</c:if>
+        <c:if test="${empty(articleForm.id)}">create place</c:if>
         </h2>
 
-		<c:url value='/admin/place' var="placeAction"/>
+		<c:url value='/publisher/place' var="placeAction"/>
 		<form:form modelAttribute="placeForm" action="${placeAction}" method="post">
 		  	<fieldset>		
 				<legend>Place Info</legend>
@@ -44,6 +44,14 @@
                       <form:label for="zip" path="zip" cssErrorClass="error">ZIP</form:label><br/>
                       <form:input path="zip" id="zip" size="50"/> <form:errors path="zip" class="error" />
                   </p>
+                  <p>
+                      <form:label for="latitude" path="latitude" cssErrorClass="error">Latitude</form:label><br/>
+                      <form:input path="latitude" id="latitude" size="50"/> <form:errors path="latitude" class="error" />
+                  </p>    
+                  <p>
+                      <form:label for="longitude" path="longitude" cssErrorClass="error">Longitude</form:label><br/>
+                      <form:input path="longitude" id="longitude" size="50"/> <form:errors path="longitude" class="error" />
+                  </p>                                 
                   <p>
                       <form:label for="url" path="url" cssErrorClass="error">URL</form:label><br/>
                       <form:input path="url" id="url"/> <form:errors path="url" class="error" />

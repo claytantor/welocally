@@ -10,7 +10,11 @@
 <html>
 <c:set var="pageTitle" value="Publisher View"/>
 <jsp:include page="../head.jsp"/>
-
+<script>
+	$(function() {
+		$( "a", ".actions" ).button();
+	});
+</script>
 <body>
 
 <div class="container">
@@ -18,19 +22,19 @@
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/admin/publisher/list' />">all publishers</a> : ${publisher.siteName}</h2>
+		<h2><a href="<c:url value='/admin/user/list' />">all users</a> : ${userPrincipal.username}</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/admin/publisher/edit/${publisher.id}' />" class="button">edit</a>
-			<a href="<c:url value='/admin/publisher/delete/${publisher.id}' />" class="button">delete</a>
+			<a href="<c:url value='/admin/user/edit/${userPrincipal.id}' />" class="button">edit</a>
+			<a href="<c:url value='/admin/user/delete/${userPrincipal.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
-			<div class="strong-12 span-4">${publisher.id}</div>
-			<div class="span-10">
-				<div class="span-10"><a href="${publisher.url}">${publisher.url}</a></div>
-				<div class="span-10">${publisher.description}</div>				
+			<div class="strong-12 span-4">${userPrincipal.id}</div>
+			<div class="strong-12 span-4">
+			<c:forEach var="role" items="${userPrincipal.roles}">
+			 ${role.role},
+			</c:forEach>
 			</div>
-			<div class="span-2 last">${publisher.monthlyPageviews}</div>	
 		</div>
 	</div>
 </div>

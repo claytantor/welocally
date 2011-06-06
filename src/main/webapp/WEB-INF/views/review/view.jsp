@@ -17,11 +17,11 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2><a href="<c:url value='/admin/review/list' />">all reviews</a> : ${review.url}</h2>
+		<h2><a href="<c:url value='/publisher/review/list' />">all reviews</a> : ${review.url}</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/admin/review/edit/${review.id}' />" class="button">edit</a>
-			<a href="<c:url value='/admin/review/delete/${review.id}' />" class="button">delete</a>
+			<a href="<c:url value='/publisher/review/edit/${review.id}' />" class="button">edit</a>
+			<a href="<c:url value='/publisher/review/delete/${review.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
 			<div class="strong-12 span-4">${review.id}</div>
