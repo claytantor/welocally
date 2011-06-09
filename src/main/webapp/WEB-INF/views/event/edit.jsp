@@ -118,11 +118,11 @@
                   </p>
                   <p>
                       <label for="place">Place:</label><br/>
-                      <input id="place" />
+                      <input id="place" value="${eventForm.place.name}" />
                   </p>
                   <p>
                       <label for="publisher">Publisher:</label><br/>
-                      <input id="publisher" />
+                      <input id="publisher" value="${eventForm.publisher.siteName}" />
                   </p>
 
 				<p>	

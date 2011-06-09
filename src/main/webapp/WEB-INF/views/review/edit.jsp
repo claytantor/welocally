@@ -92,11 +92,11 @@
                   </p>
                   <p>
                       <label for="place">Place:</label><br/>
-                      <input id="place" />
+                      <input id="place" value="${reviewForm.place.name}" />
                   </p>
                   <p>
                       <label for="publisher">Site Name:</label><br/>
-                      <input id="publisher" />
+                      <input id="publisher" value="${reviewForm.publisher.siteName}" />
                   </p>
 
 				<p>	
