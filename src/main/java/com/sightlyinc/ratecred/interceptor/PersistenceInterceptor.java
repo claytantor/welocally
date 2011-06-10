@@ -46,7 +46,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
                          Object[] state,
                          String[] propertyNames,
                          Type[] types) {
-        // do nothing
+        // do nothing for now
     }
 
     public boolean onFlushDirty(Object entity,
@@ -62,6 +62,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
     			PersistenceActivity activity = new PersistenceActivity();
         		activity.setActivity(PersistenceActivity.ACTIVITY_UPDATE);
         		activity.setClazzName(entity.getClass().getName());
+        		activity.setEntityId(((BaseEntity)entity).getId());
         		activity.setEntity((BaseEntity)entity);
         		updateAudits.add(activity);
     		}
@@ -159,10 +160,16 @@ public class PersistenceInterceptor extends EmptyInterceptor {
 
 		// updates
 		for (PersistenceActivity audit : updateAudits) {
+//			if(audit.getEntity() != null) {
+//				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
+//			}
 			persistenceInformerListener.inform(audit);
 		}
 		// deletes
 		for (PersistenceActivity audit : deleteAudits) {
+//			if(audit.getEntity() != null) {
+//				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
+//			}
 			persistenceInformerListener.inform(audit);
 		}
 

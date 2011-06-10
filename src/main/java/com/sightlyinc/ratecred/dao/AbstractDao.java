@@ -81,23 +81,25 @@ public abstract class AbstractDao<T> extends HibernateDaoSupport implements  Bas
         return crit.list();
     }
     
+    /**
+     * we are having to do a little work to get this to behave the way we want
+     * kindof feel like this should not be required
+     */
     public Long save(T entity) {
     	
-    	if(entity instanceof BaseEntity && ((BaseEntity)entity).getId() == null) {
-    		long now = Calendar.getInstance().getTimeInMillis();
-    		((BaseEntity)entity).setTimeCreated(now);
-    		((BaseEntity)entity).setTimeUpdated(now);
-    	}
-    	
-    	if(entity instanceof BaseEntity && ((BaseEntity)entity).getId() != null)
-    		((BaseEntity)entity).setTimeUpdated(Calendar.getInstance().getTimeInMillis());
-    	
-    	if(((BaseEntity)entity).getId() == null) {
-    		getSession().persist(entity);
-    		return ((BaseEntity)entity).getId();
+    	if(entity instanceof BaseEntity) {
+    		       	
+        	if(((BaseEntity)entity).getId() == null) {
+        		getSession().persist(entity);
+        		return ((BaseEntity)entity).getId();
+        	}
+        	else
+        		return ((BaseEntity)getSession().merge(entity)).getId();
+    		
     	}
     	else
-    		return ((BaseEntity)getSession().merge(entity)).getId();
+    		return (Long)getSession().save(entity);
+    	
     	
     }
     

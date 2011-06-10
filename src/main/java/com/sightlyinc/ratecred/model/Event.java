@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.sightlyinc.ratecred.client.geo.GeoPersistable;
+import com.sightlyinc.ratecred.client.geo.GeoPersistenceException;
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 
 /**
@@ -52,7 +54,7 @@ import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 @PersistenceObservable
 @Entity
 @Table(name="event")
-public class Event extends BaseEntity {
+public class Event extends BaseEntity implements GeoPersistable {
 	
 	private enum RecurrenceType {DAILY,WEEKLY,MONTHLY,YEARLY,HOURLY,MINUTELY}
 	
@@ -61,6 +63,8 @@ public class Event extends BaseEntity {
 	private String url;
 	
 	private Float cost;
+	
+	private Boolean published;
 	
 	@Column(columnDefinition="TEXT")
 	private String description;
@@ -101,6 +105,35 @@ public class Event extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "publisher_id")
 	private Publisher publisher;
+	
+	
+    @Override
+	public String getGeoRecordId() throws GeoPersistenceException {
+    	if(getId() != null)
+    		return getId().toString();
+    	else 
+    		throw new GeoPersistenceException("geo record id cannot be null");
+	}
+
+	@Override
+	public String getMemberKey() throws GeoPersistenceException  {
+		if(publisher != null)
+			return publisher.getNetworkMember().getMemberKey();
+		else
+			throw new GeoPersistenceException("geo member key cannot be null");
+	}
+	
+	
+
+	@Override
+	public Place getGeoPlace() throws GeoPersistenceException {
+		if(place != null)
+			return place;
+		else
+			throw new GeoPersistenceException("geo place cannot be null");
+	}
+	
+	
 	
 	public String getName() {
 		return name;
@@ -200,6 +233,30 @@ public class Event extends BaseEntity {
 	}
 	public void setWhenText(String whenText) {
 		this.whenText = whenText;
+	}
+	public Boolean getPublished() {
+		return published;
+	}
+	public void setPublished(Boolean published) {
+		this.published = published;
+	}
+	public Integer getRecurrenceInterval() {
+		return recurrenceInterval;
+	}
+	public void setRecurrenceInterval(Integer recurrenceInterval) {
+		this.recurrenceInterval = recurrenceInterval;
+	}
+	public String getRecurrenceData() {
+		return recurrenceData;
+	}
+	public void setRecurrenceData(String recurrenceData) {
+		this.recurrenceData = recurrenceData;
+	}
+	public Long getRecurrenceEnd() {
+		return recurrenceEnd;
+	}
+	public void setRecurrenceEnd(Long recurrenceEnd) {
+		this.recurrenceEnd = recurrenceEnd;
 	}
 	
 	

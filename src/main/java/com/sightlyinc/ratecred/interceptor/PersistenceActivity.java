@@ -20,7 +20,7 @@ public class PersistenceActivity {
 	
 	@Transient
 	@JsonIgnore
-	public BaseEntity entity;
+	public transient BaseEntity entity;
 	
 	
 	public String getClazzName() {
@@ -41,9 +41,13 @@ public class PersistenceActivity {
 	public void setActivity(Integer activity) {
 		this.activity = activity;
 	}
+	
+	@JsonIgnore
 	public BaseEntity getEntity() {
 		return entity;
 	}
+	
+	@JsonIgnore
 	public void setEntity(BaseEntity entity) {
 		this.entity = entity;
 	}

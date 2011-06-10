@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 
 
@@ -84,19 +86,23 @@ public class NetworkMember extends BaseEntity {
 	
 	@OneToMany
 	@JoinColumn(name="network_member_id")
+	@JsonIgnore
 	private Set<Publisher> publishers;
 	
 	@OneToMany
 	@JoinColumn(name="network_member_id")
+	@JsonIgnore
 	private Set<Affiliate> affiliates;
 	
 	@OneToMany
 	@JoinColumn(name="network_member_id")
+	@JsonIgnore
 	private Set<Merchant> merchants;
 
 	
 	@OneToOne
 	@JoinColumn(name="user_principal_id")
+	@JsonIgnore
 	private UserPrincipal userPrincipal;
 	
 
@@ -178,34 +184,42 @@ public class NetworkMember extends BaseEntity {
 		this.paypalEmail = paypalEmail;
 	}
 
+	@JsonIgnore
 	public UserPrincipal getUserPrincipal() {
 		return userPrincipal;
 	}
 
+	@JsonIgnore
 	public void setUserPrincipal(UserPrincipal userPrincipal) {
 		this.userPrincipal = userPrincipal;
 	}
 
+	@JsonIgnore
 	public Set<Publisher> getPublishers() {
 		return publishers;
 	}
 
+	@JsonIgnore
 	public void setPublishers(Set<Publisher> publishers) {
 		this.publishers = publishers;
 	}
 
+	@JsonIgnore
 	public Set<Affiliate> getAffiliates() {
 		return affiliates;
 	}
-
+	
+	@JsonIgnore
 	public void setAffiliates(Set<Affiliate> affiliates) {
 		this.affiliates = affiliates;
 	}
-
+	
+	@JsonIgnore
 	public Set<Merchant> getMerchants() {
 		return merchants;
 	}
 
+	@JsonIgnore
 	public void setMerchants(Set<Merchant> merchants) {
 		this.merchants = merchants;
 	}

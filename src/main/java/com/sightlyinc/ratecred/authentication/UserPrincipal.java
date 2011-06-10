@@ -3,6 +3,7 @@ package com.sightlyinc.ratecred.authentication;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
@@ -256,10 +257,12 @@ public class UserPrincipal implements Authentication, UserDetails {
 		this.locked = locked;
 	}
 
+	@JsonIgnore
 	public Boolean getEnabled() {
 		return enabled;
 	}
 
+	@JsonIgnore
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}

@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
+
+@PersistenceObservable
 @Entity
 @Table(name="publisher")
 public class Publisher extends BaseEntity {
