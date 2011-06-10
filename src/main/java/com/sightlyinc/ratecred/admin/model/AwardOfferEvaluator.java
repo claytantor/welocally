@@ -13,17 +13,15 @@ import org.apache.log4j.Logger;
 import org.mcavallo.opencloud.Cloud;
 import org.mcavallo.opencloud.Tag;
 import org.mcavallo.opencloud.filters.DictionaryFilter;
-import org.mcavallo.opencloud.filters.Filter;
-import org.mcavallo.opencloud.filters.TagFilter;
 
 import com.sightlyinc.ratecred.admin.compare.OfferScoreComparitor;
 import com.sightlyinc.ratecred.admin.compare.TagScoreComparitor;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.pojo.Location;
 import com.sightlyinc.ratecred.service.AwardsUtils;
@@ -42,6 +40,8 @@ public class AwardOfferEvaluator {
 	
 	private List<OfferOld> targetedOffers = new ArrayList<OfferOld>();
 	private Cloud ratingCloud = new Cloud();
+	
+	private Offer offer;
 	
 	private static String TERMS = "a,about,all,and,are,as,at,back,be,because,been," +
 	"but,can,can't,come,could,did,didn't,do,don't,for,from,get,go,going," +
@@ -151,31 +151,32 @@ public class AwardOfferEvaluator {
 		return offer.getExternalSource().equalsIgnoreCase(name);
 	}
 	
-	public boolean isRatedInCityOffer(OfferOld offer) {
+	public boolean isRatedInCityOffer(Offer offer) {
 		
-		for (PlaceCityState pcs : allCities) {
-			if(isLocalOffer(offer))
-				return true;
-		}
-		return false;
+//		for (PlaceCityState pcs : allCities) {
+//			if(isLocalOffer(offer))
+//				return true;
+//		}
+		return true;
 		
 	}
 	
-	public boolean isLocalOffer(OfferOld offer) {
+	public boolean isLocalOffer(Offer offer) {
 		
-		try {			
-			if(pcs != null && offer.getCity().equalsIgnoreCase(pcs.getCity()) && 
-					offer.getState().equalsIgnoreCase(pcs.getState()) ) {
-				return true;
-			} else if(hasCityStateLocation(offer,pcs)) {
-				return true;				
-			}
-			else
-				return false;
-			
-		} catch (Exception e) {			
-			return false;
-		}
+//		try {			
+//			if(pcs != null && offer.g.getCity().equalsIgnoreCase(pcs.getCity()) && 
+//					offer.getState().equalsIgnoreCase(pcs.getState()) ) {
+//				return true;
+//			} else if(hasCityStateLocation(offer,pcs)) {
+//				return true;				
+//			}
+//			else
+//				return false;
+//			
+//		} catch (Exception e) {			
+//			return false;
+//		}
+		return true;
 	}
 	
 	private boolean hasCityStateLocation(OfferOld offer, PlaceCityState pcs) {
@@ -234,6 +235,10 @@ public class AwardOfferEvaluator {
 
 	public List<OfferOld> getTargetedOffers() {
 		return targetedOffers;
+	}
+
+	public void setOffer(Offer offer) {
+		this.offer = offer;
 	}
 	
 	

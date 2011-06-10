@@ -10,15 +10,25 @@
 		$( "a", ".actions" ).button();
 	});
 </script>
-<div id="header" class="grey-box span-24">
-		<div class="span-18">HEADER</div>
-		<div class="actions padding-5 span-5 last">
+<div id="header" class="simple-box span-24">
+		
 		<sec:authorize ifAnyGranted="ROLE_USER">
-		<sec:authentication property="principal.username" />
-		<a href="<c:url value='/logout' />" class="button">logout</a><a href="<c:url value='/' />">home</a>
+			<div class="span-18">
+				<img src="${imageUrl}/header_logo.png"/> 
+			</div>
+			<div class="padding-5 span-5 last">
+				<div class="span-5"><sec:authentication property="principal.username" /></div>
+				<div class="actions padding-5 span-5"><a href="<c:url value='/logout' />" class="button">logout</a>
+					<a href="<c:url value='/home' />">home</a>
+				</div>			
+			</div>
 		</sec:authorize>
+		
 		<sec:authorize  ifNotGranted="ROLE_USER">
-		<a href="<c:url value='/home' />" class="button">member login</a>
-		</sec:authorize>		
-		</div>	 
+		<div class="span-18"><img src="${imageUrl}/header_logo.png"/></div>
+		<div class="actions padding-5 span-5 last">
+			<a href="<c:url value='/home' />" class="button">member login</a>
+		</div>
+		</sec:authorize>	
+
 </div>

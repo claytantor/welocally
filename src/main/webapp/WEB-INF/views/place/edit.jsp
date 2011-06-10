@@ -13,6 +13,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
         <h2><a href="<c:url value='/home' />">home</a> : 
         <c:if test="${not empty(articleForm.id)}">edit place</c:if>
         <c:if test="${empty(articleForm.id)}">create place</c:if>

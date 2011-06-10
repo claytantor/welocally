@@ -55,6 +55,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
 		<h2>
 		<c:if test="${not empty(articleForm.id)}">edit article</c:if>
 		<c:if test="${empty(articleForm.id)}">create article</c:if>
@@ -68,20 +71,15 @@
 				<form:hidden path="version" />
                 <form:hidden id="place_id" path="place.id" />
                 <form:hidden id="publisher_id" path="publisher.id" />
-                  <p>
-                      <form:label for="url" path="url" cssErrorClass="error">URL:</form:label><br/>
-                      <form:input path="url" id="url"/> <form:errors path="url" class="error" />
-                  </p>
-<%--
 				<p>
 					<form:label	for="name" path="name" cssErrorClass="error">Name:</form:label><br/>
 					<form:input path="name" id="name"/> <form:errors path="name" class="error" />
 				</p>
-				<p>
-					<form:label	for="url" path="url" cssErrorClass="error">URL:</form:label><br/>
-					<form:input path="url" id="url"/> <form:errors path="url" class="error"/>			
-				</p>							
---%>
+                  <p>
+                      <form:label for="url" path="url" cssErrorClass="error">URL:</form:label><br/>
+                      <form:input path="url" id="url"/> <form:errors path="url" class="error" />
+                  </p>
+
                   <p>
                       <form:label for="description" path="description" cssErrorClass="error">Description</form:label><br/>
                       <form:textarea path="description" rows="1" cols="10" /> <form:errors path="description" class="error" />

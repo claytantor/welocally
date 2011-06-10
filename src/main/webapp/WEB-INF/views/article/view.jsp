@@ -17,7 +17,10 @@
 
 <div class="container">
 	<div class="span-24">
-		<h2><a href="<c:url value='/publisher/article/list' />">all articles</a> : ${article.url}</h2>
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
+		<h2><a href="<c:url value='/publisher/article/list' />">all articles</a> : ${article.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">
 			<a href="<c:url value='/publisher/article/edit/${article.id}' />" class="button">edit</a>
@@ -25,11 +28,11 @@
 		</div>
 		<div class="span-24 last">
 			<div class="strong-12 span-4">${article.id}</div>
-			<div class="span-10">
-				<div class="span-10"><a href="${article.url}">${article.url}</a></div>
-				<div class="span-10">${article.description}</div>
+			<div class="span-19">
+				<div class="span-19"><a href="${article.url}">${article.url}</a></div>
+				<div class="span-19">${article.description}</div>
+				<div class="span-19">${article.summary}</div>
 			</div>
-			<div class="span-2 last">${article.summary}</div>
 		</div>
 	</div>
 </div>

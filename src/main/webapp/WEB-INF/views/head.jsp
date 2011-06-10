@@ -12,10 +12,11 @@
 	<!--[if lt IE 8]>
 		<link rel="stylesheet" href="<c:url value='/css/blueprint/ie.css' />" type="text/css" media="screen, projection">
 	<![endif]-->
-	<link rel="stylesheet" href="<c:url value='/css/ratecred.css' />" type="text/css">
+	<link rel="stylesheet" href="<c:url value='/css/welocally.css' />" type="text/css">
 	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
   	
 	
 	<script type="text/javascript" src="<c:url value='/js/jquery-1.4.2.min.js' />"></script>
 	<script type="text/javascript" src="<c:url value='/js/jquery-ui-1.8.2.custom.min.js' />"></script>
 </head> 
+<c:url value="/images" var="imageUrl" scope="request"/>

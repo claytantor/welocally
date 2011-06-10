@@ -17,6 +17,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
         <h2><a href="<c:url value='/publisher/place/list' />">all places</a> : ${place.url}</h2>
         <hr/>
         <div class="actions span-24 last">

@@ -55,6 +55,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
 		<h2><a href="<c:url value='/home' />">home</a> :
 		<c:if test="${not empty(eventForm.id)}">edit event</c:if>
 		<c:if test="${empty(eventForm.id)}">create event</c:if>
@@ -118,11 +121,11 @@
                   </p>
                   <p>
                       <label for="place">Place:</label><br/>
-                      <input id="place" value="${eventForm.place.name}" />
+                      <input id="place" />
                   </p>
                   <p>
                       <label for="publisher">Publisher:</label><br/>
-                      <input id="publisher" value="${eventForm.publisher.siteName}" />
+                      <input id="publisher" />
                   </p>
 
 				<p>	

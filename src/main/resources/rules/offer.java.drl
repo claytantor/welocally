@@ -7,18 +7,17 @@
           xs:schemaLocation="http://drools.org/rules rules.xsd
                              http://drools.org/semantics/java java.xsd">
 
-    <import>com.sightlyinc.ratecred.client.offers.Offer</import>
+    <import>com.sightlyinc.ratecred.model.Offer</import>
     <import>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</import>
        
 
     <rule name="locationOffer" salience="20">
         <parameter identifier="offer">
-            <class>com.sightlyinc.ratecred.client.offers.Offer</class>
+            <class>com.sightlyinc.ratecred.model.Offer</class>
         </parameter>
 		<parameter identifier="award_offer">
             <class>com.sightlyinc.ratecred.admin.model.AwardOfferEvaluator</class>
-        </parameter> 
-        <java:condition>offer.isVisible()</java:condition>       
+        </parameter>     
         <java:condition>award_offer.isLocalOffer(offer)</java:condition>
               
         <java:consequence>

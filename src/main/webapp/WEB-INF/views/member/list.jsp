@@ -25,7 +25,7 @@
 		<h2><a href="<c:url value='/home' />">home</a> : list of members</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/admin/publisher' />" class="button">create</a>
+			<a href="<c:url value='/admin/member' />" class="button">create</a>
 		</div>		
 		<div class="span-24 last">
 			<c:forEach var="member" items="${members}">

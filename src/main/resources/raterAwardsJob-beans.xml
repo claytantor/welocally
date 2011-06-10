@@ -3,7 +3,7 @@
 <beans>
 
 	
-	<bean name="raterAwardsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+<!-- 	<bean name="raterAwardsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 	  <property name="jobClass" value="com.sightlyinc.ratecred.admin.job.RaterAwardsJob" />
 	  <property name="jobDataAsMap">
 	    <map>
@@ -35,9 +35,8 @@
 	
 	<bean id="raterAwardsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="raterAwardsJob" />
-	    <!-- run at 15m every hour -->
 	    <property name="cronExpression" value="${raterAwardsTrigger.cronExpression}" />
-	</bean>
+	</bean> -->
 	
 	
 </beans>

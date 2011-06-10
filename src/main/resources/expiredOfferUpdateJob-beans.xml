@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	
-	<bean name="raterAwardsUpdateOffersJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<!-- <bean name="raterAwardsUpdateOffersJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 	  <property name="jobClass" value="com.sightlyinc.ratecred.admin.job.RaterAwardsUpdateOffersJob" />
 	  <property name="jobDataAsMap">
 	    <map>  
@@ -21,11 +21,10 @@
 	
 	<bean id="raterAwardsUpdateOffersTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="raterAwardsUpdateOffersJob" />
-	    <!-- run at 4 every day -->
-	    <!-- <property name="cronExpression" value="0 0 4 * * ?" /> -->
+
 	    <property name="cronExpression" value="${raterAwardsUpdateOffersTrigger.cronExpression}" />
 	    
 	</bean>
-	
+	 -->
 	
 </beans>

@@ -17,6 +17,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
 		<h2><a href="<c:url value='/home' />">home</a> : <a href="<c:url value='/publisher/event/list' />">all events</a> : ${event.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">

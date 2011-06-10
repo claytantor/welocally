@@ -17,6 +17,9 @@
 
 <div class="container">
 	<div class="span-24">
+		<jsp:include page="../header.jsp"/>
+	</div>
+	<div class="span-24">
 		<h2><a href="<c:url value='/home' />">home</a> : list of places</h2>
 		<hr/>
 		<div class="actions span-24 last">

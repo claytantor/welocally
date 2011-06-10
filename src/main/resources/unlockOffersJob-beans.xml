@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-	
+<!-- 	
 	<bean name="unlockOffersJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 	  <property name="jobClass" value="com.sightlyinc.ratecred.admin.job.UnlockOffersJob" />
 	  <property name="jobDataAsMap">
@@ -32,9 +32,8 @@
 	
 	<bean id="unlockOffersTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="unlockOffersJob" />
-	    <!-- run at 15m every hour -->
 	    <property name="cronExpression" value="${unlockOffersTrigger.cronExpression}" />
-	</bean>
+	</bean>  -->
 	
 	
 </beans>
