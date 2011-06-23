@@ -6,10 +6,10 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 LOCK TABLES `user_principal` WRITE;
 /*!40000 ALTER TABLE `user_principal` DISABLE KEYS */;
 INSERT INTO `user_principal` VALUES 
-(1,0,'claytantor','foobar','clay@ratecred.com',0,0,0,1,'c0a7120a-2847-43b1-bdbb-dbfcf027bc84','USER',101,'claytantor','twitter_token','twitter_secret','twitter_verify','',1307330419279,1307330419279),
-(2,0,'sam','foobar','sam@ratecred.com',0,0,0,1,'1e5bbd8e-ffd0-4ba6-a9b6-bf37f1f6af63','',102,'sam','twitter_token','twitter_secret','twitter_verify','',1307330419279,1307330419279),
-(3,0,'erin','foobar','erin@oaklandgrown.org',0,NULL,0,1,'a15721e0-e19a-40cb-a13a-c1da06473823','MEMBER',NULL,NULL,NULL,NULL,NULL,NULL,1307330419279,1307330419279),
-(4,0,'stephanie','foobar','showymilkweed@gmail.com',0,NULL,0,1,'929edd2d-db62-4ca5-8a9f-44f18501c6fe','MEMBER',NULL,NULL,NULL,NULL,NULL,NULL,1307330419279,1307330419279);
+(1,0,'claytantor','foobar','clay@ratecred.com',0,0,1,'c0a7120a-2847-43b1-bdbb-dbfcf027bc84','USER',101,'claytantor','twitter_token','twitter_secret','twitter_verify','',1307330419279,1307330419279),
+(2,0,'sam','foobar','sam@ratecred.com',0,0,1,'1e5bbd8e-ffd0-4ba6-a9b6-bf37f1f6af63','USER',102,'sam','twitter_token','twitter_secret','twitter_verify','',1307330419279,1307330419279),
+(3,0,'erin','foobar','erin@oaklandgrown.org',0,0,1,'a15721e0-e19a-40cb-a13a-c1da06473823','USER',NULL,NULL,NULL,NULL,NULL,NULL,1307330419279,1307330419279),
+(4,0,'stephanie','foobar','showymilkweed@gmail.com',0,0,1,'929edd2d-db62-4ca5-8a9f-44f18501c6fe','USER',NULL,NULL,NULL,NULL,NULL,NULL,1307330419279,1307330419279);
 /*!40000 ALTER TABLE `user_principal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -32,24 +32,24 @@ UNLOCK TABLES;
 LOCK TABLES `network_member` WRITE;
 /*!40000 ALTER TABLE `network_member` DISABLE KEYS */;
 INSERT INTO `network_member` VALUES 
-(1,0,2,'samssite llc','samsite@bozos.com','samspay@bozos.com','dbfcf027bc84','sam is good','','',1307330419279,1307330419279),
-(2,0,3,'oakland merchants council','council@oaklandgrown.org','payment@oaklandgrown.org','c1da06473823','good baby,good baby do','','',1307641613145,NULL),
-(3,0,4,'stephanie','showymilweed@gmail.com','showymilweed@gmail.com','c1da06473823','good baby,good baby do','','',1307641613145,NULL);
+(1,0,2,'samssite llc','samsite@bozos.com','samspay@bozos.com','dbfcf027bc84','sam is good',1307330419279,1307330419279),
+(2,0,3,'oakland merchants council','council@oaklandgrown.org','payment@oaklandgrown.org','c1da06473823','good baby,good baby do',1307641613145,NULL),
+(3,0,4,'stephanie','showymilweed@gmail.com','showymilweed@gmail.com','c1da06473823','good baby,good baby do',1307641613145,NULL);
 /*!40000 ALTER TABLE `network_member` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --publisher
 LOCK TABLES `publisher` WRITE;
 /*!40000 ALTER TABLE `publisher` DISABLE KEYS */;
-INSERT INTO `publisher` VALUES (1,0,'http://samsite.com','sams site','great site for free stuff','great site for free stuff',1000,1,1307330419279,1307330419279),
-(2,0,'http://oaklandgrown.org','oakland grown','Oakland Grown is a movement celebrating and supporting Oakands locally-owned, independent businesses and artists.','Its about making your hard-earned money go further here at home, creating a sustainable economy, and helping to preserve the unique Oakland you love. Individuals, businesses, artists and organizations can all join the movement.',1000,2,1307641613005,1307641613005);
+INSERT INTO `publisher` VALUES (1,0,'http://samsite.com','sams site','great site for free stuff','great site for free stuff','','',1000,1,1307330419279,1307330419279),
+(2,0,'http://oaklandgrown.org','oakland grown','Oakland Grown is a movement celebrating and supporting Oakands locally-owned, independent businesses and artists.','Its about making your hard-earned money go further here at home, creating a sustainable economy, and helping to preserve the unique Oakland you love. Individuals, businesses, artists and organizations can all join the movement.','','',1000,2,1307641613005,1307641613005);
 /*!40000 ALTER TABLE `publisher` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --places
 LOCK TABLES `place` WRITE;
 /*!40000 ALTER TABLE `place` DISABLE KEYS */;
-INSERT INTO `place` VALUES (1,0,'Lukas Tap Room','2221 Broadway','Oakland','CA','94612','lukas','','(510) 451-4677',37.811359,-122.26701,'great place for beers','','','','',NULL,NULL,NULL,1307330419279,1307330419279);
+INSERT INTO `place` VALUES (1,0,'Lukas Tap Room','2221 Broadway','Oakland','CA','94612',NULL,'SG_53l3Ylfbpp2jqyYi0zqoxX_37.810938_-122.267166@1293134755','(510) 451-4677',37.811359,-122.26701,'great place for beers','','','','',NULL,NULL,NULL,1307330419279,1307330419279);
 /*!40000 ALTER TABLE `place` ENABLE KEYS */;
 UNLOCK TABLES;
 

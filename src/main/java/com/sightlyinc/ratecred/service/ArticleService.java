@@ -9,4 +9,6 @@ import com.sightlyinc.ratecred.model.Article;
  * @version $Id$
  */
 public interface ArticleService extends BaseService<Article> {
+	
+//	public List<Article> findByUserPrincipal(UserPrincipal up);
 }

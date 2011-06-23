@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.Business;
-import com.sightlyinc.ratecred.model.PlaceCityState;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 
 public interface AwardManagerService {
 	

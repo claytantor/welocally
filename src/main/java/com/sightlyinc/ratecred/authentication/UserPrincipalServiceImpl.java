@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.Authentication;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.model.Publisher;
 
 @Service("userPrincipalService")
 @Transactional(readOnly = true)
@@ -34,6 +36,17 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	
 	static Logger logger = Logger.getLogger(UserPrincipalServiceImpl.class);
 	
+	
+	@Override
+	public Role findRole(String name) throws UserPrincipalServiceException {
+		return roleDao.findByName(name);
+	}
+
+	@Override
+	public List<UserPrincipal> findByUserNameLike(String username) {
+		return userPrincipalDao.findByUserNameLike(username);
+	}
+
 	@Override
 	public List<Role> findAllRoles() throws UserPrincipalServiceException {
 		return roleDao.findAll();
@@ -42,6 +55,35 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	@Override
 	public List<UserPrincipal> findAll() throws BLServiceException {
 		return userPrincipalDao.findAll();
+	}
+	
+	
+
+	@Override
+	@Transactional(readOnly = false)
+	public void saveUserPrincipalRoles(UserPrincipal up, List<String> roles)
+			throws BLServiceException {
+		
+		try {
+			//delete the old roles
+			deleteUserPrincipalRoles(up);
+			Set<Role> newRoles = new HashSet<Role>();			
+			for (String role : roles) {
+				Role r = new Role();
+				r.setRole(role);
+				r.setUser(up);
+				r.setRoleGroup(role);
+				newRoles.add(r);
+			}
+			if (newRoles.size() > 0)
+				up.setRoles(newRoles);
+			
+		} catch (UserPrincipalServiceException e) {
+			throw new BLServiceException(e);
+		}
+		
+		
+		
 	}
 
 	@Override
@@ -135,7 +177,7 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	        		authArray,
 	        		principal.getCredentialsExpired(), 
 	        		principal.getEnabled(), 
-	        		principal.getExpired(), 
+	        		principal.getCredentialsExpired(), 
 	        		principal.getLocked(), 
 	        		principal.getPassword(), 
 	        		principal.getUsername());
@@ -256,6 +298,19 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	}
 	
 	
+
+	@Override
+	@Transactional(readOnly = false)
+	public void deleteUserPrincipalRoles(UserPrincipal up)
+			throws UserPrincipalServiceException {
+			
+		for (Role role : up.getRoles()) {
+			roleDao.delete(role);
+		}
+		
+		up.setRoles(null);
+		userPrincipalDao.save(up);
+	}
 
 	/**
 	 * @return Returns the userPrincipalDao.

@@ -1,12 +1,11 @@
 package com.sightlyinc.ratecred.service;
 
-import com.sightlyinc.ratecred.dao.BaseDao;
-import com.sightlyinc.ratecred.dao.EventDao;
-import com.sightlyinc.ratecred.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sightlyinc.ratecred.dao.BaseDao;
+import com.sightlyinc.ratecred.dao.EventDao;
+import com.sightlyinc.ratecred.model.Event;
 
 /**
  * Class javadoc comment here...
@@ -25,4 +24,13 @@ public class EventServiceImpl extends AbstractTransactionalService<Event> implem
     public BaseDao<Event> getDao() {
         return eventDao;
     }
+
+
+//	@Override
+//	public List<Event> findByUserPrincipal(UserPrincipal up) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//    
+    
 }

@@ -44,9 +44,9 @@ public class Review extends BaseEntity implements GeoPersistable {
 	}
 
 	@Override
-	public String getMemberKey() throws GeoPersistenceException {
-		if (publisher != null)
-			return publisher.getNetworkMember().getMemberKey();
+	public String getMemberKey() throws GeoPersistenceException  {
+		if(publisher != null)
+			return getPublisherLayerPrefix(publisher);
 		else
 			throw new GeoPersistenceException("geo member key cannot be null");
 	}

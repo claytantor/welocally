@@ -58,7 +58,11 @@ public abstract class BaseEntity {
 	}
 	
 	
-	
+	protected String getPublisherLayerPrefix(Publisher publisher) {
+    	return publisher.getNetworkMember().getMemberKey()+"."+
+			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
+			.replaceAll(" ", "-");
+    }	
 	
 
 }

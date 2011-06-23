@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 
 @PersistenceObservable
@@ -29,6 +31,11 @@ public class Publisher extends BaseEntity {
 	@Column(name="monthly_pageviews")
 	private Integer monthlyPageviews;
 	
+	@Column(name="icon_url")
+	private String iconUrl;
+	
+	@Column(name="map_icon_url")
+	private String mapIconUrl;
 	
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
@@ -37,6 +44,24 @@ public class Publisher extends BaseEntity {
 	@OneToMany
 	@JoinColumn(name = "publisher_id")
 	private Set<OfferEconomics> offerEconomics;
+	
+	@OneToMany
+	@JoinColumn(name = "publisher_id")
+	@JsonIgnore
+	private Set<Event> events;
+	
+	@OneToMany
+	@JoinColumn(name = "publisher_id")
+	@JsonIgnore
+	private Set<Article> articles;
+	
+	@OneToMany
+	@JoinColumn(name = "publisher_id")
+	@JsonIgnore
+	private Set<Review> reviews;
+	
+	
+	
 
 
 	public String getSiteName() {
@@ -82,6 +107,42 @@ public class Publisher extends BaseEntity {
 	}
 	public void setSummary(String summary) {
 		this.summary = summary;
+	}
+	public String getIconUrl() {
+		return iconUrl;
+	}
+	public void setIconUrl(String iconUrl) {
+		this.iconUrl = iconUrl;
+	}
+	public String getMapIconUrl() {
+		return mapIconUrl;
+	}
+	public void setMapIconUrl(String mapIconUrl) {
+		this.mapIconUrl = mapIconUrl;
+	}
+	@JsonIgnore
+	public Set<Event> getEvents() {
+		return events;
+	}
+	@JsonIgnore
+	public void setEvents(Set<Event> events) {
+		this.events = events;
+	}
+	@JsonIgnore
+	public Set<Article> getArticles() {
+		return articles;
+	}
+	@JsonIgnore
+	public void setArticles(Set<Article> articles) {
+		this.articles = articles;
+	}
+	@JsonIgnore
+	public Set<Review> getReviews() {
+		return reviews;
+	}
+	@JsonIgnore
+	public void setReviews(Set<Review> reviews) {
+		this.reviews = reviews;
 	}
 	
 	

@@ -9,4 +9,6 @@ import com.sightlyinc.ratecred.model.Review;
  * @version $Id$
  */
 public interface ReviewService extends BaseService<Review> {
+	
+//	public List<Review> findByUserPrincipal(UserPrincipal up);
 }

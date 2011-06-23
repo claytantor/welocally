@@ -1,7 +1,5 @@
 package com.sightlyinc.ratecred.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,27 +38,7 @@ public class NetworkMemberServiceImpl extends AbstractTransactionalService<Netwo
 
 	@Override
 	public NetworkMember findMemberByUserPrincipal(UserPrincipal up) {
-		NetworkMember example = new NetworkMember();
-		example.setUserPrincipal(up);
-		List<NetworkMember> members = 
-			networkMemberDao.findByExample(
-					example, 
-					new String[] {  	
-						"name",	
-						"memberKey",	
-						"description",	
-						"iconUrl",	
-						"mapIconUrl",	
-						"primaryEmail",	
-						"paypalEmail",
-						"publishers",	
-						"affiliates",	
-						"merchants"});
-		//should only be one or none
-		if(members.size()>0)
-			return members.get(0);
-		else
-			return null;
+		return networkMemberDao.findByUserPrincipal(up);
 	}
 	
 

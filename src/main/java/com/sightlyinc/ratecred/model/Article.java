@@ -63,10 +63,16 @@ public class Article extends BaseEntity implements GeoPersistable {
 	@Override
 	public String getMemberKey() throws GeoPersistenceException  {
 		if(publisher != null)
-			return publisher.getNetworkMember().getMemberKey();
+			return getPublisherLayerPrefix(publisher);
 		else
 			throw new GeoPersistenceException("geo member key cannot be null");
 	}
+	
+	protected String getPublisherLayerPrefix(Publisher publisher) {
+    	return publisher.getNetworkMember().getMemberKey()+"."+
+			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
+			.replaceAll(" ", "-");
+    }
 	
 	
 

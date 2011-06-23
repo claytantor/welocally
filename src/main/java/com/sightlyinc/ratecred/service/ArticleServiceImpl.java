@@ -1,10 +1,11 @@
 package com.sightlyinc.ratecred.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.sightlyinc.ratecred.dao.ArticleDao;
 import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.model.Article;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Class javadoc comment here...
@@ -22,4 +23,11 @@ public class ArticleServiceImpl extends AbstractTransactionalService<Article> im
     public BaseDao<Article> getDao() {
         return articleDao;
     }
+
+//	@Override
+//	public List<Article> findByUserPrincipal(UserPrincipal up) {
+//		return null;
+//	}
+//    
+    
 }

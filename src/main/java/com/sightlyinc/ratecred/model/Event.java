@@ -76,7 +76,7 @@ public class Event extends BaseEntity implements GeoPersistable {
 	
 	@Column(name="image_attachment_key")
 	private String imageAttachmentKey;
-
+	
 	@Column(name="time_starts")
 	private Long timeStarts;
 	
@@ -118,7 +118,7 @@ public class Event extends BaseEntity implements GeoPersistable {
 	@Override
 	public String getMemberKey() throws GeoPersistenceException  {
 		if(publisher != null)
-			return publisher.getNetworkMember().getMemberKey();
+			return getPublisherLayerPrefix(publisher);
 		else
 			throw new GeoPersistenceException("geo member key cannot be null");
 	}
@@ -204,24 +204,24 @@ public class Event extends BaseEntity implements GeoPersistable {
 //	public void setRecurrenceType(RecurrenceType recurrenceType) {
 //		this.recurrenceType = recurrenceType;
 //	}
-	public Integer getrecurrenceInterval() {
-		return recurrenceInterval;
-	}
-	public void setrecurrenceInterval(Integer recurrenceInterval) {
-		this.recurrenceInterval = recurrenceInterval;
-	}
-	public String getrecurrenceData() {
-		return recurrenceData;
-	}
-	public void setrecurrenceData(String recurrenceData) {
-		this.recurrenceData = recurrenceData;
-	}
-	public Long getrecurrenceEnd() {
-		return recurrenceEnd;
-	}
-	public void setrecurrenceEnd(Long recurrenceEnd) {
-		this.recurrenceEnd = recurrenceEnd;
-	}
+//	public Integer getrecurrenceInterval() {
+//		return recurrenceInterval;
+//	}
+//	public void setrecurrenceInterval(Integer recurrenceInterval) {
+//		this.recurrenceInterval = recurrenceInterval;
+//	}
+//	public String getrecurrenceData() {
+//		return recurrenceData;
+//	}
+//	public void setrecurrenceData(String recurrenceData) {
+//		this.recurrenceData = recurrenceData;
+//	}
+//	public Long getrecurrenceEnd() {
+//		return recurrenceEnd;
+//	}
+//	public void setrecurrenceEnd(Long recurrenceEnd) {
+//		this.recurrenceEnd = recurrenceEnd;
+//	}
 	public Publisher getPublisher() {
 		return publisher;
 	}

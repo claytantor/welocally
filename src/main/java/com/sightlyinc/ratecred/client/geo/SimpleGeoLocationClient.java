@@ -21,7 +21,7 @@ import com.simplegeo.client.types.FeatureCollection;
 
 // @TODO refactor name
 @Component("locationPlacesClient")
-public class SimpleGeoLocationClient implements GeoPlacesClient {
+public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceManager {
 	
 	static Logger logger = 
 		Logger.getLogger(SimpleGeoLocationClient.class);
@@ -137,7 +137,7 @@ public class SimpleGeoLocationClient implements GeoPlacesClient {
 	 * @param f
 	 * @return
 	 */
-	private Place trasformFeature(Feature f){
+	public Place trasformFeature(Feature f){
 		
 		logger.debug(f.getProperties().get("classifiers").getClass().getName());
 		Place p = new Place();

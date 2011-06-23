@@ -35,19 +35,25 @@ public class UserPrincipal implements Authentication, UserDetails {
     
     @Column(name = "user_name")
 	private String username;
+    
 	private String password;
+	
 	private String email;
+	
     @Column(name = "user_class")
 	private String userClass;
 
-    @Column(columnDefinition = "tinyint")
-	private Boolean expired;
+//    @Column(columnDefinition = "tinyint")
+//	private Boolean expired;
+    
     @Column(name = "credentials_expired", columnDefinition = "tinyint")
-	private Boolean credentialsExpired;
+	private Boolean credentialsExpired = new Boolean(false);
+    
     @Column(columnDefinition = "tinyint")
-	private Boolean locked;
+	private Boolean locked = new Boolean(false);
+    
     @Column(columnDefinition = "tinyint")
-	private Boolean enabled;
+	private Boolean enabled = new Boolean(true);
     
     
     /**
@@ -82,6 +88,7 @@ public class UserPrincipal implements Authentication, UserDetails {
     @Column(name = "guid")
 	private String authGuid;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private Set<Role> roles = new HashSet<Role>();
 
@@ -163,10 +170,12 @@ public class UserPrincipal implements Authentication, UserDetails {
 		this.username = username;
 	}
 
+    @JsonIgnore
 	public Set<Role> getRoles() {
 		return this.roles;
 	}
 
+    @JsonIgnore
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
@@ -202,11 +211,13 @@ public class UserPrincipal implements Authentication, UserDetails {
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isAuthenticated() {
 		return authenticated;
 	}
 
 	@Override
+	@JsonIgnore	
 	public void setAuthenticated(boolean arg0) throws IllegalArgumentException {
 		this.authenticated = arg0;
 
@@ -225,6 +236,7 @@ public class UserPrincipal implements Authentication, UserDetails {
 		this.userClass = userClass;
 	}
 
+	@JsonIgnore
 	public Boolean getAuthenticated() {
 		return authenticated;
 	}
@@ -233,13 +245,13 @@ public class UserPrincipal implements Authentication, UserDetails {
 		this.authenticated = authenticated;
 	}
 
-	public Boolean getExpired() {
-		return expired;
-	}
-
-	public void setExpired(Boolean expired) {
-		this.expired = expired;
-	}
+//	public Boolean getExpired() {
+//		return expired;
+//	}
+//
+//	public void setExpired(Boolean expired) {
+//		this.expired = expired;
+//	}
 
 	public Boolean getCredentialsExpired() {
 		return credentialsExpired;
@@ -269,7 +281,7 @@ public class UserPrincipal implements Authentication, UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return !getExpired();
+		return !getCredentialsExpired();
 	}
 
 	@Override

@@ -10,8 +10,8 @@ import org.apache.http.NameValuePair;
 
 import com.noi.utility.string.StringUtils;
 import com.noi.utility.web.UrlUtils;
-import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Rating;
 
 public class AwardsUtils {

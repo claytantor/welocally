@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.model.Publisher;
 
 public interface UserPrincipalService {
 	public Long saveUserPrincipal(UserPrincipal up) throws UserPrincipalServiceException;
@@ -15,7 +16,13 @@ public interface UserPrincipalService {
 	public UserPrincipal loadUserEmail(String authId) throws UserPrincipalServiceException,UserNotFoundException;
 	
 	public void saveUserPrincipalRoles(UserPrincipal up, Set<Role> roles) throws UserPrincipalServiceException;
+	public void saveUserPrincipalRoles(UserPrincipal up, List<String> roles) throws BLServiceException;
+	
+	
 	public void deleteUserPrincipalRole(UserPrincipal up, Role role) throws UserPrincipalServiceException;
+	public void deleteUserPrincipalRoles(UserPrincipal up) throws UserPrincipalServiceException;
+	
+	public List<UserPrincipal>  findByUserNameLike(String username);
 	
 	//move this back to services
 	public UserPrincipal findUserByTwitterScreenName(String twitterScreenName) throws BLServiceException;
@@ -26,6 +33,7 @@ public interface UserPrincipalService {
 	
 	//roles
 	public List<Role> findAllRoles() throws UserPrincipalServiceException;
+	public Role findRole(String name) throws UserPrincipalServiceException;
 	
 	//public Long saveUserRole(Role r) throws UserPrincipalServiceException;
 	

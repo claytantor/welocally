@@ -48,7 +48,7 @@ import com.sightlyinc.ratecred.authentication.UserPrincipal;
 @Table(name="network_member")
 public class NetworkMember extends BaseEntity {
 	
-	public enum MemberType{PUBLISHER,AFFILIATE,MERCHANT}
+	//public enum MemberType{PUBLISHER,AFFILIATE,MERCHANT}
 	
 	private String name;
 	
@@ -58,11 +58,11 @@ public class NetworkMember extends BaseEntity {
 	@Column(columnDefinition="TEXT")
 	private String description;
 	
-	@Column(name="icon_url")
-	private String iconUrl;
-	
-	@Column(name="map_icon_url")
-	private String mapIconUrl;
+//	@Column(name="icon_url")
+//	private String iconUrl;
+//	
+//	@Column(name="map_icon_url")
+//	private String mapIconUrl;
 	
 	@Column(name="primary_email")
 	private String primaryEmail;
@@ -136,21 +136,21 @@ public class NetworkMember extends BaseEntity {
 		this.description = description;
 	}
 
-	public String getIconUrl() {
-		return iconUrl;
-	}
-
-	public void setIconUrl(String iconUrl) {
-		this.iconUrl = iconUrl;
-	}
-
-	public String getMapIconUrl() {
-		return mapIconUrl;
-	}
-
-	public void setMapIconUrl(String mapIconUrl) {
-		this.mapIconUrl = mapIconUrl;
-	}
+//	public String getIconUrl() {
+//		return iconUrl;
+//	}
+//
+//	public void setIconUrl(String iconUrl) {
+//		this.iconUrl = iconUrl;
+//	}
+//
+//	public String getMapIconUrl() {
+//		return mapIconUrl;
+//	}
+//
+//	public void setMapIconUrl(String mapIconUrl) {
+//		this.mapIconUrl = mapIconUrl;
+//	}
 
 //	public MemberType getType() {
 //		return type;

@@ -1,10 +1,11 @@
 package com.sightlyinc.ratecred.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.dao.ReviewDao;
 import com.sightlyinc.ratecred.model.Review;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Class javadoc comment here...
@@ -21,4 +22,12 @@ public class ReviewServiceImpl extends AbstractTransactionalService<Review> impl
     public BaseDao<Review> getDao() {
         return reviewDao;
     }
+
+//	@Override
+//	public List<Review> findByUserPrincipal(UserPrincipal up) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+    
+    
 }
