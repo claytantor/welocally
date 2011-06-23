@@ -27,13 +27,7 @@
             <a href="<c:url value='/publisher/place/delete/${place.id}' />" class="button">delete</a>
         </div>
         <div class="span-24 last">
-            <div class="strong-12 span-4">${place.id}</div>
-            <div class="span-10">
-                <div class="span-10"><a href="${place.url}">${place.name}</a></div>
-                <div class="span-10">${place.description}</div>
-            </div>
-            <div class="span-2 last">${place.address}</div>
-            <div class="span-2 last">lat:${place.latitude}, lng:${place.longitude}</div>
+            <jsp:include page="detail.jsp"/>
         </div>
 	</div>		
 </div>

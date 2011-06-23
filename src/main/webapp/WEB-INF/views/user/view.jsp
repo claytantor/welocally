@@ -30,10 +30,12 @@
 		</div>
 		<div class="span-24 last">
 			<div class="strong-12 span-4">${userPrincipal.id}</div>
-			<div class="strong-12 span-4">
-			<c:forEach var="role" items="${userPrincipal.roles}">
-			 ${role.role},
-			</c:forEach>
+			<div class="span-18 last">
+				<div class="text-10  span-18 last">${userPrincipal.username}</div>
+				<div class="text-10  span-18 last">expired: ${userPrincipal.credentialsExpired}</div>
+				<div class="text-10  span-18 last">enabled: ${userPrincipal.enabled}</div>
+				<div class="text-10  span-18 last">locked: ${userPrincipal.locked}</div>
+				<div class="text-10  span-18 last">roles: <c:forEach var="role" items="${userPrincipal.roles}">${role.role}, </c:forEach></div>			
 			</div>
 		</div>
 	</div>

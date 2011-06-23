@@ -9,8 +9,19 @@
     </layout>
   </appender>
    
+  <category name="com.sightlyinc.ratecred.admin">
+    <priority value="debug"/>
+  </category> 
+  
+    <category name="org.springframework">
+    <priority value="debug"/>
+  </category>
 
-  <category name="com.noi">
+  <category name="org.codehouse">
+    <priority value="debug"/>
+  </category>
+
+ <!--  <category name="com.noi">
     <priority value="debug"/>
   </category> 
   
@@ -41,7 +52,7 @@
   
   <category name="org.springframework">
     <priority value="debug"/>
-  </category>   
+  </category>   --> 
 
   
    <root>

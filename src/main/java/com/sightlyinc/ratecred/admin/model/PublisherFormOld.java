@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import com.sightlyinc.ratecred.model.Publisher;
 
 
-public class PublisherForm {
+public class PublisherFormOld {
 	
-	static Logger logger = Logger.getLogger(PublisherForm.class);
+	static Logger logger = Logger.getLogger(PublisherFormOld.class);
 
 	private Long id;
 	
@@ -26,11 +26,11 @@ public class PublisherForm {
 	
 	private Integer monthlyPageviews;
 
-	public PublisherForm() {
+	public PublisherFormOld() {
 		super();
 	}
 	
-	public PublisherForm(Publisher p) {
+	public PublisherFormOld(Publisher p) {
 		try {
 			BeanUtils.copyProperties(this, p);
 		} catch (IllegalAccessException e) {

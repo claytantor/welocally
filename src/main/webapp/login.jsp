@@ -27,7 +27,7 @@
 	<div style="width:100%; text-align:center;">
     	<div style="width:100%;height:80px" class="hd">
              <div style="text-align:left; width: 800px; margin: 0 auto">
-            	<img src="<c:url value='/images/ratecred_logo72_top.png'/>" border="0"/>
+            	<img src="<c:url value='/images/header_logo.png'/>" border="0"/>
             </div>
         </div>
                   

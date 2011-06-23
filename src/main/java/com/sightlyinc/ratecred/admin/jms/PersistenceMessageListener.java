@@ -119,13 +119,11 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 						eventDao.save(event);							
 					} else if(clazz.getName().equals(Publisher.class.getName())){
 						Publisher publisher = publisherDao.findByPrimaryKey(activity.getEntityId());			
-						createLayersForKey(publisher.getNetworkMember().getMemberKey());
+						createLayersForKey(getPublisherLayerPrefix(publisher) );
 						
 					}
 					
 				}
-				
-				
 	    	}
     	} catch (JMSException e) {
             logger.error(e.getMessage(), e);
@@ -139,6 +137,12 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 			logger.error(e.getMessage(), e);
 		}
     	
+    }
+    
+    private String getPublisherLayerPrefix(Publisher publisher) {
+    	return publisher.getNetworkMember().getMemberKey()+"."+
+			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
+			.replaceAll(" ", "-");
     }
     
     public void saveGeoEntityToStorage(GeoPersistable geoEntity) 

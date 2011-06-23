@@ -1,7 +1,10 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import com.sightlyinc.ratecred.model.Article;
+import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.ArticleService;
+import com.sightlyinc.ratecred.service.PublisherService;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -21,18 +25,27 @@ public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
+    
+	@Autowired
+	private PublisherService publisherService;
 
 	
     @RequestMapping(method= RequestMethod.GET)
-    public String addArticle(Model model) {
-        model.addAttribute("articleForm",new Article());
+    public String addArticle(@RequestParam Long publisherId, Model model) {
+    	Publisher publisher = publisherService.findByPrimaryKey(publisherId);
+		model.addAttribute("publisher", publisher);
+		Article article = new Article();
+		article.setPublisher(publisher);
+        model.addAttribute("articleForm",article);
         return "article/edit";
     }
 
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
     public String editArticle(@PathVariable Long id, Model model) {
         logger.debug("edit");
-        model.addAttribute("articleForm", articleService.findByPrimaryKey(id));
+        Article a = articleService.findByPrimaryKey(id);
+        model.addAttribute("publisher", a.getPublisher());
+        model.addAttribute("articleForm", a);
         return "article/edit";
     }
 
@@ -48,7 +61,9 @@ public class ArticleController {
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public String getArticleById(@PathVariable Long id, Model model) {
         logger.debug("view");
-        model.addAttribute("article", articleService.findByPrimaryKey(id));
+        Article a = articleService.findByPrimaryKey(id);
+        model.addAttribute("publisher", a.getPublisher());
+        model.addAttribute("article", a);
         return "article/view";
     }
 
@@ -61,9 +76,11 @@ public class ArticleController {
     }
 	
     @RequestMapping(value="/list", method=RequestMethod.GET)
-    public String list(Model model) {
+    public String list(@RequestParam Long publisherId, Model model) {
         logger.debug("list");
-        model.addAttribute("articles", articleService.findAll());
+        Publisher publisher = publisherService.findByPrimaryKey(publisherId);
+		model.addAttribute("publisher", publisher);
+        model.addAttribute("articles", publisher.getArticles());
         return "article/list";
     }
 }

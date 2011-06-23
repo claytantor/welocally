@@ -10,7 +10,7 @@
 <c:set var="pageTitle" value="Review Edit"/>
 <jsp:include page="../head.jsp"/>
 <script>
-    var placesUrl = "<c:url value="/publisher/place/search?name="/>";
+    /*var placesUrl = "<c:url value="/publisher/place/search?name="/>";
     var placeSource = function(req, add) {
         $.getJSON(placesUrl + req.term, function(data) {
             var suggestions = [];
@@ -19,7 +19,7 @@
             }
             add(suggestions);
         });
-    };
+    };*/
     var publishersUrl = "<c:url value="/publisher/publisher/search?siteName="/>";
     var publisherSource = function(req, add) {
         $.getJSON(publishersUrl + req.term, function(data) {
@@ -31,7 +31,7 @@
         });
     };
 	$(function() {
-		$("#place").autocomplete({
+		/*$("#place").autocomplete({
             minLength:3,
             source:placeSource,
             select:function(event,ui) {
@@ -39,26 +39,26 @@
                 $('#place_id').val(ui.item.value);
                 return false;
             }
-        });
-		$("#publisher").autocomplete({
+        });*/
+		$("#publisher-name").autocomplete({
             minLength:3,
             source:publisherSource,
             select:function(event,ui) {
-                $('#publisher').val(ui.item.label);
-                $('#publisher_id').val(ui.item.value);
+                $('#publisher-name').val(ui.item.label);
+                $('#publisher-id').val(ui.item.value);
                 return false;
             }
         });
 	});
 </script>
 <body>
-
+<jsp:include page="../place/chooser.jsp"/>
 <div class="container">
 	<div class="span-24">
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/home' />">home</a> :
+		<h2><a href="<c:url value='/publisher/publisher/${publisher.id}' />">${publisher.siteName}</a> :
 		<c:if test="${not empty(reviewForm.id)}">edit review</c:if>
 		<c:if test="${empty(reviewForm.id)}">create review</c:if>
 		</h2>
@@ -69,8 +69,12 @@
 				<legend>Review Info</legend>
 				<form:hidden path="id" />
 				<form:hidden path="version" />
-                <form:hidden id="place_id" path="place.id" />
-                <form:hidden id="publisher_id" path="publisher.id" />
+                <form:hidden id="place-id" path="place.id" />
+                <form:hidden id="publisher-id" path="publisher.id" />
+                  <p>
+                      <label for="place">Place:</label><br/>
+                      <input id="place-name" value="${reviewForm.place.name}" />
+                  </p>                
 				<p>
 					<form:label	for="name" path="name" cssErrorClass="error">Name:</form:label><br/>
 					<form:input path="name" id="name"/> <form:errors path="name" class="error" />
@@ -90,14 +94,11 @@
                       <form:label for="summary" path="summary" cssErrorClass="error">Summary</form:label><br/>
                       <form:textarea path="summary" rows="1" cols="10" /> <form:errors path="summary" class="error" />
                   </p>
-                  <p>
-                      <label for="place">Place:</label><br/>
-                      <input id="place" value="${reviewForm.place.name}" />
-                  </p>
-                  <p>
+
+                  <%--<p>
                       <label for="publisher">Site Name:</label><br/>
-                      <input id="publisher" value="${reviewForm.publisher.siteName}" />
-                  </p>
+                      <input id="publisher-name" value="${reviewForm.publisher.siteName}" />
+                  </p> --%>
 
 				<p>	
 					<input type="submit" />

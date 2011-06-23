@@ -11,12 +11,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<meta name="description" content="Login to Service Tattler" />
+<meta name="description" content="Login to Welocally" />
 
 <link rel="icon" href="http://www.servicetattler.com/favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="http://www.servicetattler.com/favicon.ico" type="image/x-icon"> 
-<link rel="stylesheet" type="text/css" href="<c:url value='/css/ratecred.css'/>" />
+<link rel="shortcut icon" href="http://www.welocally.com/favicon.ico" type="image/x-icon"> 
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/welocally.css'/>" />
+<style>
+body {
+font: normal 1em verdana, arial, helvetica, sans-serif;
+}
 
+</style>
 
 </head>
 
@@ -24,7 +29,7 @@
 	<div style="width:100%; text-align:center;">
     	<div style="width:100%;height:80px" class="hd">
              <div style="text-align:left; width: 800px; margin: 0 auto">
-            	<img src="<c:url value='/images/ratecred_logo72_top.png'/>" border="0"/>
+            	<img src="<c:url value='/images/header_logo.png'/>" border="0"/>
             </div>
         </div>
                   

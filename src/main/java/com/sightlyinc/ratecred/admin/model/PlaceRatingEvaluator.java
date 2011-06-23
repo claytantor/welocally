@@ -3,13 +3,11 @@ package com.sightlyinc.ratecred.admin.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.sightlyinc.ratecred.admin.compare.DescendingAwardDateComparitor;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.Place;

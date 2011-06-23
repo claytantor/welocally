@@ -1,6 +1,5 @@
 package com.sightlyinc.ratecred.admin.model;
 
-import java.util.Calendar;
 
 public class CustomAwardForm {
 

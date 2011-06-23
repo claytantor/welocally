@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.admin.model.NetworkMemberForm;
 import com.sightlyinc.ratecred.authentication.Role;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
@@ -49,7 +48,7 @@ public class NetworkMemberController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(Model model) {
-		model.addAttribute("networkMemberForm",new NetworkMemberForm());
+		model.addAttribute("networkMemberForm",new NetworkMember());
 		
 		//member types
 		String[] memberTypes = { "MERCHANT", "AFFILIATE", "PUBLISHER" };
@@ -71,96 +70,18 @@ public class NetworkMemberController {
 		return "member/edit";
 	}
 	
+	
+	// @TODO should be refactored to not use form object 
 	@RequestMapping(method=RequestMethod.POST)
-	public String create(@Valid NetworkMemberForm form, BindingResult result, Model model) {
+	public String create(@Valid NetworkMember form, BindingResult result, Model model) {
 		logger.debug("got post action");
 		if(result.hasErrors()) {
 			model.addAttribute("networkMemberForm",form);
 			return "member/edit";
 		}
-			
+		Long id = networkMemberService.save(form);
+		return "redirect:/admin/member/"+id.toString();
 		
-//		validator.validate(form, result);  
-//        if (result.hasErrors()) { return "form"; }  
-        
-		NetworkMember member = new NetworkMember();
-		
-		try {
-			if(form.getId() != null)
-				member = networkMemberService.findByPrimaryKey(form.getId());
-			
-			if(member!= null)
-			{
-				
-				member.setId(form.getId());
-				member.setVersion(form.getVersion());
-				
-				member.setDescription(form.getDescription());
-				member.setIconUrl(form.getIconUrl());
-				member.setMapIconUrl(form.getMapIconUrl());
-				member.setMemberKey(form.getMemberKey());
-				member.setName(form.getName());
-				member.setPaypalEmail(form.getPaypalEmail());
-				member.setPrimaryEmail(form.getPrimaryEmail());
-				
-				//get the user
-				UserPrincipal memberUser = userPrincipalService.loadUser(form.getUsername());
-				member.setUserPrincipal(memberUser);
-				
-				
-				if(form.getType().equals("PUBLISHER")){
-					Publisher p = new Publisher();
-					
-					if(form.getId() != null)
-						p = publisherService.findByPrimaryKey(form.getId());
-					
-
-						p.setMonthlyPageviews(form.getMonthlyPageviews());
-						p.setSiteName(form.getSiteName());
-						p.setDescription(form.getDescription());
-						p.setSummary(form.getSummary());
-						p.setUrl(form.getUrl());
-						publisherService.save(p);
-						
-						//now add the publisher role for the principal
-						// if they dont have it
-						//think about moving this to the UserPrincipalService
-						if(!principalHasRole(memberUser, "ROLE_PUBLISHER"))
-						{
-							Role r = new Role();
-							r.setRole("ROLE_PUBLISHER");
-							r.setUser(memberUser);
-							r.setRoleGroup("ROLE_PUBLISHER");
-							memberUser.getRoles().add(r);
-							userPrincipalService.saveUserPrincipal(memberUser);
-						}
-						
-						
-						//dont know exactly why but I am being forced to manage the relationship
-						Long id =  networkMemberService.createPublisherMember( member,  p);
-						return "redirect:/admin/member/"+id.toString();
-						
-				} else {
-					//error on other types right now
-					logger.error("type not supported",new RuntimeException("TYPE NOT SUPPORTED"));
-					model.addAttribute("error", new RuntimeException("TYPE NOT SUPPORTED"));
-					return "error";
-				}
-				
-				
-			} else {
-				model.addAttribute("networkMember", member);
-				return "member/edit";
-			}
-		} catch (UserPrincipalServiceException e) {
-			logger.error("problem",e);
-			model.addAttribute("error", e);
-			return "error";
-		} catch (UserNotFoundException e) {
-			logger.error("problem",e);
-			model.addAttribute("error", e);
-			return "error";
-		} 
 
 	}
 	
@@ -185,7 +106,7 @@ public class NetworkMemberController {
 		logger.debug("edit");
 		model.addAttribute(
 				"networkMemberForm",
-				new NetworkMemberForm(networkMemberService.findByPrimaryKey(id)));
+				networkMemberService.findByPrimaryKey(id));
 		return "member/edit";
 	}
 	

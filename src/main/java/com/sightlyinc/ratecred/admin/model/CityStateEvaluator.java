@@ -2,19 +2,13 @@ package com.sightlyinc.ratecred.admin.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.noi.utility.string.StringUtils;
-import com.sightlyinc.ratecred.admin.compare.DescendingRateMapStringComparitor;
-import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.Rating;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 
 public class CityStateEvaluator {
 	

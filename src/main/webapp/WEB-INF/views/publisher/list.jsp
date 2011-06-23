@@ -20,13 +20,13 @@
 		<h2><a href="<c:url value='/' />">home</a> : list of publishers</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/admin/publisher' />" class="button">create</a>
+			<a href="<c:url value='/publisher/publisher' />" class="button">create</a>
 		</div>		
 		<div class="span-24 last">
 			<c:forEach var="publisher" items="${publishers}">
 			<div class="span-24 last">
 				<div class="strong-12 span-1">${publisher.id}</div>
-				<div class="strong-12 span-6"><a href="<c:url value='/admin/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>
+				<div class="strong-12 span-6"><a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>
 				<div class="span-10">
 					<div class="span-10"><a href="${publisher.url}">${publisher.url}</a></div>
 					<div class="span-10">${publisher.description}</div>				

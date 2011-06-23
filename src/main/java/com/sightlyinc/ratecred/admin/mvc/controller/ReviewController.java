@@ -1,6 +1,8 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Review;
+import com.sightlyinc.ratecred.service.PublisherService;
 import com.sightlyinc.ratecred.service.ReviewService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -21,18 +24,27 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+    
+	@Autowired
+	private PublisherService publisherService;
 
 	
     @RequestMapping(method= RequestMethod.GET)
-    public String addReview(Model model) {
-        model.addAttribute("reviewForm",new Review());
+    public String addReview(@RequestParam Long publisherId, Model model) {
+    	Publisher publisher = publisherService.findByPrimaryKey(publisherId);
+		model.addAttribute("publisher", publisher);
+    	Review r = new Review();
+    	r.setPublisher(publisher);
+        model.addAttribute("reviewForm",r);
         return "review/edit";
     }
 
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
     public String editReview(@PathVariable Long id, Model model) {
         logger.debug("edit");
-        model.addAttribute("reviewForm", reviewService.findByPrimaryKey(id));
+        Review r = reviewService.findByPrimaryKey(id);
+        model.addAttribute("publisher", r.getPublisher());
+        model.addAttribute("reviewForm", r);
         return "review/edit";
     }
 
@@ -48,7 +60,9 @@ public class ReviewController {
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public String getReviewById(@PathVariable Long id, Model model) {
         logger.debug("view");
-        model.addAttribute("review", reviewService.findByPrimaryKey(id));
+        Review r = reviewService.findByPrimaryKey(id);
+        model.addAttribute("publisher", r.getPublisher());
+        model.addAttribute("review", r);
         return "review/view";
     }
 
@@ -61,9 +75,11 @@ public class ReviewController {
     }
 	
     @RequestMapping(value="/list", method=RequestMethod.GET)
-    public String list(Model model) {
+    public String list(@RequestParam Long publisherId,Model model) {
         logger.debug("list");
-        model.addAttribute("reviews", reviewService.findAll());
+		Publisher publisher = publisherService.findByPrimaryKey(publisherId);
+		model.addAttribute("publisher", publisher);
+        model.addAttribute("reviews", publisher.getReviews());
         return "review/list";
     }
 }

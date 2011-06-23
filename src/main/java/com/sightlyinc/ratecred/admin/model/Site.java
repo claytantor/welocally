@@ -1,7 +1,6 @@
 package com.sightlyinc.ratecred.admin.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 

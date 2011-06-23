@@ -7,9 +7,9 @@ import org.apache.log4j.Logger;
 import com.sightlyinc.ratecred.model.NetworkMember;
 
 
-public class NetworkMemberForm {
+public class NetworkMemberFormOld {
 	
-	static Logger logger = Logger.getLogger(NetworkMemberForm.class);
+	static Logger logger = Logger.getLogger(NetworkMemberFormOld.class);
 	
 	private Long id;
 	
@@ -55,18 +55,16 @@ public class NetworkMemberForm {
 	//affiliate fields
 	
 
-	public NetworkMemberForm() {
+	public NetworkMemberFormOld() {
 		super();
 	}
 	
-	public NetworkMemberForm(NetworkMember member) {
+	public NetworkMemberFormOld(NetworkMember member) {
 
 		this.setId(member.getId());
 		this.setVersion(member.getVersion());
 		
 		this.setDescription(member.getDescription());
-		this.setIconUrl(member.getIconUrl());
-		this.setMapIconUrl(member.getMapIconUrl());
 		this.setMemberKey(member.getMemberKey());
 		this.setName(member.getName());
 		this.setPaypalEmail(member.getPaypalEmail());

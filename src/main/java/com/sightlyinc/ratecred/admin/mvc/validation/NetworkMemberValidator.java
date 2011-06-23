@@ -5,21 +5,22 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.sightlyinc.ratecred.admin.model.NetworkMemberForm;
+import com.sightlyinc.ratecred.model.NetworkMember;
 
 @Component("networkMemberValidator")
+@Deprecated
 public class NetworkMemberValidator implements Validator {
 
 	@Override
 	public boolean supports(Class clazz) {
-		return NetworkMemberForm.class.equals(clazz);
+		return NetworkMember.class.equals(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
 		ValidationUtils.rejectIfEmpty(errors, "type", "type.empty");
-		if(!((NetworkMemberForm)target).getType().equalsIgnoreCase("PUBLISHER"))
-			errors.rejectValue("type", "type.unsupported");
+//		if(!((NetworkMember)target).getType().equalsIgnoreCase("PUBLISHER"))
+//			errors.rejectValue("type", "type.unsupported");
 		
 	}
 

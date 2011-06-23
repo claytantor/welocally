@@ -12,17 +12,33 @@
 <c:set var="pageTitle" value="Member Edit"/>
 <jsp:include page="../head.jsp"/>
 <script>
-$(document).ready(function(){
+var usersUrl = "<c:url value="/admin/user/search?userName="/>";
+var usersSource = function(req, add) {
+    $.getJSON(usersUrl + req.term, function(data) {
+        var suggestions = [];
+        for (var i = 0; i < data.users.length; i++) {
+            suggestions.push({'label':data.users[i].username,'value':data.users[i].id});
+        }
+        add(suggestions);
+    });
+};
+
+$(function() {
 
 	$(".typeform").hide();
-	$("#merchant_form").toggle();
+	//$("#merchant_form").toggle();
 	
-	var dataUserNames = "${users}".split(",");
-	$("#username").autocomplete({
-	    source: dataUserNames
-	});
-
-	$('#member_type').change(function() {
+	$("#userPrincipal-name").autocomplete({
+        minLength:3,
+        source:usersSource,
+        select:function(event,ui) {
+            $('#userPrincipal-name').val(ui.item.label);
+            $('#userPrincipal-id').val(ui.item.value);
+            return false;
+        }
+    });
+    
+	/*$('#member_type').change(function() {
 		var str = "";
         $("#member_type option:selected").each(function () {
               str += $(this).text();
@@ -38,7 +54,7 @@ $(document).ready(function(){
         	$("#affiliate_form").toggle();
         }
         
-	});
+	});*/
 });
 </script>
 
@@ -61,15 +77,17 @@ $(document).ready(function(){
 				<legend>Member Info</legend>
 				<form:hidden path="id" />
 				<form:hidden path="version" />
+				<form:hidden id="userPrincipal-id" path="userPrincipal.id" />
+
 				<p>
-					<form:label	for="username" path="username" cssErrorClass="error">User Name</form:label><br/>
-					<form:input path="username" id="username"/> <form:errors path="username" class="error"/>			
+					<form:label	for="userPrincipal" path="userPrincipal" cssErrorClass="error">User Name</form:label><br/>
+					<input id="userPrincipal-name" value="${memberForm.userPrincipal.username}" /> <form:errors path="userPrincipal" class="error"/>			
 				</p>					
-				<p>
+				<%--<p>
 					<form:label	for="type" path="type" cssErrorClass="error">Create Member Association Type</form:label><br/>
 					<form:select id="member_type" path="type" multiple="false" items="${memberTypes}"/>
 					<form:errors path="type" class="error"/>
-				</p>								
+				</p> --%>								
 				<p>
 					<form:label	for="name" path="name" cssErrorClass="error">Member Name</form:label><br/>
 					<form:input path="name" id="name"/> <form:errors path="name" class="error" />			
@@ -83,14 +101,6 @@ $(document).ready(function(){
 					<form:textarea path="description" rows="1" cols="10" /> <form:errors path="description" class="error" />			
 				</p>	
 				<p>
-					<form:label	for="iconUrl" path="iconUrl" cssErrorClass="error">Icon Url</form:label><br/>
-					<form:input path="iconUrl" id="iconUrl"/> <form:errors path="iconUrl" class="error"/>			
-				</p>
-				<p>
-					<form:label	for="mapIconUrl" path="mapIconUrl" cssErrorClass="error">Map Icon Url</form:label><br/>
-					<form:input path="mapIconUrl" id="mapIconUrl"/> <form:errors path="mapIconUrl" class="error"/>			
-				</p>									
-				<p>
 					<form:label	for="primaryEmail" path="primaryEmail" cssErrorClass="error">Primary Email</form:label><br/>
 					<form:input path="primaryEmail" id="primaryEmail"/> <form:errors path="primaryEmail" class="error"/>			
 				</p>
@@ -99,7 +109,7 @@ $(document).ready(function(){
 					<form:input path="paypalEmail" id="paypalEmail"/> <form:errors path="paypalEmail" class="error"/>			
 				</p>
 			</fieldset>
-			<fieldset>
+			<%-- <fieldset>
 				<div id="merchant_form" class="typeform">MERCHANT CURRENTLY NOT SUPPORTED</div>
 				<div id="affiliate_form" class="typeform">AFFILIATE CURRENTLY NOT SUPPORTED</div>
 				<div id="publisher_form" class="typeform">
@@ -126,7 +136,7 @@ $(document).ready(function(){
 					</p>				
 				
 				</div>
-			</fieldset>
+			</fieldset>--%>
 			<fieldset>
 				<p>	
 					<input type="submit" />

@@ -18,20 +18,40 @@
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/admin/publisher/list' />">all publishers</a> : ${publisher.siteName}</h2>
+		<h2><a href="<c:url value='/home' />">${publisher.networkMember.name}</a> : ${publisher.siteName}</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/admin/publisher/edit/${publisher.id}' />" class="button">edit</a>
-			<a href="<c:url value='/admin/publisher/delete/${publisher.id}' />" class="button">delete</a>
+			<a href="<c:url value='/publisher/publisher/edit/${publisher.id}' />" class="button">edit</a>
+			<a href="<c:url value='/publisher/publisher/delete/${publisher.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
-			<div class="strong-12 span-4">${publisher.id}</div>
-			<div class="span-10">
-				<div class="span-10"><a href="${publisher.url}">${publisher.url}</a></div>
-				<div class="span-10">${publisher.description}</div>				
-			</div>
-			<div class="span-2 last">${publisher.monthlyPageviews}</div>	
+			<div class="strong-12 span-1">${publisher.id}</div>
+			<div class="span-23">
+				<div class="span-23"><img src="${publisher.iconUrl}"/></div>
+				<div class="span-23"><img src="${publisher.mapIconUrl}"/></div>
+				<div class="span-23"><a href="${publisher.url}">${publisher.url}</a></div>
+				<div class="span-23">${publisher.description}</div>				
+			</div>	
 		</div>
+		<div class="bottom-10 frame span-24">
+			<h3>event</h3>
+			<div><a href="<c:url value='/publisher/event/list?publisherId=${publisher.id}'/>">list all</a></div>
+			<div><a href="<c:url value='/publisher/event?publisherId=${publisher.id}'/>">create</a></div>
+		</div>
+		
+		<div class="bottom-10 frame  span-24">
+			<h3>article</h3>
+			<div><a href="<c:url value='/publisher/article/list?publisherId=${publisher.id}'/>">list all</a></div>
+			<div><a href="<c:url value='/publisher/article?publisherId=${publisher.id}'/>">create</a></div>
+		</div>			
+		<div class="bottom-10 frame  span-24">
+			<h3>review</h3>
+			<div><a href="<c:url value='/publisher/review/list?publisherId=${publisher.id}'/>">list all</a></div>
+			<div><a href="<c:url value='/publisher/review?publisherId=${publisher.id}'/>">create</a></div>
+		</div>		
+		
+		
+		
 	</div>
 </div>
 

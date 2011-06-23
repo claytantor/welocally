@@ -10,8 +10,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.model.Patron;
+import com.sightlyinc.ratecred.model.PlaceCityState;
 import com.sightlyinc.ratecred.service.AwardsUtils;
 
 public class RaterAwards {

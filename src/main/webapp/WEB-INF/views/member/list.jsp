@@ -35,8 +35,6 @@
 				<div class="strong-12 span-4"><a href="<c:url value='/admin/member/${member.id}'/>">${member.name}</a></div>
 				<div class="span-8">
 					<div class="span-8">${member.description}</div>	
-					<div class="span-8"><a href="${member.iconUrl}">${member.iconUrl}</a></div>
-					<div class="span-8"><a href="${member.mapIconUrl}">${member.mapIconUrl}</a></div>
 				</div>			
 				<div class="span-4 last">
 					<div class="span-4 last">${member.primaryEmail}</div>

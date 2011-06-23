@@ -8,10 +8,11 @@
 <script>
 	$(function() {
 		$( "a", ".actions" ).button();
+		$("button").button();
 	});
 </script>
 <div id="header" class="simple-box span-24">
-		
+
 		<sec:authorize ifAnyGranted="ROLE_USER">
 			<div class="span-18">
 				<img src="${imageUrl}/header_logo.png"/> 
@@ -25,6 +26,8 @@
 		</sec:authorize>
 		
 		<sec:authorize  ifNotGranted="ROLE_USER">
+
+		
 		<div class="span-18"><img src="${imageUrl}/header_logo.png"/></div>
 		<div class="actions padding-5 span-5 last">
 			<a href="<c:url value='/home' />" class="button">member login</a>

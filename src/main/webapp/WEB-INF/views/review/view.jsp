@@ -23,7 +23,7 @@
 		<h2><a href="<c:url value='/publisher/review/list' />">${review.publisher.siteName} reviews</a> : ${review.place.name} :  ${review.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/publisher/review/edit/${review.id}' />" class="button">edit</a>
+			<a href="<c:url value='/publisher/review/edit/${review.id}?publisherId=${publisher.id}' />" class="button">edit</a>
 			<a href="<c:url value='/publisher/review/delete/${review.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
@@ -35,6 +35,14 @@
 				<div class="padding-5 span-22">${review.summary}</div>
 			</div>
 		</div>
+		<div class="span-24 last">
+			<h2>place</h2>
+			</hr>
+		</div>
+		<c:set var="place" value="${review.place}" scope="request"/>
+		<div class="span-24 last">
+            <jsp:include page="../place/detail.jsp"/>
+        </div>				
 	</div>
 </div>
 

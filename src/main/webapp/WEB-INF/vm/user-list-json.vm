@@ -1,0 +1,12 @@
+{
+	"users": [ 
+#set($users = $itool.wrap($userPrincipals))	
+#foreach($user in $users)
+#set ($user = $users.more())	
+		{
+			"id": "${user.id}",			
+			"username":"${user.username}"
+		}#if(${users.hasMore()}),#end
+#end	
+	]	
+}

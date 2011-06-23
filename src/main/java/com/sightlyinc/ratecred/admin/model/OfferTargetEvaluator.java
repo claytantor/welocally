@@ -1,33 +1,21 @@
 package com.sightlyinc.ratecred.admin.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.mcavallo.opencloud.Cloud;
 import org.mcavallo.opencloud.Tag;
 import org.mcavallo.opencloud.filters.DictionaryFilter;
-import org.mcavallo.opencloud.filters.Filter;
-import org.mcavallo.opencloud.filters.TagFilter;
 
-import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.compare.OfferScoreComparitor;
 import com.sightlyinc.ratecred.admin.compare.TagScoreComparitor;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
-import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
-import com.sightlyinc.ratecred.model.AwardType;
 import com.sightlyinc.ratecred.model.PlaceCityState;
-import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.pojo.Location;
-import com.sightlyinc.ratecred.service.AwardsUtils;
 
 public class OfferTargetEvaluator {
 	

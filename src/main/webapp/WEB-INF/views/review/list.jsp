@@ -20,7 +20,7 @@
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/home' />">home</a> : list of reviews</h2>
+		<h2><a href="<c:url value='/publisher/publisher/${publisher.id}' />">${publisher.siteName}</a> : list of reviews</h2>
 		<hr/>
 		<div class="actions span-24 last">
 			<a href="<c:url value='/publisher/review' />" class="button">create</a>

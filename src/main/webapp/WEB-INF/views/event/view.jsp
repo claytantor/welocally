@@ -20,10 +20,11 @@
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/home' />">home</a> : <a href="<c:url value='/publisher/event/list' />">all events</a> : ${event.name}</h2>
+		<h2><a href="<c:url value='/publisher/publisher/${event.publisher.id}' />">${event.publisher.siteName}</a> : 
+		<a href="<c:url value='/publisher/event/list?publisherId=${publisher.id}' />">All Events</a> : ${event.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/publisher/event/edit/${event.id}' />" class="button">edit</a>
+			<a href="<c:url value='/publisher/event/edit/${event.id}?publisherId=${publisher.id}' />" class="button">edit</a>
 			<a href="<c:url value='/publisher/event/delete/${event.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
@@ -34,6 +35,15 @@
 			</div>
 			<div class="span-2 last">${event.whenText}</div>
 		</div>
+		<div class="span-24 last">
+			<h2>place</h2>
+			</hr>
+		</div>
+		<c:set var="place" value="${event.place}" scope="request"/>
+		<div class="span-24 last">
+            <jsp:include page="../place/detail.jsp"/>
+        </div>
+		
 	</div>
 </div>
 

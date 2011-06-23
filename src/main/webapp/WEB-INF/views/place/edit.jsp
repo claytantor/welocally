@@ -10,7 +10,6 @@
 <c:set var="pageTitle" value="Place Edit"/>
 <jsp:include page="../head.jsp"/>
 <body>
-
 <div class="container">
 	<div class="span-24">
 		<jsp:include page="../header.jsp"/>

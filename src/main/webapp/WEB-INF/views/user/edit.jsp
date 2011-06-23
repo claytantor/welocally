@@ -41,11 +41,26 @@
 				<p>
 					<form:label	for="password" path="password" cssErrorClass="error">Password</form:label><br/>
 					<form:input path="password" id="password"/> <form:errors path="password" class="error"/>			
-				</p>	
+				</p>
 				<p>
-					<form:label	for="roles" path="roles" cssErrorClass="error">Roles</form:label><br/>
-					<form:select path="roles" multiple="true" items="${availableRoles}"/>
-					<form:errors path="roles" class="error"/>
+					<form:label	for="credentialsExpired" path="credentialsExpired" cssErrorClass="error">Expired</form:label><br/>
+					<form:checkbox path="credentialsExpired"/> <form:errors path="credentialsExpired" class="error"/>			
+				</p>
+				<p>
+					<form:label	for="enabled" path="enabled" cssErrorClass="error">Enabled</form:label><br/>
+					<form:checkbox path="enabled"/> <form:errors path="enabled" class="error"/>			
+				</p>
+				<p>
+					<form:label	for="locked" path="locked" cssErrorClass="error">Locked</form:label><br/>
+					<form:checkbox path="locked"/> <form:errors path="locked" class="error"/>			
+				</p>
+				<p>
+					Current Roles:<c:forEach var="role" items="${userPrincipalForm.entity.roles}">${role.role}, </c:forEach>					
+				</p>					
+				<p>
+					<form:label	for="roleNames" path="roleNames" cssErrorClass="error">Roles</form:label><br/>
+					<form:select path="roleNames" multiple="true" items="${availableRoles}"/>
+					<form:errors path="roleNames" class="error"/>
 				</p>						
 																																																	
 				<p>	
