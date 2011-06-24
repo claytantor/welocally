@@ -29,5 +29,9 @@ public class ArticleServiceImpl extends AbstractTransactionalService<Article> im
 //		return null;
 //	}
 //    
-    
+
+    @Override
+    public Article findByUrl(String url) {
+        return articleDao.findByUrl(url);
+    }
 }

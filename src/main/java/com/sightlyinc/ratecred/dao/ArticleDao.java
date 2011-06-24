@@ -9,4 +9,5 @@ public interface ArticleDao extends BaseDao<Article> {
 	
 	//public List<Article> findByUserPrincipal(UserPrincipal up);
 
+    public Article findByUrl(String url);
 }
