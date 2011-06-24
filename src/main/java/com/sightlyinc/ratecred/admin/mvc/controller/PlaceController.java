@@ -69,11 +69,7 @@ public class PlaceController {
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
     public String editReview(@PathVariable Long id, Model model) {
         logger.debug("edit");
-        try {
-            model.addAttribute("placeForm", placeManagerService.findPlaceByPrimaryKey(id));
-        } catch (BLServiceException e) {
-            throw new RuntimeException(e);
-        }
+        model.addAttribute("placeForm", placeManagerService.findPlaceByPrimaryKey(id));
         return "place/edit";
     }
 
@@ -82,8 +78,8 @@ public class PlaceController {
      * the jackson deserializer is breaking for some reason, if you can get 
      * this working with a simpler implementation then by all means
      * 
+     * @param f
      * @param model
-     * @param request
      * @param response
      * @return
      */
@@ -128,21 +124,15 @@ public class PlaceController {
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public String getPlaceById(@PathVariable Long id, Model model) {
         logger.debug("view");
-        
-        try {
-            model.addAttribute("place", placeManagerService.findPlaceByPrimaryKey(id));
-        } catch (BLServiceException e) {
-            throw new RuntimeException(e);
-        }
+        model.addAttribute("place", placeManagerService.findPlaceByPrimaryKey(id));
         return "place/view";
     }
 
     @RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
     public String deletePlace(@PathVariable Long id) {
         logger.debug("delete");
-        Place place;
+        Place place = placeManagerService.findPlaceByPrimaryKey(id);
         try {
-            place = placeManagerService.findPlaceByPrimaryKey(id);
             placeManagerService.deletePlace(place);
         } catch (BLServiceException e) {
             throw new RuntimeException(e);
