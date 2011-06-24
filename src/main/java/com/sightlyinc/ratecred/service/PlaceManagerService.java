@@ -54,7 +54,7 @@ public interface PlaceManagerService {
 	public List<PlaceCityState> findMostActivePlaceCityStates(Integer pageSize)  
 		throws BLServiceException;
 		
-	public Place findPlaceByPrimaryKey(Long id) throws BLServiceException;
+	public Place findPlaceByPrimaryKey(Long id);
 	public Place findPlaceByNameAddressCityState(String name, String address, String city, String state) throws BLServiceException;
 	
 	public List<Place> findAllPlaces() throws BLServiceException;

@@ -282,7 +282,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	}
 
 	@Override
-	public Place findPlaceByPrimaryKey(Long id) throws BLServiceException {
+	public Place findPlaceByPrimaryKey(Long id) {
 		return placeDao.findByPrimaryKey(id);
 	}
 
