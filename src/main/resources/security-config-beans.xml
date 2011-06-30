@@ -14,8 +14,12 @@
     	<intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />        
+        <intercept-url pattern="/publisher/place/feature.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/widget/publish" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/widget/generator" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
         <intercept-url pattern="/publisher/**" access="ROLE_ADMIN,ROLE_PUBLISHER" />
+        <intercept-url pattern="/widget/**" access="ROLE_ADMIN,ROLE_PUBLISHER" />
         <intercept-url pattern="/home" access="ROLE_USER" />
         <form-login login-page="/login.html" authentication-failure-url="/login.html?login_error=1" />
         <logout logout-url="/logout" logout-success-url="/index.html" />
