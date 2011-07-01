@@ -67,6 +67,7 @@ CREATE  TABLE IF NOT EXISTS `business` (
   `status` VARCHAR(15) NULL DEFAULT NULL ,
   `description` TEXT NULL DEFAULT NULL ,
   `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `facebook_url` VARCHAR(1024) NULL DEFAULT NULL ,
   `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` BIGINT NULL DEFAULT NULL ,
@@ -605,22 +606,30 @@ DROP TABLE IF EXISTS `merchant` ;
 CREATE  TABLE IF NOT EXISTS `merchant` (
   `id` BIGINT NOT NULL AUTO_INCREMENT ,
   `version` INT(11) DEFAULT NULL ,
+  `place_id` BIGINT(20) NOT NULL ,
   `network_member_id` BIGINT(20) NOT NULL ,
-  `business_id` BIGINT(20) NOT NULL ,
-  `voucher_verification_phone` VARCHAR(255) NULL DEFAULT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT NULL ,
+  `status` VARCHAR(15) NULL DEFAULT NULL ,
+  `description` TEXT NULL DEFAULT NULL ,
+  `url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `facebook_url` VARCHAR(1024) NULL DEFAULT NULL ,
+  `image_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `category_attachment_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `phone` VARCHAR(255) NULL DEFAULT NULL ,
+  `email` VARCHAR(255) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,  
   PRIMARY KEY (`id`) ,
   INDEX `fk_merchant_network_member1` (`network_member_id` ASC) ,
-  INDEX `fk_merchant_business1` (`business_id` ASC) ,
+  INDEX `fk_merchant_place1` (`place_id` ASC) ,
   CONSTRAINT `fk_merchant_network_member1`
     FOREIGN KEY (`network_member_id` )
     REFERENCES `network_member` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_merchant_business1`
-    FOREIGN KEY (`business_id` )
-    REFERENCES `business` (`id` )
+  CONSTRAINT `fk_merchant_place1`
+    FOREIGN KEY (`place_id` )
+    REFERENCES `place` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

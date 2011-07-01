@@ -125,6 +125,6 @@ public class Business extends BaseEntity {
 	public void setCategoryAttachmentKey(String categoryAttachmentKey) {
 		this.categoryAttachmentKey = categoryAttachmentKey;
 	}
-	
+
 	
 }

@@ -15,6 +15,6 @@ public interface GeoStoragePersistor {
 	    JSONException, 
 	    GeoPersistenceException ;
 	
-	 public void createLayersForKey(String key) throws IOException, JSONException;
+	 public void createLayersForKey(String key, String[] types) throws IOException, JSONException;
 
 }

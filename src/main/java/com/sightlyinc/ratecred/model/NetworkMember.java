@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
+import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 
 
 /**
@@ -44,6 +45,7 @@ import com.sightlyinc.ratecred.authentication.UserPrincipal;
  * @author claygraham
  *
  */
+@PersistenceObservable
 @Entity 
 @Table(name="network_member")
 public class NetworkMember extends BaseEntity {
