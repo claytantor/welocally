@@ -36,11 +36,11 @@
                   </p>  					
 				<p>
 					<form:label	for="name" path="name" cssErrorClass="error">Merchant Location Name</form:label><br/>
-					<form:input path="name" id="name" class="textinput"/> <form:errors path="siteName" class="error" />			
+					<form:input path="name" id="name" class="textinput"/> <form:errors path="name" class="error" />
 				</p>	
 				<p>
-					<form:label	for="discription" path="discription" cssErrorClass="error">Description</form:label><br/>
-					<form:textarea path="discription" rows="1" cols="10" /> <form:errors path="discription" class="error" />			
+					<form:label	for="description" path="description" cssErrorClass="error">Description</form:label><br/>
+					<form:textarea path="description" rows="1" cols="10" /> <form:errors path="description" class="error" />
 				</p>					
 				<p>
 					<form:label	for="url" path="url" cssErrorClass="error">Site Url</form:label><br/>
