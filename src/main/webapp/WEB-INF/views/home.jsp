@@ -43,11 +43,19 @@
 
 		<sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_MEMBER">
 		<div class="bottom-10 frame span-24">	
-			<h2>member activities</h2>
+			<h2>association activities</h2>
 			<hr/>		
 			<div class="fill-frame">
-				<h3>member key: ${member.memberKey}</h3>		
-			</div>										
+				<h3>association key: ${member.memberKey}</h3>		
+			</div>	
+			
+			<div class="fill-frame">
+				<h3>merchants</h3>
+				<div class="actions span-24 last">
+					<a href="<c:url value='/association/merchant' />" class="button">create member merchant</a>
+				</div>			
+			</div>	
+															
 		</div>
 		</sec:authorize>		
 			

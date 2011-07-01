@@ -11,10 +11,7 @@
 <html>
 <c:set var="pageTitle" value="Publisher Edit"/>
 <jsp:include page="../head.jsp"/>
-
-
 <body>
-
 <div class="container">
 	<div class="span-24">
 		<jsp:include page="../header.jsp"/>

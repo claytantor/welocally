@@ -28,12 +28,16 @@ import com.sightlyinc.ratecred.client.geo.GeoPersistenceException;
 import com.sightlyinc.ratecred.client.geo.GeoStoragePersistor;
 import com.sightlyinc.ratecred.dao.ArticleDao;
 import com.sightlyinc.ratecred.dao.EventDao;
+import com.sightlyinc.ratecred.dao.MerchantDao;
+import com.sightlyinc.ratecred.dao.NetworkMemberDao;
 import com.sightlyinc.ratecred.dao.PublisherDao;
 import com.sightlyinc.ratecred.dao.ReviewDao;
 import com.sightlyinc.ratecred.interceptor.PersistenceActivity;
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 import com.sightlyinc.ratecred.model.Article;
 import com.sightlyinc.ratecred.model.Event;
+import com.sightlyinc.ratecred.model.Merchant;
+import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Review;
 import com.sightlyinc.ratecred.pojo.Location;
@@ -60,6 +64,12 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 	
 	@Autowired 
 	private PublisherDao publisherDao;
+	
+	@Autowired 
+	private MerchantDao merchantDao;
+	
+	@Autowired 
+	private NetworkMemberDao networkMemberDao;
     
     @Autowired
     @Qualifier("jacksonMapper")
@@ -104,23 +114,38 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 				if(clazz.isAnnotationPresent(PersistenceObservable.class)){
 					if(clazz.getName().equals(Article.class.getName())){
 						Article article = articleDao.findByPrimaryKey(activity.getEntityId());
-						saveGeoEntityToStorage((GeoPersistable)article) ;						
-						article.setPublished(true);
-						articleDao.save(article);												
+						saveGeoEntityToStorage((GeoPersistable)article) ;			
+						//not working
+//						article.setPublished(true);
+//						articleDao.save(article);												
 					} else if(clazz.getName().equals(Review.class.getName())){
 						Review review = reviewDao.findByPrimaryKey(activity.getEntityId());
 						saveGeoEntityToStorage((GeoPersistable)review) ;						
-						review.setPublished(true);
-						reviewDao.save(review);						
+//						review.setPublished(true);
+//						reviewDao.save(review);						
 					} else if(clazz.getName().equals(Event.class.getName())){
 						Event event = eventDao.findByPrimaryKey(activity.getEntityId());
 						saveGeoEntityToStorage((GeoPersistable)event) ;						
-						event.setPublished(true);
-						eventDao.save(event);							
+//						event.setPublished(true);
+//						eventDao.save(event);							
 					} else if(clazz.getName().equals(Publisher.class.getName())){
 						Publisher publisher = publisherDao.findByPrimaryKey(activity.getEntityId());			
-						createLayersForKey(getPublisherLayerPrefix(publisher) );
+						createLayersForKey(getPublisherLayerPrefix(publisher),
+								new String[] {
+										Article.class.getSimpleName().toLowerCase(),
+										Review.class.getSimpleName().toLowerCase(),
+										Event.class.getSimpleName().toLowerCase()});			
 						
+					} else if(clazz.getName().equals(Merchant.class.getName())){
+						Merchant merchant = 
+							merchantDao.findByPrimaryKey(activity.getEntityId());			
+						saveGeoEntityToStorage((GeoPersistable)merchant) ;									
+					} else if(clazz.getName().equals(NetworkMember.class.getName())){
+						NetworkMember member = 
+							networkMemberDao.findByPrimaryKey(activity.getEntityId());							
+						createLayersForKey(member.getMemberKey(),
+								new String[] {
+									Merchant.class.getSimpleName().toLowerCase()});						
 					}
 					
 				}
@@ -144,6 +169,10 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
 			.replaceAll(" ", "-");
     }
+    
+//    private String getMemberLayerPrefix(NetworkMember member) {
+//    	return member.getMemberKey()+".merchants";
+//    }
     
     public void saveGeoEntityToStorage(GeoPersistable geoEntity) 
 	    throws 
@@ -179,11 +208,30 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		client.addOrUpdateRecord(r);
     } 
     
-    public void createLayersForKey(String key) throws IOException, JSONException {
-		String[] types = {
-				Article.class.getSimpleName().toLowerCase(),
-				Review.class.getSimpleName().toLowerCase(),
-				Event.class.getSimpleName().toLowerCase()};
+//    public void createPublisherLayersForKey(String key) throws IOException, JSONException {
+//		String[] types = {
+//				Article.class.getSimpleName().toLowerCase(),
+//				Review.class.getSimpleName().toLowerCase(),
+//				Event.class.getSimpleName().toLowerCase()};
+//    	for (int i = 0; i < types.length; i++) {
+//			Layer l = null;
+//			try {
+//				l = client.getLayer(key+"."+types[i]);
+//			} catch (com.simplegeo.client.http.exceptions.APIException e) {
+//				logger.debug("layer not found, creating");
+//				if(e.getMessage().equals("Not Found")) {
+//					Layer layer = new Layer(key+"."+types[i]);
+//					client.createLayer(layer);
+//				}
+//					
+//			} 
+//		
+//		}
+//	}
+    
+    public void createLayersForKey(String key, String[] types) throws IOException, JSONException {
+//		String[] types = {
+//				Merchant.class.getSimpleName().toLowerCase()};
     	for (int i = 0; i < types.length; i++) {
 			Layer l = null;
 			try {

@@ -58,7 +58,9 @@ public class GeoPersistableTest {
 		logger.debug("setup");
 		List<Review> review = reviewService.findAll();
 		try {
-			geoPersistor.createLayersForKey(((GeoPersistable)review.get(0)).getMemberKey());
+			geoPersistor.createLayersForKey(
+					((GeoPersistable)review.get(0)).getMemberKey(),
+					new String[]{"review"});
 		} catch (JsonGenerationException e) {
 			logger.debug("problem",e);
 		} catch (JsonMappingException e) {

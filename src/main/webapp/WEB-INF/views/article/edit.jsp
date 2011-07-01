@@ -10,17 +10,7 @@
 <c:set var="pageTitle" value="Article Edit"/>
 <jsp:include page="../head.jsp"/>
 <script>
-    /*var placesUrl = "<c:url value="/publisher/place/search?name="/>";
-    var placeSource = function(req, add) {
-        $.getJSON(placesUrl + req.term, function(data) {
-            var suggestions = [];
-            for (var i = 0; i < data.places.length; i++) {
-                suggestions.push({'label':data.places[i].name,'value':data.places[i].id});
-            }
-            add(suggestions);
-        });
-    };*/
-    
+
     var publishersUrl = "<c:url value="/publisher/publisher/search?siteName="/>";
     var publisherSource = function(req, add) {
         $.getJSON(publishersUrl + req.term, function(data) {

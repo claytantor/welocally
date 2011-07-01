@@ -634,7 +634,8 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 					
 				}
 				
-				awardOffer.getMerchant().setBusiness(b);
+				throw new RuntimeException("Deal with this...");
+				//awardOffer.getMerchant().setBusiness(b);
 				
 			} catch (BLServiceException e) {
 				logger.error("problem when trying to find business", e);
