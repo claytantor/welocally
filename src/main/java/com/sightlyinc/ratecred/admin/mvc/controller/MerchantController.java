@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import javax.validation.Valid;
 
+import com.sun.tools.internal.ws.resources.ModelerMessages;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.context.SecurityContextHolder;
@@ -56,34 +57,17 @@ public class MerchantController {
     }
 
 	
-    @RequestMapping(method= RequestMethod.GET)
-    public String addMerchant(@RequestParam Long merchantId, Model model) {
-    	try {	
-	    	//set the member
-			//prepopulate member
-			UserDetails details = 
-			(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-						
-			UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
-			NetworkMember member = networkMemberService.findMemberByUserPrincipal(principal);
-			
-			Merchant merchant = new Merchant();
-			//merchant.setPublisher(publisher);
-			merchant.setNetworkMember(member);
-			
-			
-			
-	        model.addAttribute("merchantForm",merchant);
+    @RequestMapping(method = RequestMethod.GET)
+    public String addMerchant(@ModelAttribute("member") NetworkMember member, Model model) {
+        //set the member
+        //prepopulate member
+        Merchant merchant = new Merchant();
+        merchant.setNetworkMember(member);
+
+        model.addAttribute("merchantForm",merchant);
+
+        return "merchant/edit";
 	        
-	        return "merchant/edit";
-	        
-    	} catch (UserPrincipalServiceException e) {
-			logger.error("", e);
-			return "error";
-		} catch (UserNotFoundException e) {
-			logger.error("", e);
-			return "error";
-		}
     }
 
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
