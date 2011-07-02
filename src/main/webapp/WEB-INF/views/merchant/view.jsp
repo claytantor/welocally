@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<c:set var="pageTitle" value="Article View"/>
+<c:set var="pageTitle" value="Merchant View"/>
 <jsp:include page="../head.jsp"/>
 <script>
 	$(function() {
@@ -20,7 +20,7 @@
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/publisher/publisher/${article.publisher.id}'/>"/>${article.publisher.siteName} articles</a> : ${article.name}</h2>
+		<h2><a href="<c:url value="/association/merchant/list"/>">${member.name}</a> : ${merchant.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">
 			<a href="<c:url value='/publisher/article/edit/${article.id}?publisherId=${publisher.id}' />" class="button">edit</a>

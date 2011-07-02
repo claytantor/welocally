@@ -9,7 +9,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
-<c:set var="pageTitle" value="Publisher Edit"/>
+<c:set var="pageTitle" value="Merchant Edit"/>
 <jsp:include page="../head.jsp"/>
 <body>
 <jsp:include page="../place/chooser.jsp"/>
@@ -19,10 +19,10 @@
 	</div>
 	<div class="span-24">
 		<h2>
-		<c:if test="${not empty(merchantForm.id)}"><a href="<c:url value='/home' />">${merchantForm.networkMember.name}</a> : edit publication</c:if>
+		<c:if test="${not empty(merchantForm.id)}"><a href="<c:url value='/home'/>">${merchantForm.networkMember.name}</a> : edit merchant</c:if>
 		<c:if test="${empty(merchantForm.id)}">create merchant</c:if>
 		</h2>
-		<c:url value='/merchant/merchant' var="merchantAction"/>		
+		<c:url value='/association/merchant' var="merchantAction"/>
 		<form:form modelAttribute="merchantForm" action="${merchantAction}" method="post">
 		  	<fieldset>		
 				<legend>Merchant Info</legend>
