@@ -2,7 +2,6 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import javax.validation.Valid;
 
-import com.sun.tools.internal.ws.resources.ModelerMessages;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.context.SecurityContextHolder;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
@@ -60,7 +58,6 @@ public class MerchantController {
     @RequestMapping(method = RequestMethod.GET)
     public String addMerchant(@ModelAttribute("member") NetworkMember member, Model model) {
         //set the member
-        //prepopulate member
         Merchant merchant = new Merchant();
         merchant.setNetworkMember(member);
 
@@ -107,29 +104,11 @@ public class MerchantController {
     }
 	
     @RequestMapping(value="/list", method=RequestMethod.GET)
-    public String list(@RequestParam Long publisherId, Model model) {
+    public String list(@ModelAttribute("member") NetworkMember member, Model model) {
         logger.debug("list");
 
-        try {	
-	    	//set the member
-			//prepopulate member
-			UserDetails details = 
-			(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-						
-			UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
-			NetworkMember member = networkMemberService.findMemberByUserPrincipal(principal);
-			model.addAttribute("merchants", member.getMerchants());	        
-	        return "merchant/list";
-	        
-    	} catch (UserPrincipalServiceException e) {
-			logger.error("", e);
-			return "error";
-		} catch (UserNotFoundException e) {
-			logger.error("", e);
-			return "error";
-		}
-        
-        
-        
+        model.addAttribute("merchants", member.getMerchants());
+        return "merchant/list";
+
     }
 }
