@@ -23,22 +23,22 @@
 		<h2><a href="<c:url value="/association/merchant/list"/>">${member.name}</a> : ${merchant.name}</h2>
 		<hr/>
 		<div class="actions span-24 last">
-			<a href="<c:url value='/publisher/article/edit/${article.id}?publisherId=${publisher.id}' />" class="button">edit</a>
-			<a href="<c:url value='/publisher/article/delete/${article.id}' />" class="button">delete</a>
+			<a href="<c:url value='/association/merchant/edit/${merchant.id}' />" class="button">edit</a>
+			<a href="<c:url value='/association/merchant/delete/${merchant.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
-			<div class="strong-12 span-4">${article.id}</div>
+			<div class="strong-12 span-4">${merchant.id}</div>
 			<div class="span-19">
-				<div class="span-19"><a href="${article.url}">${article.url}</a></div>
-				<div class="span-19">${article.description}</div>
-				<div class="span-19">${article.summary}</div>
+				<div class="span-19"><a href="${merchant.url}">${merchant.url}</a></div>
+				<div class="span-19">${merchant.description}</div>
+				<%--<div class="span-19">${merchant.summary}</div>--%>
 			</div>
 		</div>
 		<div class="span-24 last">
 			<h2>place</h2>
 			</hr>
 		</div>
-		<c:set var="place" value="${article.place}" scope="request"/>
+		<c:set var="place" value="${merchant.place}" scope="request"/>
 		<div class="span-24 last">
             <jsp:include page="../place/detail.jsp"/>
         </div>		
