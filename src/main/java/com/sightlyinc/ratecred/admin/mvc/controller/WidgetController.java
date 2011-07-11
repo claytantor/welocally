@@ -104,4 +104,12 @@ public class WidgetController {
         }
 	}
 
+    @RequestMapping("/generator")
+    public Publisher publishWidgetGenerator(@RequestParam(value = "publisherId", required = false) Long publisherId) {
+        Publisher publisher = null;
+        if (publisherId != null) {
+            publisher = publisherService.findByPrimaryKey(publisherId);
+        }
+        return publisher;
+    }
 }
