@@ -9,15 +9,19 @@
     </layout>
   </appender>
    
-  <category name="com.sightlyinc.ratecred.admin">
+  <category name="com.sightlyinc">
     <priority value="debug"/>
   </category> 
   
     <category name="org.springframework">
-    <priority value="debug"/>
+    <priority value="error"/>
   </category>
 
   <category name="org.codehouse">
+    <priority value="error"/>
+  </category>
+
+	<category name="com.simplegeo">
     <priority value="debug"/>
   </category>
 

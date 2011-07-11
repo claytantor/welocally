@@ -51,6 +51,8 @@
 			
 			<div class="fill-frame">
 				<h3>merchants</h3>
+
+				<div class="padding-5 span-24 last"><a href="<c:url value='/association/merchant/list'/>">list all</a></div>
 				<div class="actions span-24 last">
 					<a href="<c:url value='/association/merchant' />" class="button">create member merchant</a>
 				</div>			

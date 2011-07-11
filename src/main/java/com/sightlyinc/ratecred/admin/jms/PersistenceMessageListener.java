@@ -121,13 +121,9 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 					} else if(clazz.getName().equals(Review.class.getName())){
 						Review review = reviewDao.findByPrimaryKey(activity.getEntityId());
 						saveGeoEntityToStorage((GeoPersistable)review) ;						
-//						review.setPublished(true);
-//						reviewDao.save(review);						
 					} else if(clazz.getName().equals(Event.class.getName())){
 						Event event = eventDao.findByPrimaryKey(activity.getEntityId());
-						saveGeoEntityToStorage((GeoPersistable)event) ;						
-//						event.setPublished(true);
-//						eventDao.save(event);							
+						saveGeoEntityToStorage((GeoPersistable)event) ;												
 					} else if(clazz.getName().equals(Publisher.class.getName())){
 						Publisher publisher = publisherDao.findByPrimaryKey(activity.getEntityId());			
 						createLayersForKey(getPublisherLayerPrefix(publisher),
@@ -139,7 +135,9 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 					} else if(clazz.getName().equals(Merchant.class.getName())){
 						Merchant merchant = 
 							merchantDao.findByPrimaryKey(activity.getEntityId());			
-						saveGeoEntityToStorage((GeoPersistable)merchant) ;									
+						saveGeoEntityToStorage((GeoPersistable)merchant) ;	
+						logger.debug("saved merchant:"+merchant.getName());
+						
 					} else if(clazz.getName().equals(NetworkMember.class.getName())){
 						NetworkMember member = 
 							networkMemberDao.findByPrimaryKey(activity.getEntityId());							
@@ -191,7 +189,8 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		//serialize the article
 		ByteArrayOutputStream baosArticle = new ByteArrayOutputStream(); 		
 		jacksonMapper.writeValue(baosArticle, geoEntity);
-		logger.debug(baosArticle.toString());
+		String layername = geoEntity.getMemberKey()+"."+geoEntity.getClass().getSimpleName().toLowerCase();
+		logger.debug("layer:"+layername+" saving:"+baosArticle.toString());
 		JSONObject jEntity = new JSONObject(baosArticle.toString());
 		model.put("entity", jEntity);
 				
@@ -201,33 +200,14 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		p.setLat(geoEntity.getGeoPlace().getLatitude());
 		p.setLon(geoEntity.getGeoPlace().getLongitude());
 		g.setPoint(p);	
-		r.setLayer(geoEntity.getMemberKey()+"."+geoEntity.getClass().getSimpleName().toLowerCase());
+		r.setLayer(layername);
 			
 		r.setRecordId(geoEntity.getGeoRecordId());
 		r.setGeometry(g);	
 		client.addOrUpdateRecord(r);
     } 
     
-//    public void createPublisherLayersForKey(String key) throws IOException, JSONException {
-//		String[] types = {
-//				Article.class.getSimpleName().toLowerCase(),
-//				Review.class.getSimpleName().toLowerCase(),
-//				Event.class.getSimpleName().toLowerCase()};
-//    	for (int i = 0; i < types.length; i++) {
-//			Layer l = null;
-//			try {
-//				l = client.getLayer(key+"."+types[i]);
-//			} catch (com.simplegeo.client.http.exceptions.APIException e) {
-//				logger.debug("layer not found, creating");
-//				if(e.getMessage().equals("Not Found")) {
-//					Layer layer = new Layer(key+"."+types[i]);
-//					client.createLayer(layer);
-//				}
-//					
-//			} 
-//		
-//		}
-//	}
+
     
     public void createLayersForKey(String key, String[] types) throws IOException, JSONException {
 //		String[] types = {
