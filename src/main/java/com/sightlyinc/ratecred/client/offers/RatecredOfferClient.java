@@ -56,34 +56,34 @@ public class RatecredOfferClient implements OfferClient {
 	@Override
 	public List<OfferOld> getOffers() throws OfferFeedException {
 		
-		final List<OfferOld> offers = new ArrayList<OfferOld>();
-		
-		try {
-			
-			double lat = Double.parseDouble(offersLat);
-			double lon = Double.parseDouble(offersLon);
-			double radiusInKMeters = 20.0;
-			
-			String cursor = "";
-			String[] layers = offersLayerNames.split(",");
-			for (int i = 0; i < layers.length; i++) {
-				FeatureCollection collection = 
-					client.search(lat, lon, layers[i],radiusInKMeters, 100, cursor);
-				for (Feature feature : collection.getFeatures()) {
-					OfferOld o = transformOffer(feature);
-					if(o != null)
-						offers.add(o);
-				}
-			}
-			
-			
-			
-		} catch (IOException e) {
-			throw new OfferFeedException(e);
-		}
+//		final List<OfferOld> offers = new ArrayList<OfferOld>();
+//		
+//		try {
+//			
+//			double lat = Double.parseDouble(offersLat);
+//			double lon = Double.parseDouble(offersLon);
+//			double radiusInKMeters = 20.0;
+//			
+//			String cursor = "";
+//			String[] layers = offersLayerNames.split(",");
+//			for (int i = 0; i < layers.length; i++) {
+//				FeatureCollection collection = 
+//					client.search(lat, lon, layers[i],radiusInKMeters, 100, cursor);
+//				for (Feature feature : collection.getFeatures()) {
+//					OfferOld o = transformOffer(feature);
+//					if(o != null)
+//						offers.add(o);
+//				}
+//			}
+//			
+//			
+//			
+//		} catch (IOException e) {
+//			throw new OfferFeedException(e);
+//		}
 				
-		
-		return offers;
+		throw new RuntimeException("NO IMPL");
+		//return null;
 	}
 	
 	

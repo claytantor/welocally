@@ -55,15 +55,15 @@ public class DefaultOfferPoolService implements OfferPoolService {
 			if(!fetchDisabled)
 			{
 				offerPool.clear();
-				for (OfferClient client : clients) {			
-					try {
-						List<OfferOld> o = client.getOffers();
-						logger.debug("offer count:"+o.size());
-						offerPool.addAll(o);
-					} catch (OfferFeedException e) {
-						logger.error("OfferFeedException", e);
-					}
-				}
+//				for (OfferClient client : clients) {			
+//					try {
+//						List<OfferOld> o = client.getOffers();
+//						logger.debug("offer count:"+o.size());
+//						offerPool.addAll(o);
+//					} catch (OfferFeedException e) {
+//						logger.error("OfferFeedException", e);
+//					}
+//				}
 			}
 		} catch (Exception e) {
 			logger.error("cannot refresh", e);

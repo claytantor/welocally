@@ -42,7 +42,7 @@ UNLOCK TABLES;
 LOCK TABLES `publisher` WRITE;
 /*!40000 ALTER TABLE `publisher` DISABLE KEYS */;
 INSERT INTO `publisher` VALUES (1,0,'http://samsite.com','sams site','great site for free stuff','great site for free stuff','','',1000,1,1307330419279,1307330419279),
-(2,0,'http://oaklandgrown.org','oakland grown','Oakland Grown is a movement celebrating and supporting Oakands locally-owned, independent businesses and artists.','Its about making your hard-earned money go further here at home, creating a sustainable economy, and helping to preserve the unique Oakland you love. Individuals, businesses, artists and organizations can all join the movement.','','',1000,2,1307641613005,1307641613005);
+(2,0,'http://oaklandgrown.org','oakland grown','Oakland Grown is a movement celebrating and supporting Oakands locally-owned, independent businesses and artists.','Its about making your hard-earned money go further here at home, creating a sustainable economy, and helping to preserve the unique Oakland you love. Individuals, businesses, artists and organizations can all join the movement.','http://media.welocally.com.s3.amazonaws.com/assets/c1da06473823/oaklandgrown/icon256.png','http://media.welocally.com.s3.amazonaws.com/assets/c1da06473823/oaklandgrown/icon64.png',1000,2,1307641613005,1307641613005);
 /*!40000 ALTER TABLE `publisher` ENABLE KEYS */;
 UNLOCK TABLES;
 

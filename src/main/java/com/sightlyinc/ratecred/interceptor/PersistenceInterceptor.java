@@ -123,7 +123,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
     }
 
     public void afterTransactionCompletion(Transaction tx) {
-        if ( tx.wasCommitted() ) {
+        if ( tx.wasCommitted() && (creates >0 || updates>0 || loads>0) ) {
             logger.debug("Creations: " + creates + ", Updates: " + updates+ "Loads: " + loads);
         }
         updates=0;
