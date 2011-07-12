@@ -29,6 +29,7 @@
       <configuration>
         <skip>false</skip>
         <excludes>
+        	<exclude>**/*PlaceServiceTest.java</exclude>
         	<exclude>**/*RaterHibernateInitTest.java</exclude>
         	<exclude>**/*RaterBusinessMetricsDaoTest.java</exclude>      	
         	<exclude>**/*RaterDataLoadTest.java</exclude>
