@@ -391,7 +391,11 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
-					<path>/${web.finalName}</path>
+					 <systemProperties>
+			            <ratecred_core.properties>${ratecred_core.properties}</ratecred_core.properties>
+			            <ratecred_admin_web.properties>${ratecred_admin_web.properties}</ratecred_admin_web.properties>
+			          </systemProperties>
+					  <path>/${web.finalName}</path>
 				</configuration>
 			</plugin>				
 			<plugin>
