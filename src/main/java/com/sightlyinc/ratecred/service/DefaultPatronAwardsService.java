@@ -64,7 +64,7 @@ import com.sightlyinc.ratecred.model.Rating;
 import com.sightlyinc.ratecred.model.User;
 import com.sightlyinc.ratecred.pojo.Location;
 
-@Service("raterAwardsService")
+@Service("patronAwardsService")
 @Transactional(readOnly = true)
 public class DefaultPatronAwardsService implements PatronAwardsService {
 
