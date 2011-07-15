@@ -69,7 +69,7 @@
         <executions>
           <execution>
             <id>create-test-db</id>
-            <phase>process-test-resources</phase>
+            <phase>site-deploy</phase>
             <goals>
               <goal>execute</goal>
             </goals>
