@@ -9,27 +9,29 @@ if (!WELOCALLY.PublishWidget) {
             error = "Please provide configuration for the WeLocally widget";
             cfg = {};
         }
-        // url - the URL of the article
+        // url - the URL of the event
         if (!error && !cfg.url) {
-            error = "Please provide the article URL for the WeLocally widget";
+            error = "Please provide the event URL for the WeLocally widget";
         }
         // only insert iframe if this is the page we want
         if (!error && cfg.url && cfg.url != window.location.href) {
             error = "Please embed the WeLocally widget on the page at " + cfg.url;
         }
-        // title - the title of the article
+        // title - the title of the event
         if (!error && !cfg.title) {
-            error = "Please provide the article title for the WeLocally widget";
+            error = "Please provide the event title for the WeLocally widget";
         }
-        // publisher - the id of the publisher that is publishing the article
+        // publisher - the id of the publisher that is publishing the event
         if (!error && !cfg.publisher) {
-            error = "Please provide the ID of the article publisher for the WeLocally widget";
+            error = "Please provide the ID of the event publisher for the WeLocally widget";
         }
-        // place - the id of the place that is the subject of the article
+        // place - the id of the place that is the subject of the event
         if (!error && !cfg.place) {
             error = "Please provide the ID of a place for the WeLocally widget";
         }
-        // summary (optional) - the summary of the article
+        // TODO timeStarts - the start time of the event
+        // TODO timeEnds - the end time of the event
+        // summary (optional) - the summary of the event
         // hostname (optional) - the name of the host to use
         if (!cfg.hostname) {
             cfg.hostname = 'welocally.com';
@@ -52,10 +54,12 @@ if (!WELOCALLY.PublishWidget) {
             wrapper.style.cursor = "pointer";
         } else {
             var iframe = document.createElement('IFRAME');
-            iframe.src = 'http://' + cfg.hostname + '/rcadmin/widget/publish/article?publisher=' + encodeURIComponent(cfg.publisher)
+            iframe.src = 'http://' + cfg.hostname + '/rcadmin/widget/publish/event?publisher=' + encodeURIComponent(cfg.publisher)
                     + '&place=' + encodeURIComponent(cfg.place)
                     + '&name=' + encodeURIComponent(cfg.title)
                     + '&summary=' + encodeURIComponent(cfg.summary)
+                    + '&timeStarts=' + encodeURIComponent(cfg.timeStarts)
+                    + '&timeEnds=' + encodeURIComponent(cfg.timeEnds)
                     + '&url=' + encodeURIComponent(cfg.url);
             iframe.width = '100%';
             iframe.height = '100%';
