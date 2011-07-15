@@ -29,8 +29,14 @@ if (!WELOCALLY.PublishWidget) {
         if (!error && !cfg.place) {
             error = "Please provide the ID of a place for the WeLocally widget";
         }
-        // TODO timeStarts - the start time of the event
-        // TODO timeEnds - the end time of the event
+        // timeStarts - the start time of the event
+        if (!error && !cfg.timeStarts) {
+            error = "Please provide the time the event starts for the WeLocally widget";
+        }
+        // timeEnds - the end time of the event
+        if (!error && !cfg.timeEnds) {
+            error = "Please provide the time the event ends for the WeLocally widget";
+        }
         // summary (optional) - the summary of the event
         // hostname (optional) - the name of the host to use
         if (!cfg.hostname) {
