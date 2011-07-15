@@ -190,7 +190,7 @@ public class MerchantController {
 		StringBuffer places = new StringBuffer();
 		double lat = 37.803294;
 		double lon = -122.268629;
-		double radiusInKMeters = 10.00;
+		double radiusInKMeters = 15.00;
 
 		SimpleGeoPlacesClient client = SimpleGeoPlacesClient.getInstance();
 		client.getHttpClient().setToken(sgoauthkey, sgoauthsecret);
@@ -211,6 +211,7 @@ public class MerchantController {
 			String url = fields[5];
 			String facebookUrl = fields[6];
 			
+			logger.debug("trying to load place:"+placeName);
 			
 			if (status.equalsIgnoreCase("ACTIVE")) {
 
