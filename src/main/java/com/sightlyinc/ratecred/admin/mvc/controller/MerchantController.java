@@ -129,15 +129,21 @@ public class MerchantController {
     }
     
     @RequestMapping(value="/load/{key}", method=RequestMethod.GET)
-    public String deleteMerchant(@PathVariable String key, Model model) {
+    public String loadMerchantsFromGoogle(@PathVariable String key, Model model) {
         logger.debug("load");        
         String spreadsheetUrl = "https://spreadsheets.google.com/tq?tqx=out:csv&key="+key+"&hl=en";
         
         try {
 			List<String[]> rows = getSpreadsheetData(spreadsheetUrl);
-			
+			findAndSaveMerchantsAsTable(rows);
 			return "redirect:/association/merchant/list";
 		} catch (IOException e) {
+			model.addAttribute("error", e); 
+			return "error";
+		} catch (JSONException e) {
+			model.addAttribute("error", e); 
+			return "error";
+		} catch (GeoPersistenceException e) {
 			model.addAttribute("error", e); 
 			return "error";
 		}
