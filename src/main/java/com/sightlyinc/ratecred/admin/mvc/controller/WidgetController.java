@@ -53,7 +53,7 @@ public class WidgetController {
             @RequestParam("name") String name,
             @RequestParam("publisher") Long publisherId,
             @RequestParam("place") Long placeId,
-            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "summary", required = false) String summary,
             Model model
     ) {
 
@@ -66,7 +66,7 @@ public class WidgetController {
             article = new Article();
             article.setUrl(url);
             article.setName(name);
-            article.setDescription(description);
+            article.setDescription(summary);
 
                 // look up the selected publisher
             Publisher publisher = publisherService.findByPrimaryKey(publisherId);
