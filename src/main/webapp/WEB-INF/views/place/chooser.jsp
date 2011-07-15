@@ -99,7 +99,7 @@ $(function() {
 	
 	$( "#selectable" ).selectable({
 		   selected: function(event, ui) {
-				selectedFeatureIndex = $('li').index(ui.selected);			
+				selectedFeatureIndex = $('#scroller-places li').index(ui.selected);
 				$("#selection").show();				
 		   }
 	});
