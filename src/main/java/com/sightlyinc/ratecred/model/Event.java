@@ -135,6 +135,14 @@ public class Event extends BaseEntity implements GeoPersistable {
 	
 	
 	
+	@Override
+	public Long getExpiration() throws GeoPersistenceException {
+		if(timeEnds != null)
+			return timeEnds;
+		else
+			return -1l;
+	}
+
 	public String getName() {
 		return name;
 	}

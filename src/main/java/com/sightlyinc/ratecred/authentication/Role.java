@@ -65,19 +65,6 @@ public class Role {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-/*	@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof Role)
-		{
-			Role other = (Role)obj;
-			if(other.getRole().equals(this.role))
-				return true;
-			else
-				return false;
-		}
-		else return false;
-	}*/
 
 
     public UserPrincipal getUser() {

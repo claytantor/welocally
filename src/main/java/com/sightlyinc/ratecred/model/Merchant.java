@@ -85,6 +85,11 @@ public class Merchant extends BaseEntity implements GeoPersistable {
 	}	
 	
 	
+	@Override
+	public Long getExpiration() throws GeoPersistenceException {
+		return -1l;
+	}
+
 	public String getVoucherVerificationPhone() {
 		return voucherVerificationPhone;
 	}

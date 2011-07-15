@@ -60,6 +60,11 @@ public class Review extends BaseEntity implements GeoPersistable {
 	}
 		
 
+	@Override
+	public Long getExpiration() throws GeoPersistenceException {
+		return -1l;
+	}
+
 	public String getName() {
 		return name;
 	}

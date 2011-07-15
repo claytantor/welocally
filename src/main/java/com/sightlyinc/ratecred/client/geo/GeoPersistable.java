@@ -10,4 +10,6 @@ public interface GeoPersistable {
 	
 	public String getMemberKey() throws GeoPersistenceException;
 	
+	public Long getExpiration() throws GeoPersistenceException; 
+	
 }

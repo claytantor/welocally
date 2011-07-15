@@ -83,6 +83,11 @@ public class Article extends BaseEntity implements GeoPersistable {
 		else
 			throw new GeoPersistenceException("geo place cannot be null");
 	}
+	
+	@Override
+	public Long getExpiration() throws GeoPersistenceException {
+		return -1l;
+	}
 
 	public String getName() {
 		return name;
