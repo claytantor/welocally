@@ -189,6 +189,12 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		//serialize the article
 		ByteArrayOutputStream baosArticle = new ByteArrayOutputStream(); 		
 		jacksonMapper.writeValue(baosArticle, geoEntity);
+		
+		if(geoEntity == null)
+			logger.debug("geo is null");
+		if(geoEntity.getMemberKey() == null)
+			logger.debug("member key is null");
+		
 		String layername = geoEntity.getMemberKey()+"."+geoEntity.getClass().getSimpleName().toLowerCase();
 		logger.debug("layer:"+layername+" saving:"+baosArticle.toString());
 		JSONObject jEntity = new JSONObject(baosArticle.toString());

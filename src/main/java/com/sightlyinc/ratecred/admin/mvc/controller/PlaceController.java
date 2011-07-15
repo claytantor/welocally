@@ -9,8 +9,6 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,13 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.noi.utility.spring.service.BLServiceException;
-import com.noi.utility.string.StringUtils;
 import com.noi.utility.xml.JsonEncoder;
 import com.sightlyinc.ratecred.admin.model.Feature;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
-import com.sightlyinc.ratecred.model.NetworkMember;
+import com.sightlyinc.ratecred.client.geo.SimpleGeoPlaceManager;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.service.PlaceManagerService;
 
@@ -46,13 +40,6 @@ public class PlaceController {
     @Autowired
     @Qualifier("jacksonMapper")
     private ObjectMapper jacksonMapper;
-	
-//	@Autowired
-//	@Qualifier("locationPlacesClient")
-//	private SimpleGeoPlaceManager simpleGeoPlaceManager ;
-	
-//	@Autowired
-//	private Validator validator;
     
     @ModelAttribute("encoder")
     public JsonEncoder getJsonEncoder() {
@@ -92,7 +79,7 @@ public class PlaceController {
 			Place p = placeManagerService.findBySimpleGeoId(f.getId());
 			if(p==null)
 				p= new Place();
-			trasformFeature(f, p);
+			transformFeature(f, p);
 			placeManagerService.savePlace(p);
 
 			model.addAttribute("place", p);
@@ -163,10 +150,16 @@ public class PlaceController {
         model.addAttribute("places", places);
         return "place/list_json";
     }
-    
-    
-    
-	public void trasformFeature(Feature f, Place p ){
+ 
+/**
+ * so the reason we do this instead of using the service is that
+ * we have serialized this to a sightly type, it isnt the simple geo
+ * type so we need a different transform, this could be cleaned up later
+ *     
+ * @param f
+ * @param p
+ */
+	public static void transformFeature(Feature f, Place p ){
 		
 		//Place p = new Place();
 		p.setSimpleGeoId(f.getId());
@@ -190,19 +183,6 @@ public class PlaceController {
 		else if(f.getProperties().get("menulink") != null)
 			p.setUrl(f.getProperties().get("menulink").toString().toLowerCase());
 		
-//		p.setName(f.getProperties().getName());
-//		p.setAddress(f.getProperties().getAddress());
-//		p.setLatitude(f.getGeometry().getCoordinates()[0]);
-//		p.setLongitude(f.getGeometry().getCoordinates()[1]);
-//		
-//		if(!StringUtils.isEmpty(f.getProperties().getCity()))
-//			p.setCity(f.getProperties().getCity());
-//		
-//		if(!StringUtils.isEmpty(f.getProperties().getProvince()))
-//			p.setState(f.getProperties().getProvince());
-//
-//		if(!StringUtils.isEmpty(f.getProperties().getPhone()))
-//			p.setPhone(f.getProperties().getPhone());
 		
 	}
     
