@@ -7,17 +7,18 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
-<c:set var="pageTitle" value="We Locally Publish Widget Generator"/>
+<c:set var="pageTitle" value="We Locally Article Publishing Widget Generator"/>
 <jsp:include page="../head.jsp"/>
 <script>
     var code = [], j = 0;
-    code[j++] = '<' + 'script type="text/javascript" src="http://www.welocally.com<c:url value="/js/widget/publish_widget.js"/>"' + '><' + '/script>';
+    code[j++] = '<' + 'script type="text/javascript" src="http://${hostname}<c:url value="/js/widget/publish_widget.js"/>"' + '><' + '/script>';
     code[j++] = '<' + 'script type="text/javascript">';
     code[j++] = 'var cfg = {';
     code[j++] = 'url: "URL",';
     code[j++] = 'title:"TITLE",';
+    code[j++] = 'hostname:"${hostname}",';
     code[j++] = 'publisher:PUBLISHER,';
-    code[j++] = 'place:PLACE';
+    code[j++] = 'place:PLACE,';
     code[j++] = 'summary:"DESCRIPTION",';
     code[j++] = '};';
     code[j++] = 'WELOCALLY.PublishWidget(cfg);';

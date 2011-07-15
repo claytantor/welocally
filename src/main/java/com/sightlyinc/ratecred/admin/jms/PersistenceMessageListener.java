@@ -201,6 +201,8 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		p.setLon(geoEntity.getGeoPlace().getLongitude());
 		g.setPoint(p);	
 		r.setLayer(layername);
+		if(geoEntity.getExpiration() != -1l)
+			r.setExpiration(geoEntity.getExpiration());
 			
 		r.setRecordId(geoEntity.getGeoRecordId());
 		r.setGeometry(g);	

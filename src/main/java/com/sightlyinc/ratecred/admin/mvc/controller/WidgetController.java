@@ -8,8 +8,10 @@ import com.sightlyinc.ratecred.service.PlaceManagerService;
 import com.sightlyinc.ratecred.service.PublisherService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,6 +34,14 @@ public class WidgetController {
     private PlaceManagerService placeManagerService;
     @Autowired
     private PublisherService publisherService;
+    
+    @Value("${applicationProperties.widget.hostname}")
+    private String hostname;
+    
+    @ModelAttribute("hostname")
+    public String getHostName(){
+    	return hostname;
+    }
 
     @RequestMapping("/test")
     public void testWidget() {
