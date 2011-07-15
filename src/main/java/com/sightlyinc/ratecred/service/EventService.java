@@ -6,4 +6,5 @@ public interface EventService extends BaseService<Event> {
 	
 //	public List<Event> findByUserPrincipal(UserPrincipal up) ;
 
+    public Event findByUrl(String url);
 }

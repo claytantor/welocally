@@ -32,5 +32,9 @@ public class EventServiceImpl extends AbstractTransactionalService<Event> implem
 //		return null;
 //	}
 //    
-    
+
+    @Override
+    public Event findByUrl(String url) {
+        return eventDao.findByUrl(url);
+    }
 }
