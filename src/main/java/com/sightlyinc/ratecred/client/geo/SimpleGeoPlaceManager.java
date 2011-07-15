@@ -5,6 +5,6 @@ import com.simplegeo.client.types.Feature;
 
 public interface SimpleGeoPlaceManager {
 	
-	public Place trasformFeature(Feature f);
+	public void transformFeature(Feature f, Place p);
 
 }

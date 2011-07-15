@@ -57,7 +57,8 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
     public Place findByIdSynchronous(String id) {
         Place place = null;
         try {
-            place = trasformFeature(client.getPlace(id));
+			place = new Place();
+			transformFeature(client.getPlace(id),place);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("problem getting place by id", e);
@@ -74,7 +75,9 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
                 @Override
                 public void onSuccess(Feature feature) {
                     logger.debug(feature.getProperties());
-                    places.add(trasformFeature(feature));
+                    Place p = new Place();
+                    transformFeature(feature,p);
+                    places.add(p);
                 }
 
                 @Override
@@ -98,8 +101,10 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 			for (Feature feature : afeatures.getFeatures()) {
 				
 				//logger.debug("found feature:"+feature.getProperties().get("name"));
-				logger.debug(feature.getProperties());								
-				places.add(trasformFeature(feature));
+				logger.debug(feature.getProperties());		
+				Place p = new Place();
+				transformFeature(feature,p);
+				places.add(p);
 			}
 			
 			
@@ -137,10 +142,10 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 	 * @param f
 	 * @return
 	 */
-	public Place trasformFeature(Feature f){
+	public void transformFeature(Feature f, Place p){
 		
 		logger.debug(f.getProperties().get("classifiers").getClass().getName());
-		Place p = new Place();
+		//Place p = new Place();
 		p.setSimpleGeoId(f.getSimpleGeoId());
 		p.setName(f.getProperties().get("name").toString());
 		p.setAddress(f.getProperties().get("address").toString());
@@ -162,15 +167,12 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 		try {
 			if(classifiers != null && !classifiers.isNull(0)) {
 				JSONObject first = classifiers.getJSONObject(0);
-				//p.setCategory(first.getString("category"));
-				//p.setSubcategory(first.getString("subcategory"));
-				//p.setCategoryType(first.getString("type"));
 			}
 		} catch (JSONException e) {
 			logger.debug(e.getMessage());
 		}
 		
-		return p;
+		//return p;
 	}
 	
 	
