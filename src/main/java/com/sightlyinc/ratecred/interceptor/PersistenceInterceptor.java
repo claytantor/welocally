@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sightlyinc.ratecred.model.BaseEntity;
 
@@ -29,6 +28,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
 
 	static Logger logger = Logger.getLogger(PersistenceInterceptor.class);
 	
+	private int deletes;
 	private int updates;
     private int creates;
     private int loads;
@@ -47,6 +47,20 @@ public class PersistenceInterceptor extends EmptyInterceptor {
                          String[] propertyNames,
                          Type[] types) {
         // do nothing for now
+        if ( entity instanceof BaseEntity ) {
+            
+            //inform?
+            if(entity.getClass().isAnnotationPresent(PersistenceObservable.class)){
+                PersistenceActivity activity = new PersistenceActivity();
+                activity.setActivity(PersistenceActivity.ACTIVITY_DELETE);
+                activity.setClazzName(entity.getClass().getName());
+                activity.setEntityId(((BaseEntity)entity).getId());
+                activity.setEntity((BaseEntity)entity);
+                deleteAudits.add(activity);
+            }
+
+            deletes++;
+        }
     }
 
     public boolean onFlushDirty(Object entity,
@@ -123,9 +137,10 @@ public class PersistenceInterceptor extends EmptyInterceptor {
     }
 
     public void afterTransactionCompletion(Transaction tx) {
-        if ( tx.wasCommitted() && (creates >0 || updates>0 || loads>0) ) {
-            logger.debug("Creations: " + creates + ", Updates: " + updates+ "Loads: " + loads);
+        if ( tx.wasCommitted() && (creates >0 || updates>0 || loads>0 || deletes>0) ) {
+            logger.debug("Creations: " + creates + ", Updates: " + updates+ "Loads: " + loads + ", Deletes: " + deletes);
         }
+        deletes=0;
         updates=0;
         creates=0;
         loads=0;
