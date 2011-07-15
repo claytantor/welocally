@@ -19,7 +19,7 @@
     code[j++] = 'hostname:"${hostname}",';
     code[j++] = 'publisher:PUBLISHER,';
     code[j++] = 'place:PLACE,';
-    code[j++] = 'summary:"DESCRIPTION",';
+    code[j++] = 'summary:"DESCRIPTION"';
     code[j++] = '};';
     code[j++] = 'WELOCALLY.PublishWidget(cfg);';
     code[j++] = '<' + '/script' + '>';
@@ -28,7 +28,7 @@
         var f = document.forms.widget;
         var errors = [], i = 0;
         if (!$("#publisher-id").val().match(/^\d+$/)) {
-            errors[i++] = "Invlid publisher, please check the URL you used to get to this page";
+            errors[i++] = "Invalid publisher, please check the URL you used to get to this page";
         }
         if (!$("#place-id").val().match(/^\d+$/)) {
             errors[i++] = "Please select a place";
