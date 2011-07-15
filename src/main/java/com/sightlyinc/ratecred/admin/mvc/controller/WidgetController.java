@@ -66,6 +66,7 @@ public class WidgetController {
             article = new Article();
             article.setUrl(url);
             article.setName(name);
+            article.setSummary(summary);
             article.setDescription(summary);
 
                 // look up the selected publisher
