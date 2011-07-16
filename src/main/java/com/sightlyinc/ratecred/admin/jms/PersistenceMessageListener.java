@@ -195,7 +195,8 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		if(geoEntity.getMemberKey() == null)
 			logger.debug("member key is null");
 		
-		String layername = geoEntity.getMemberKey()+"."+geoEntity.getClass().getSimpleName().toLowerCase();
+		String layername = geoEntity.getMemberKey()+"."+
+			geoEntity.getClass().getSimpleName().toLowerCase();
 		logger.debug("layer:"+layername+" saving:"+baosArticle.toString());
 		JSONObject jEntity = new JSONObject(baosArticle.toString());
 		model.put("entity", jEntity);

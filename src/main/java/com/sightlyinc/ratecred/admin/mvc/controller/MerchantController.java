@@ -3,6 +3,7 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
+import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
@@ -36,6 +38,7 @@ import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.service.MerchantService;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
+import com.sightlyinc.ratecred.service.PlaceManagerService;
 import com.simplegeo.client.SimpleGeoPlacesClient;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
@@ -53,6 +56,9 @@ public class MerchantController {
 	@Autowired
 	@Qualifier("locationPlacesClient")
 	private SimpleGeoPlaceManager simpleGeoPlaceManager ;
+	
+	@Autowired
+	private PlaceManagerService placeManagerService ;
 
     @Autowired
     private MerchantService merchantService;
@@ -129,13 +135,18 @@ public class MerchantController {
     }
     
     @RequestMapping(value="/load/{key}", method=RequestMethod.GET)
-    public String loadMerchantsFromGoogle(@PathVariable String key, Model model) {
+    
+    public String loadMerchantsFromGoogle(
+    		@PathVariable String key, 
+    		@ModelAttribute("member") NetworkMember member, 
+    		Model model) 
+    {
         logger.debug("load");        
         String spreadsheetUrl = "https://spreadsheets.google.com/tq?tqx=out:csv&key="+key+"&hl=en";
         
         try {
 			List<String[]> rows = getSpreadsheetData(spreadsheetUrl);
-			findAndSaveMerchantsAsTable(rows);
+			findAndSaveMerchantsAsTable(rows, member);
 			return "redirect:/association/merchant/list";
 		} catch (IOException e) {
 			model.addAttribute("error", e); 
@@ -144,6 +155,9 @@ public class MerchantController {
 			model.addAttribute("error", e); 
 			return "error";
 		} catch (GeoPersistenceException e) {
+			model.addAttribute("error", e); 
+			return "error";
+		} catch (BLServiceException e) {
 			model.addAttribute("error", e); 
 			return "error";
 		}
@@ -184,13 +198,16 @@ public class MerchantController {
 	
 	
 
-	protected void findAndSaveMerchantsAsTable(List<String[]> lines)
-			throws IOException, JSONException, GeoPersistenceException {
+	protected void findAndSaveMerchantsAsTable(List<String[]> lines, NetworkMember member)
+			throws IOException, JSONException, GeoPersistenceException, BLServiceException {
 
 		StringBuffer places = new StringBuffer();
-		double lat = 37.803294;
-		double lon = -122.268629;
-		double radiusInKMeters = 15.00;
+		//-122.265698, 37.811373
+		double lat = 37.811373;
+		double lon = -122.265698;
+		
+		
+		double radiusInKMeters = 10.00;
 
 		SimpleGeoPlacesClient client = SimpleGeoPlacesClient.getInstance();
 		client.getHttpClient().setToken(sgoauthkey, sgoauthsecret);
@@ -203,40 +220,53 @@ public class MerchantController {
 		 */
 		for (String[] fields : lines) {
 
-			String recordId = fields[0];
-			String status = fields[1];
-			String placeName = fields[2];
-			String category = fields[3];
-			String description = fields[4];
-			String url = fields[5];
-			String facebookUrl = fields[6];
+			Long recordId = Long.parseLong(fields[0]);
+			String status = fields[1].trim();
+			String placeName = fields[2].trim();
+			String city = fields[3].trim();
+			String state = fields[4].trim();
+			String category = fields[5].trim();
+			String description = fields[6].trim();
+			String url = fields[7].trim();
+			String facebookUrl = fields[8].trim();
 			
 			logger.debug("trying to load place:"+placeName);
 			
 			if (status.equalsIgnoreCase("ACTIVE")) {
 
 				FeatureCollection collection = client.search(lat, lon,
-						placeName.trim().replace(" ", ""), "", radiusInKMeters);
+						placeName.trim(), "", radiusInKMeters);
 
 				ArrayList<Feature> features = collection.getFeatures();
-				if (features.size() == 1) {
+				//if (features.size() == 1) {
 					for (Feature feature : features) {
 
 						String name = (String) feature.getProperties().get(
 								"name");
-						places.append(name + ","
-								+ placeName.trim().replace(" ", ""));
-						places.append(System.getProperty("line.separator"));
-						merchantService.save(
-								makeMerchantFromFeature(
-										feature, 
-										description, 
-										url, 
-										facebookUrl));
+						logger.debug("found:"+name);
+						
+						//this is lame, should probably use distance or something better
+						if(name.equals(placeName) && 
+								feature.getProperties().get("city").toString().contains(city)){
+							
+							places.append(name + ","
+									+ placeName.trim().replace(" ", ""));
+							places.append(System.getProperty("line.separator"));
+							merchantService.save(
+									makeMerchantFromFeature(
+											recordId,											
+											feature, 
+											name,
+											description, 
+											url, 
+											facebookUrl,
+											member));
+						}
+						
 
 					}
 
-				}
+				//}
 			} else if (status.equalsIgnoreCase("DELETE")) {
 				Merchant m = merchantService.findByPrimaryKey(new Long(recordId));				
 				merchantService.delete(m);
@@ -249,15 +279,40 @@ public class MerchantController {
 	}	
 	
 	private Merchant makeMerchantFromFeature(
-			Feature f, String description, String url, String facebookUrl) {
-		Merchant m = new Merchant();
+			Long recordId, Feature f, String name, String description, String url, 
+			String facebookUrl, NetworkMember member) 
+	throws BLServiceException 
+	{
 		
-		Place p = new Place();
-		simpleGeoPlaceManager.transformFeature( f,  p );
+		Merchant m = merchantService.findByNameAndMember(name, member);
+		if(m == null) {
+			m = new Merchant();
+			m.setName(name);
+		}
+		
+		//dont add a place that is already in the database
+		Place p = null;
+		try {
+			p = placeManagerService.findBySimpleGeoId(f.getSimpleGeoId());
+		} catch (BLServiceException e) {
+			logger.error("cannot find place", e);
+		}
+		
+		if(p == null) {
+			p = new Place();
+			simpleGeoPlaceManager.transformFeature( f,  p );
+			placeManagerService.savePlace(p);
+		}
+		
+		
 		m.setPlace(p);
 		m.setDescription(description);
 		m.setUrl(url);
 		m.setFacebookUrl(facebookUrl);
+		m.setNetworkMember(member);
+		m.setStatus("ACTIVE");
+		m.setTimeCreated(Calendar.getInstance().getTimeInMillis());
+		m.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
 
 		return m;
 	}
