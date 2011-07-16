@@ -8,12 +8,10 @@ import com.sightlyinc.ratecred.model.BaseEntity;
 
 public class PersistenceActivity {
 	
-	public static int ACTIVITY_CREATE=0;
-	public static int ACTIVITY_UPDATE=1;
-	public static int ACTIVITY_DELETE=2;
-	
-	
-	
+	public static final int ACTIVITY_CREATE=0;
+	public static final int ACTIVITY_UPDATE=1;
+	public static final int ACTIVITY_DELETE=2;
+
 	private String clazzName;
 	private Long entityId;
 	private Integer activity;
