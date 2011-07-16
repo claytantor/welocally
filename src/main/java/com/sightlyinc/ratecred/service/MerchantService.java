@@ -1,7 +1,7 @@
 package com.sightlyinc.ratecred.service;
 
-import com.sightlyinc.ratecred.model.Article;
 import com.sightlyinc.ratecred.model.Merchant;
+import com.sightlyinc.ratecred.model.NetworkMember;
 
 /**
  * Class javadoc comment here...
@@ -11,5 +11,7 @@ import com.sightlyinc.ratecred.model.Merchant;
  */
 public interface MerchantService extends BaseService<Merchant> {
 
-    public Merchant findByUrl(String url);
+	public Merchant findByUrl(String url);
+	public Merchant findByNameAndMember(String name, NetworkMember member);
+    
 }

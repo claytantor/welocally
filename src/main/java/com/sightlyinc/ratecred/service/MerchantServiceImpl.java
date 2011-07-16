@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.dao.MerchantDao;
 import com.sightlyinc.ratecred.model.Merchant;
+import com.sightlyinc.ratecred.model.NetworkMember;
 
 /**
  * Class javadoc comment here...
@@ -24,14 +25,17 @@ public class MerchantServiceImpl extends AbstractTransactionalService<Merchant> 
         return merchantDao;
     }
 
-//	@Override
-//	public List<Merchant> findByUserPrincipal(UserPrincipal up) {
-//		return null;
-//	}
-//    
-
     @Override
     public Merchant findByUrl(String url) {
         return merchantDao.findByUrl(url);
     }
+
+	@Override
+	public Merchant findByNameAndMember(String name, NetworkMember member) {
+		return merchantDao.findByNameAndMember(name, member);
+	}
+    
+    
+    
+    
 }
