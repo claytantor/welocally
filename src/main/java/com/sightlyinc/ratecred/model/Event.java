@@ -1,9 +1,9 @@
 package com.sightlyinc.ratecred.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -82,6 +82,7 @@ public class Event extends BaseEntity implements GeoPersistable {
 	
 	@Column(name="time_ends")
 	private Long timeEnds;
+	
 	
 //	@Column(name="recurrence_type")
 //	@Enumerated(EnumType.STRING)
@@ -265,6 +266,14 @@ public class Event extends BaseEntity implements GeoPersistable {
 	}
 	public void setRecurrenceEnd(Long recurrenceEnd) {
 		this.recurrenceEnd = recurrenceEnd;
+	}
+	
+	public Date getStartDateTime(){
+		return new Date(timeStarts);
+	}
+	
+	public Date getEndDateTime(){
+		return new Date(timeEnds);
 	}
 	
 	
