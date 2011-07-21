@@ -29,6 +29,7 @@
 			<c:forEach var="event" items="${events}">
 			<div class="span-24 last">
 				<div class="strong-12 span-1">${event.id}</div>
+				<div class="text-10 span-4">${event.startDateTime}-${event.endDateTime}</div>
 				<div class="strong-12 span-6"><a href="<c:url value='/publisher/event/${event.id}'/>">${event.name}</a></div>
 				<div class="span-10">
 					<div class="span-10"><a href="${event.url}">${event.url}</a></div>

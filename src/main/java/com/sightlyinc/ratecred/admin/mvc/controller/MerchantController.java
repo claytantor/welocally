@@ -27,6 +27,7 @@ import com.noi.utility.net.ClientResponse;
 import com.noi.utility.net.SimpleHttpClient;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
+import com.sightlyinc.ratecred.admin.util.GoogleSpreadsheetUtils;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
@@ -134,8 +135,7 @@ public class MerchantController {
         return "redirect:/association/merchant/list";
     }
     
-    @RequestMapping(value="/load/{key}", method=RequestMethod.GET)
-    
+    @RequestMapping(value="/load/{key}", method=RequestMethod.GET)   
     public String loadMerchantsFromGoogle(
     		@PathVariable String key, 
     		@ModelAttribute("member") NetworkMember member, 
@@ -145,7 +145,7 @@ public class MerchantController {
         String spreadsheetUrl = "https://spreadsheets.google.com/tq?tqx=out:csv&key="+key+"&hl=en";
         
         try {
-			List<String[]> rows = getSpreadsheetData(spreadsheetUrl);
+			List<String[]> rows = GoogleSpreadsheetUtils.getSpreadsheetData(spreadsheetUrl);
 			findAndSaveMerchantsAsTable(rows, member);
 			return "redirect:/association/merchant/list";
 		} catch (IOException e) {
@@ -175,26 +175,26 @@ public class MerchantController {
     }
     
     
-    protected List<String[]> getSpreadsheetData(String spreadsheetUrl) throws IOException {
-		
-		List<String[]> lines = new ArrayList<String[]>();
-		
-		ClientResponse response = 
-			SimpleHttpClient.get(spreadsheetUrl, null, null);
-		StringReader sreader = new StringReader(new String(response.getResponse()));
-		CSVReader reader = new CSVReader(sreader);
-		reader.readNext();	
-		reader.readNext();	
-		
-		
-		String [] offerLine;
-	    while ((offerLine = reader.readNext()) != null) {
-	    	if(!StringUtils.isEmpty(offerLine[0]))
-	    		lines.add(offerLine);
-	    }
-	    return lines;
-	    
-	}
+//    protected List<String[]> getSpreadsheetData(String spreadsheetUrl) throws IOException {
+//		
+//		List<String[]> lines = new ArrayList<String[]>();
+//		
+//		ClientResponse response = 
+//			SimpleHttpClient.get(spreadsheetUrl, null, null);
+//		StringReader sreader = new StringReader(new String(response.getResponse()));
+//		CSVReader reader = new CSVReader(sreader);
+//		reader.readNext();	
+//		reader.readNext();	
+//		
+//		
+//		String [] offerLine;
+//	    while ((offerLine = reader.readNext()) != null) {
+//	    	if(!StringUtils.isEmpty(offerLine[0]))
+//	    		lines.add(offerLine);
+//	    }
+//	    return lines;
+//	    
+//	}
 	
 	
 
