@@ -29,30 +29,44 @@ function getLocationsByAddress(address, options) {
 
   	    	$( "#dialog-modal" ).dialog({
   	    		height: 500,
-  				width: 500
+  				width: 500,
+                close: function(event, ui) {
+                    $('#results').hide();
+                    $('#place-search').val('')
+                    $("#add-span").hide();
+                }
   			});
   			
   	    	$("#dialog-modal").dialog("option", "position", "center"); 
 
   	    	$('#results').show();
-  	    	
+            $("#add-span").show();
+            $("#add-form").hide();
+
   	    }
   	});
 }
 
 
-function buildListItemForFeature(feature,i) {   	
-		return '<li class=\"ui-widget-content\" id="f'+i+'">'+feature.properties.name+'</li>'; 	
+function buildListItemForFeature(feature,i) {
+        var itemLabel = '<b>'+feature.properties.name+'</b>';
+        if (feature.properties.address) {
+            itemLabel += "<br>" + feature.properties.address;
+        }
+		return '<li class=\"ui-widget-content\" id="f'+i+'" title="select place">'+itemLabel+'</li>';
 }
 
-$(function() {		
-	$( "#search-places-action" ).click(function() { 
-		console.log("click");	 				
+function searchForPlaces() {
+		console.log("click");
 		var options = {};
 		options.q = $('#place-search').val();
+
 		getLocationsByAddress($('#place-address').val(), options);
-		return false; 
-	});
+		return false;
+}
+
+$(function() {
+	$( "#search-places-action" ).click(searchForPlaces);
 
 	$( "#choose-place-action" ).click(function() { 
 
@@ -93,14 +107,36 @@ $(function() {
 		return false; 
 	});
 
+    $( "#add-place-action" ).click(function() {
+        $("#results").hide();
+        $("#add-form").show();
+
+        $('#add-place-city').val($('#place-address').val());
+        $('#add-place-name').val($('#place-search').val());
+        $('#add-place-name').focus();
+        return false;
+    });
+    $( "#cancel-add-link" ).click(function() {
+        $("#add-form").hide();
+        $("#results").show();
+    });
+    $( "#save-place-action") .click(function() {
+        // validate user input
+        // try to geocode using user input via yahoo...? need server side code?
+        // if geocode succeeds, try to add place (definitely requires server side code to talk to SimpleGeo)
+        // if add succeeds, select place for event/article and reset and close place chooser)
+    });
+
 	$("#results").hide();
 	$("#selection").hide();
-	
+    $("#add-span").hide();
+    $("#add-form").hide();
+
 	
 	$( "#selectable" ).selectable({
 		   selected: function(event, ui) {
 				selectedFeatureIndex = $('#scroller-places li').index(ui.selected);
-				$("#selection").show();				
+				$("#selection").show();
 		   }
 	});
 		
@@ -127,14 +163,20 @@ $(function() {
 
 </script>
 <style>		
-		.search-field { width: 445px; }
+		.search-field { width: 100%; }
+        #results { margin-top: 5px; }
 		#selectable .ui-selecting { background: #BFED8E; }
 		#selectable .ui-selected { background: #7D8C6C; color: white; }
-		#selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-		#selectable li { margin: 3px; padding: 0.2em; font-size: 0.8em; height: 18px; }			
-		#scroller-places { height: 240px; width: 480px; overflow-y: scroll;}
+		#selectable { list-style-type: none; margin: 0; padding: 0; }
+		#selectable li { margin: 3px 3px 3px 0; padding: 0.2em; cursor: pointer; }
+		#scroller-places { height: 240px; width: 100%; overflow-y: scroll;}
+        #add-span { float:right; }
+        /*#add-place-action { float:right; }*/
+        #selection { margin-top: 5px; }
+        #add-form { margin-top: 5px; }
 </style>
 <div id="dialog-modal" title="Choose Place">
+    <form onsubmit="return searchForPlaces()">
 	<div>Find where the event will occur.</div>
 	<div>	
 		place address:</br>
@@ -143,16 +185,32 @@ $(function() {
 		<input type="text" id="place-search" class="search-field"></br>
 		<%--<div id="search-places-action"><a href="#">find places</a></div> --%>
 		<button id="search-places-action">find places</button>
+        <span id="add-span">don't see a match?&nbsp;&nbsp;<button id="add-place-action">add new place</button></span>
 	</div>
-	<div class="padding-5" id="results">
+	<div id="results">
 	<div id="scroller-places">
 		<ol id="selectable">
 		</ol>	
 	</div>
-	<div><img src="<c:url value='/images/spacer.gif' />" height="5"/></div>
+	<%--<div><img src="<c:url value='/images/spacer.gif' />" height="5"/></div>--%>
 	<div id="selection">
 		<button id="choose-place-action">choose place</button>
 	</div>
 	</div>
+    <div id="add-form">
+        place name:</br>
+        <input type="text" id="add-place-name" class="search-field"></br>
+        street address:</br>
+        <input type="text" id="add-place-address" class="search-field"></br>
+        city:</br>
+        <input type="text" id="add-place-city" class="search-field"></br>
+        state:</br>
+        <input type="text" id="add-place-state" class="search-field"></br>
+        zip code:</br>
+        <input type="text" id="add-place-zip" class="search-field"></br>
+        <a id="cancel-add-link" href="#">cancel</a>
+        <button id="save-place-action">add</button>
+    </div>
+    </form>
 </div>
 	
