@@ -213,6 +213,18 @@ public class WidgetController {
 
         return modelAndView;
     }
+    
+    @RequestMapping("/verify")
+    public ModelAndView verfifyPublishedToStore(@RequestParam(value = "publisherId", required = false) Long publisherId) {
+        ModelAndView modelAndView =  new ModelAndView("widget/verify");
+        Publisher publisher = null;
+        if (publisherId != null) {
+            publisher = publisherService.findByPrimaryKey(publisherId);
+        }
+        modelAndView.addObject(publisher);
+
+        return modelAndView;
+    }
 
     @RequestMapping("/generator/event")
     public ModelAndView publishEventWidgetGenerator(@RequestParam(value = "publisherId", required = false) Long publisherId) {
@@ -225,4 +237,6 @@ public class WidgetController {
 
         return modelAndView;
     }
+    
+    
 }
