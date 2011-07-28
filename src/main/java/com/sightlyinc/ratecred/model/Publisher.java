@@ -23,7 +23,7 @@ public class Publisher extends BaseEntity {
 	@Column(name="site_name")
 	private String siteName;
 	
-	@Column(name="key")
+	@Column(name="key_value")
 	private String key;
 	
 	@Column(name="description",columnDefinition="TEXT")
