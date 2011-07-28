@@ -30,6 +30,12 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
     
     
 	@Override
+	public Publisher findByNetworkKeyAndPublisherKey(String networkMemberKey,
+			String publisherKey) {
+		return publisherDao.findByNetworkMemberAndKey(networkMemberKey, publisherKey);
+	}
+
+	@Override
 	public List<Publisher> findBySiteNameLike(String siteName) {
 		return publisherDao.findBySiteNameLike(siteName);
 	}

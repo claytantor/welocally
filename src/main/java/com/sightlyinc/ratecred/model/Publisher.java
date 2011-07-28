@@ -23,6 +23,9 @@ public class Publisher extends BaseEntity {
 	@Column(name="site_name")
 	private String siteName;
 	
+	@Column(name="key")
+	private String key;
+	
 	@Column(name="description",columnDefinition="TEXT")
 	private String description;	
 
@@ -59,11 +62,13 @@ public class Publisher extends BaseEntity {
 	@JoinColumn(name = "publisher_id")
 	@JsonIgnore
 	private Set<Review> reviews;
-	
-	
-	
 
-
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
 	public String getSiteName() {
 		return siteName;
 	}
