@@ -60,22 +60,6 @@ public class PublisherController {
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(Model model) {
 		Publisher publisherForm = new Publisher(); 
-		
-//		//prepopulate member
-//		UserDetails details = 
-//		(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-//		
-//		try {			
-//			UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
-//			NetworkMember member = networkMemberService.findMemberByUserPrincipal(principal);
-//			publisherForm.setNetworkMember(member);
-//		} catch (UserPrincipalServiceException e) {
-//			logger.error("", e);
-//			return null;
-//		} catch (UserNotFoundException e) {
-//			logger.error("", e);
-//			return null;
-//		}
 		model.addAttribute("publisherForm",publisherForm);
 		return "publisher/edit";
 	}
@@ -97,6 +81,7 @@ public class PublisherController {
 				p.setUrl(form.getUrl());
 				p.setMapIconUrl(form.getMapIconUrl());
 				p.setIconUrl(form.getIconUrl());
+				p.setKey(getPublisherKeyFromName(form.getSiteName()));
 				
 				//set the member
 				//prepopulate member
@@ -124,6 +109,11 @@ public class PublisherController {
 		}
 
 	}
+	
+	private String getPublisherKeyFromName(String siteName) {
+    	return siteName.toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
+			.replaceAll(" ", "-");
+    }
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
 	public String getPublisherById(@PathVariable Long id, Model model) {

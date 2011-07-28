@@ -17,7 +17,7 @@
     code[j++] = 'url: "URL",';
     code[j++] = 'title:"TITLE",';
     code[j++] = 'hostname:"${hostname}",';
-    code[j++] = 'publisher:PUBLISHER,';
+    code[j++] = 'publisher:"PUBLISHER",';
     code[j++] = 'place:PLACE,';
     code[j++] = 'timeStarts:TIMESTARTS,';
     code[j++] = 'timeEnds:TIMEENDS,';
@@ -59,7 +59,7 @@
             var joinedCode = code.join('\n');
             joinedCode = joinedCode.replace(/URL/, $("#url").val());
             joinedCode = joinedCode.replace(/TITLE/, $("#event-title").val().replace(/"/g, '\\"'));
-            joinedCode = joinedCode.replace(/PUBLISHER/, $("#publisher-id").val());
+            joinedCode = joinedCode.replace(/PUBLISHER/, $("#publisher-key").val());
             joinedCode = joinedCode.replace(/PLACE/, $("#place-id").val());
             joinedCode = joinedCode.replace(/TIMESTARTS/, $("#timeStarts").val());
             joinedCode = joinedCode.replace(/TIMEENDS/, $("#timeEnds").val());
@@ -137,6 +137,7 @@
             <fieldset>
                 <legend>Event Info</legend>
 
+                <input type="hidden" id="publisher-key" value="${publisher.networkMember.memberKey}.${publisher.key}"/>
                 <input type="hidden" id="publisher-id" value="${publisher.id}"/>
                 <input type="hidden" id="place-id" name="place-id"/>
                 <input type="hidden" id="timeStarts"/>

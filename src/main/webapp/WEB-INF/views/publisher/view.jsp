@@ -23,7 +23,7 @@
 		<div class="actions span-24 last">
 			<a href="<c:url value='/publisher/publisher/edit/${publisher.id}' />" class="button">edit</a>
 			<a href="<c:url value='/publisher/publisher/delete/${publisher.id}' />" class="button">delete</a>
-			<a href="<c:url value='/widget/verify?publisherId=${publisher.id}' />" class="button">verify publishing</a>
+			<a href="<c:url value='/widget/verify?publisherKey=${publisher.networkMember.memberKey}.${publisher.key}' />" class="button">verify publishing</a>
 		</div>
 
 		<div class="padding-5 span-24 last">
@@ -38,14 +38,14 @@
 		</div>
 		<div class="bottom-10 frame span-24">
 			<h3>event</h3>
-			<div class="actions span-24 last"><a href="<c:url value='/widget/generator/event?publisherId=${publisher.id}' />" class="button">make event widget</a></div>
+			<div class="actions span-24 last"><a href="<c:url value='/widget/generator/event?publisherKey=${publisher.networkMember.memberKey}.${publisher.key}' />" class="button">make event widget</a></div>
 			<div><a href="<c:url value='/publisher/event/list?publisherId=${publisher.id}'/>">list all</a></div>
 			<div><a href="<c:url value='/publisher/event?publisherId=${publisher.id}'/>">create</a></div>
 		</div>
 		
 		<div class="bottom-10 frame  span-24">
 			<h3>article</h3>
-			<div class="actions span-24 last"><a href="<c:url value='/widget/generator/article?publisherId=${publisher.id}' />" class="button">make article widget</a></div>
+			<div class="actions span-24 last"><a href="<c:url value='/widget/generator/article?publisherKey=${publisher.networkMember.memberKey}.${publisher.key}' />" class="button">make article widget</a></div>
 			<div><a href="<c:url value='/publisher/article/list?publisherId=${publisher.id}'/>">list all</a></div>
 			<div><a href="<c:url value='/publisher/article?publisherId=${publisher.id}'/>">create</a></div>
 		</div>			

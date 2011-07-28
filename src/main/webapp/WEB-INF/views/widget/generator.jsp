@@ -17,7 +17,7 @@
     code[j++] = 'url: "URL",';
     code[j++] = 'title:"TITLE",';
     code[j++] = 'hostname:"${hostname}",';
-    code[j++] = 'publisher:PUBLISHER,';
+    code[j++] = 'publisher:"PUBLISHER",';
     code[j++] = 'place:PLACE,';
     code[j++] = 'summary:"DESCRIPTION"';
     code[j++] = '};';
@@ -51,7 +51,7 @@
             var joinedCode = code.join('\n');
             joinedCode = joinedCode.replace(/URL/, $("#url").val());
             joinedCode = joinedCode.replace(/TITLE/, $("#article-title").val().replace(/"/g, '\\"'));
-            joinedCode = joinedCode.replace(/PUBLISHER/, $("#publisher-id").val());
+            joinedCode = joinedCode.replace(/PUBLISHER/, $("#publisher-key").val());
             joinedCode = joinedCode.replace(/PLACE/, $("#place-id").val());
             joinedCode = joinedCode.replace(/DESCRIPTION/, $("#description").val().replace(/"/g, '\\"').replace(/[\r\n]/g, ''));
 
@@ -85,6 +85,7 @@
             <fieldset>
                 <legend>Article Info</legend>
 
+                <input type="hidden" id="publisher-key" value="${publisher.networkMember.memberKey}.${publisher.key}"/>
                 <input type="hidden" id="publisher-id" value="${publisher.id}"/>
                 <input type="hidden" id="place-id" name="place-id"/>
 

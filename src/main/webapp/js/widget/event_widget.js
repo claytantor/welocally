@@ -23,7 +23,7 @@ if (!WELOCALLY.PublishWidget) {
         }
         // publisher - the id of the publisher that is publishing the event
         if (!error && !cfg.publisher) {
-            error = "Please provide the ID of the event publisher for the WeLocally widget";
+            error = "Please provide the KEY of the event publisher for the WeLocally widget";
         }
         // place - the id of the place that is the subject of the event
         if (!error && !cfg.place) {

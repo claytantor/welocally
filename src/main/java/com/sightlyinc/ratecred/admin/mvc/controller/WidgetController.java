@@ -70,7 +70,7 @@ public class WidgetController {
     public ModelAndView publishArticleWidgetContent(
             @RequestParam("url") String url,
             @RequestParam("name") String name,
-            @RequestParam("publisher") Long publisherId,
+            @RequestParam("publisherKey") String publisherKey,
             @RequestParam("place") Long placeId,
             @RequestParam(value = "summary", required = false) String summary
     ) {
@@ -87,9 +87,14 @@ public class WidgetController {
             article.setName(name);
             article.setSummary(summary);
             article.setDescription(summary);
+            
+            String[] keys = publisherKey.split(".");
 
                 // look up the selected publisher
-            Publisher publisher = publisherService.findByPrimaryKey(publisherId);
+            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(
+            		keys[0], keys[1]);
+            
+            
             if (publisher != null) {
                 if (url.startsWith(publisher.getUrl())) {
                     article.setPublisher(publisher);
@@ -112,8 +117,8 @@ public class WidgetController {
                     modelAndView.addObject("status", "Article URL must start with " + publisher.getUrl());
                 }
             } else {
-                LOGGER.debug("publish widget could not find publisher with id " + publisherId);
-                modelAndView.addObject("status", "Invalid publisher: " + publisherId);
+                LOGGER.debug("publish widget could not find publisher with key " + publisherKey);
+                modelAndView.addObject("status", "Invalid publisher: " + publisherKey);
             }
         } else {
             LOGGER.debug("publish widget found existing article");
@@ -142,7 +147,7 @@ public class WidgetController {
     public ModelAndView publishEventWidgetContent(
             @RequestParam("url") String url,
             @RequestParam("name") String name,
-            @RequestParam("publisher") Long publisherId,
+            @RequestParam("publisherKey") String publisherKey,
             @RequestParam("place") Long placeId,
             @RequestParam("timeStarts") long timeStarts,
             @RequestParam("timeEnds") long timeEnds,
@@ -165,7 +170,11 @@ public class WidgetController {
             event.setDescription(summary);
 
                 // look up the selected publisher
-            Publisher publisher = publisherService.findByPrimaryKey(publisherId);
+            String[] keys = publisherKey.split(".");
+
+            // look up the selected publisher
+            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(
+        		keys[0], keys[1]);
             if (publisher != null) {
                 if (url.startsWith(publisher.getUrl())) {
                     event.setPublisher(publisher);
@@ -188,8 +197,8 @@ public class WidgetController {
                     modelAndView.addObject("status", "Event URL must start with " + publisher.getUrl());
                 }
             } else {
-                LOGGER.debug("publish widget could not find publisher with id " + publisherId);
-                modelAndView.addObject("status", "Invalid publisher: " + publisherId);
+                LOGGER.debug("publish widget could not find publisher with id " + publisherKey);
+                modelAndView.addObject("status", "Invalid publisher: " + publisherKey);
             }
         } else {
             LOGGER.debug("publish widget found existing event");
@@ -201,41 +210,41 @@ public class WidgetController {
 
         return modelAndView;
 	}
-
-    @RequestMapping("/generator/article")
-    public ModelAndView publishArticleWidgetGenerator(@RequestParam(value = "publisherId", required = false) Long publisherId) {
-        ModelAndView modelAndView =  new ModelAndView("widget/generator");
+    
+    private ModelAndView makeViewForPublisherByKey(String publisherKey, String name) {
+    	ModelAndView modelAndView =  new ModelAndView(name);
         Publisher publisher = null;
-        if (publisherId != null) {
-            publisher = publisherService.findByPrimaryKey(publisherId);
+        if (publisherKey != null) {
+        	String[] keys = publisherKey.split("\\x2e");
+            // look up the selected publisher
+        	publisher = publisherService.findByNetworkKeyAndPublisherKey(
+        		keys[0], keys[1]);
         }
-        modelAndView.addObject(publisher);
+        
+        if(publisher != null)
+        	modelAndView.addObject(publisher);
+        else {
+        	modelAndView =  new ModelAndView("error");
+        	modelAndView.addObject("error", new Exception("cannot find publisher"));
+        }
 
         return modelAndView;
+    }
+
+    @RequestMapping("/generator/article")
+    public ModelAndView publishArticleWidgetGenerator(@RequestParam(value = "publisherKey", required = false) String publisherKey) {
+
+        return makeViewForPublisherByKey( publisherKey, "widget/generator");
     }
     
     @RequestMapping("/verify")
-    public ModelAndView verfifyPublishedToStore(@RequestParam(value = "publisherId", required = false) Long publisherId) {
-        ModelAndView modelAndView =  new ModelAndView("widget/verify");
-        Publisher publisher = null;
-        if (publisherId != null) {
-            publisher = publisherService.findByPrimaryKey(publisherId);
-        }
-        modelAndView.addObject(publisher);
-
-        return modelAndView;
+    public ModelAndView verfifyPublishedToStore(@RequestParam(value = "publisherKey", required = false) String publisherKey) {
+        return makeViewForPublisherByKey( publisherKey, "widget/verify");
     }
 
     @RequestMapping("/generator/event")
-    public ModelAndView publishEventWidgetGenerator(@RequestParam(value = "publisherId", required = false) Long publisherId) {
-        ModelAndView modelAndView =  new ModelAndView("widget/event_generator");
-        Publisher publisher = null;
-        if (publisherId != null) {
-            publisher = publisherService.findByPrimaryKey(publisherId);
-        }
-        modelAndView.addObject(publisher);
-
-        return modelAndView;
+    public ModelAndView publishEventWidgetGenerator(@RequestParam(value = "publisherKey", required = false) String publisherKey) {
+        return makeViewForPublisherByKey( publisherKey, "widget/event_generator");
     }
     
     

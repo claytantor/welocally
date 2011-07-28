@@ -164,8 +164,7 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
     
     private String getPublisherLayerPrefix(Publisher publisher) {
     	return publisher.getNetworkMember().getMemberKey()+"."+
-			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
-			.replaceAll(" ", "-");
+			publisher.getKey();
     }
     
 //    private String getMemberLayerPrefix(NetworkMember member) {
