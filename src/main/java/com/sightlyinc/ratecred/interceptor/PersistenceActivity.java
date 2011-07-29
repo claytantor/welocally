@@ -15,13 +15,14 @@ public class PersistenceActivity {
 	private String clazzName;
 	private Long entityId;
 	private Integer activity;
-	
+    private String memberKey;
+
 	@Transient
 	@JsonIgnore
 	public transient BaseEntity entity;
-	
-	
-	public String getClazzName() {
+
+
+    public String getClazzName() {
 		return clazzName;
 	}
 	public void setClazzName(String clazzName) {
@@ -49,6 +50,13 @@ public class PersistenceActivity {
 	public void setEntity(BaseEntity entity) {
 		this.entity = entity;
 	}
-	
-	
+
+
+    public void setMemberKey(String memberKey) {
+        this.memberKey = memberKey;
+    }
+
+    public String getMemberKey() {
+        return memberKey;
+    }
 }
