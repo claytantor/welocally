@@ -269,11 +269,11 @@ public class Event extends BaseEntity implements GeoPersistable {
 	}
 	
 	public Date getStartDateTime(){
-		return new Date(timeStarts);
+		return (timeStarts == null ? null : new Date(timeStarts));
 	}
 	
 	public Date getEndDateTime(){
-		return new Date(timeEnds);
+		return (timeEnds == null ? null : new Date(timeEnds));
 	}
 	
 	
