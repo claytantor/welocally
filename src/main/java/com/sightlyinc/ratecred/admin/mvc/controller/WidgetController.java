@@ -88,7 +88,7 @@ public class WidgetController {
             article.setSummary(summary);
             article.setDescription(summary);
             
-            String[] keys = publisher.split(".");
+            String[] keys = publisher.split("\\.");
 
                 // look up the selected publisher
             Publisher p = publisherService.findByNetworkKeyAndPublisherKey(
@@ -170,7 +170,7 @@ public class WidgetController {
             event.setDescription(summary);
 
                 // look up the selected publisher
-            String[] keys = publisherKey.split(".");
+            String[] keys = publisherKey.split("\\.");
 
             // look up the selected publisher
             Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(
