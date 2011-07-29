@@ -24,7 +24,7 @@ function getLocationsByAddress(address, options) {
   	    	$.each(data.features, function(i,item){ 
   	    		//console.log(JSON.stringify(item));
   	    		jsonObjFeatures.push(item);	    		
-  	    		$('#selectable').append(buildListItemForFeature(item,i));
+  	    		$('#selectable').html(buildListItemForFeature(item,i));
   		    });
 
   	    	$( "#dialog-modal" ).dialog({
