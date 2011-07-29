@@ -132,6 +132,7 @@
 	<div class="span-24">
 		<h2>
 		<a href="<c:url value='/publisher/publisher/${publisher.id}' />">${publisher.siteName}</a> :
+        <a href="<c:url value='/publisher/event/list?publisherId=${publisher.id}' />">All Events</a> :
 		<c:if test="${not empty(eventForm.id)}">edit event</c:if>
 		<c:if test="${empty(eventForm.id)}">create event</c:if>
 		</h2>
@@ -182,7 +183,7 @@
                   </p>  
 
 				<p>	
-					<input type="submit" />
+					<input type="submit" value="Save Event"/>
 				</p>
 			</fieldset>
 		</form:form>
