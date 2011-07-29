@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sightlyinc.ratecred.client.geo.GeoPersistable;
+import com.sightlyinc.ratecred.client.geo.GeoPersistenceException;
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
@@ -54,8 +56,16 @@ public class PersistenceInterceptor extends EmptyInterceptor {
                 PersistenceActivity activity = new PersistenceActivity();
                 activity.setActivity(PersistenceActivity.ACTIVITY_DELETE);
                 activity.setClazzName(entity.getClass().getName());
-                activity.setEntityId(((BaseEntity)entity).getId());
-                activity.setEntity((BaseEntity)entity);
+                activity.setEntityId(((BaseEntity) entity).getId());
+                activity.setEntity((BaseEntity) entity);
+                if (entity instanceof GeoPersistable) {
+                    // need to set member key to construct layer in listener to delete record from simplegeo
+                    try {
+                        activity.setMemberKey(((GeoPersistable)entity).getMemberKey());
+                    } catch (GeoPersistenceException e) {
+                        logger.error("Could not get member key of geo persistable entity when intercepting delete", e);
+                    }
+                }
                 deleteAudits.add(activity);
             }
 
