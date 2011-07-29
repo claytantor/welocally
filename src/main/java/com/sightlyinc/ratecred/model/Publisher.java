@@ -60,7 +60,6 @@ public class Publisher extends BaseEntity {
 	
 	@OneToMany
 	@JoinColumn(name = "publisher_id")
-	@JsonIgnore
 	private Set<Review> reviews;
 
 	public String getKey() {
@@ -95,9 +94,11 @@ public class Publisher extends BaseEntity {
 	public void setNetworkMember(NetworkMember networkMember) {
 		this.networkMember = networkMember;
 	}
+    @JsonIgnore
 	public Set<OfferEconomics> getOfferEconomics() {
 		return offerEconomics;
 	}
+    @JsonIgnore
 	public void setOfferEconomics(Set<OfferEconomics> offerEconomics) {
 		this.offerEconomics = offerEconomics;
 	}
