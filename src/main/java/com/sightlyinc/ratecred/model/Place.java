@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
@@ -87,7 +88,7 @@ public class Place extends BaseEntity {
 	@OneToMany
 	@JoinColumn(name="place_id")
 	private Set<Rating> ratings;
-	
+
 	@OneToMany
 	@JoinColumn(name="place_id")
 	private Set<PlaceAttribute> attributes;
@@ -187,12 +188,18 @@ public class Place extends BaseEntity {
 		this.flag = flag;
 	}
 
+    @JsonIgnore
 	public Set<Rating> getRatings() {
 		return ratings;
 	}
+    @JsonIgnore
 	public void setRatings(Set<Rating> ratings) {
 		this.ratings = ratings;
 	}
+
+    // serialization is happening outside of a transaction so there is no session to lazily load these
+    // if we went them in the JSON we'll have to move the serialization into a service method - sam
+    @JsonIgnore
 	public Set<PlaceAttribute> getAttributes() {
 		return attributes;
 	}
