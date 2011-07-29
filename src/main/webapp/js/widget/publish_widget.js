@@ -52,7 +52,7 @@ if (!WELOCALLY.PublishWidget) {
             wrapper.style.cursor = "pointer";
         } else {
             var iframe = document.createElement('IFRAME');
-            iframe.src = 'http://' + cfg.hostname + '/rcadmin/widget/publish/article?publisherKey=' + encodeURIComponent(cfg.publisher)
+            iframe.src = 'http://' + cfg.hostname + '/rcadmin/widget/publish/article?publisher=' + encodeURIComponent(cfg.publisher)
                     + '&place=' + encodeURIComponent(cfg.place)
                     + '&name=' + encodeURIComponent(cfg.title)
                     + '&summary=' + encodeURIComponent(cfg.summary)

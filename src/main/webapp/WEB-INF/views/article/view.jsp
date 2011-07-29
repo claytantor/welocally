@@ -24,7 +24,7 @@
 		<hr/>
 		<div class="actions span-24 last">
 			<a href="<c:url value='/publisher/article/edit/${article.id}?publisherId=${publisher.id}' />" class="button">edit</a>
-			<a href="<c:url value='/publisher/article/delete/${article.id}' />" class="button">delete</a>
+			<a href="<c:url value='/publisher/article/delete/${article.id}?publisherId=${publisher.id}' />" class="button">delete</a>
 		</div>
 		<div class="span-24 last">
 			<div class="strong-12 span-4">${article.id}</div>

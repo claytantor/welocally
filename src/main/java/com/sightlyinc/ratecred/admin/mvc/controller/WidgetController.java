@@ -70,7 +70,7 @@ public class WidgetController {
     public ModelAndView publishArticleWidgetContent(
             @RequestParam("url") String url,
             @RequestParam("name") String name,
-            @RequestParam("publisherKey") String publisherKey,
+            @RequestParam("publisher") String publisher,
             @RequestParam("place") Long placeId,
             @RequestParam(value = "summary", required = false) String summary
     ) {
@@ -88,16 +88,16 @@ public class WidgetController {
             article.setSummary(summary);
             article.setDescription(summary);
             
-            String[] keys = publisherKey.split(".");
+            String[] keys = publisher.split(".");
 
                 // look up the selected publisher
-            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(
+            Publisher p = publisherService.findByNetworkKeyAndPublisherKey(
             		keys[0], keys[1]);
             
             
             if (publisher != null) {
-                if (url.startsWith(publisher.getUrl())) {
-                    article.setPublisher(publisher);
+                if (url.startsWith(p.getUrl())) {
+                    article.setPublisher(p);
 
                     // look up the selected place
                     Place place = placeManagerService.findPlaceByPrimaryKey(placeId);
@@ -114,11 +114,11 @@ public class WidgetController {
                     }
                 } else {
                     LOGGER.debug("publish widget article URL does not start with publisher URL");
-                    modelAndView.addObject("status", "Article URL must start with " + publisher.getUrl());
+                    modelAndView.addObject("status", "Article URL must start with " + p.getUrl());
                 }
             } else {
-                LOGGER.debug("publish widget could not find publisher with key " + publisherKey);
-                modelAndView.addObject("status", "Invalid publisher: " + publisherKey);
+                LOGGER.debug("publish widget could not find publisher with key " + publisher);
+                modelAndView.addObject("status", "Invalid publisher: " + publisher);
             }
         } else {
             LOGGER.debug("publish widget found existing article");
