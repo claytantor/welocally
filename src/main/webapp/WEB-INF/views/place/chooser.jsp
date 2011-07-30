@@ -7,6 +7,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <c:url value='/publisher/place/feature.json' var="savePlaceByFeatureAction"/>
+<c:url value='/publisher/place/chooser-add.json' var="addPlaceAction"/>
 <script>
 var sgPlacesClient = new simplegeo.PlacesClient('bb8HCTrBtUZs78EwUVJvXG6ugWkrjNvM');
 var jsonObjFeatures = []; //declare features array
@@ -41,7 +42,7 @@ function getLocationsByAddress(address, options) {
 
   	    	$('#results').show();
             $("#add-span").show();
-            $("#add-form").hide();
+            $("#add-form-div").hide();
 
   	    }
   	});
@@ -68,13 +69,13 @@ function searchForPlaces() {
 $(function() {
 	$( "#search-places-action" ).click(searchForPlaces);
 
-	$( "#choose-place-action" ).click(function() { 
+	$( "#choose-place-action" ).click(function() {
 
 	    var featureSelected = jsonObjFeatures[selectedFeatureIndex];
 	    console.log(JSON.stringify(featureSelected));
-	    
+
 	    //$.post("${savePlaceByFeatureAction}", JSON.stringify(featureSelected));
-	    
+
 	    $.ajax({
 			type : 'POST',
 			url : '${savePlaceByFeatureAction}',
@@ -87,12 +88,12 @@ $(function() {
 					.text(data.msg).show(500);
 				if (data.error === true)
 					$('#demoForm').show(500);--%>
-					
+
 				console.log(data.place.name);
-				$( "#place-id" ).val( data.place.id );	
-				$( "#place-name" ).val( data.place.name );								
-				$( "#dialog-modal" ).dialog( 'close' );	
-					
+				$( "#place-id" ).val( data.place.id );
+				$( "#place-name" ).val( data.place.name );
+				$( "#dialog-modal" ).dialog( 'close' );
+
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
 				 console.error('error');
@@ -104,12 +105,12 @@ $(function() {
 		});
 
 
-		return false; 
+		return false;
 	});
 
     $( "#add-place-action" ).click(function() {
         $("#results").hide();
-        $("#add-form").show();
+        $("#add-form-div").show();
 
         $('#add-place-city').val($('#place-address').val());
         $('#add-place-name').val($('#place-search').val());
@@ -117,35 +118,70 @@ $(function() {
         return false;
     });
     $( "#cancel-add-link" ).click(function() {
-        $("#add-form").hide();
+        $("#add-form-div").hide();
         $("#results").show();
     });
-    $( "#save-place-action") .click(function() {
-        // validate user input
-        // try to geocode using user input via yahoo...? need server side code?
-        // if geocode succeeds, try to add place (definitely requires server side code to talk to SimpleGeo)
-        // if add succeeds, select place for event/article and reset and close place chooser)
+    $( "#save-place-action" ).click(function() {
+        if (!$("#add-place-name").val().match(/\S/)) {
+            alert("Please enter the new place's name");
+            return false;
+        }
+        if (!$("#add-place-street").val().match(/\S/)) {
+            alert("Please enter the new place's street address");
+            return false;
+        }
+        if (!$("#add-place-city").val().match(/\S/)) {
+            alert("Please enter the new place's city");
+            return false;
+        }
+        if (!$("#add-place-state").val().match(/\S/)) {
+            alert("Please enter the new place's state");
+            return false;
+        }
+        if (!$("#add-place-zip").val().match(/\S/)) {
+            alert("Please enter the new place's zip code");
+            return false;
+        }
+        $.ajax({
+            type : 'POST',
+            url : '${addPlaceAction}',
+//            contentType: 'application/json', // don't do this or request params won't get through
+            dataType : 'json',
+            data: $('#add-form').serialize(),
+            success : function(data){
+                console.log(data.place.name);
+                $( "#place-id" ).val( data.place.id );
+                $( "#place-name" ).val( data.place.name );
+                $( "#dialog-modal" ).dialog( 'close' );
+
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                console.error('error');
+                alert("An error occurred saving your changes, please try again");
+            }
+        });
+        return false;
     });
 
 	$("#results").hide();
 	$("#selection").hide();
     $("#add-span").hide();
-    $("#add-form").hide();
+    $("#add-form-div").hide();
 
-	
+
 	$( "#selectable" ).selectable({
 		   selected: function(event, ui) {
 				selectedFeatureIndex = $('#scroller-places li').index(ui.selected);
 				$("#selection").show();
 		   }
 	});
-		
+
 	$( "#dialog-modal" ).dialog({
 		height: 200,
 		width: 500,
 		modal: true,
 		resizable:true,
-		autoOpen: false 
+		autoOpen: false
 	});
 
     $(window).resize(function() {
@@ -156,13 +192,13 @@ $(function() {
 		$( "#dialog-modal" ).dialog( 'open' );
 	});
 
-});	
-			
-	
+});
+
+
 
 
 </script>
-<style>		
+<style>
 		.search-field { width: 100%; }
         #results { margin-top: 5px; }
 		#selectable .ui-selecting { background: #BFED8E; }
@@ -173,7 +209,7 @@ $(function() {
         #add-span { float:right; }
         /*#add-place-action { float:right; }*/
         #selection { margin-top: 5px; }
-        #add-form { margin-top: 5px; }
+        #add-form-div { margin-top: 5px; }
 </style>
 <div id="dialog-modal" title="Choose Place">
     <form onsubmit="return searchForPlaces()">
@@ -197,17 +233,19 @@ $(function() {
 		<button id="choose-place-action">choose place</button>
 	</div>
 	</div>
-    <div id="add-form">
+    </form>
+    <form onsubmit="return false" id="add-form">
+    <div id="add-form-div">
         place name:</br>
-        <input type="text" id="add-place-name" class="search-field"></br>
+        <input type="text" id="add-place-name" name="add-place-name" class="search-field"></br>
         street address:</br>
-        <input type="text" id="add-place-address" class="search-field"></br>
+        <input type="text" id="add-place-street" name="add-place-street" class="search-field"></br>
         city:</br>
-        <input type="text" id="add-place-city" class="search-field"></br>
+        <input type="text" id="add-place-city" name="add-place-city" class="search-field"></br>
         state:</br>
-        <input type="text" id="add-place-state" class="search-field"></br>
+        <input type="text" id="add-place-state" name="add-place-state" class="search-field"></br>
         zip code:</br>
-        <input type="text" id="add-place-zip" class="search-field"></br>
+        <input type="text" id="add-place-zip" name="add-place-zip" class="search-field"></br>
         <a id="cancel-add-link" href="#">cancel</a>
         <button id="save-place-action">add</button>
     </div>

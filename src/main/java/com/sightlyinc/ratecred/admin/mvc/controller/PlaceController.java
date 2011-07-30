@@ -1,30 +1,28 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
+import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
+import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
+import com.sightlyinc.ratecred.pojo.Location;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.xml.JsonEncoder;
 import com.sightlyinc.ratecred.admin.model.Feature;
-import com.sightlyinc.ratecred.client.geo.SimpleGeoPlaceManager;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.service.PlaceManagerService;
+import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
@@ -36,11 +34,13 @@ public class PlaceController {
     
 	@Autowired
 	private PlaceManagerService placeManagerService;
-	
+
     @Autowired
-    @Qualifier("jacksonMapper")
-    private ObjectMapper jacksonMapper;
-    
+    private YahooGeocoder yahooGeocoder;
+
+    @Autowired
+    private GeoPlacesClient geoPlacesClient;
+
     @ModelAttribute("encoder")
     public JsonEncoder getJsonEncoder() {
 		return JsonEncoder.getInstance();
@@ -108,6 +108,66 @@ public class PlaceController {
 
 	}
 	
+	@RequestMapping(value="/chooser-add", method=RequestMethod.POST)
+	public ModelAndView chooserAddPlace(
+            @RequestParam("add-place-name") String name,
+            @RequestParam("add-place-street") String street,
+            @RequestParam("add-place-city") String city,
+            @RequestParam("add-place-state") String state,
+            @RequestParam("add-place-zip") String zip,
+            HttpServletResponse response
+//            , HttpServletRequest request
+    ) {
+		logger.debug("adding place from place chooser");
+        ModelAndView modelAndView = new ModelAndView("save-place");
+
+/*
+        String name = "",
+        street = "",
+        city = "",
+        state = "",
+        zip = "";
+*/
+
+        Place place = new Place();
+        place.setName(name);
+        place.setAddress(street);
+        place.setCity(city);
+        place.setState(state);
+        place.setZip(zip);
+        try {
+            Location location = yahooGeocoder.geocode(
+                    place.getAddress() + " " +
+                    place.getCity() + " " +
+                    place.getState() + " " +
+                    place.getZip()
+            );
+
+            place.setLatitude(location.getLat());
+            place.setLongitude(location.getLng());
+
+            // geocode worked, post to simplegeo
+            Map<String, Object> results = geoPlacesClient.addPlace(place);
+
+            if (results != null) {
+                placeManagerService.savePlace(place);
+
+                modelAndView.addObject("place", place);
+                modelAndView.addObject("status", "SUCCESS");
+                response.setStatus(200);
+            }
+
+        } catch (GeocoderException e) {
+//            response.put("error", "Could not verify place address. please check the street address, city, state, and zip code");
+            response.setStatus(500);
+		} catch (BLServiceException e) {
+//            response.put("error", "An error occurred, please try again");
+            response.setStatus(500);
+        }
+
+        return modelAndView;
+	}
+
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public String getPlaceById(@PathVariable Long id, Model model) {
         logger.debug("view");
