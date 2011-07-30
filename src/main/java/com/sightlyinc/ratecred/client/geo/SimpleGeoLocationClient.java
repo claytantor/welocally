@@ -2,10 +2,14 @@ package com.sightlyinc.ratecred.client.geo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.simplegeo.client.types.Geometry;
+import com.simplegeo.client.types.Point;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -175,5 +179,42 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 		//return p;
 	}
 	
-	
+	public Map<String, Object> addPlace(Place place) {
+        Feature feature = transformPlace(place);
+
+        Map<String, Object> result = null;
+        try {
+            result = client.addPlace(feature);
+        } catch (IOException e) {
+            // TODO handle
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO handle
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private Feature transformPlace(Place place) {
+        Feature feature = new Feature();
+
+        Geometry geometry = new Geometry(new Point(place.getLatitude(), place.getLongitude()));
+        feature.setGeometry(geometry);
+
+        // TODO is it necessary to set this? is this the correct value?
+        feature.setType("Feature");
+
+        HashMap<String, Object> properties = new HashMap<String, Object>();
+        properties.put("address", place.getAddress());
+        properties.put("city", place.getCity());
+        properties.put("province", place.getState());
+        properties.put("postcode", place.getZip());
+        properties.put("name", place.getName());
+        properties.put("phone", place.getPhone());
+        // TODO website/url
+        properties.put("private", true);
+        feature.setProperties(properties);
+
+        return feature;
+    }
 }
