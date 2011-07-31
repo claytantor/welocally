@@ -56,7 +56,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
                 PersistenceActivity activity = new PersistenceActivity();
                 activity.setActivity(PersistenceActivity.ACTIVITY_DELETE);
                 activity.setClazzName(entity.getClass().getName());
-                activity.setEntityId(((BaseEntity) entity).getId());
+                //activity.setEntityId(((BaseEntity) entity).getId());
                 activity.setEntity((BaseEntity) entity);
                 if (entity instanceof GeoPersistable) {
                     // need to set member key to construct layer in listener to delete record from simplegeo
@@ -86,7 +86,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
     			PersistenceActivity activity = new PersistenceActivity();
         		activity.setActivity(PersistenceActivity.ACTIVITY_UPDATE);
         		activity.setClazzName(entity.getClass().getName());
-        		activity.setEntityId(((BaseEntity)entity).getId());
+        		//activity.setEntityId(((BaseEntity)entity).getId());
         		activity.setEntity((BaseEntity)entity);
         		updateAudits.add(activity);
     		}
@@ -176,9 +176,9 @@ public class PersistenceInterceptor extends EmptyInterceptor {
 		// creates, we need to do just a little 
 		// gymnastics because the id is assigned on flush
 		for (PersistenceActivity audit : createAudits) {
-			if(audit.getEntity() != null) {
-				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
-			}
+//			if(audit.getEntity() != null) {
+//				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
+//			}
 			persistenceInformerListener.inform(audit);
 			//saveAudit(audit);
 		}

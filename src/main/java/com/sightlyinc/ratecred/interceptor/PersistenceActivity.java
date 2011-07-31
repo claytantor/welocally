@@ -29,10 +29,12 @@ public class PersistenceActivity {
 		this.clazzName = clazzName;
 	}
 	public Long getEntityId() {
-		return entityId;
+		return this.entityId;
 	}
+
 	public void setEntityId(Long entityId) {
 		this.entityId = entityId;
+		
 	}
 	public Integer getActivity() {
 		return activity;
@@ -48,6 +50,7 @@ public class PersistenceActivity {
 	
 	@JsonIgnore
 	public void setEntity(BaseEntity entity) {
+		this.entityId = ((BaseEntity)entity).getId();
 		this.entity = entity;
 	}
 
