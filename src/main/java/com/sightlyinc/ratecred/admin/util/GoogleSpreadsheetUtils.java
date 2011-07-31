@@ -21,9 +21,7 @@ public class GoogleSpreadsheetUtils {
 			SimpleHttpClient.get(spreadsheetUrl, null, null);
 		StringReader sreader = new StringReader(new String(response.getResponse()));
 		CSVReader reader = new CSVReader(sreader);
-		reader.readNext();	
-		reader.readNext();	
-		
+		reader.readNext();				
 		
 		String [] offerLine;
 	    while ((offerLine = reader.readNext()) != null) {

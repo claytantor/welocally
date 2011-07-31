@@ -1,10 +1,10 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,27 +13,19 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.noi.utility.date.DateUtils;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.util.GoogleSpreadsheetUtils;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.client.geo.GeoPersistenceException;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoPlaceManager;
 import com.sightlyinc.ratecred.model.Event;
-import com.sightlyinc.ratecred.model.Merchant;
-import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.EventService;
@@ -132,7 +124,7 @@ public class EventController {
 			List<String[]> rows = GoogleSpreadsheetUtils
 					.getSpreadsheetData(spreadsheetUrl);
 			Publisher p = publisherService.findByPrimaryKey(publisherId);
-			findAndSaveEventsAsTable(rows, p);
+			findAndSaveEventsAsTable(rows);
 			return "redirect:/publisher/event/list?publisherId="+publisherId;
 		} catch (IOException e) {
 			model.addAttribute("error", e);
@@ -153,8 +145,7 @@ public class EventController {
 
 	}
 
-	protected void findAndSaveEventsAsTable(List<String[]> lines,
-			Publisher p) throws IOException, JSONException,
+	protected void findAndSaveEventsAsTable(List<String[]> lines) throws IOException, JSONException,
 			GeoPersistenceException, BLServiceException, NoSuchAlgorithmException {
 
 		double lat = 37.811373;
@@ -173,25 +164,44 @@ public class EventController {
 		 */
 
 		for (String[] fields : lines) {
+			////Timestamp0,publisherKey1,eventName2,hidden3,url4,phone5,
+			//placeName6,description7,address8,city9,
+			//state10,starts_date11,ends_date12,length13,status14
+			
+			String publisherKey = fields[1].trim();	
+			String[] keys = publisherKey.split("\\.");
+
+            // look up the selected publisher
+			Publisher p = null;
+			try {
+				p = publisherService.findByNetworkKeyAndPublisherKey(
+						keys[0], keys[1]);
+			} catch (Exception e) {
+				logger.error("problem with keys", e);
+			}
+			
+			String name = fields[2].trim();	
+			String status = fields[14].trim();	
+			String url= fields[4].trim();	
+			String phone = fields[5].trim();	
+			String placeName = fields[6].trim();	
+			String description = fields[7].trim();	
+			String address = fields[8].trim();	
+			String city = fields[9].trim();	
+			String state = fields[10].trim();	
+			Date ts = DateUtils.stringToDate(fields[11].trim(), "MM/dd/yyyy HH:mm:ss");
+			Date te = DateUtils.stringToDate(fields[12].trim(), "MM/dd/yyyy HH:mm:ss");
+			
+//			Long timeStarts = Long.parseLong(fields[9].trim());	
+//			Long timeEnds= Long.parseLong(fields[10].trim());
 			
 			
-			String name = fields[0].trim();	
-			String status = fields[1].trim();	
-			String url= fields[2].trim();	
-			String phone = fields[3].trim();	
-			String placeName = fields[4].trim();	
-			String description = fields[5].trim();	
-			String address = fields[6].trim();	
-			String city = fields[7].trim();	
-			String state = fields[8].trim();	
-			Long timeStarts = Long.parseLong(fields[9].trim());	
-			Long timeEnds= Long.parseLong(fields[10].trim());
 			String idVal = url.substring(url.lastIndexOf("=")+1);
 			//String id = new String(MessageDigest.getInstance("MD5").digest(idVal.getBytes()));
 
 			logger.debug("trying to load place:" + placeName);
 
-			if (status.equalsIgnoreCase("ACTIVE")) {
+			if (status.equalsIgnoreCase("ACTIVE") && p != null) {
 
 				FeatureCollection collection = client.search(lat, lon,
 						placeName.trim(), "", radiusInKMeters);
@@ -220,8 +230,8 @@ public class EventController {
 										 address,	
 										 city,
 										 state,	
-										 timeStarts,	
-										 timeEnds,
+										 ts.getTime(),	
+										 te.getTime(),
 										 idVal,
 										 p));
 					}
