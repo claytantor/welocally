@@ -30,7 +30,6 @@ import com.sightlyinc.ratecred.client.geo.GeoStoragePersistor;
 import com.sightlyinc.ratecred.dao.MerchantDao;
 import com.sightlyinc.ratecred.dao.NetworkMemberDao;
 import com.sightlyinc.ratecred.dao.PublisherDao;
-import com.sightlyinc.ratecred.dao.ReviewDao;
 import com.sightlyinc.ratecred.interceptor.PersistenceActivity;
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 import com.sightlyinc.ratecred.model.Article;
@@ -38,7 +37,6 @@ import com.sightlyinc.ratecred.model.Event;
 import com.sightlyinc.ratecred.model.Merchant;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.model.Review;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
 import com.simplegeo.client.types.Layer;
@@ -54,10 +52,7 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 	@Autowired 
 	private ArticleService articleService;
 	
-	@Autowired 
-	private ReviewDao reviewDao;
-	
-	@Autowired 
+	@Autowired
 	private EventService eventService;
 	
 	@Autowired 
@@ -121,10 +116,6 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
         						articleService.save(article);
                                 //not working
                                 article.setPublished(true);
-                            } else if(clazz.getName().equals(Review.class.getName())){
-                                Review review = reviewDao.findByPrimaryKey(activity.getEntityId());
-                                saveGeoEntityToStorage((GeoPersistable)review) ;
-                                review.setPublished(true);
                             } else if(clazz.getName().equals(Event.class.getName())){
                                 Event event = eventService.findByPrimaryKey(activity.getEntityId());
                                 saveGeoEntityToStorage((GeoPersistable)event) ;
@@ -135,7 +126,6 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
                                 createLayersForKey(getPublisherLayerPrefix(publisher),
                                         new String[] {
                                                 Article.class.getSimpleName().toLowerCase(),
-                                                Review.class.getSimpleName().toLowerCase(),
                                                 Event.class.getSimpleName().toLowerCase()});
 
                             } else if(clazz.getName().equals(Merchant.class.getName())){
