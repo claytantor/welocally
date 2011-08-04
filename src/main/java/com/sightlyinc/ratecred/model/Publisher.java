@@ -57,10 +57,6 @@ public class Publisher extends BaseEntity {
 	@JoinColumn(name = "publisher_id")
 	@JsonIgnore
 	private Set<Article> articles;
-	
-	@OneToMany
-	@JoinColumn(name = "publisher_id")
-	private Set<Review> reviews;
 
 	public String getKey() {
 		return key;
@@ -142,15 +138,4 @@ public class Publisher extends BaseEntity {
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
 	}
-	@JsonIgnore
-	public Set<Review> getReviews() {
-		return reviews;
-	}
-	@JsonIgnore
-	public void setReviews(Set<Review> reviews) {
-		this.reviews = reviews;
-	}
-	
-	
-
 }
