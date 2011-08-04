@@ -54,7 +54,7 @@ public class PlaceController {
 	}	
 	
     @RequestMapping(value="/edit/{id}", method=RequestMethod.GET)
-    public String editReview(@PathVariable Long id, Model model) {
+    public String editPlace(@PathVariable Long id, Model model) {
         logger.debug("edit");
         model.addAttribute("placeForm", placeManagerService.findPlaceByPrimaryKey(id));
         return "place/edit";
