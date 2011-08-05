@@ -37,6 +37,9 @@ public class Patron extends BaseEntity {
 	
 	@JsonProperty
 	protected String userName;
+
+    @JsonProperty
+    protected Long facebookId;
 	
 	@JsonProperty
 	protected String secretKey;
@@ -152,10 +155,18 @@ public class Patron extends BaseEntity {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.sightlyinc.ratecred.model.Rater#getRatings()
-	 */
+
+    public Long getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(Long facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    /* (non-Javadoc)
+      * @see com.sightlyinc.ratecred.model.Rater#getRatings()
+      */
 	@JsonProperty
 	public Set<Rating> getRatings() {
 		return ratings;

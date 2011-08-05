@@ -546,6 +546,7 @@ DROP TABLE IF EXISTS `patron` ;
 
 CREATE  TABLE IF NOT EXISTS `patron` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `facebook_id` BIGINT(20) ,
   `version` INT(11) DEFAULT NULL ,
   `user_principal_id` BIGINT(20) NOT NULL ,
   `username` VARCHAR(255) NULL DEFAULT NULL ,
@@ -560,13 +561,7 @@ CREATE  TABLE IF NOT EXISTS `patron` (
   `auth_gowalla` VARCHAR(12) NULL DEFAULT 'false' ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,   
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_patron_user_principal1` (`user_principal_id` ASC) ,
-  CONSTRAINT `fk_patron_user_principal1`
-    FOREIGN KEY (`user_principal_id` )
-    REFERENCES `user_principal` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
