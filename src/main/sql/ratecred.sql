@@ -128,7 +128,7 @@ DROP TABLE IF EXISTS `award` ;
 CREATE  TABLE IF NOT EXISTS `award` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `award_type_id` BIGINT(20) NOT NULL ,
-  `award_offer_id` BIGINT(20) NOT NULL ,
+  `award_offer_id` BIGINT(20) ,
   `patron_id` BIGINT(20) NOT NULL ,
   `version` INT(11) DEFAULT NULL ,
   `expires` BIGINT NULL DEFAULT NULL ,
@@ -141,7 +141,6 @@ CREATE  TABLE IF NOT EXISTS `award` (
   INDEX `award_type_fk` (`award_type_id` ASC) ,
   INDEX `patron_fk` (`patron_id` ASC) ,
   INDEX `fk_award_patron` (`patron_id` ASC) ,
-  INDEX `fk_award_award_offer` (`award_offer_id` ASC) ,
   CONSTRAINT `fk_award_award_type`
     FOREIGN KEY (`award_type_id` )
     REFERENCES `award_type` (`id` )
@@ -150,11 +149,6 @@ CREATE  TABLE IF NOT EXISTS `award` (
   CONSTRAINT `fk_award_patron`
     FOREIGN KEY (`patron_id` )
     REFERENCES `patron` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_award_award_offer`
-    FOREIGN KEY (`award_offer_id` )
-    REFERENCES `offer` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
