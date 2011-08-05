@@ -145,6 +145,12 @@
         <property name="contentType" value="application/json"/>
     </bean>
 
+    <bean id="patron-awards-json"
+        class="org.springframework.web.servlet.view.velocity.VelocityView">
+        <property name="url" value="patron/awards-json.vm"/>
+        <property name="contentType" value="application/json"/>
+    </bean>
+
 
 	
 </beans>

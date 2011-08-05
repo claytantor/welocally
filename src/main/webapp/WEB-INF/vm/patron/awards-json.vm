@@ -1,0 +1,49 @@
+#set($awards = $itool.wrap($awardList))
+[
+#foreach($award in $awards)
+#set ($award = $awards.more())
+{
+#if(${award.id})		
+ 	"id": ${award.id},
+#end
+ 	"notes": "${award.notes}",
+ 	"timeCreatedMills": ${award.timeCreated},
+ 	"metadata": "${award.metadata}",
+ 	"imageUrl": "${awardTool.makeImageUrl($award)}",
+ 	"status": "$!{award.status}",
+ 	"awardType": {
+		"id": ${award.awardType.id},
+		"name": "${award.awardType.name}",
+		"description": "${encoder.encodeString($award.awardType.description)}",
+		"type": "$!{award.awardType.type}",
+		"keyname": "${award.awardType.keyname}"
+	}
+#*
+    #if($award.offers.size() > 0),
+	"offers": [ 
+#set($offers = $itool.wrap($award.offers))	
+#foreach($offer in $offers)
+#set ($offer = $offers.more())	
+		{
+			"id": "${offer.id}",			
+			"externalId": "${offer.externalId}",
+			"externalSource": "${offer.externalSource}",
+			"programId": "${offer.programId}",
+			"programName": "${offer.programName}",
+			"name": "${offer.name}",
+			"couponCode": "${offer.couponCode}",
+			"status": "${offer.status}",
+			"description": "$!{offer.description}",
+			"url": "$!{offer.url}",
+			"illustrationUrl": "${offer.illustrationUrl}",
+			"beginDateMillis": ${offer.beginDateMillis},
+			"expireDateMillis": ${offer.expireDateMillis}		
+		}#if(${offers.hasMore()}),#end
+	]
+	#end
+	#end
+*#
+}#if(${awards.hasMore()}),
+#end	    
+#end 
+]
