@@ -1,0 +1,16 @@
+#set($ipatrons = $itool.wrap($leaders))
+[#foreach($patron in $ipatrons)
+#set ($patron = $ipatrons.more())
+	{
+	 	"id": ${patron.id},
+	 	"userName": "$!{patron.userName}",
+	 	"score": ${patron.score},
+	 	"status": "${patron.status}",
+##	 	"awards": null#if(${patron.patronImage}),
+###end
+#if(${patron.facebookId})
+		"patronImage": "https://graph.facebook.com/${patron.facebookId}/picture"
+#end 	 			
+	}#if(${ipatrons.hasMore()}),#end
+#end 
+]
