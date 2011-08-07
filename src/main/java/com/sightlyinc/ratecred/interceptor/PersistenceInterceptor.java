@@ -56,7 +56,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
                 PersistenceActivity activity = new PersistenceActivity();
                 activity.setActivity(PersistenceActivity.ACTIVITY_DELETE);
                 activity.setClazzName(entity.getClass().getName());
-                //activity.setEntityId(((BaseEntity) entity).getId());
+                activity.setEntityId(((BaseEntity) entity).getId());
                 activity.setEntity((BaseEntity) entity);
                 if (entity instanceof GeoPersistable) {
                     // need to set member key to construct layer in listener to delete record from simplegeo
@@ -148,7 +148,7 @@ public class PersistenceInterceptor extends EmptyInterceptor {
 
     public void afterTransactionCompletion(Transaction tx) {
         if ( tx.wasCommitted() && (creates >0 || updates>0 || loads>0 || deletes>0) ) {
-            logger.debug("Creations: " + creates + ", Updates: " + updates+ "Loads: " + loads + ", Deletes: " + deletes);
+            logger.debug("Creations: " + creates + ", Updates: " + updates+ " Loads: " + loads + ", Deletes: " + deletes);
         }
         deletes=0;
         updates=0;
@@ -176,25 +176,25 @@ public class PersistenceInterceptor extends EmptyInterceptor {
 		// creates, we need to do just a little 
 		// gymnastics because the id is assigned on flush
 		for (PersistenceActivity audit : createAudits) {
-//			if(audit.getEntity() != null) {
-//				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
-//			}
+			if(audit.getEntity() != null) {
+				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
+			}
 			persistenceInformerListener.inform(audit);
 			//saveAudit(audit);
 		}
 
 		// updates
 		for (PersistenceActivity audit : updateAudits) {
-//			if(audit.getEntity() != null) {
-//				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
-//			}
+			if(audit.getEntity() != null) {
+				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
+			}
 			persistenceInformerListener.inform(audit);
 		}
 		// deletes
 		for (PersistenceActivity audit : deleteAudits) {
-//			if(audit.getEntity() != null) {
-//				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
-//			}
+			if(audit.getEntity() != null) {
+				audit.setEntityId(((BaseEntity)audit.getEntity()).getId());
+			}
 			persistenceInformerListener.inform(audit);
 		}
 

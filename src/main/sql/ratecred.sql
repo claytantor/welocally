@@ -810,8 +810,8 @@ DROP TABLE IF EXISTS `article` ;
 CREATE  TABLE IF NOT EXISTS `article` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT NULL ,
-  `publisher_id` BIGINT(20) NOT NULL ,
-  `place_id` BIGINT(20) NOT NULL ,
+  `publisher_id` BIGINT(20),
+  `place_id` BIGINT(20) ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `description` TEXT NULL DEFAULT NULL ,
   `summary` VARCHAR(1024) NULL DEFAULT NULL ,
@@ -874,8 +874,8 @@ DROP TABLE IF EXISTS `event` ;
 CREATE  TABLE IF NOT EXISTS `event` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `version` INT NULL ,
-  `publisher_id` BIGINT(20) NOT NULL ,
-  `place_id` BIGINT(20) NOT NULL ,
+  `publisher_id` BIGINT(20) ,
+  `place_id` BIGINT(20) ,
   `name` VARCHAR(255) NULL DEFAULT NULL ,
   `phone` VARCHAR(32) NULL DEFAULT NULL ,
   `whenText` VARCHAR(255) NULL DEFAULT NULL ,

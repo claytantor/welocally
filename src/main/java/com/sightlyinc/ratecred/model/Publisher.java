@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -48,12 +49,12 @@ public class Publisher extends BaseEntity {
 	@JoinColumn(name = "publisher_id")
 	private Set<OfferEconomics> offerEconomics;
 	
-	@OneToMany
+	@OneToMany(cascade={CascadeType.ALL})
 	@JoinColumn(name = "publisher_id")
 	@JsonIgnore
 	private Set<Event> events;
 	
-	@OneToMany
+	@OneToMany(cascade={CascadeType.ALL})
 	@JoinColumn(name = "publisher_id")
 	@JsonIgnore
 	private Set<Article> articles;

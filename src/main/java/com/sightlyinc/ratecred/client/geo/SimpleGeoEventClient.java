@@ -1,21 +1,24 @@
 package com.sightlyinc.ratecred.client.geo;
 
-import java.util.HashMap;
+import java.util.Calendar;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.rosaloves.net.shorturl.bitly.Bitly;
-import com.rosaloves.net.shorturl.bitly.BitlyFactory;
-import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
+import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Event;
+import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.pojo.Events;
+import com.sightlyinc.ratecred.service.EventService;
+import com.sightlyinc.ratecred.service.PlaceManagerService;
 import com.simplegeo.client.SimpleGeoStorageClient;
-import com.simplegeo.client.types.Geometry;
-import com.simplegeo.client.types.Point;
+import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.Record;
 
 @Component("geoEventClient")
@@ -32,6 +35,17 @@ public class SimpleGeoEventClient implements GeoEventClient {
 
 	@Value("${simpleGeo.rateCredOAuth.appSecretKey}")
 	private String ratecredConsumerSecret;
+	
+	@Autowired
+	private PlaceManagerService placeManagerService;
+	
+	@Autowired
+	private EventService eventService; 
+	
+	@Autowired
+	@Qualifier("locationPlacesClient")
+	private SimpleGeoPlaceManager locationPlacesClient;
+	
 
 
     @PostConstruct
@@ -86,6 +100,58 @@ public class SimpleGeoEventClient implements GeoEventClient {
 		logger.debug("writing to storage:"+article.getUrl()+" to layer "+articleLayerPrefix+"."+article.getReferrerId()+"."+articleLayerSuffix);
 		client.addOrUpdateRecord(r);*/
     	
+	}
+	
+	public Event makeEventFromFeature(Feature f,
+			String name,
+			String status,
+			String url,
+			String phone,
+			String placeName,	
+			String description,
+			String address,	
+			String city,
+			String state,	
+			Long timeStarts,	
+			Long timeEnds,
+			Publisher pub)  {
+		
+		Event event = eventService.findByUrl(url);
+
+		if (event == null) {
+			event = new Event();
+			event.setUrl(url);
+		}
+		
+
+		// dont add a place that is already in the database
+		Place p = null;
+		try {
+			p = placeManagerService.findBySimpleGeoId(f.getSimpleGeoId());			
+		} catch (BLServiceException ev) {
+			logger.error("cannot find place", ev);
+		}
+
+		try {
+			if (p == null) {
+				p = new Place();
+				locationPlacesClient.transformFeature(f, p);
+				placeManagerService.savePlace(p);
+			}
+		} catch (BLServiceException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		
+		event.setDescription(description);
+		event.setName(name);
+		event.setPhone(phone);
+		event.setPlace(p);
+		event.setPublisher(pub);
+		event.setTimeCreated(Calendar.getInstance().getTimeInMillis());
+		event.setTimeStarts(timeStarts);
+		event.setTimeEnds(timeEnds);
+		
+		return event;
 	}
 
 

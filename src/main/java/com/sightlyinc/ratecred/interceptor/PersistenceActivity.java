@@ -3,6 +3,7 @@ package com.sightlyinc.ratecred.interceptor;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.sightlyinc.ratecred.model.BaseEntity;
 
@@ -28,10 +29,13 @@ public class PersistenceActivity {
 	public void setClazzName(String clazzName) {
 		this.clazzName = clazzName;
 	}
+	
+	@JsonProperty
 	public Long getEntityId() {
 		return this.entityId;
 	}
 
+	@JsonProperty
 	public void setEntityId(Long entityId) {
 		this.entityId = entityId;
 		
