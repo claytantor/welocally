@@ -206,7 +206,8 @@ $(function() {
 		#selectable { list-style-type: none; margin: 0; padding: 0; }
 		#selectable li { margin: 3px 3px 3px 0; padding: 0.2em; cursor: pointer; }
 		#scroller-places { height: 240px; width: 100%; overflow-y: scroll;}
-        #add-span { float:right; }
+        /*#add-span { float:right; }*/
+        #add-span { }
         /*#add-place-action { float:right; }*/
         #selection { margin-top: 5px; }
         #add-form-div { margin-top: 5px; }

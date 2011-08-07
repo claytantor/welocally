@@ -52,7 +52,7 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 	@Autowired 
 	private ArticleService articleService;
 	
-	@Autowired
+	@Autowired 
 	private EventService eventService;
 	
 	@Autowired 

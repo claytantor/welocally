@@ -78,34 +78,47 @@ $(document).ready(function() {
 	var publisherLayerPrefix = '${publisher.networkMember.memberKey}.'+'${publisher.siteName}'.replace(/ /g,'').toLowerCase(); 
   	
 	populateFeaturesForType(
+			'article',
 			lat, lon,
-			'#selectable_article', 
+			'#selectable', 
 			publisherLayerPrefix+'.article', 
 			optionsSearch, 
 			'${imageUrl}/articles_32.png',
 			map);
 
 	populateFeaturesForType(
+			'event',
 			lat, lon,
-			'#selectable_event', 
+			'#selectable', 
 			publisherLayerPrefix+'.event', 
 			optionsSearch, 
 			'${imageUrl}/events_32.png',
 			map);
+
+	$( "#selectable" ).selectable({
+		   selected: function(event, ui) { 
+		   		var selectedFeature = features[ui.selected.id.replace("item","")];				
+				console.log(selectedFeature);	
+				$('#selected_content').html(buildContentForEvetFeature(selectedFeature)); 
+		   }
+	});
   	
 });
 
+var features = [];
+
 //${imageUrl}/articles_32.png
-function populateFeaturesForType(lat, lon, div, layer, optionsSearch, markerImage, map) {
+function populateFeaturesForType(type, lat, lon, div, layer, optionsSearch, markerImage, map) {
 	client.getNearby(layer, lat, lon, optionsSearch, function(err, data) {
   	    if (err) {
   	        console.error(err);
   	    } else {
   	    	
   	    	$.each(data.features, function(i,item){ 
-  	    		console.log(JSON.stringify(item));	    		
+  	    		//console.log(JSON.stringify(item));	    		
   	    		addMarker(map, markerImage, item.geometry.coordinates[1], item.geometry.coordinates[0]);
-  	    		$(div).append(buildListItemForFeature(item));
+  	    		$(div).append(buildListItemForFeature(i,type,item));
+				features[i] = item;	    		
   		    });
   	    }
   	});
@@ -113,13 +126,27 @@ function populateFeaturesForType(lat, lon, div, layer, optionsSearch, markerImag
 }
 
 
-function buildListItemForFeature(feature) {
+function buildListItemForFeature(position, type, feature) {
 	if (feature.properties.entity != null) {
-		return '<li class=\"span-5 ui-widget-content\"><strong>'+
+		return '<li id=\"item'+position+'\" class=\"span-5 ui-widget-content\"><strong>'+type+':'+
 					feature.properties.entity.name+
 					'</strong></br>'+
 					feature.properties.entity.geoPlace.name+
+					'</br>'+
+					new Date(feature.properties.entity.startDateTime)+
 				'</li>';
+	}
+	
+}
+
+function buildContentForEvetFeature(feature) {
+	if (feature.properties.entity != null) {
+		return '<div><img src=\"${imageUrl}/events_32.png\"/></br>'+
+					'<strong>'+feature.properties.entity.name+'</strong></br>'+
+					feature.properties.entity.geoPlace.name+'</br>'+
+					new Date(feature.properties.entity.startDateTime)+'</br>'+
+					feature.properties.entity.description+
+				'</div>';
 	}
 	
 }
@@ -149,32 +176,30 @@ function addMarker(map, image, latitude, longitude) {
 	#selectable .ui-selecting { background: #FECA40; }
 	#selectable .ui-selected { background: #F39814; color: white; }
 	#selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-	#selectable li { margin: 3px; padding: 0.4em; font-size: 0.8em; height: 18px; }	
+	#selectable li { margin: 3px; padding: 0.4em; font-size: 1.0em; }	
+	#selected_content { margin: 10; padding: 10; width: 100%; font-size: 1.4em; }
+	#leftbar {width:240px; height:400px; overflow-y:auto; overflow-x:hidden; }	
 </style>
 <body>
 <div class="container">
-
     <div class="span-24">
         <jsp:include page="../header.jsp"/>
     </div>
     <div class="span-24 last">
-
+    	<h3>items</h3>
+    </div>
+    <div class="span-24 last">
 	<%-- left bar --%>
-	<div class="span-6">
-		<h3>articles</h3>
-		<div class="span-6">
-			<ol id="selectable_article">
+	<div id="leftbar" class="span-6">
+		<div class="span-10">
+			<ol id="selectable">
 			</ol>	
-		</div>	
-		<h3>events</h3>
-		<div class="span-6">
-			<ol id="selectable_event">
-			</ol>	
-		</div>					
+		</div>		
 	</div>
 	<%-- right bar --%>
-	<div class="span-18 last">
-		<div id="map_canvas" class="span-16 last"></div>
+	<div class="span-14 last">
+		<div id="map_canvas" class="span-14"></div>
+		<div id="selected_content" class="span-14"></div>
 	</div>	
 
     </div>

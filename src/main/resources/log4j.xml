@@ -25,11 +25,11 @@
     <priority value="debug"/>
   </category>
 
- <!--  <category name="com.noi">
+  <category name="com.noi.utility">
     <priority value="debug"/>
   </category> 
   
-  
+ <!--  
   <category name="com.simplegeo">
     <priority value="debug"/>
   </category> 

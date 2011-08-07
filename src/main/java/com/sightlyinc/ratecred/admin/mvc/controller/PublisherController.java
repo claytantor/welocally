@@ -135,8 +135,9 @@ public class PublisherController {
 	public String deletePublisher(@PathVariable Long id, Model model) {
 		logger.debug("delete");
 		Publisher p = publisherService.findByPrimaryKey(id);
+		
 		publisherService.delete(p);
-		return "redirect:/admin/publisher/list";
+		return "redirect:/home";
 	}
 	
 	@RequestMapping(value="/list", method=RequestMethod.GET)

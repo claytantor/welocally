@@ -3,14 +3,16 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -21,15 +23,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.noi.utility.date.DateUtils;
+import com.noi.utility.net.ClientResponse;
+import com.noi.utility.net.SimpleHttpClient;
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
 import com.sightlyinc.ratecred.admin.util.GoogleSpreadsheetUtils;
+import com.sightlyinc.ratecred.client.geo.GeoEventClient;
 import com.sightlyinc.ratecred.client.geo.GeoPersistenceException;
-import com.sightlyinc.ratecred.client.geo.SimpleGeoPlaceManager;
 import com.sightlyinc.ratecred.model.Event;
-import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.EventService;
-import com.sightlyinc.ratecred.service.PlaceManagerService;
 import com.sightlyinc.ratecred.service.PublisherService;
 import com.simplegeo.client.SimpleGeoPlacesClient;
 import com.simplegeo.client.types.Feature;
@@ -53,11 +56,12 @@ public class EventController {
 	private PublisherService publisherService;
 	
 	@Autowired
-	@Qualifier("locationPlacesClient")
-	private SimpleGeoPlaceManager simpleGeoPlaceManager ;
+	JsonModelProcessor jsonModelProcessor; 
+	
 	
 	@Autowired
-	private PlaceManagerService placeManagerService ;
+	@Qualifier("geoEventClient")
+	private GeoEventClient geoEventClient;
 	
 	
 
@@ -115,7 +119,7 @@ public class EventController {
 		return "event/list";
 	}
 
-	@RequestMapping(value = "/load/{key}", method = RequestMethod.GET)
+	@RequestMapping(value = "/load/google/{key}", method = RequestMethod.GET)
 	public String loadEventsFromGoogle(@PathVariable String key, @RequestParam Long publisherId, Model model) {
 		logger.debug("load");
 		String spreadsheetUrl = "https://spreadsheets.google.com/tq?tqx=out:csv&key="
@@ -144,6 +148,58 @@ public class EventController {
 		}
 
 	}
+	
+	//?json=get_category_posts&get_post_meta&custom_fields=_EventVenue,_EventStartDate,_EventEndDate,_EventAddress,_EventCity,_EventState,_EventZip,_EventCost,_EventPhone&category_id=41
+	@RequestMapping(value = "/load/wordpress", method = RequestMethod.GET)
+	public String loadEventsFromWordpress(
+			@RequestParam String baseUrl,
+			@RequestParam Integer categoryId, 
+			@RequestParam String publisherKey, 
+			Model model) {
+		logger.debug("load");
+		Publisher publisher = null;
+		if (publisherKey != null) {
+        	String[] keys = publisherKey.split("\\x2e");
+        	
+            // look up the selected publisher
+        	publisher = publisherService.findByNetworkKeyAndPublisherKey(
+        		keys[0], keys[1]);
+        	
+        	SimpleHttpClient client = new SimpleHttpClient();
+        	Map<String,String> params = new HashMap<String,String>();
+        	params.put("json", "get_category_posts");
+        	params.put("get_post_meta", "");
+        	params.put("custom_fields", "_EventVenue,_EventStartDate,_EventEndDate,_EventAddress,_EventCity,_EventState,_EventZip,_EventCost,_EventPhone");
+        	params.put("category_id", categoryId.toString());
+        	
+        	//so lame!
+        	for (int j = 0; j < 7; j++) {
+        		
+            	
+            	params.put("page", ""+j);
+            	
+            	
+            	
+            	try {
+    				ClientResponse response = 
+    					client.get("http://"+baseUrl, params, null);
+    				
+    				JSONObject postsResponse = new JSONObject(new String(response.getResponse()));
+    				
+    				jsonModelProcessor.saveJsonEventsAsPostsForPublisher(postsResponse, publisher);
+    				
+    				
+    			} catch (Exception e) {
+    				logger.error("problem get events", e);
+    			}
+			}
+        	
+        	return "redirect:/publisher/event/list?publisherId="+publisher.getId();
+         }
+
+		return "error";
+
+	}
 
 	protected void findAndSaveEventsAsTable(List<String[]> lines) throws IOException, JSONException,
 			GeoPersistenceException, BLServiceException, NoSuchAlgorithmException {
@@ -156,7 +212,6 @@ public class EventController {
 		SimpleGeoPlacesClient client = SimpleGeoPlacesClient.getInstance();
 		client.getHttpClient().setToken(sgoauthkey, sgoauthsecret);
 
-		String line = null; // not declared within while loop
 		/*
 		 * readLine is a bit quirky : it returns the content of a line MINUS the
 		 * newline. it returns null only for the END of the stream. it returns
@@ -192,12 +247,7 @@ public class EventController {
 			Date ts = DateUtils.stringToDate(fields[11].trim(), "MM/dd/yyyy HH:mm:ss");
 			Date te = DateUtils.stringToDate(fields[12].trim(), "MM/dd/yyyy HH:mm:ss");
 			
-//			Long timeStarts = Long.parseLong(fields[9].trim());	
-//			Long timeEnds= Long.parseLong(fields[10].trim());
-			
-			
 			String idVal = url.substring(url.lastIndexOf("=")+1);
-			//String id = new String(MessageDigest.getInstance("MD5").digest(idVal.getBytes()));
 
 			logger.debug("trying to load place:" + placeName);
 
@@ -218,22 +268,23 @@ public class EventController {
 					if (fname.equals(placeName)
 							&& feature.getProperties().get("city").toString()
 									.contains(city)) {
-						eventService.save(
-								makeEventFromFeature(
-										 feature, 
-										 name,
-										 status,
-										 url,
-										 phone,
-										 placeName,	
-										 description,
-										 address,	
-										 city,
-										 state,	
-										 ts.getTime(),	
-										 te.getTime(),
-										 idVal,
-										 p));
+						
+						Event e = geoEventClient.makeEventFromFeature(
+								 feature, 
+								 name,
+								 status,
+								 url,
+								 phone,
+								 placeName,	
+								 description,
+								 address,	
+								 city,
+								 state,	
+								 ts.getTime(),	
+								 te.getTime(),
+								 p);
+						
+						eventService.save(e);
 					}
 
 				}
@@ -242,57 +293,7 @@ public class EventController {
 
 		}
 
-
-
 	}
 
-	private Event makeEventFromFeature(Feature f,
-			String name,
-			String status,
-			String url,
-			String phone,
-			String placeName,	
-			String description,
-			String address,	
-			String city,
-			String state,	
-			Long timeStarts,	
-			Long timeEnds,
-			String idVal,
-			Publisher pub) throws BLServiceException {
-		
-		Event event = eventService.findByUrl(url);
-
-		if (event == null) {
-			event = new Event();
-			event.setUrl(url);
-		}
-		
-
-		// dont add a place that is already in the database
-		Place p = null;
-		try {
-			p = placeManagerService.findBySimpleGeoId(f.getSimpleGeoId());			
-		} catch (BLServiceException ev) {
-			logger.error("cannot find place", ev);
-		}
-
-		if (p == null) {
-			p = new Place();
-			simpleGeoPlaceManager.transformFeature(f, p);
-			placeManagerService.savePlace(p);
-		}
-		
-		event.setDescription(description);
-		event.setName(name);
-		event.setPhone(phone);
-		event.setPlace(p);
-		event.setPublisher(pub);
-		event.setTimeCreated(Calendar.getInstance().getTimeInMillis());
-		event.setTimeStarts(timeStarts);
-		event.setTimeEnds(timeEnds);
-		
-		return event;
-	}
 
 }
