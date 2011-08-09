@@ -147,7 +147,7 @@ public class WidgetController {
     public ModelAndView publishEventWidgetContent(
             @RequestParam("url") String url,
             @RequestParam("name") String name,
-            @RequestParam("publisherKey") String publisherKey,
+            @RequestParam("publisher") String publisherKey,
             @RequestParam("place") Long placeId,
             @RequestParam("timeStarts") long timeStarts,
             @RequestParam("timeEnds") long timeEnds,
