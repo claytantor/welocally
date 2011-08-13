@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.client.geo;
 
 import com.sightlyinc.ratecred.model.Event;
+import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.pojo.Events;
 import com.simplegeo.client.types.Feature;
@@ -22,4 +23,7 @@ public interface GeoEventClient {
 			Long timeStarts,	
 			Long timeEnds,
 			Publisher pub) ;
+
+    public Event makeEventFromPlace(Place place, String eventName, String url, Long timeStarts, Long timeEnds, Publisher pub);
+
 }

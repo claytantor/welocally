@@ -154,5 +154,44 @@ public class SimpleGeoEventClient implements GeoEventClient {
 		return event;
 	}
 
+	public Event makeEventFromPlace(Place place, String eventName, String url, Long timeStarts, Long timeEnds, Publisher pub)  {
 
+		Event event = eventService.findByUrl(url);
+
+		if (event == null) {
+			event = new Event();
+			event.setUrl(url);
+		}
+
+		event.setDescription(place.getDescription());
+        event.setName(eventName);
+		event.setPhone(place.getPhone());
+		event.setPlace(place);
+		event.setPublisher(pub);
+		event.setTimeCreated(Calendar.getInstance().getTimeInMillis());
+		event.setTimeStarts(timeStarts);
+		event.setTimeEnds(timeEnds);
+
+		return event;
+	}
+
+    public void setRatecredConsumerKey(String ratecredConsumerKey) {
+        this.ratecredConsumerKey = ratecredConsumerKey;
+    }
+
+    public void setRatecredConsumerSecret(String ratecredConsumerSecret) {
+        this.ratecredConsumerSecret = ratecredConsumerSecret;
+    }
+
+    public void setEventService(EventService eventService) {
+        this.eventService = eventService;
+    }
+
+    public void setPlaceManagerService(PlaceManagerService placeManagerService) {
+        this.placeManagerService = placeManagerService;
+    }
+
+    public void setLocationPlacesClient(SimpleGeoPlaceManager locationPlacesClient) {
+        this.locationPlacesClient = locationPlacesClient;
+    }
 }
