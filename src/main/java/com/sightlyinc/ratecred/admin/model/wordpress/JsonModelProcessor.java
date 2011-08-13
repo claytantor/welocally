@@ -12,4 +12,5 @@ public interface JsonModelProcessor {
 	public abstract List<Event> saveJsonEventsAsPostsForPublisher(
 			JSONObject obj, Publisher p);
 
+    public void saveEventAndPlaceFromPostJson(JSONObject jsonObject, Publisher publisher);
 }
