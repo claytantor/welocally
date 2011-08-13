@@ -473,5 +473,8 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	public void setAppSecretKey(String appSecretKey) {
 		this.appSecretKey = appSecretKey;
 	}*/
-	
+
+    public void setPlaceDao(PlaceDao placeDao) {
+        this.placeDao = placeDao;
+    }
 }
