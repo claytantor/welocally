@@ -33,12 +33,8 @@ public class WordpressPluginController {
     		@RequestHeader("publisher-key") String publisherKey, 
     		@RequestHeader("welocally-baseurl") String baseurl)
     throws JSONException {
-//        boolean success = false;
 
         JSONObject requestJSONObject = new JSONObject(requestJSON);
-
-        //String publisherKey = requestJSONObject.getString("publisherKey");
-//        String categoryId = requestJSONObject.getString("categoryId");
 
         if (publisherKey != null) {
             String[] keys = publisherKey.split("\\x2e");
@@ -49,8 +45,7 @@ public class WordpressPluginController {
             jsonModelProcessor.saveEventAndPlaceFromPostJson(requestJSONObject, publisher);
 
         }
-
-        // empty response
+        
         return "";
     }
 
