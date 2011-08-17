@@ -174,11 +174,8 @@ public class EventController {
         	
         	//so lame!
         	for (int j = 0; j < 7; j++) {
-        		
-            	
-            	params.put("page", ""+j);
-            	
-            	
+        		            	
+            	params.put("page", ""+j);            	            	
             	
             	try {
     				ClientResponse response = 
@@ -244,8 +241,8 @@ public class EventController {
 			String address = fields[8].trim();	
 			String city = fields[9].trim();	
 			String state = fields[10].trim();	
-			Date ts = DateUtils.stringToDate(fields[11].trim(), "MM/dd/yyyy HH:mm:ss");
-			Date te = DateUtils.stringToDate(fields[12].trim(), "MM/dd/yyyy HH:mm:ss");
+			Date ts = DateUtils.stringToDate(fields[11].trim(), "MM-dd-yyyy HH:mm");
+			Date te = DateUtils.stringToDate(fields[12].trim(), "MM-dd-yyyy HH:mm");
 			
 			String idVal = url.substring(url.lastIndexOf("=")+1);
 

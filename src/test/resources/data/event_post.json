@@ -1,0 +1,85 @@
+{
+    "status": "ok",
+    "post": {
+        "id": 516,
+        "type": "post",
+        "slug": "norma-jeans-the-roundcat-kids",
+        "url": "http://www.oaklandly.com/wordpress/?p=516",
+        "status": "publish",
+        "title": "Norma Jean&#8217;s &#038; The Roundcat Kids",
+        "title_plain": "Norma Jean&#8217;s &#038; The Roundcat Kids",
+        "content": "<p>Come down and see Norma hang it all out with the Rouncat Kids. This is an all ages show so be sure to bring your kids! $5 Cover</p>\n",
+        "excerpt": "Come down and see Norma hang it all out with the Rouncat Kids. This is an all ages show so&hellip;",
+        "date": "2011-08-12 20:00:57",
+        "modified": "2011-08-15 19:55:47",
+        "categories": [
+            {
+                "id": 41,
+                "slug": "events",
+                "title": "Events",
+                "description": "",
+                "parent": 0,
+                "post_count": 107
+            },
+            {
+                "id": 43,
+                "slug": "place",
+                "title": "Place",
+                "description": "",
+                "parent": 0,
+                "post_count": 1
+            }
+        ],
+        "tags": [],
+        "author": {
+            "id": 2,
+            "slug": "clay",
+            "name": "clay",
+            "first_name": "Clay",
+            "last_name": "Graham",
+            "nickname": "clay",
+            "url": "http://oaklandly.com/",
+            "description": ""
+        },
+        "comments": [],
+        "attachments": [],
+        "comment_count": 0,
+        "comment_status": "open",
+        "custom_fields": {
+            "_isWLPlace": [
+                "true"
+            ],
+            "_PlaceSelected": [
+                "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[-122.266886,37.811218]},\"type\":\"Feature\",\"id\":\"SG_53l3Ylfbpp2jqyYi0zqoxX_37.810938_-122.267166@1293134755\",\"properties\":{\"province\":\"CA\",\"distance\":4.710774294216952,\"name\":\"Luka's Taproom & Lounge\",\"menulink\":\"http://www.allmenus.com/ca/oakland/46321-lukas-taproom--lounge/menu/\",\"country\":\"US\",\"tags\":[\"food\",\"american\",\"pub\"],\"phone\":\"+1 510 451 4677\",\"href\":\"http://api.simplegeo.com/1.0/features/SG_53l3Ylfbpp2jqyYi0zqoxX_37.810938_-122.267166@1293134755.json\",\"city\":\"Oakland\",\"address\":\"2221 Broadway\",\"owner\":\"simplegeo\",\"postcode\":\"94612\",\"classifiers\":[{\"category\":\"Bars & Pubs\",\"type\":\"Food & Drink\",\"subcategory\":\"\"},{\"category\":\"Bars & Pubs\",\"type\":\"Food & Drink\",\"subcategory\":\"Lounge\"}]}}"
+            ],
+            "_EventVenue": [
+                ""
+            ],
+            "_EventStartDate": [
+                "2011-08-23 00:00:00"
+            ],
+            "_EventEndDate": [
+                "2011-08-23 23:59:00"
+            ],
+            "_EventAddress": [
+                ""
+            ],
+            "_EventCity": [
+                ""
+            ],
+            "_EventState": [
+                ""
+            ],
+            "_EventZip": [
+                ""
+            ],
+            "_EventCost": [
+                "$5"
+            ],
+            "_EventPhone": [
+                ""
+            ]
+        }
+    },
+    "previous_url": "http://www.oaklandly.com/wordpress/?p=487"
+}

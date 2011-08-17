@@ -97,15 +97,27 @@ $(document).ready(function() {
 
 	$( "#selectable" ).selectable({
 		   selected: function(event, ui) { 
-		   		var selectedFeature = features[ui.selected.id.replace("item","")];				
-				console.log(selectedFeature);	
-				$('#selected_content').html(buildContentForEvetFeature(selectedFeature)); 
+		   		if(ui.selected.id.indexOf("article") != -1) {
+			   		var selectedItem = articles[ui.selected.id.replace("article","")];				
+					$('#selected_content').html(buildContentForItem(selectedItem)); 
+		   		} else if(ui.selected.id.indexOf("event") != -1) {
+			   		var selectedItem = events[ui.selected.id.replace("event","")];				
+					$('#selected_content').html(buildContentForItem(selectedItem)); 
+		   		}
 		   }
 	});
   	
 });
 
-var features = [];
+var events = [];
+var articles = [];
+
+
+function Item (type, feature, content) {
+    this.type = type;
+    this.feature = feature;
+   	this.content = content;
+}
 
 //${imageUrl}/articles_32.png
 function populateFeaturesForType(type, lat, lon, div, layer, optionsSearch, markerImage, map) {
@@ -114,11 +126,17 @@ function populateFeaturesForType(type, lat, lon, div, layer, optionsSearch, mark
   	        console.error(err);
   	    } else {
   	    	
-  	    	$.each(data.features, function(i,item){ 
+  	    	$.each(data.features, function(i,feature){ 
   	    		//console.log(JSON.stringify(item));	    		
-  	    		addMarker(map, markerImage, item.geometry.coordinates[1], item.geometry.coordinates[0]);
-  	    		$(div).append(buildListItemForFeature(i,type,item));
-				features[i] = item;	    		
+  	    		
+				var item = buildListItemForFeature(i,type,feature); 
+				addItemMarker(type, i, map, markerImage, feature.geometry.coordinates[1], feature.geometry.coordinates[0], feature.properties.entity.name);
+  	    		$(div).append(item.content);
+  	    		if(type=='article')
+					articles[i] = item;	   
+  	    		else if(type=='event')
+					events[i] = item;	   
+				 		
   		    });
   	    }
   	});
@@ -128,28 +146,52 @@ function populateFeaturesForType(type, lat, lon, div, layer, optionsSearch, mark
 
 function buildListItemForFeature(position, type, feature) {
 	if (feature.properties.entity != null) {
-		return '<li id=\"item'+position+'\" class=\"span-5 ui-widget-content\"><strong>'+type+':'+
-					feature.properties.entity.name+
-					'</strong></br>'+
-					feature.properties.entity.geoPlace.name+
-					'</br>'+
-					new Date(feature.properties.entity.startDateTime)+
-				'</li>';
+		var content ='None';
+		
+
+		if(type == 'event'){
+			content = '<li id=\"'+type+position+'\" class=\"span-5 ui-widget-content\"><strong>'+type+':'+
+			feature.properties.entity.name+
+			'</strong></br>'+
+			feature.properties.entity.geoPlace.name+
+			'</br>'+
+			new Date(feature.properties.entity.startDateTime)+
+		'</li>';
+		} else if(type = 'article'){
+			content = '<li id=\"'+type+position+'\" class=\"span-5 ui-widget-content\"><strong>'+type+':'+
+			feature.properties.entity.name+'</strong></br>'+
+			feature.properties.entity.geoPlace.name+'</br>'+
+		'</li>';
+		}
+		
+		var item = new Item(
+			type,
+			feature,	
+			content);
+
+		return item;
 	}
 	
 }
 
-function buildContentForEvetFeature(feature) {
-	if (feature.properties.entity != null) {
-		return '<div><img src=\"${imageUrl}/events_32.png\"/></br>'+
-					'<strong>'+feature.properties.entity.name+'</strong></br>'+
-					feature.properties.entity.geoPlace.name+'</br>'+
-					new Date(feature.properties.entity.startDateTime)+'</br>'+
-					feature.properties.entity.description+
-				'</div>';
-	}
+function buildContentForItem(item) {
 	
+	if (item.feature.properties.entity != null && item.type == 'event') {
+		return '<div><img src=\"${imageUrl}/'+item.type+'s_32.png\"/></br>'+
+		'<strong>'+item.type+": "+item.feature.properties.entity.name+'</strong></br>'+
+					item.feature.properties.entity.geoPlace.name+'</br>'+
+					new Date(item.feature.properties.entity.startDateTime)+'</br>'+
+					item.feature.properties.entity.description+
+				'</div>';
+	} else if (item.feature.properties.entity != null && item.type == 'article') {
+		return '<div><img src=\"${imageUrl}/'+item.type+'s_32.png\"/></br>'+
+		'<strong>'+item.type+": "+item.feature.properties.entity.name+'</strong></br>'+
+					item.feature.properties.entity.geoPlace.name+'</br>'+
+					item.feature.properties.entity.description+
+				'</div>';
+	} 	
 }
+
 
 
 function addMarker(map, image, latitude, longitude) {
@@ -161,7 +203,42 @@ function addMarker(map, image, latitude, longitude) {
 		icon: image
 	});
   }
-  
+
+function addItemMarker(type, index, map, image, latitude, longitude, title) {
+	
+	var myLatLng = new google.maps.LatLng(latitude, longitude);
+	var mMarker = new google.maps.Marker({
+		position: myLatLng,
+		map: map,
+		icon: image,
+		title: title,
+		type: type,
+		index: index
+	});
+	
+	google.maps.event.addListener(mMarker, 'click', function() {
+		if(mMarker.type.indexOf("article") != -1) {
+			var selectedItem = articles[mMarker.index];
+	   		var content = buildContentForItem(selectedItem);				
+			$('#selected_content').html(content);
+			infowindow.content = content;	
+			infowindow.open(map,mMarker); 
+   		} else if(mMarker.type.indexOf("event") != -1) {
+	   		var selectedItem = events[mMarker.index];
+	   		var content = buildContentForItem(selectedItem);				
+			$('#selected_content').html(content);
+			infowindow.content = content;	
+			infowindow.open(map,mMarker); 
+   		}
+		
+		
+	});
+}
+
+var infowindow = new google.maps.InfoWindow({
+    content: "empty"
+});
+
 </script>
 <style type="text/css">
 	/*demo page css*/

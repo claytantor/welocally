@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.admin.model.wordpress;
 
+import com.noi.utility.io.InputOutputUtils;
 import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoEventClient;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoLocationClient;
@@ -7,6 +8,7 @@ import com.sightlyinc.ratecred.component.JacksonObjectMapper;
 import com.sightlyinc.ratecred.dao.EventDao;
 import com.sightlyinc.ratecred.dao.PlaceDao;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.service.EventService;
 import com.sightlyinc.ratecred.service.EventServiceImpl;
 import com.sightlyinc.ratecred.service.PlaceManagerServiceImpl;
 import org.json.JSONObject;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.*;
  */
 public class TestWordpressJsonModelProcessor {
     
-    private static final String REQUEST_JSON = "{ " +
+    private static final String REQUEST_JSON_LOCAL = "{ " +
             " \"id\": 300, " +
             " \"type\": \"post\", " +
             " \"slug\": \"the-muffs\", " +
@@ -150,6 +152,7 @@ public class TestWordpressJsonModelProcessor {
 
         EventDao mockEventDao = mock(EventDao.class);
         eventService.setEventDao(mockEventDao);
+        wordpressJsonModelProcessor.setEventService((EventService)eventService);
 
         simpleGeoEventClient.setEventService(eventService);
         simpleGeoEventClient.setPlaceManagerService(placeManagerService);
@@ -158,11 +161,15 @@ public class TestWordpressJsonModelProcessor {
         wordpressJsonModelProcessor.setGeoEventClient(simpleGeoEventClient);
 
         try {
-            JSONObject jsonObject = new JSONObject(REQUEST_JSON);
+        	String eventContents = new String(InputOutputUtils.getBytesFromStream(
+					TestWordpressJsonModelProcessor.class.getResourceAsStream("/data/event_post.json")));
+        	
+            JSONObject jsonObject = 
+            	new JSONObject(eventContents);
 
             Publisher publisher = new Publisher();
-
-            wordpressJsonModelProcessor.saveEventAndPlaceFromPostJson(jsonObject, publisher);
+            JSONObject jsonPost = jsonObject.getJSONObject("post");
+            wordpressJsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
 
         } catch (Exception e) {
             e.printStackTrace();

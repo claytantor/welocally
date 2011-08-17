@@ -20,6 +20,7 @@
 	<div class="span-24">
 		<h2><a href="<c:url value='/home' />">${publisher.networkMember.name}</a> : ${publisher.siteName}</h2>
 		<hr/>
+		<h3>${publisher.networkMember.memberKey}.${publisher.key}</h3>
 		<div class="actions span-24 last">
 			<a href="<c:url value='/publisher/publisher/edit/${publisher.id}' />" class="button">edit</a>
 			<a href="<c:url value='/publisher/publisher/delete/${publisher.id}' />" class="button">delete</a>
@@ -27,7 +28,7 @@
 		</div>
 
 		<div class="padding-5 span-24 last">
-			<div class="strong-12 span-1">${publisher.id}</div>
+			<div class="strong-12 span-1">id:${publisher.id}</div>
 			<div class="span-23">
 				<div class="span-23"><img src="${publisher.iconUrl}"/></div>
 				<div class="span-23"><img src="${publisher.mapIconUrl}"/></div>

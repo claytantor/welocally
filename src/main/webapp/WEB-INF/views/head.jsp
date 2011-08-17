@@ -22,7 +22,9 @@
 		<script type="text/javascript" src="<c:url value='/js/jquery-ui-timepicker-addon.js' />"></script>
 		<script type="text/javascript" src="http://cdn.simplegeo.com/js/1.2/simplegeo.places.jq.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-
+		
+		<!-- http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js -->
+		<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" rel="stylesheet" />
 
 		<style type="text/css">
 			/*demo page css*/

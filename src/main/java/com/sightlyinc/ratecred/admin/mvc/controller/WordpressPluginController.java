@@ -29,13 +29,15 @@ public class WordpressPluginController {
      */
     @RequestMapping(value = "/publish", method = RequestMethod.POST)
     @ResponseBody
-    public String handlePublish(@RequestBody String requestJSON, @RequestHeader("welocally-baseurl") String baseurl)
+    public String handlePublish(@RequestBody String requestJSON, 
+    		@RequestHeader("publisher-key") String publisherKey, 
+    		@RequestHeader("welocally-baseurl") String baseurl)
     throws JSONException {
 //        boolean success = false;
 
         JSONObject requestJSONObject = new JSONObject(requestJSON);
 
-        String publisherKey = requestJSONObject.getString("publisherKey");
+        //String publisherKey = requestJSONObject.getString("publisherKey");
 //        String categoryId = requestJSONObject.getString("categoryId");
 
         if (publisherKey != null) {

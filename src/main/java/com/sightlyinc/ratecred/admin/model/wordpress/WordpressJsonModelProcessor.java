@@ -117,34 +117,41 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
             String status = "ACTIVE";
             String url = jsonObject.getString("url");
 
-            String featureJson = custom.getString("_SGFeature");
+            if(!custom.isNull("_isWLPlace")){
+            	String featureJson = custom.getString("_PlaceSelected")
+            		.substring(2, custom.getString("_PlaceSelected").length()-2)
+            		.replaceAll("\\x5c\\x22", "\"");
 
-            com.sightlyinc.ratecred.admin.model.Feature feature = objectMapper.readValue(featureJson,
-                    com.sightlyinc.ratecred.admin.model.Feature.class);
+            	logger.debug(featureJson);
+                com.sightlyinc.ratecred.admin.model.Feature feature = 
+                	objectMapper.readValue(featureJson,
+                        com.sightlyinc.ratecred.admin.model.Feature.class);
 
-            Place place;
-            try {
-                place = placeManagerService.findBySimpleGeoId(feature.getId());
-                if (place == null) {
-                    place = new Place();
+                Place place;
+                try {
+                    place = placeManagerService.findBySimpleGeoId(feature.getId());
+                    if (place == null) {
+                        place = new Place();
+                    }
+                    PlaceController.transformFeature(feature, place);
+                    placeManagerService.savePlace(place);
+                } catch (BLServiceException e) {
+                    logger.error("error finding or saving place", e);
+                    throw new RuntimeException(e);
                 }
-                PlaceController.transformFeature(feature, place);
-                placeManagerService.savePlace(place);
-            } catch (BLServiceException e) {
-                logger.error("error finding or saving place", e);
-                throw new RuntimeException(e);
+
+                Date ts = DateUtils.stringToDate(custom.getJSONArray("_EventStartDate").getString(0),
+                        "yyyy-MM-dd HH:mm:ss");
+                Date te = DateUtils.stringToDate(custom.getJSONArray("_EventEndDate").getString(0),
+                        "yyyy-MM-dd HH:mm:ss");
+
+                if(ts.after(Calendar.getInstance().getTime())) {
+                    Event e = geoEventClient.makeEventFromPlace(place, name, url, ts.getTime(), te.getTime(), publisher);
+
+                    eventService.save(e);
+                }
             }
-
-            Date ts = DateUtils.stringToDate(custom.getJSONArray("_EventStartDate").getString(0),
-                    "yyyy-MM-dd HH:mm:ss");
-            Date te = DateUtils.stringToDate(custom.getJSONArray("_EventEndDate").getString(0),
-                    "yyyy-MM-dd HH:mm:ss");
-
-            if(ts.after(Calendar.getInstance().getTime())) {
-                Event e = geoEventClient.makeEventFromPlace(place, name, url, ts.getTime(), te.getTime(), publisher);
-
-                eventService.save(e);
-            }
+            
 
 
         } catch (JSONException ex) {
@@ -154,7 +161,15 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
         }
     }
 
-    /**
+    public EventService getEventService() {
+		return eventService;
+	}
+
+	public void setEventService(EventService eventService) {
+		this.eventService = eventService;
+	}
+
+	/**
 {
             "id": 300,
             "type": "post",

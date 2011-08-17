@@ -113,7 +113,7 @@ public class ArticleController {
 	}
 
 	@RequestMapping(value = "/load/{key}", method = RequestMethod.GET)
-	public String loadMerchantsFromGoogle(@PathVariable String key,
+	public String loadArticlesFromGoogle(@PathVariable String key,
 			@RequestParam Long publisherId,
 			@ModelAttribute("member") NetworkMember member, Model model) {
 		logger.debug("load");
