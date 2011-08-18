@@ -40,18 +40,18 @@ public class WordpressPluginController {
     throws JSONException {
 
     	logger.debug(requestJSON);
-        JSONObject requestJSONObject = new JSONObject(requestJSON);
-
-        if (publisherKey != null) {
-            String[] keys = publisherKey.split("\\x2e");
-
-            // look up the selected publisher
-            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            JSONObject jsonPost = requestJSONObject.getJSONObject("post");
-
-            jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
-
-        }
+//        JSONObject requestJSONObject = new JSONObject(requestJSON);
+//
+//        if (publisherKey != null) {
+//            String[] keys = publisherKey.split("\\x2e");
+//
+//            // look up the selected publisher
+//            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
+//            JSONObject jsonPost = requestJSONObject.getJSONObject("post");
+//
+//            jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
+//
+//        }
         
         return "";
     }
