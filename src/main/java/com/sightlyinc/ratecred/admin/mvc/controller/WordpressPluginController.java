@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/wpp")
 public class WordpressPluginController {
 	
-	static Logger logger = Logger.getLogger(TestRulesController.class);
+	static Logger logger = Logger.getLogger(WordpressPluginController.class);
 
 
     @Autowired
@@ -40,18 +40,18 @@ public class WordpressPluginController {
     throws JSONException {
 
     	logger.debug(requestJSON);
-//        JSONObject requestJSONObject = new JSONObject(requestJSON);
-//
-//        if (publisherKey != null) {
-//            String[] keys = publisherKey.split("\\x2e");
-//
-//            // look up the selected publisher
-//            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-//            JSONObject jsonPost = requestJSONObject.getJSONObject("post");
-//
-//            jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
-//
-//        }
+        JSONObject requestJSONObject = new JSONObject(requestJSON);
+
+        if (publisherKey != null) {
+            String[] keys = publisherKey.split("\\x2e");
+
+            // look up the selected publisher
+            Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
+            JSONObject jsonPost = requestJSONObject.getJSONObject("post");
+
+            jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
+
+        }
         
         return "";
     }
