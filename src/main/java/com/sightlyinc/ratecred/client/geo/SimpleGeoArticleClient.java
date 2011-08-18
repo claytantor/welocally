@@ -23,6 +23,30 @@ import com.simplegeo.client.types.Record;
 @Component("geoArticleClient")
 public class SimpleGeoArticleClient implements GeoArticleClient {
 
+	public void setClient(SimpleGeoStorageClient client) {
+		this.client = client;
+	}
+
+	public void setRatecredConsumerKey(String ratecredConsumerKey) {
+		this.ratecredConsumerKey = ratecredConsumerKey;
+	}
+
+	public void setRatecredConsumerSecret(String ratecredConsumerSecret) {
+		this.ratecredConsumerSecret = ratecredConsumerSecret;
+	}
+
+	public void setPlaceManagerService(PlaceManagerService placeManagerService) {
+		this.placeManagerService = placeManagerService;
+	}
+
+	public void setArticleService(ArticleService articleService) {
+		this.articleService = articleService;
+	}
+
+	public void setLocationPlacesClient(SimpleGeoPlaceManager locationPlacesClient) {
+		this.locationPlacesClient = locationPlacesClient;
+	}
+
 	static Logger logger = Logger.getLogger(SimpleGeoLocationClient.class);
 
 	private SimpleGeoStorageClient client;

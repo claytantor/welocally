@@ -24,14 +24,14 @@ public class ArticleServiceImpl extends AbstractTransactionalService<Article> im
         return articleDao;
     }
 
-//	@Override
-//	public List<Article> findByUserPrincipal(UserPrincipal up) {
-//		return null;
-//	}
-//    
-
     @Override
     public Article findByUrl(String url) {
         return articleDao.findByUrl(url);
     }
+
+	public void setArticleDao(ArticleDao articleDao) {
+		this.articleDao = articleDao;
+	}
+    
+    
 }
