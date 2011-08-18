@@ -93,7 +93,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 		try {
 			JSONObject custom = jsonPost.getJSONObject("custom_fields");
 			if(!custom.isNull("_isWLPlace") && custom.isNull("_isEvent")){
-				return custom.getString("_isWLPlace").equals("true");
+				return custom.getJSONArray("_isWLPlace").get(0).toString().equals("true");
 			}		
 			
 		} catch (JSONException e) {
@@ -107,8 +107,8 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 		try {
 			JSONObject custom = jsonPost.getJSONObject("custom_fields");
 			if(!custom.isNull("_isWLPlace") && !custom.isNull("_isEvent")){
-				return (custom.getString("_isWLPlace").equals("true") &&
-						custom.getString("_isEvent").equals("yes"));
+				return (custom.getJSONArray("_isWLPlace").get(0).toString().equals("true") &&
+						custom.getJSONArray("_isEvent").get(0).toString().equals("yes"));
 			}		
 			
 		} catch (JSONException e) {
@@ -186,12 +186,11 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 	    	JSONObject custom = jsonPost.getJSONObject("custom_fields");
 	
 			if (!custom.isNull("_isWLPlace")) {
-				String featureJson = custom
-						.getString("_PlaceSelected")
-						.substring(2,
-								custom.getString("_PlaceSelected").length() - 2)
-						.replaceAll("\\x5c\\x22", "\"");
-	
+		
+				String featureJson = 
+					custom.getJSONArray("_PlaceSelected")
+						.get(0).toString().replaceAll("\\x5c\\x22", "\"");
+				
 				logger.debug(featureJson);
 				com.sightlyinc.ratecred.admin.model.Feature feature = objectMapper
 						.readValue(
@@ -219,7 +218,27 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 		return place;
     }
     
-    @Override
+    public void setArticleService(ArticleService articleService) {
+		this.articleService = articleService;
+	}
+
+	public void setClient(SimpleGeoPlacesClient client) {
+		this.client = client;
+	}
+
+	public void setRadiusInKMeters(Integer radiusInKMeters) {
+		this.radiusInKMeters = radiusInKMeters;
+	}
+
+	public void setGeoEventClient(GeoEventClient geoEventClient) {
+		this.geoEventClient = geoEventClient;
+	}
+
+	public void setGeoArticleClient(GeoArticleClient geoArticleClient) {
+		this.geoArticleClient = geoArticleClient;
+	}
+
+	@Override
 	public void saveArticleAndPlaceFromPostJson(JSONObject jsonPost,
 			Publisher publisher, String status) {
     	
