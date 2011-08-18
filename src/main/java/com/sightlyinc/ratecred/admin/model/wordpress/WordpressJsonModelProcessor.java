@@ -8,11 +8,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.admin.mvc.controller.PlaceController;
-import com.sightlyinc.ratecred.client.geo.SimpleGeoEventClient;
-import com.sightlyinc.ratecred.model.Place;
-import com.sightlyinc.ratecred.service.PlaceManagerService;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
@@ -24,15 +19,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.noi.utility.date.DateUtils;
+import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.geocoding.Geocoder;
 import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
+import com.sightlyinc.ratecred.admin.mvc.controller.PlaceController;
+import com.sightlyinc.ratecred.client.geo.GeoArticleClient;
 import com.sightlyinc.ratecred.client.geo.GeoEventClient;
+import com.sightlyinc.ratecred.client.geo.SimpleGeoEventClient;
+import com.sightlyinc.ratecred.model.Article;
 import com.sightlyinc.ratecred.model.Event;
+import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.pojo.Location;
+import com.sightlyinc.ratecred.service.ArticleService;
 import com.sightlyinc.ratecred.service.DefaultPatronAwardsService;
 import com.sightlyinc.ratecred.service.EventService;
+import com.sightlyinc.ratecred.service.PlaceManagerService;
 import com.simplegeo.client.SimpleGeoPlacesClient;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
@@ -42,8 +45,11 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 
     static Logger logger = Logger.getLogger(DefaultPatronAwardsService.class);
 
-	@Autowired
+    @Autowired
 	private EventService eventService;
+    
+    @Autowired
+	private ArticleService articleService;
 	
 	@Value("${simpleGeo.rateCredOAuth.appConsumerKey}")
 	public String sgoauthkey;
@@ -63,6 +69,12 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 	@Autowired
 	@Qualifier("geoEventClient")
 	private GeoEventClient geoEventClient;
+	
+	@Autowired
+	@Qualifier("geoArticleClient")
+	private GeoArticleClient geoArticleClient;
+	
+	
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -173,8 +185,6 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
     	try {
 	    	JSONObject custom = jsonPost.getJSONObject("custom_fields");
 	
-			
-	
 			if (!custom.isNull("_isWLPlace")) {
 				String featureJson = custom
 						.getString("_PlaceSelected")
@@ -214,26 +224,20 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 			Publisher publisher, String status) {
     	
 		try {
-	
-			JSONObject custom = jsonPost.getJSONObject("custom_fields");
 			
 			String name = jsonPost.getString("title_plain");
 			String description = jsonPost.getString("excerpt");
 			String url = jsonPost.getString("url");
 			
-			
-			Date ts = DateUtils.stringToDate(custom.getJSONArray(
-					"_EventStartDate").getString(0), "yyyy-MM-dd HH:mm:ss");
-			Date te = DateUtils.stringToDate(custom.getJSONArray(
-					"_EventEndDate").getString(0), "yyyy-MM-dd HH:mm:ss");
-
 			Place place = savePlaceFromPost(jsonPost);
 			
-			if (place != null && ts.after(Calendar.getInstance().getTime())) {
-				Event e = geoEventClient.makeEventFromPlace(place, name,
-						description, url, ts.getTime(), te.getTime(),
-						publisher);
-				eventService.save(e);
+			if (place != null ) {
+				Article article = 
+					geoArticleClient.makeArticleFromPlace(
+							place, name, description, url, publisher);
+				
+				articleService.save(article);
+				
 			}
 
 		} catch (JSONException ex) {
