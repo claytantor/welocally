@@ -154,7 +154,7 @@ public class SimpleGeoEventClient implements GeoEventClient {
 		return event;
 	}
 
-	public Event makeEventFromPlace(Place place, String eventName, String url, Long timeStarts, Long timeEnds, Publisher pub)  {
+	public Event makeEventFromPlace(Place place, String eventName, String description, String url, Long timeStarts, Long timeEnds, Publisher pub)  {
 
 		Event event = eventService.findByUrl(url);
 
@@ -163,7 +163,7 @@ public class SimpleGeoEventClient implements GeoEventClient {
 			event.setUrl(url);
 		}
 
-		event.setDescription(place.getDescription());
+		event.setDescription(description);
         event.setName(eventName);
 		event.setPhone(place.getPhone());
 		event.setPlace(place);

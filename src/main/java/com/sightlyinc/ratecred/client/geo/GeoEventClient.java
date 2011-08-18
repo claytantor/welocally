@@ -24,6 +24,11 @@ public interface GeoEventClient {
 			Long timeEnds,
 			Publisher pub) ;
 
-    public Event makeEventFromPlace(Place place, String eventName, String url, Long timeStarts, Long timeEnds, Publisher pub);
+    public Event makeEventFromPlace(Place place, 
+    		String eventName, 
+    		String discription, 
+    		String url, 
+    		Long timeStarts, Long timeEnds, 
+    		Publisher pub);
 
 }
