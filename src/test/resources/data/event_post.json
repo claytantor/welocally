@@ -55,6 +55,9 @@
             "_ShowPlaceAddress": [
                 "true"
             ],
+            "_isEvent": [
+                "yes"
+            ],
             "_EventVenue": [
                 ""
             ],

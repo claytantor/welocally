@@ -76,6 +76,35 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 		client.getHttpClient().setToken(sgoauthkey, sgoauthsecret);
 	}
 
+	@Override
+	public boolean isArticlePost(JSONObject jsonPost) {
+		try {
+			JSONObject custom = jsonPost.getJSONObject("custom_fields");
+			if(!custom.isNull("_isWLPlace") && custom.isNull("_isEvent")){
+				return custom.getString("_isWLPlace").equals("true");
+			}		
+			
+		} catch (JSONException e) {
+			logger.error("JSONException", e);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEventPost(JSONObject jsonPost) {
+		try {
+			JSONObject custom = jsonPost.getJSONObject("custom_fields");
+			if(!custom.isNull("_isWLPlace") && !custom.isNull("_isEvent")){
+				return (custom.getString("_isWLPlace").equals("true") &&
+						custom.getString("_isEvent").equals("yes"));
+			}		
+			
+		} catch (JSONException e) {
+			logger.error("JSONException", e);
+		}
+		return false;
+	}
+
 	/* (non-Javadoc)
 	 * @see com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor#saveJsonEventsAsPostsForPublisher(org.json.JSONObject, com.sightlyinc.ratecred.model.Publisher)
 	 */
@@ -108,62 +137,113 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
      * @param publisher
      */
     @Override
-    public void saveEventAndPlaceFromPostJson(JSONObject jsonObject, Publisher publisher) {
+    public void saveEventAndPlaceFromPostJson(JSONObject jsonPost, Publisher publisher, String status) {
         try {
-            logger.debug(jsonObject.toString());
-            JSONObject custom = jsonObject.getJSONObject("custom_fields");
+        	JSONObject custom = jsonPost.getJSONObject("custom_fields");
+			if (!custom.isNull("_isEvent")) {
+			
+				String name = jsonPost.getString("title_plain");
+				String description = jsonPost.getString("excerpt");
+				String url = jsonPost.getString("url");
+				
+				
+				Date ts = DateUtils.stringToDate(custom.getJSONArray(
+						"_EventStartDate").getString(0), "yyyy-MM-dd HH:mm:ss");
+				Date te = DateUtils.stringToDate(custom.getJSONArray(
+						"_EventEndDate").getString(0), "yyyy-MM-dd HH:mm:ss");
 
-            String name = jsonObject.getString("title_plain");
-            String description = jsonObject.getString("excerpt");
-            String status = "ACTIVE";
-            String url = jsonObject.getString("url");
-
-            if(!custom.isNull("_isWLPlace")){
-            	String featureJson = custom.getString("_PlaceSelected")
-            		.substring(2, custom.getString("_PlaceSelected").length()-2)
-            		.replaceAll("\\x5c\\x22", "\"");
-
-            	logger.debug(featureJson);
-                com.sightlyinc.ratecred.admin.model.Feature feature = 
-                	objectMapper.readValue(featureJson,
-                        com.sightlyinc.ratecred.admin.model.Feature.class);
-
-                Place place = null;
-                try {
-                    place = placeManagerService.findBySimpleGeoId(feature.getId());
-                    if (place == null) {
-                        place = new Place();
-                    }
-                    PlaceController.transformFeature(feature, place);
-                    placeManagerService.savePlace(place);
-                } catch (BLServiceException e) {
-                    logger.error("error finding or saving place", e);
-                    throw new RuntimeException(e);
-                }
-
-                Date ts = DateUtils.stringToDate(custom.getJSONArray("_EventStartDate").getString(0),
-                        "yyyy-MM-dd HH:mm:ss");
-                Date te = DateUtils.stringToDate(custom.getJSONArray("_EventEndDate").getString(0),
-                        "yyyy-MM-dd HH:mm:ss");
-                
-                
-
-                if(ts.after(Calendar.getInstance().getTime())) {
-                    Event e = geoEventClient.makeEventFromPlace(place, name, description, url, ts.getTime(), te.getTime(), publisher);
-                	 eventService.save(e);
-                }
-            }
-            
+				Place place = savePlaceFromPost(jsonPost);
+				
+				if (place != null && ts.after(Calendar.getInstance().getTime())) {
+					Event e = geoEventClient.makeEventFromPlace(place, name,
+							description, url, ts.getTime(), te.getTime(),
+							publisher);
+					eventService.save(e);
+				}
+			}
 
 
         } catch (JSONException ex) {
             logger.error("JSONException", ex);
-        } catch (IOException ex) {
-            logger.error("IOException", ex);
-        }
+        } 
     }
+    
+    private Place savePlaceFromPost(JSONObject jsonPost) {
+    	Place place = null;
+    	try {
+	    	JSONObject custom = jsonPost.getJSONObject("custom_fields");
+	
+			
+	
+			if (!custom.isNull("_isWLPlace")) {
+				String featureJson = custom
+						.getString("_PlaceSelected")
+						.substring(2,
+								custom.getString("_PlaceSelected").length() - 2)
+						.replaceAll("\\x5c\\x22", "\"");
+	
+				logger.debug(featureJson);
+				com.sightlyinc.ratecred.admin.model.Feature feature = objectMapper
+						.readValue(
+								featureJson,
+								com.sightlyinc.ratecred.admin.model.Feature.class);
+	
+				try {
+					place = placeManagerService.findBySimpleGeoId(feature
+							.getId());
+					if (place == null) {
+						place = new Place();
+					}
+					PlaceController.transformFeature(feature, place);
+					placeManagerService.savePlace(place);
+				} catch (BLServiceException e) {
+					logger.error("error finding or saving place", e);
+					throw new RuntimeException(e);
+				}
+			}
+    	} catch (JSONException ex) {
+			logger.error("JSONException", ex);
+		} catch (IOException ex) {
+			logger.error("IOException", ex);
+		}
+		return place;
+    }
+    
+    @Override
+	public void saveArticleAndPlaceFromPostJson(JSONObject jsonPost,
+			Publisher publisher, String status) {
+    	
+		try {
+	
+			JSONObject custom = jsonPost.getJSONObject("custom_fields");
+			
+			String name = jsonPost.getString("title_plain");
+			String description = jsonPost.getString("excerpt");
+			String url = jsonPost.getString("url");
+			
+			
+			Date ts = DateUtils.stringToDate(custom.getJSONArray(
+					"_EventStartDate").getString(0), "yyyy-MM-dd HH:mm:ss");
+			Date te = DateUtils.stringToDate(custom.getJSONArray(
+					"_EventEndDate").getString(0), "yyyy-MM-dd HH:mm:ss");
 
-    public EventService getEventService() {
+			Place place = savePlaceFromPost(jsonPost);
+			
+			if (place != null && ts.after(Calendar.getInstance().getTime())) {
+				Event e = geoEventClient.makeEventFromPlace(place, name,
+						description, url, ts.getTime(), te.getTime(),
+						publisher);
+				eventService.save(e);
+			}
+
+		} catch (JSONException ex) {
+			logger.error("JSONException", ex);
+		} 
+
+		
+	}
+
+	public EventService getEventService() {
 		return eventService;
 	}
 

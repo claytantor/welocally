@@ -169,7 +169,7 @@ public class TestWordpressJsonModelProcessor {
 
             Publisher publisher = new Publisher();
             JSONObject jsonPost = jsonObject.getJSONObject("post");
-            wordpressJsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
+            wordpressJsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher, "save_post");
 
         } catch (Exception e) {
             e.printStackTrace();

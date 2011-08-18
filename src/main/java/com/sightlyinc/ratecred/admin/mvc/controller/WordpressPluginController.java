@@ -36,7 +36,8 @@ public class WordpressPluginController {
     @ResponseBody
     public String handlePublish(@RequestBody String requestJSON, 
     		@RequestHeader("publisher-key") String publisherKey, 
-    		@RequestHeader("welocally-baseurl") String baseurl)
+    		@RequestHeader("welocally-baseurl") String baseurl,
+    		@RequestHeader("wp-action") String wpaction)
     throws JSONException {
 
     	logger.debug(requestJSON);
@@ -49,7 +50,14 @@ public class WordpressPluginController {
             Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
             if(!requestJSONObject.isNull("post")) {
             	JSONObject jsonPost = requestJSONObject.getJSONObject("post");
-                jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
+            	
+            	//determine if this is an event or article post
+            	if(jsonModelProcessor.isArticlePost(jsonPost)){
+            		jsonModelProcessor.saveArticleAndPlaceFromPostJson(jsonPost, publisher, wpaction);
+            	} else if(jsonModelProcessor.isEventPost(jsonPost)) {
+            		jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher, wpaction);
+            	}
+            	              
             }
         }
         
