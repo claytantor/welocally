@@ -114,6 +114,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
             JSONObject custom = jsonObject.getJSONObject("custom_fields");
 
             String name = jsonObject.getString("title_plain");
+            String description = jsonObject.getString("excerpt");
             String status = "ACTIVE";
             String url = jsonObject.getString("url");
 
@@ -127,7 +128,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
                 	objectMapper.readValue(featureJson,
                         com.sightlyinc.ratecred.admin.model.Feature.class);
 
-                Place place;
+                Place place = null;
                 try {
                     place = placeManagerService.findBySimpleGeoId(feature.getId());
                     if (place == null) {
@@ -144,11 +145,12 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
                         "yyyy-MM-dd HH:mm:ss");
                 Date te = DateUtils.stringToDate(custom.getJSONArray("_EventEndDate").getString(0),
                         "yyyy-MM-dd HH:mm:ss");
+                
+                
 
                 if(ts.after(Calendar.getInstance().getTime())) {
-                    Event e = geoEventClient.makeEventFromPlace(place, name, url, ts.getTime(), te.getTime(), publisher);
-
-                    eventService.save(e);
+                    Event e = geoEventClient.makeEventFromPlace(place, name, description, url, ts.getTime(), te.getTime(), publisher);
+                	 eventService.save(e);
                 }
             }
             

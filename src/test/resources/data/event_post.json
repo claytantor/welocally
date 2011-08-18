@@ -8,10 +8,10 @@
         "status": "publish",
         "title": "Norma Jean&#8217;s &#038; The Roundcat Kids",
         "title_plain": "Norma Jean&#8217;s &#038; The Roundcat Kids",
-        "content": "<p>Come down and see Norma hang it all out with the Rouncat Kids. This is an all ages show so be sure to bring your kids! $5 Cover</p>\n",
+        "content": "<p>Come down and see Norma hang it all out with the Rouncat Kids. This is an all ages show so be sure to bring your kids! $5 Cover good!</p>\n",
         "excerpt": "Come down and see Norma hang it all out with the Rouncat Kids. This is an all ages show so&hellip;",
         "date": "2011-08-12 20:00:57",
-        "modified": "2011-08-15 19:55:47",
+        "modified": "2011-08-17 20:11:42",
         "categories": [
             {
                 "id": 41,
@@ -52,6 +52,9 @@
             "_PlaceSelected": [
                 "{\"geometry\":{\"type\":\"Point\",\"coordinates\":[-122.266886,37.811218]},\"type\":\"Feature\",\"id\":\"SG_53l3Ylfbpp2jqyYi0zqoxX_37.810938_-122.267166@1293134755\",\"properties\":{\"province\":\"CA\",\"distance\":4.710774294216952,\"name\":\"Luka's Taproom & Lounge\",\"menulink\":\"http://www.allmenus.com/ca/oakland/46321-lukas-taproom--lounge/menu/\",\"country\":\"US\",\"tags\":[\"food\",\"american\",\"pub\"],\"phone\":\"+1 510 451 4677\",\"href\":\"http://api.simplegeo.com/1.0/features/SG_53l3Ylfbpp2jqyYi0zqoxX_37.810938_-122.267166@1293134755.json\",\"city\":\"Oakland\",\"address\":\"2221 Broadway\",\"owner\":\"simplegeo\",\"postcode\":\"94612\",\"classifiers\":[{\"category\":\"Bars & Pubs\",\"type\":\"Food & Drink\",\"subcategory\":\"\"},{\"category\":\"Bars & Pubs\",\"type\":\"Food & Drink\",\"subcategory\":\"Lounge\"}]}}"
             ],
+            "_ShowPlaceAddress": [
+                "true"
+            ],
             "_EventVenue": [
                 ""
             ],
@@ -74,7 +77,7 @@
                 ""
             ],
             "_EventCost": [
-                "$5"
+                ""
             ],
             "_EventPhone": [
                 ""

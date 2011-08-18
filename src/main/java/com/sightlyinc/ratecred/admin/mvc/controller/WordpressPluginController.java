@@ -47,10 +47,10 @@ public class WordpressPluginController {
 
             // look up the selected publisher
             Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            JSONObject jsonPost = requestJSONObject.getJSONObject("post");
-
-            jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
-
+            if(!requestJSONObject.isNull("post")) {
+            	JSONObject jsonPost = requestJSONObject.getJSONObject("post");
+                jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
+            }
         }
         
         return "";
