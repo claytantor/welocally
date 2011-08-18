@@ -3,6 +3,8 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.PublisherService;
+
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/wpp")
 public class WordpressPluginController {
+	
+	static Logger logger = Logger.getLogger(TestRulesController.class);
+
 
     @Autowired
     private PublisherService publisherService;
@@ -34,6 +39,7 @@ public class WordpressPluginController {
     		@RequestHeader("welocally-baseurl") String baseurl)
     throws JSONException {
 
+    	logger.debug(requestJSON);
         JSONObject requestJSONObject = new JSONObject(requestJSON);
 
         if (publisherKey != null) {
@@ -41,8 +47,9 @@ public class WordpressPluginController {
 
             // look up the selected publisher
             Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
+            JSONObject jsonPost = requestJSONObject.getJSONObject("post");
 
-            jsonModelProcessor.saveEventAndPlaceFromPostJson(requestJSONObject, publisher);
+            jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher);
 
         }
         
