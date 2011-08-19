@@ -42,7 +42,21 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 		return roleDao.findByName(name);
 	}
 
-	@Override
+    @Override
+    @Transactional(readOnly = false)
+    public void signUp(UserPrincipal entity) throws UserPrincipalServiceException {
+        UserPrincipal user = userPrincipalDao.findByEmail(entity.getEmail());
+        if (user != null) {
+            throw new UserPrincipalServiceException("Email address already registered");
+        }
+        user = userPrincipalDao.findByUserName(entity.getUsername());
+        if (user != null) {
+            throw new UserPrincipalServiceException("Username already in use");
+        }
+        userPrincipalDao.save(entity);
+    }
+
+    @Override
 	public List<UserPrincipal> findByUserNameLike(String username) {
 		return userPrincipalDao.findByUserNameLike(username);
 	}

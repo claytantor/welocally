@@ -36,5 +36,6 @@ public interface UserPrincipalService {
 	public Role findRole(String name) throws UserPrincipalServiceException;
 	
 	//public Long saveUserRole(Role r) throws UserPrincipalServiceException;
-	
+
+    void signUp(UserPrincipal entity) throws UserPrincipalServiceException;
 }
