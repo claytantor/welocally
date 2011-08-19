@@ -15,7 +15,7 @@
 
 		<sec:authorize ifAnyGranted="ROLE_USER">
 			<div class="span-18">
-				<img src="${imageUrl}/header_logo.png"/> 
+				<img src="<c:url value="${imageUrl}/header_logo.png"/>">
 			</div>
 			<div class="padding-5 span-5 last">
 				<div class="span-5"><sec:authentication property="principal.username" /></div>
@@ -28,7 +28,7 @@
 		<sec:authorize  ifNotGranted="ROLE_USER">
 
 		
-		<div class="span-18"><img src="${imageUrl}/header_logo.png"/></div>
+		<div class="span-18"><img src="<c:url value="${imageUrl}/header_logo.png"/>"></div>
 		<div class="actions padding-5 span-5 last">
 			<a href="<c:url value='/home' />" class="button">member login</a>
 		</div>

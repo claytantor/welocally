@@ -38,4 +38,4 @@
 		</style>	
 	</head>
 
-<c:url value="/images" var="imageUrl" scope="request"/>
+<c:set value="/images" var="imageUrl" scope="request"/>
