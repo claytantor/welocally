@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Arrays;
+
 /**
  * @author sam
  * @version $Id$
@@ -64,7 +66,8 @@ public class SignUpController {
         if (!errors.hasErrors()) {
             // create account
             try {
-                userService.signUp(form.getEntity());
+                // TODO hard coding the role to publisher for now, will need to figure out a better way of doing this later
+                userService.signUp(form.getEntity(), Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
                 // send user to success page
                 viewName = "redirect:/signup/success";
             } catch (UserPrincipalServiceException e) {
