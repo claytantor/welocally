@@ -89,7 +89,7 @@ public class UserPrincipal implements Authentication, UserDetails {
 	private String authGuid;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Role> roles = new HashSet<Role>();
 
 	public String getAuthGuid() {

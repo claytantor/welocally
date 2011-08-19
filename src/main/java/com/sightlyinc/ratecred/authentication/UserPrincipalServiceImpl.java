@@ -44,7 +44,7 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 
     @Override
     @Transactional(readOnly = false)
-    public void signUp(UserPrincipal entity) throws UserPrincipalServiceException {
+    public void signUp(UserPrincipal entity, List<String> roleNames) throws UserPrincipalServiceException {
         UserPrincipal user = userPrincipalDao.findByEmail(entity.getEmail());
         if (user != null) {
             throw new UserPrincipalServiceException("Email address already registered");
@@ -53,7 +53,16 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
         if (user != null) {
             throw new UserPrincipalServiceException("Username already in use");
         }
-        userPrincipalDao.save(entity);
+        // create a role for the user so they can log in
+        try {
+            saveUserPrincipalRoles(entity, roleNames);
+
+            userPrincipalDao.save(entity);
+        } catch (BLServiceException e) {
+            throw new UserPrincipalServiceException(e);
+        }
+        // TODO generate keys, tokens, etc. for use with plugin
+        // TODO email the user with their account info
     }
 
     @Override
