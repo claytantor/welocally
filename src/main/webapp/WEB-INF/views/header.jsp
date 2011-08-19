@@ -29,9 +29,12 @@
 
 		
 		<div class="span-18"><img src="<c:url value="${imageUrl}/header_logo.png"/>"></div>
-		<div class="actions padding-5 span-5 last">
-			<a href="<c:url value='/home' />" class="button">member login</a>
-		</div>
+        <div class="span-6 last">
+    		<div class="actions span-3">
+	    		<a href="<c:url value='/home' />" class="button">member login</a>
+		    </div>
+            <div class="actions span-3 last" last><a href="<c:url value='/signup'/>" class="button">sign up</a></div>
+        </div>
 		</sec:authorize>	
 
 </div>
