@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import com.noi.utility.io.InputOutputUtils;
+import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoArticleClient;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoEventClient;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoLocationClient;
@@ -21,6 +22,7 @@ import com.sightlyinc.ratecred.service.ArticleServiceImpl;
 import com.sightlyinc.ratecred.service.EventService;
 import com.sightlyinc.ratecred.service.EventServiceImpl;
 import com.sightlyinc.ratecred.service.PlaceManagerServiceImpl;
+import com.simplegeo.client.types.Feature;
 
 /**
  * @author sam
@@ -65,9 +67,7 @@ public class TestWordpressJsonModelProcessor {
 
         try {
         	String eventContents = new String(InputOutputUtils.getBytesFromStream(
-					TestWordpressJsonModelProcessor.class.getResourceAsStream("/data/event_post.json")));
-        	
-        	
+					TestWordpressJsonModelProcessor.class.getResourceAsStream("/data/event_post.json")));      	
         	
             JSONObject jsonObject = 
             	new JSONObject(eventContents);
@@ -134,6 +134,69 @@ public class TestWordpressJsonModelProcessor {
             Assert.assertEquals(true, wordpressJsonModelProcessor.isArticlePost(jsonPost));
             
             wordpressJsonModelProcessor.saveArticleAndPlaceFromPostJson(jsonPost, publisher, "save_post");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+    
+    @Test
+    public void testAddFeatureFromPostJson() {
+        WordpressJsonModelProcessor wordpressJsonModelProcessor = new WordpressJsonModelProcessor();
+
+        // set dependencies
+        wordpressJsonModelProcessor.setObjectMapper(new JacksonObjectMapper());
+
+        PlaceManagerServiceImpl placeManagerService = new PlaceManagerServiceImpl();
+
+        PlaceDao mockPlaceDao = mock(PlaceDao.class);
+
+        placeManagerService.setPlaceDao(mockPlaceDao);
+
+        wordpressJsonModelProcessor.setPlaceManagerService(placeManagerService);
+
+        // set SimpleGeo keys, call init()
+        wordpressJsonModelProcessor.setSgoauthkey("ZdGSMVGmne9ccTn6dykyGffHU8AXCAaC");
+        wordpressJsonModelProcessor.setSgoauthsecret("kmbYEGBVbhA6473Y2ms3SwMS5SYYuWux");
+        wordpressJsonModelProcessor.init();
+
+        SimpleGeoArticleClient simpleGeoArticleClient = new SimpleGeoArticleClient();
+
+        ArticleServiceImpl articleService = new ArticleServiceImpl();
+
+        ArticleDao mockArticleDao = mock(ArticleDao.class);
+        articleService.setArticleDao(mockArticleDao);
+        wordpressJsonModelProcessor.setArticleService((ArticleService)articleService);
+
+        simpleGeoArticleClient.setArticleService(articleService);
+        simpleGeoArticleClient.setPlaceManagerService(placeManagerService);
+        simpleGeoArticleClient.setLocationPlacesClient(new SimpleGeoLocationClient());
+
+        wordpressJsonModelProcessor.setGeoArticleClient(simpleGeoArticleClient);
+        
+        //add the geocoder
+        wordpressJsonModelProcessor.setGeocoder( new YahooGeocoder());
+        
+        //add the places client
+        SimpleGeoLocationClient sgPlacesClient = new SimpleGeoLocationClient();
+        sgPlacesClient.setRatecredConsumerKey("ZdGSMVGmne9ccTn6dykyGffHU8AXCAaC");
+        sgPlacesClient.setRatecredConsumerSecret("kmbYEGBVbhA6473Y2ms3SwMS5SYYuWux");
+        sgPlacesClient.init();
+        wordpressJsonModelProcessor.setGeoPlacesClient(sgPlacesClient);
+
+        try {
+        	String articleContents = new String(InputOutputUtils.getBytesFromStream(
+					TestWordpressJsonModelProcessor.class.getResourceAsStream("/data/add_place.json")));
+        	      	
+            JSONObject jsonObject = 
+            	new JSONObject(articleContents);
+            
+            Feature f = wordpressJsonModelProcessor.saveNewPlaceAsFeatureFromPostJson(jsonObject);
+            if(f == null){
+            	fail();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

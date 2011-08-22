@@ -1,15 +1,31 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
-import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
-import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.service.PublisherService;
+import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.MappingJsonFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
+import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.service.PlaceManagerService;
+import com.sightlyinc.ratecred.service.PublisherService;
+import com.simplegeo.client.types.Feature;
 
 /**
  * @author sam
@@ -22,10 +38,19 @@ public class WordpressPluginController {
 	static Logger logger = Logger.getLogger(WordpressPluginController.class);
 
 
+	@Autowired
+	private PlaceManagerService placeManagerService;
+	
     @Autowired
     private PublisherService publisherService;
+    
     @Autowired
     private JsonModelProcessor jsonModelProcessor;
+    
+    @Autowired
+    private ObjectMapper jacksonMapper;
+
+
 
     /**
      * Handles requests sent by the Wordpress plugin when users publish a post.
@@ -63,8 +88,44 @@ public class WordpressPluginController {
         
         return "";
     }
+    
+    @RequestMapping(value="/add", method=RequestMethod.POST)
+	public ModelAndView chooserAddPlace(
+			@RequestBody String addPlaceJSON,
+			Model m,
+			HttpServletResponse response) 
+    {
+		logger.debug("adding place from place chooser");
+        ModelAndView modelAndView = new ModelAndView("add-feature");
+        
+        try {
+			JSONObject requestJSONObject = new JSONObject(addPlaceJSON);
+			Feature f = jsonModelProcessor.saveNewPlaceAsFeatureFromPostJson(requestJSONObject);
+			StringWriter sw = new StringWriter();   // serialize
+			MappingJsonFactory jsonFactory = new MappingJsonFactory();
+			JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(sw);
+			jacksonMapper.writeValue(jsonGenerator, f);
+			sw.close();
+			modelAndView.addObject("feature", sw.getBuffer().toString());
 
-    public void setPublisherService(PublisherService publisherService) {
+		} catch (JSONException e) {
+			response.setStatus(500);
+		} catch (IOException e) {
+			response.setStatus(500);
+		}
+      
+        return modelAndView;
+	}
+
+    public void setPlaceManagerService(PlaceManagerService placeManagerService) {
+		this.placeManagerService = placeManagerService;
+	}
+
+	public void setJsonModelProcessor(JsonModelProcessor jsonModelProcessor) {
+		this.jsonModelProcessor = jsonModelProcessor;
+	}
+
+	public void setPublisherService(PublisherService publisherService) {
         this.publisherService = publisherService;
     }
 }

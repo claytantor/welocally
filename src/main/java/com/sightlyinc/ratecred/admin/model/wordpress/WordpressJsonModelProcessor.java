@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -26,6 +27,7 @@ import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
 import com.sightlyinc.ratecred.admin.mvc.controller.PlaceController;
 import com.sightlyinc.ratecred.client.geo.GeoArticleClient;
 import com.sightlyinc.ratecred.client.geo.GeoEventClient;
+import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoEventClient;
 import com.sightlyinc.ratecred.model.Article;
 import com.sightlyinc.ratecred.model.Event;
@@ -58,13 +60,12 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 	public String sgoauthsecret;
 	
 	private SimpleGeoPlacesClient client;
-
+      
 	public Integer radiusInKMeters = 1;
 	
 	@Autowired
 	@Qualifier("yahooGeocoder")
-	public Geocoder geocoder;	
-	
+	public Geocoder geocoder;		
 
 	@Autowired
 	@Qualifier("geoEventClient")
@@ -74,7 +75,8 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 	@Qualifier("geoArticleClient")
 	private GeoArticleClient geoArticleClient;
 	
-	
+	@Autowired
+	private GeoPlacesClient geoPlacesClient;	
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -464,8 +466,76 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 
 		return null;
 	}
+	
+	
+	
 
-    public void setObjectMapper(ObjectMapper objectMapper) {
+    @Override
+	public Feature saveNewPlaceAsFeatureFromPostJson(JSONObject requestJSONObject) {
+
+ 			try {
+				/*
+				 * 	"placeName": "Shimizu Sushi",
+					"placeStreet": "4290 Piedmont Ave",
+					"placeCity": "Oakland",
+					"placeState": "CA",
+					"placeZip": "94611",
+				  	"placePhone": "+1 510 653-7672",
+				   	"placeWeb": "",
+					"placeCats": "Restaurant, Sushi" 			
+				 */
+				Place place = new Place();
+				place.setName(requestJSONObject.getString("placeName"));
+				place.setAddress(requestJSONObject.getString("placeStreet"));
+				place.setCity(requestJSONObject.getString("placeCity"));
+				place.setState(requestJSONObject.getString("placeState"));
+				place.setZip(requestJSONObject.getString("placeZip"));
+				place.setPhone(requestJSONObject.getString("placePhone"));
+				place.setUrl(requestJSONObject.getString("placeWeb"));
+
+				Location location = geocoder.geocode(
+				        place.getAddress() + " " +
+				        place.getCity() + " " +
+				        place.getState() + " " +
+				        place.getZip()
+				);
+
+				place.setLatitude(location.getLat());
+				place.setLongitude(location.getLng());
+
+				// geocode worked, post to simplegeo
+				Map<String, Object> results = geoPlacesClient.addPlace(place);
+				
+				//now get the feature for the place
+				/*
+				 * {
+				 * id=SG_3PEIEghIV0LKXwleJnCHhY_37.828654_-122.249411@1313970667, 
+				 * token=707f75becc5011e09fc712313819f139, 
+				 * uri=http://api.simplegeo.com/1.0/features/SG_3PEIEghIV0LKXwleJnCHhY_37.828654_-122.249411@1313970667.json
+				 * }
+				 */
+				String featureId = results.get("id").toString();
+				if(featureId != null){
+					place.setSimpleGeoId(featureId);
+					placeManagerService.savePlace(place);
+					return client.getPlace(featureId);
+				}
+				
+				
+			} catch (JSONException e) {
+				logger.error("cannot save feature", e);
+			} catch (GeocoderException e) {
+				logger.error("cannot save feature", e);
+			} catch (IOException e) {
+				logger.error("cannot save feature", e);
+			} catch (BLServiceException e) {
+				logger.error("cannot save feature", e);
+			}
+			
+			return null;
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -477,7 +547,11 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
         this.geocoder = geocoder;
     }
 
-    public void setSgoauthkey(String sgoauthkey) {
+    public void setGeoPlacesClient(GeoPlacesClient geoPlacesClient) {
+		this.geoPlacesClient = geoPlacesClient;
+	}
+
+	public void setSgoauthkey(String sgoauthkey) {
         this.sgoauthkey = sgoauthkey;
     }
 

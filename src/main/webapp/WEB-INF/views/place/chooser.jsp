@@ -74,7 +74,6 @@ $(function() {
 	    var featureSelected = jsonObjFeatures[selectedFeatureIndex];
 	    console.log(JSON.stringify(featureSelected));
 
-	    //$.post("${savePlaceByFeatureAction}", JSON.stringify(featureSelected));
 
 	    $.ajax({
 			type : 'POST',
