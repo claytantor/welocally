@@ -88,7 +88,6 @@ public class SimpleGeoArticleClient implements GeoArticleClient {
 			article.setDescription(description);
 			article.setSummary(description);
 			article.setName(articleName);
-
 			article.setPlace(place);
 			article.setPublisher(pub);
 			article.setTimeCreated(Calendar.getInstance().getTimeInMillis());

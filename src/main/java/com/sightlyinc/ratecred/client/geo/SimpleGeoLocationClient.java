@@ -45,8 +45,6 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 		client = SimpleGeoPlacesClient.getInstance();
 		client.getHttpClient().setToken(ratecredConsumerKey, ratecredConsumerSecret);
 	}
-
-	
 	
 	@Override
 	public List<Place> findPlaces(double lat, double lon, double radiusInKMeters) {
@@ -181,16 +179,13 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 	
 	public Map<String, Object> addPlace(Place place) {
         Feature feature = transformPlace(place);
-
         Map<String, Object> result = null;
         try {
-            result = client.addPlace(feature);
+            result = client.addPlace(feature);           
         } catch (IOException e) {
-            // TODO handle
-            e.printStackTrace();
+            logger.error("cannot add place",e);
         } catch (JSONException e) {
-            // TODO handle
-            e.printStackTrace();
+        	logger.error("cannot add place",e);
         }
         return result;
     }
@@ -211,10 +206,24 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
         properties.put("postcode", place.getZip());
         properties.put("name", place.getName());
         properties.put("phone", place.getPhone());
-        // TODO website/url
-        properties.put("private", true);
+        properties.put("website", place.getUrl());
+        properties.put("private", false);
         feature.setProperties(properties);
 
         return feature;
     }
+
+
+
+	public void setRatecredConsumerKey(String ratecredConsumerKey) {
+		this.ratecredConsumerKey = ratecredConsumerKey;
+	}
+
+
+
+	public void setRatecredConsumerSecret(String ratecredConsumerSecret) {
+		this.ratecredConsumerSecret = ratecredConsumerSecret;
+	}
+    
+    
 }
