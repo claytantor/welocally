@@ -28,7 +28,14 @@ public class NetworkMemberServiceImpl extends AbstractTransactionalService<Netwo
 		return networkMemberDao;
 	}
 
-	@Override
+    private static final Long DEFAULT_NETWORK_MEMBER_ID = 4l;
+
+    @Override
+    public NetworkMember getDefaultNetworkMember() {
+        return networkMemberDao.findByPrimaryKey(DEFAULT_NETWORK_MEMBER_ID);
+    }
+
+    @Override
 	public Long createPublisherMember(NetworkMember member, Publisher p) {
 		Publisher pbind = publisherDao.findByPrimaryKey(p.getId());
 		member.getPublishers().add(pbind);
