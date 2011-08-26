@@ -44,7 +44,11 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 	public List<Publisher> findByUserPrincipal(UserPrincipal up) {
 		return publisherDao.findByUserPrincipal(up);
 	}
-    
-    
-    
+
+    @Override
+    public Publisher findBySiteUrl(String siteUrl) {
+        return publisherDao.findBySiteUrl(siteUrl);
+    }
+
+
 }

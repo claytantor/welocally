@@ -11,4 +11,6 @@ public interface PublisherService extends BaseService<Publisher> {
     public Publisher findByNetworkKeyAndPublisherKey(String networkMemberKey, String publisherKey);
     public List<Publisher>  findBySiteNameLike(String siteName);
     public List<Publisher> findByUserPrincipal(UserPrincipal principal);
+
+    Publisher findBySiteUrl(String siteUrl);
 }

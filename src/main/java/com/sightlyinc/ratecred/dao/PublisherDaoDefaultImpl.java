@@ -104,4 +104,25 @@ extends AbstractDao<Publisher>
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public Publisher findBySiteUrl(final String siteUrl) {
+        return (Publisher)getHibernateTemplateOverride().execute(new HibernateCallback() {
+            public Object doInHibernate(Session session)
+            throws HibernateException, SQLException
+            {
+
+                Query query = session.createQuery(
+                    "select distinct entityimpl from "+Publisher.class.getName()+
+                    " as entityimpl where entityimpl.url = :siteUrl");
+
+                query.setString("siteUrl", siteUrl);
+
+                Publisher t = (Publisher)query.uniqueResult();
+
+                return t;
+
+            }
+        });
+    }
 }
