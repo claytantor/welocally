@@ -66,6 +66,11 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
     }
 
     @Override
+    public UserPrincipal findUserByEmail(String email) {
+        return userPrincipalDao.findByEmail(email);
+    }
+
+    @Override
 	public List<UserPrincipal> findByUserNameLike(String username) {
 		return userPrincipalDao.findByUserNameLike(username);
 	}
