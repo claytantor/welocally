@@ -2,14 +2,9 @@ package com.sightlyinc.ratecred.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
@@ -40,11 +35,19 @@ public class Publisher extends BaseEntity {
 	
 	@Column(name="map_icon_url")
 	private String mapIconUrl;
+
+    @Column(name="simple_geo_json_token")
+    private String simpleGeoJsonToken;
 	
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
 	private NetworkMember networkMember;
-	 
+
+    @OneToOne
+    @JoinColumn(name="user_principal_id")
+    @JsonIgnore
+    private UserPrincipal userPrincipal;
+
 	@OneToMany
 	@JoinColumn(name = "publisher_id")
 	private Set<OfferEconomics> offerEconomics;
@@ -139,4 +142,20 @@ public class Publisher extends BaseEntity {
 	public void setArticles(Set<Article> articles) {
 		this.articles = articles;
 	}
+
+    public UserPrincipal getUserPrincipal() {
+        return userPrincipal;
+    }
+
+    public void setUserPrincipal(UserPrincipal userPrincipal) {
+        this.userPrincipal = userPrincipal;
+    }
+
+    public String getSimpleGeoJsonToken() {
+        return simpleGeoJsonToken;
+    }
+
+    public void setSimpleGeoJsonToken(String simpleGeoJsonToken) {
+        this.simpleGeoJsonToken = simpleGeoJsonToken;
+    }
 }
