@@ -1,18 +1,24 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
+import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
+import com.sightlyinc.ratecred.dao.SimpleGeoJsonTokenDao;
+import com.sightlyinc.ratecred.model.NetworkMember;
+import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.model.SimpleGeoJsonToken;
+import com.sightlyinc.ratecred.service.NetworkMemberService;
+import com.sightlyinc.ratecred.service.PublisherService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * @author sam
@@ -26,6 +32,13 @@ public class SignUpController {
 
     @Autowired
     private UserPrincipalService userService;
+
+    @Autowired
+    private PublisherService publisherService;
+    @Autowired
+    private SimpleGeoJsonTokenDao simpleGeoJsonTokenDao;
+    @Autowired
+    private NetworkMemberService networkMemberService;
 
     @ModelAttribute("signup")
     public UserPrincipalForm getForm() {
@@ -86,6 +99,90 @@ public class SignUpController {
         }
 
         return viewName;
+    }
+
+    // TODO make post only???
+//    @RequestMapping(value = "/plugin", method = RequestMethod.POST)
+    @RequestMapping(value = "/plugin") // make get/post for testing
+    @ResponseBody
+    public Map<String, Object> signUpFromPlugin(@RequestParam(required = false) String email,
+                                   @RequestParam(required = false) String siteUrl,
+                                   @RequestParam(required = false) String siteName,
+                                   @RequestParam(required = false) String description,
+                                   @RequestParam(required = false) String iconUrl) {
+        // @RequestParam's are set to "required = false" so that we can manually validate and return errors
+
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<String> errors = new ArrayList<String>();
+
+        // validate input
+        if (StringUtils.isBlank(siteUrl)) {
+            errors.add("Please provide the URL for your site");
+        }
+        if (StringUtils.isBlank(siteName)) {
+            errors.add("Please provide the name for your site");
+        }
+        if (StringUtils.isBlank(description)) {
+            errors.add("Please provide the description of your site");
+        }
+        if (StringUtils.isBlank(email)) {
+            errors.add("Please provide your email address");
+        }
+
+        if (errors.isEmpty()) {
+            // TODO move all this logic into a service method
+            UserPrincipal user = userService.findUserByEmail(email);
+            if (user == null) {
+                user = new UserPrincipal();
+                user.setEmail(email);
+                user.setPassword(Long.toString(System.currentTimeMillis()));
+                user.setUsername(email);
+                try {
+                    userService.saveUserPrincipal(user);
+                    // not going to worry about roles for now since user isn't going to be logging in
+                } catch (UserPrincipalServiceException e) {
+                    e.printStackTrace();
+                    errors.add("Unable to create user, please try again");
+                }
+            }
+            if (errors.isEmpty()) {
+                Publisher publisher = publisherService.findBySiteUrl(siteUrl);
+                if (publisher == null) {
+                    publisher = new Publisher();
+                    publisher.setUserPrincipal(user);
+                    publisher.setIconUrl(iconUrl);
+                    publisher.setUrl(siteUrl);
+                    publisher.setSiteName(siteName);
+                    publisher.setDescription(description);
+                    NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
+                    publisher.setNetworkMember(defaultNetworkMember);
+                    // TODO put this UUID logic in its own method in a service class somewhere
+                    String key = UUID.randomUUID().toString();
+                    key = key.substring(key.lastIndexOf('-') + 1);
+                    publisher.setKey(key);
+                    SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
+                    if (simpleGeoJsonToken != null) {
+                        publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
+                    } else {
+                        errors.add("Unable to assign a SimpleGeo JSON token, please try again");
+                    }
+                    if (errors.isEmpty()) {
+                        publisherService.save(publisher);
+                    }
+                }
+                if (errors.isEmpty()) {
+                    // publisher key, simplegeo token, trial end date
+                    response.put("key", publisher.getKey());
+                    response.put("token", publisher.getSimpleGeoJsonToken());
+                    // TODO service end date tracking
+                    response.put("serviceEndDateMillis", new Date());
+                }
+            }
+        }
+
+        response.put("errors", errors);
+
+        return response;
     }
 
     public void setUserService(UserPrincipalService userService) {
