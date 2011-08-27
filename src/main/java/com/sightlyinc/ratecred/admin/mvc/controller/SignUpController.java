@@ -160,6 +160,11 @@ public class SignUpController {
                     String key = UUID.randomUUID().toString();
                     key = key.substring(key.lastIndexOf('-') + 1);
                     publisher.setKey(key);
+                    // TODO find a better place for this logic too
+                    // set up initial trial service period of 30 days
+                    long serviceEndDateMillis = new Date().getTime();
+                    serviceEndDateMillis += 2592000000L;
+                    publisher.setServiceEndDateMillis(serviceEndDateMillis);
                     SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
                     if (simpleGeoJsonToken != null) {
                         publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
@@ -174,8 +179,7 @@ public class SignUpController {
                     // publisher key, simplegeo token, trial end date
                     response.put("key", publisher.getKey());
                     response.put("token", publisher.getSimpleGeoJsonToken());
-                    // TODO service end date tracking
-                    response.put("serviceEndDateMillis", new Date());
+                    response.put("serviceEndDateMillis", publisher.getServiceEndDateMillis());
                 }
             }
         }
