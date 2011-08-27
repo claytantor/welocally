@@ -41,7 +41,7 @@ public class Publisher extends BaseEntity {
     private String simpleGeoJsonToken;
 
     @Column(name="service_end_date")
-    private long serviceEndDateMillis;
+    private Long serviceEndDateMillis;
 	
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
@@ -163,12 +163,12 @@ public class Publisher extends BaseEntity {
         this.simpleGeoJsonToken = simpleGeoJsonToken;
     }
 
-    public long getServiceEndDateMillis() {
+    public Long getServiceEndDateMillis() {
         return serviceEndDateMillis;
     }
 
     public Date getServiceEndDate() {
-        return new Date(serviceEndDateMillis);
+        return (serviceEndDateMillis == null ? null : new Date(serviceEndDateMillis));
     }
 
     public void setServiceEndDateMillis(long serviceEndDateMillis) {
