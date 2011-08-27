@@ -12,6 +12,8 @@ import com.sightlyinc.ratecred.model.SimpleGeoJsonToken;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.PublisherService;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -101,85 +103,98 @@ public class SignUpController {
         return viewName;
     }
 
-    // TODO make post only???
-//    @RequestMapping(value = "/plugin", method = RequestMethod.POST)
-    @RequestMapping(value = "/plugin") // make get/post for testing
+    @RequestMapping(value = "/plugin")
     @ResponseBody
-    public Map<String, Object> signUpFromPlugin(@RequestParam(required = false) String email,
-                                   @RequestParam(required = false) String siteUrl,
-                                   @RequestParam(required = false) String siteName,
-                                   @RequestParam(required = false) String description,
-                                   @RequestParam(required = false) String iconUrl) {
-        // @RequestParam's are set to "required = false" so that we can manually validate and return errors
-
+    public Map<String, Object> signUpFromPlugin(@RequestBody String requestJson) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<String> errors = new ArrayList<String>();
 
-        // validate input
-        if (StringUtils.isBlank(siteUrl)) {
-            errors.add("Please provide the URL for your site");
-        }
-        if (StringUtils.isBlank(siteName)) {
-            errors.add("Please provide the name for your site");
-        }
-        if (StringUtils.isBlank(description)) {
-            errors.add("Please provide the description of your site");
-        }
-        if (StringUtils.isBlank(email)) {
-            errors.add("Please provide your email address");
+        String email = null;
+        String siteUrl = null;
+        String siteName = null;
+        String description = null;
+        String iconUrl = null;
+
+        try {
+            JSONObject jsonObject = new JSONObject(requestJson);
+
+            email = jsonObject.getString("email");
+            siteUrl = jsonObject.getString("siteUrl");
+            siteName = jsonObject.getString("siteName");
+            description = jsonObject.getString("description");
+            iconUrl = jsonObject.getString("iconUrl");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            errors.add("Unable to parse request, please check the format of your data");
         }
 
         if (errors.isEmpty()) {
-            // TODO move all this logic into a service method
-            UserPrincipal user = userService.findUserByEmail(email);
-            if (user == null) {
-                user = new UserPrincipal();
-                user.setEmail(email);
-                user.setPassword(Long.toString(System.currentTimeMillis()));
-                user.setUsername(email);
-                try {
-                    userService.saveUserPrincipal(user);
-                    // not going to worry about roles for now since user isn't going to be logging in
-                } catch (UserPrincipalServiceException e) {
-                    e.printStackTrace();
-                    errors.add("Unable to create user, please try again");
-                }
+            // validate input
+            if (StringUtils.isBlank(siteUrl)) {
+                errors.add("Please provide the URL for your site");
             }
+            if (StringUtils.isBlank(siteName)) {
+                errors.add("Please provide the name for your site");
+            }
+            if (StringUtils.isBlank(description)) {
+                errors.add("Please provide the description of your site");
+            }
+            if (StringUtils.isBlank(email)) {
+                errors.add("Please provide your email address");
+            }
+
             if (errors.isEmpty()) {
-                Publisher publisher = publisherService.findBySiteUrl(siteUrl);
-                if (publisher == null) {
-                    publisher = new Publisher();
-                    publisher.setUserPrincipal(user);
-                    publisher.setIconUrl(iconUrl);
-                    publisher.setUrl(siteUrl);
-                    publisher.setSiteName(siteName);
-                    publisher.setDescription(description);
-                    NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
-                    publisher.setNetworkMember(defaultNetworkMember);
-                    // TODO put this UUID logic in its own method in a service class somewhere
-                    String key = UUID.randomUUID().toString();
-                    key = key.substring(key.lastIndexOf('-') + 1);
-                    publisher.setKey(key);
-                    // TODO find a better place for this logic too
-                    // set up initial trial service period of 30 days
-                    long serviceEndDateMillis = new Date().getTime();
-                    serviceEndDateMillis += 2592000000L;
-                    publisher.setServiceEndDateMillis(serviceEndDateMillis);
-                    SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
-                    if (simpleGeoJsonToken != null) {
-                        publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
-                    } else {
-                        errors.add("Unable to assign a SimpleGeo JSON token, please try again");
-                    }
-                    if (errors.isEmpty()) {
-                        publisherService.save(publisher);
+                // TODO move all this logic into a service method
+                UserPrincipal user = userService.findUserByEmail(email);
+                if (user == null) {
+                    user = new UserPrincipal();
+                    user.setEmail(email);
+                    user.setPassword(Long.toString(System.currentTimeMillis()));
+                    user.setUsername(email);
+                    try {
+                        userService.saveUserPrincipal(user);
+                        // not going to worry about roles for now since user isn't going to be logging in
+                    } catch (UserPrincipalServiceException e) {
+                        e.printStackTrace();
+                        errors.add("Unable to create user, please try again");
                     }
                 }
                 if (errors.isEmpty()) {
-                    // publisher key, simplegeo token, trial end date
-                    response.put("key", publisher.getKey());
-                    response.put("token", publisher.getSimpleGeoJsonToken());
-                    response.put("serviceEndDateMillis", publisher.getServiceEndDateMillis());
+                    Publisher publisher = publisherService.findBySiteUrl(siteUrl);
+                    if (publisher == null) {
+                        publisher = new Publisher();
+                        publisher.setUserPrincipal(user);
+                        publisher.setIconUrl(iconUrl);
+                        publisher.setUrl(siteUrl);
+                        publisher.setSiteName(siteName);
+                        publisher.setDescription(description);
+                        NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
+                        publisher.setNetworkMember(defaultNetworkMember);
+                        // TODO put this UUID logic in its own method in a service class somewhere
+                        String key = UUID.randomUUID().toString();
+                        key = key.substring(key.lastIndexOf('-') + 1);
+                        publisher.setKey(key);
+                        // TODO find a better place for this logic too
+                        // set up initial trial service period of 30 days
+                        long serviceEndDateMillis = new Date().getTime();
+                        serviceEndDateMillis += 2592000000L;
+                        publisher.setServiceEndDateMillis(serviceEndDateMillis);
+                        SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
+                        if (simpleGeoJsonToken != null) {
+                            publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
+                        } else {
+                            errors.add("Unable to assign a SimpleGeo JSON token, please try again");
+                        }
+                        if (errors.isEmpty()) {
+                            publisherService.save(publisher);
+                        }
+                    }
+                    if (errors.isEmpty()) {
+                        // publisher key, simplegeo token, trial end date
+                        response.put("key", publisher.getKey());
+                        response.put("token", publisher.getSimpleGeoJsonToken());
+                        response.put("serviceEndDateMillis", publisher.getServiceEndDateMillis());
+                    }
                 }
             }
         }
