@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -38,6 +39,9 @@ public class Publisher extends BaseEntity {
 
     @Column(name="simple_geo_json_token")
     private String simpleGeoJsonToken;
+
+    @Column(name="service_end_date")
+    private long serviceEndDateMillis;
 	
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
@@ -157,5 +161,21 @@ public class Publisher extends BaseEntity {
 
     public void setSimpleGeoJsonToken(String simpleGeoJsonToken) {
         this.simpleGeoJsonToken = simpleGeoJsonToken;
+    }
+
+    public long getServiceEndDateMillis() {
+        return serviceEndDateMillis;
+    }
+
+    public Date getServiceEndDate() {
+        return new Date(serviceEndDateMillis);
+    }
+
+    public void setServiceEndDateMillis(long serviceEndDateMillis) {
+        this.serviceEndDateMillis = serviceEndDateMillis;
+    }
+
+    public void setServiceEndDate(Date serviceEndDate) {
+        this.serviceEndDateMillis = serviceEndDate.getTime();
     }
 }

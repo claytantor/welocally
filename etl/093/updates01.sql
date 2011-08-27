@@ -29,6 +29,7 @@ alter table publisher add simple_geo_json_token varchar(255);
 alter table publisher add user_principal_id bigint(20);
 -- TODO update publisher rows to set values for user_principal_id
 -- add foreign key from publisher.user_principal_id to user_principal.id
+alter table publisher add service_end_date bigint(20);
 
 -- create default network member
 insert into network_member (id, version, user_principal_id, name, primary_email, paypal_email, member_key, description)
