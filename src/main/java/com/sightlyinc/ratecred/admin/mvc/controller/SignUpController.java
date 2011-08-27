@@ -118,10 +118,10 @@ public class SignUpController {
         try {
             JSONObject jsonObject = new JSONObject(requestJson);
 
-            email = jsonObject.getString("email");
-            siteUrl = jsonObject.getString("siteUrl");
+            email = jsonObject.getString("siteEmail");
+            siteUrl = jsonObject.getString("siteHome");
             siteName = jsonObject.getString("siteName");
-            description = jsonObject.getString("description");
+            description = jsonObject.getString("siteDescription");
             iconUrl = jsonObject.getString("iconUrl");
         } catch (JSONException e) {
             e.printStackTrace();
