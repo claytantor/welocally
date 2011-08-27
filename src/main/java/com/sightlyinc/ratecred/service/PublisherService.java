@@ -13,4 +13,6 @@ public interface PublisherService extends BaseService<Publisher> {
     public List<Publisher> findByUserPrincipal(UserPrincipal principal);
 
     Publisher findBySiteUrl(String siteUrl);
+
+    List<Publisher> findExpiringPublishers();
 }

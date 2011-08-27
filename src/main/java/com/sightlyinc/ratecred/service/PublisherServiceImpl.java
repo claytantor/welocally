@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,13 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
     @Override
     public Publisher findBySiteUrl(String siteUrl) {
         return publisherDao.findBySiteUrl(siteUrl);
+    }
+
+    @Override
+    public List<Publisher> findExpiringPublishers() {
+        long maxServiceEndDate = new Date().getTime();
+        maxServiceEndDate += 30l * 24l * 60l * 60l * 1000l;
+        return publisherDao.findByMaxServiceEndDateWithNullSimpleGeoToken(maxServiceEndDate);
     }
 
 

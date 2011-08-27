@@ -178,4 +178,8 @@ public class Publisher extends BaseEntity {
     public void setServiceEndDate(Date serviceEndDate) {
         this.serviceEndDateMillis = serviceEndDate.getTime();
     }
+
+    public boolean isServiceExpired() {
+        return (serviceEndDateMillis == null || serviceEndDateMillis < new Date().getTime());
+    }
 }

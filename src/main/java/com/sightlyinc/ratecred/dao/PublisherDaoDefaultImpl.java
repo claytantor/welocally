@@ -2,9 +2,11 @@
 package com.sightlyinc.ratecred.dao;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
@@ -124,5 +126,15 @@ extends AbstractDao<Publisher>
 
             }
         });
+    }
+
+    @Override
+    public List<Publisher> findByMaxServiceEndDateWithNullSimpleGeoToken(long maxServiceEndDate) {
+        Criteria criteria = getCurrentSession().createCriteria(getPersistentClass());
+        criteria.add(Restrictions.isNotNull("simpleGeoJsonToken"));
+        criteria.add(Restrictions.le("serviceEndDateMillis", maxServiceEndDate));
+        criteria.addOrder(Order.asc("serviceEndDateMillis"));
+        criteria.addOrder(Order.asc("siteName"));
+        return (List<Publisher>) criteria.list();
     }
 }

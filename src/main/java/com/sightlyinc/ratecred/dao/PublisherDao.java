@@ -13,4 +13,6 @@ public interface PublisherDao extends BaseDao<Publisher> {
     public List<Publisher> findByUserPrincipal(UserPrincipal up);
 
     Publisher findBySiteUrl(String siteUrl);
+
+    List<Publisher> findByMaxServiceEndDateWithNullSimpleGeoToken(long maxServiceEndDate);
 }
