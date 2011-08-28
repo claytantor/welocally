@@ -33,7 +33,10 @@ alter table publisher add service_end_date bigint(20);
 
 -- create default network member
 insert into network_member (id, version, user_principal_id, name, primary_email, paypal_email, member_key, description)
-values(4, 0, 1, 'Oaklandly','clay@ratecred.com','clay@ratecred.com','oaklandly','Default network member for publishers');
+values(4, 0, 1, 'welocally','clay@ratecred.com','clay@welocally.com','welocally','Default network member for publishers');
+
+update network_member set name = 'welocally', member_key='welocally' where id=4;
+
 
 insert into simple_geo_json_token (version, json_token, start_assignment_date, end_assignment_date)
 values(

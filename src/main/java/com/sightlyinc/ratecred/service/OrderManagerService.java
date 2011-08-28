@@ -10,6 +10,9 @@ import com.sightlyinc.ratecred.model.Voucher;
 public interface OrderManagerService {
 	
 	public Order findOrderByPrimaryKey(Long id) throws BLServiceException;
+	
+	public Order findOrderByTxId(String txId) throws BLServiceException;
+	
 	public Order findOrderByChannelAndExternalId(String channel, String externalId) 
 		throws BLServiceException;
 	public List<Order> findOrdersByRater(Patron rater) throws BLServiceException;

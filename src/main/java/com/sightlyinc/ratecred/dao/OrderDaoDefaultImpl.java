@@ -31,6 +31,29 @@ public class OrderDaoDefaultImpl
 
 
 	@Override
+	public Order findByTxId(final String externalTxId) {
+		return (Order)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+					"select distinct entityimpl from "+Order.class.getName()+
+					" as entityimpl where entityimpl.externalTxId = :externalTxId");
+				
+				query.setString("externalTxId", externalTxId);
+				
+				Order t = (Order)query.uniqueResult();
+				
+			
+				return t;
+	
+			}
+		});
+	}
+
+
+	@Override
 	public Order findByChannelAndExternalId(final String channel, final String externalId) {
 		return (Order)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)

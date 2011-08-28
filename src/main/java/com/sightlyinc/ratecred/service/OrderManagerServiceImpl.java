@@ -27,8 +27,7 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 	
 	@Autowired
 	private VoucherDao voucherDao; 
-	
-	
+		
 	@Override
 	public List<Order> findOrdersByRater(Patron rater) throws BLServiceException {
 		return orderDao.findByOwner(rater);
@@ -40,33 +39,28 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 		return order.getId();
 	}
 
-
-
 	@Override
 	public Order findOrderByChannelAndExternalId(String channel, String externalId)
 			throws BLServiceException {
 		return orderDao.findByChannelAndExternalId(channel, externalId);
 	}
 
-
+	@Override
+	public Order findOrderByTxId(String txId) throws BLServiceException {
+		return orderDao.findByTxId(txId);
+	}
 
 	@Override
 	public Order findOrderByPrimaryKey(Long id) throws BLServiceException {
 		return orderDao.findByPrimaryKey(id);
 	}
 
-
-
 	@Override
 	public Voucher findVoucherByPrimaryKey(Long id) throws BLServiceException {
 		throw new RuntimeException("NO IMPL");
 	}
-
-
 	
 	//------------ injection -----------------//
-
-
 	public void setVoucherDao(VoucherDao voucherDao) {
 		this.voucherDao = voucherDao;
 	}
