@@ -53,7 +53,12 @@ public class PaypalNotificationController {
 	@Autowired
 	OrderManagerService orderManagerService;
 	
-	@Value("${paypal.merchant.email:clay@ratecred.com}")
+	@Value("${paypal.callback.endpoint:https://www.sandbox.paypal.com/cgi-bin/webscr}")
+	//https://www.paypal.com/cgi-bin/webscr
+	//https://www.sandbox.paypal.com/cgi-bin/webscr
+	private String paypalEndpoint;
+	
+	@Value("${paypal.merchant.email:clay_1314558577_biz@ratecred.com}")
 	private String merchantEmail;
 	
 	@Value("${paypal.subscription.beta.sku:3237bd9b244e}")
@@ -92,7 +97,7 @@ public class PaypalNotificationController {
 			// using HTTPS requires either Java 1.4 or greater, or Java Secure
 			// Socket Extension (JSSE)
 			// and configured for older versions.
-			URL u = new URL("https://www.paypal.com/cgi-bin/webscr");
+			URL u = new URL(paypalEndpoint);
 			URLConnection uc = u.openConnection();
 			uc.setDoOutput(true);
 			uc.setRequestProperty("Content-Type",
