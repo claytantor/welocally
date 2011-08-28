@@ -130,7 +130,9 @@ public class PaypalNotificationController {
 				{
 									
 					// process payment
+					 logger.debug("new order:"+o.getExternalTxId());
 					 o = new Order();
+					 o.setExternalTxId(txnId);
 					 o.setStatus(paymentStatus);
 					 o.setPrice(Float.valueOf(paymentAmount));
 					 o.setExternalOrderItemCode(itemNumber);
@@ -140,7 +142,8 @@ public class PaypalNotificationController {
 					 o.setBuyerName(publisherKey);
 					 				 
 					 //complete subscription
-					 if(paymentStatus.equalsIgnoreCase("Completed")){						 
+					 if(paymentStatus.equalsIgnoreCase("Completed")){
+						 logger.debug("processing order:"+o.getExternalTxId());
 						//find the publisher by custom field
 						Publisher publisher = 
 							publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
