@@ -144,11 +144,13 @@ public class PaypalNotificationController {
 					 				 
 					 //complete subscription
 					 if(paymentStatus.equalsIgnoreCase("Completed")){
-						 logger.debug("processing order:"+o.getExternalTxId());
+						logger.debug("processing order:"+o.getExternalTxId());
 						//find the publisher by custom field
 						Publisher publisher = 
 							publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
-						processPublisherOrder(publisher, o);
+						
+						if(publisher != null)
+							processPublisherOrder(publisher, o);
 						 
 					 }
 					 
@@ -174,6 +176,8 @@ public class PaypalNotificationController {
 	
 	
 	private void processPublisherOrder(Publisher publisher, Order o){
+		
+		logger.debug("processPublisherOrder order:"+o.getExternalTxId()+" key:"+publisher.getKey());
 		      
         long serviceEndDateMillis = new Date().getTime();
         if(o.getSku().equals(betaSKU)) {
