@@ -61,8 +61,8 @@ public class PaypalNotificationController {
 	@Value("${paypal.merchant.email:clay_1314558577_biz@ratecred.com}")
 	private String merchantEmail;
 	
-	@Value("${paypal.subscription.beta.sku:3237bd9b244e}")
-	private String betaSKU;
+	@Value("${paypal.subscription.item-number:4cb094d23eb9}")
+	private String productItemNumber;
 
 	//lame way to do this
 	@Value("${paypal.subscription:5.99}")
@@ -130,7 +130,10 @@ public class PaypalNotificationController {
 				// check that paymentStatus=Completed
 				// check that txnId has not been previously processed
 				Order  o = this.orderManagerService.findOrderByTxId(txnId);
+				
+				//need a check on supported product ids
 				if(o == null 
+						&& itemNumber.equals(productItemNumber)
 						&& paymentStatus.equalsIgnoreCase("Completed")
 						&& merchantEmail.equalsIgnoreCase(receiverEmail))
 				{
@@ -186,12 +189,14 @@ public class PaypalNotificationController {
 		logger.debug("processPublisherOrder order:"+o.getExternalTxId()+" key:"+publisher.getKey());
 		      
         long serviceEndDateMillis = new Date().getTime();
-        if(o.getSku().equals(betaSKU)) {
-	        //BETA gets a 6 months trail
-	        serviceEndDateMillis += (2592000000L*6);
-        } else {
-        	serviceEndDateMillis += (2592000000L*1);
-        }
+//        if(o.getSku().equals(productItemNumber)) {
+//	        //BETA gets a 6 months trail
+//	        serviceEndDateMillis += (2592000000L*6);
+//        } else {
+//        	serviceEndDateMillis += (2592000000L*1);
+//        }
+        
+        serviceEndDateMillis += (2592000000L*1);
         
         publisher.setServiceEndDateMillis(serviceEndDateMillis);
         SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
