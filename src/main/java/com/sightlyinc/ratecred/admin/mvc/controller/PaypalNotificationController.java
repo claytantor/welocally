@@ -156,10 +156,11 @@ public class PaypalNotificationController {
 					if(publisher != null)
 						processPublisherOrder(publisher, o);
 											 
-					 orderManagerService.saveOrder(o);
+					 
 					 
 				} else {
-					logger.debug("an order was already found, or there was a validation problem with the txid:"+txnId);
+					logger.debug("an order was already found, or " +
+							"there was a validation problem with the txid:"+txnId);
 				}
 								
 				
@@ -180,7 +181,7 @@ public class PaypalNotificationController {
 	}
 	
 	
-	private void processPublisherOrder(Publisher publisher, Order o){
+	private void processPublisherOrder(Publisher publisher, Order o) throws BLServiceException {
 		
 		logger.debug("processPublisherOrder order:"+o.getExternalTxId()+" key:"+publisher.getKey());
 		      
@@ -198,12 +199,13 @@ public class PaypalNotificationController {
             publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
         } else {
             //errors.add("Unable to assign a SimpleGeo JSON token, please try again");
+        	logger.debug("cannot set simple geo token");
         }
+        
+        orderManagerService.saveOrder(o);
         
         //enable the user
         publisher.getUserPrincipal().setEnabled(true);
-        
-        
         publisherService.save(publisher);
 	}
 	
