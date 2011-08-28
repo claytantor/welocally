@@ -136,7 +136,7 @@ public class PaypalNotificationController {
 				{
 									
 					// process payment
-					 logger.debug("new order:"+o.getExternalTxId());
+					 logger.debug("new order:"+txnId);
 					 o = new Order();
 					 o.setExternalTxId(txnId);
 					 o.setStatus(paymentStatus);
@@ -159,7 +159,7 @@ public class PaypalNotificationController {
 					 orderManagerService.saveOrder(o);
 					 
 				} else {
-					logger.debug("an order was already found with the txid:"+txnId);
+					logger.debug("an order was already found, or there was a validation problem with the txid:"+txnId);
 				}
 								
 				
