@@ -131,8 +131,8 @@ public class PaypalNotificationController {
 				// check that txnId has not been previously processed
 				Order  o = this.orderManagerService.findOrderByTxId(txnId);
 				if(o == null 
-						&& merchantEmail.equalsIgnoreCase(receiverEmail)
-						&& Float.valueOf(paymentAmount).equals(Float.valueOf(subscriptionAmount)))
+						&& paymentStatus.equalsIgnoreCase("Completed")
+						&& merchantEmail.equalsIgnoreCase(receiverEmail))
 				{
 									
 					// process payment
@@ -148,18 +148,18 @@ public class PaypalNotificationController {
 					 o.setBuyerName(publisherKey);
 					 				 
 					 //complete subscription
-					 if(paymentStatus.equalsIgnoreCase("Completed")){
-						logger.debug("processing order:"+o.getExternalTxId());
-						//find the publisher by custom field
-						Publisher publisher = 
-							publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
-						
-						if(publisher != null)
-							processPublisherOrder(publisher, o);
-						 
-					 }
-					 
+					logger.debug("processing order:"+o.getExternalTxId());
+					//find the publisher by custom field
+					Publisher publisher = 
+						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
+					
+					if(publisher != null)
+						processPublisherOrder(publisher, o);
+											 
 					 orderManagerService.saveOrder(o);
+					 
+				} else {
+					logger.debug("an order was already found with the txid:"+txnId);
 				}
 								
 				
