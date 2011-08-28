@@ -103,9 +103,9 @@ public class SignUpController {
         return viewName;
     }
 
-    @RequestMapping(value = "/plugin")
+    @RequestMapping(value = "/plugin/key")
     @ResponseBody
-    public Map<String, Object> signUpFromPlugin(@RequestBody String requestJson) {
+    public Map<String, Object> signUpFromPluginForKey(@RequestBody String requestJson) {
         Map<String, Object> response = new HashMap<String, Object>();
         List<String> errors = new ArrayList<String>();
 
@@ -151,6 +151,7 @@ public class SignUpController {
                     user.setEmail(email);
                     user.setPassword(Long.toString(System.currentTimeMillis()));
                     user.setUsername(email);
+                    user.setEnabled(false);
                     try {
                         userService.saveUserPrincipal(user);
                         // not going to worry about roles for now since user isn't going to be logging in
@@ -159,6 +160,7 @@ public class SignUpController {
                         errors.add("Unable to create user, please try again");
                     }
                 }
+                
                 if (errors.isEmpty()) {
                     Publisher publisher = publisherService.findBySiteUrl(siteUrl);
                     if (publisher == null) {
@@ -174,17 +176,107 @@ public class SignUpController {
                         String key = UUID.randomUUID().toString();
                         key = key.substring(key.lastIndexOf('-') + 1);
                         publisher.setKey(key);
-                        // TODO find a better place for this logic too
-                        // set up initial trial service period of 30 days
-                        long serviceEndDateMillis = new Date().getTime();
-                        serviceEndDateMillis += 2592000000L;
-                        publisher.setServiceEndDateMillis(serviceEndDateMillis);
-                        SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
-                        if (simpleGeoJsonToken != null) {
-                            publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
-                        } else {
-                            errors.add("Unable to assign a SimpleGeo JSON token, please try again");
+
+                        //we usta set the token here and the service end date, moving that 
+                        //to the notification controller 
+                        
+                        if (errors.isEmpty()) {
+                            publisherService.save(publisher);
                         }
+                    }
+                    if (errors.isEmpty()) {
+                        // publisher key, simplegeo token, trial end date
+                        response.put("key", publisher.getKey());
+                        response.put("token", publisher.getSimpleGeoJsonToken());
+                        response.put("serviceEndDateMillis", publisher.getServiceEndDateMillis());
+                    }
+                }
+            }
+        }
+
+        response.put("errors", errors);
+
+        return response;
+    }
+    
+    
+    @RequestMapping(value = "/plugin/token")
+    @ResponseBody
+    public Map<String, Object> getPublisherToken(@RequestBody String requestJson) {
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<String> errors = new ArrayList<String>();
+
+        String email = null;
+        String siteUrl = null;
+        String siteName = null;
+        String description = null;
+        String iconUrl = null;
+
+        try {
+            JSONObject jsonObject = new JSONObject(requestJson);
+
+            email = jsonObject.getString("siteEmail");
+            siteUrl = jsonObject.getString("siteHome");
+            siteName = jsonObject.getString("siteName");
+            description = jsonObject.getString("siteDescription");
+            iconUrl = jsonObject.getString("iconUrl");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            errors.add("Unable to parse request, please check the format of your data");
+        }
+
+        if (errors.isEmpty()) {
+            // validate input
+            if (StringUtils.isBlank(siteUrl)) {
+                errors.add("Please provide the URL for your site");
+            }
+            if (StringUtils.isBlank(siteName)) {
+                errors.add("Please provide the name for your site");
+            }
+            if (StringUtils.isBlank(description)) {
+                errors.add("Please provide the description of your site");
+            }
+            if (StringUtils.isBlank(email)) {
+                errors.add("Please provide your email address");
+            }
+
+            if (errors.isEmpty()) {
+                // TODO move all this logic into a service method
+                UserPrincipal user = userService.findUserByEmail(email);
+                if (user == null) {
+                    user = new UserPrincipal();
+                    user.setEmail(email);
+                    user.setPassword(Long.toString(System.currentTimeMillis()));
+                    user.setUsername(email);
+                    user.setEnabled(false);
+                    try {
+                        userService.saveUserPrincipal(user);
+                        // not going to worry about roles for now since user isn't going to be logging in
+                    } catch (UserPrincipalServiceException e) {
+                        e.printStackTrace();
+                        errors.add("Unable to create user, please try again");
+                    }
+                }
+                
+                if (errors.isEmpty()) {
+                    Publisher publisher = publisherService.findBySiteUrl(siteUrl);
+                    if (publisher == null) {
+                        publisher = new Publisher();
+                        publisher.setUserPrincipal(user);
+                        publisher.setIconUrl(iconUrl);
+                        publisher.setUrl(siteUrl);
+                        publisher.setSiteName(siteName);
+                        publisher.setDescription(description);
+                        NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
+                        publisher.setNetworkMember(defaultNetworkMember);
+                        // TODO put this UUID logic in its own method in a service class somewhere
+                        String key = UUID.randomUUID().toString();
+                        key = key.substring(key.lastIndexOf('-') + 1);
+                        publisher.setKey(key);
+
+                        //we usta set the token here and the service end date, moving that 
+                        //to the notification controller 
+                        
                         if (errors.isEmpty()) {
                             publisherService.save(publisher);
                         }
