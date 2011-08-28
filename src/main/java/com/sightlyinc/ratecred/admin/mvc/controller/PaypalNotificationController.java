@@ -74,6 +74,7 @@ public class PaypalNotificationController {
 			throws JSONException {
 		ModelAndView modelAndView = new ModelAndView("paypal/response");
 
+		logger.debug("got notification");
 		try {
 			// read post from PayPal system and add 'cmd'
 			Enumeration en = request.getParameterNames();
