@@ -68,7 +68,7 @@ public class PaypalNotificationController {
 	 * Sends blog, post, place and SimpleGeo feature info in a JSON object.
 	 * 
 	 */
-	@RequestMapping(value = "/notify", method = RequestMethod.POST)
+	@RequestMapping(value = "/notify")
 	@ResponseBody
 	public ModelAndView notify(Model m, HttpServletRequest request)
 			throws JSONException {
