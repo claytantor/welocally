@@ -118,7 +118,7 @@ public class PaypalNotificationController {
 			String paymentStatus = request.getParameter("payment_status");
 			String paymentAmount = request.getParameter("mc_gross");
 			String paymentCurrency = request.getParameter("mc_currency");
-			String txnId = request.getParameter("ipn_track_id");
+			String orderId = request.getParameter("subscr_id");
 			String receiverEmail = request.getParameter("receiver_email");
 			String payerEmail = request.getParameter("payer_email");
 			String publisherKey = request.getParameter("custom");
@@ -131,7 +131,7 @@ public class PaypalNotificationController {
 								
 				// check that paymentStatus=Completed
 				// check that txnId has not been previously processed
-				Order  o = this.orderManagerService.findOrderByTxId(txnId);
+				Order  o = this.orderManagerService.findOrderByTxId(orderId);
 				
 				//need a check on supported product ids
 				if(o == null 
@@ -143,9 +143,12 @@ public class PaypalNotificationController {
 				{
 									
 					// process payment
-					 logger.debug("new order:"+txnId);
+					//this shpudl have the subscription and the 
+					//tx id, since we dont have the tx id order on cancel
+					//we need a refactor
+					 logger.debug("new order:"+orderId);
 					 o = new Order();
-					 o.setExternalTxId(txnId);
+					 o.setExternalTxId(orderId);
 					 o.setStatus(paymentStatus);
 					 o.setPrice(Float.valueOf(paymentAmount));
 					 o.setExternalOrderItemCode(itemNumber);
@@ -181,7 +184,7 @@ public class PaypalNotificationController {
 					
 				} else {
 					logger.debug("an order was already found, or " +
-							"there was a validation problem with the txid:"+txnId);
+							"there was a validation problem with the txid:"+orderId);
 				}
 								
 				
