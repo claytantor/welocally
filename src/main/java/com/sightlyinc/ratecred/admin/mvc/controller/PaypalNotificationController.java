@@ -176,7 +176,7 @@ public class PaypalNotificationController {
 						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
 					
 					if(publisher != null) {
-						publisher.setSubscriptionStatus("CANCELED");
+						publisher.setSubscriptionStatus("CANCELLED");
 					}
 					
 					publisherService.save(publisher);
