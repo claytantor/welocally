@@ -166,6 +166,7 @@ public class SignUpController {
                     if (publisher == null) {
                         publisher = new Publisher();
                         publisher.setUserPrincipal(user);
+                        
                         publisher.setIconUrl(iconUrl);
                         publisher.setUrl(siteUrl);
                         publisher.setSiteName(siteName);
@@ -176,6 +177,7 @@ public class SignUpController {
                         String key = UUID.randomUUID().toString();
                         key = key.substring(key.lastIndexOf('-') + 1);
                         publisher.setKey(key);
+                        publisher.setSubscriptionStatus("KEY_ASSIGNED");
 
                         //we usta set the token here and the service end date, moving that 
                         //to the notification controller 

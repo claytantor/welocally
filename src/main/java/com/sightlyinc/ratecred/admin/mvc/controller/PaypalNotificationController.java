@@ -121,6 +121,8 @@ public class PaypalNotificationController {
 			String receiverEmail = request.getParameter("receiver_email");
 			String payerEmail = request.getParameter("payer_email");
 			String publisherKey = request.getParameter("custom");
+			String txType = request.getParameter("txn_type");
+			//txn_type=subscr_signup
 			// check notification validation
 			
 			logger.debug("res:"+res);
@@ -133,7 +135,9 @@ public class PaypalNotificationController {
 				
 				//need a check on supported product ids
 				if(o == null 
+						&& txType.equals("subscr_signup")
 						&& itemNumber.equals(productItemNumber)
+						&& paymentStatus != null
 						&& paymentStatus.equalsIgnoreCase("Completed")
 						&& merchantEmail.equalsIgnoreCase(receiverEmail))
 				{
@@ -161,6 +165,20 @@ public class PaypalNotificationController {
 											 
 					 
 					 
+				} else if(o != null 
+						&& txType.equals("subscr_cancel") 
+						&& publisherKey != null) {
+					
+					Publisher publisher = 
+						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
+					
+					if(publisher != null) {
+						publisher.setSubscriptionStatus("CANCELED");
+					}
+					
+					publisherService.save(publisher);
+					
+					
 				} else {
 					logger.debug("an order was already found, or " +
 							"there was a validation problem with the txid:"+txnId);
@@ -178,6 +196,8 @@ public class PaypalNotificationController {
 			logger.error("problem", e);
 		} catch (BLServiceException e) {
 			logger.error("problem", e);
+		} catch (Exception e) {
+			logger.error("undertimed problem", e);
 		}
 
 		return modelAndView;
@@ -189,12 +209,6 @@ public class PaypalNotificationController {
 		logger.debug("processPublisherOrder order:"+o.getExternalTxId()+" key:"+publisher.getKey());
 		      
         long serviceEndDateMillis = new Date().getTime();
-//        if(o.getSku().equals(productItemNumber)) {
-//	        //BETA gets a 6 months trail
-//	        serviceEndDateMillis += (2592000000L*6);
-//        } else {
-//        	serviceEndDateMillis += (2592000000L*1);
-//        }
         
         serviceEndDateMillis += (2592000000L*1);
         
@@ -202,6 +216,7 @@ public class PaypalNotificationController {
         SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
         if (simpleGeoJsonToken != null) {
             publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
+            publisher.setSubscriptionStatus("SUBSCRIBER");
         } else {
             //errors.add("Unable to assign a SimpleGeo JSON token, please try again");
         	logger.debug("cannot set simple geo token");
