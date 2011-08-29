@@ -190,6 +190,7 @@ public class SignUpController {
                         // publisher key, simplegeo token, trial end date
                         response.put("key", publisher.getKey());
                         response.put("token", publisher.getSimpleGeoJsonToken());
+                        response.put("subscriptionStatus", publisher.getSubscriptionStatus());
                         response.put("serviceEndDateMillis", publisher.getServiceEndDateMillis());
                     }
                 }
