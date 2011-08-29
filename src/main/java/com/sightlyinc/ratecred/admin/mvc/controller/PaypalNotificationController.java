@@ -89,6 +89,7 @@ public class PaypalNotificationController {
 				String paramValue = request.getParameter(paramName);
 				str = str + "&" + paramName + "="
 						+ URLEncoder.encode(paramValue, "utf-8");
+				logger.debug("["+paramName+"="+paramValue+"]");
 			}
 
 			// post back to PayPal system to validate
@@ -125,7 +126,6 @@ public class PaypalNotificationController {
 			//txn_type=subscr_signup
 			// check notification validation
 			
-			logger.debug("res:"+res+" querystring:"+request.getQueryString());
 			
 			if (res.equals("VERIFIED")) {
 								
