@@ -117,7 +117,7 @@ public class PaypalNotificationController {
 			String paymentStatus = request.getParameter("payment_status");
 			String paymentAmount = request.getParameter("mc_gross");
 			String paymentCurrency = request.getParameter("mc_currency");
-			String txnId = request.getParameter("txn_id");
+			String txnId = request.getParameter("ipn_track_id");
 			String receiverEmail = request.getParameter("receiver_email");
 			String payerEmail = request.getParameter("payer_email");
 			String publisherKey = request.getParameter("custom");
@@ -125,7 +125,7 @@ public class PaypalNotificationController {
 			//txn_type=subscr_signup
 			// check notification validation
 			
-			logger.debug("res:"+res);
+			logger.debug("res:"+res+" uri:"+request.getRequestURI());
 			
 			if (res.equals("VERIFIED")) {
 								
