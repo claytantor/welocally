@@ -39,6 +39,7 @@
         	<exclude>**/*RaterDaoTest.java</exclude>
         	<exclude>**/*RaterDaoTest.java</exclude>
         	<exclude>**/*BaseTest.java</exclude>      	
+        	<exclude>**/*OrderManagerServiceTest.java</exclude>      	
         </excludes>        
       </configuration>
     </plugin> 
