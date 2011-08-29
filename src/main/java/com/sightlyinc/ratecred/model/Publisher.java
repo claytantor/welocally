@@ -42,7 +42,20 @@ public class Publisher extends BaseEntity {
 
     @Column(name="service_end_date")
     private Long serviceEndDateMillis;
+    
+    @Column(name="subscription_status")
+    private String subscriptionStatus;
 	
+	public String getSubscriptionStatus() {
+		return subscriptionStatus;
+	}
+	public void setSubscriptionStatus(String subscriptionStatus) {
+		this.subscriptionStatus = subscriptionStatus;
+	}
+	public void setServiceEndDateMillis(Long serviceEndDateMillis) {
+		this.serviceEndDateMillis = serviceEndDateMillis;
+	}
+
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
 	private NetworkMember networkMember;

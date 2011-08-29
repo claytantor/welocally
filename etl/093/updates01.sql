@@ -30,6 +30,8 @@ alter table publisher add user_principal_id bigint(20);
 -- TODO update publisher rows to set values for user_principal_id
 -- add foreign key from publisher.user_principal_id to user_principal.id
 alter table publisher add service_end_date bigint(20);
+ALTER TABLE publisher ADD COLUMN subscription_status VARCHAR(45);
+
 
 -- create default network member
 insert into network_member (id, version, user_principal_id, name, primary_email, paypal_email, member_key, description)
@@ -69,3 +71,17 @@ values(
 unix_timestamp(str_to_date('12/1/2011','%m/%d/%Y')) * 1000,
 unix_timestamp(str_to_date('1/1/2012','%m/%d/%Y')) * 1000
 );
+
+
+ALTER TABLE `ratecred`.`cust_order` DROP FOREIGN KEY `fk_cust_order_offer1` , DROP FOREIGN KEY `fk_cust_order_patron1` ;
+ALTER TABLE `ratecred`.`cust_order` CHANGE COLUMN `offer_id` `offer_id` BIGINT(20) NULL  , CHANGE COLUMN `patron_id` `patron_id` BIGINT(20) NULL  , 
+  ADD CONSTRAINT `fk_cust_order_offer1`
+  FOREIGN KEY (`offer_id` )
+  REFERENCES `ratecred`.`offer` (`id` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION, 
+  ADD CONSTRAINT `fk_cust_order_patron1`
+  FOREIGN KEY (`patron_id` )
+  REFERENCES `ratecred`.`patron` (`id` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;

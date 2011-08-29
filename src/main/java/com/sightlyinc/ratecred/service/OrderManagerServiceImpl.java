@@ -65,8 +65,6 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 		this.voucherDao = voucherDao;
 	}
 
-
-
 	public void setOrderDao(OrderDao orderDao) {
 		this.orderDao = orderDao;
 	}
