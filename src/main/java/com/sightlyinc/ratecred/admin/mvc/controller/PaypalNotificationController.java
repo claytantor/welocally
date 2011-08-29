@@ -125,7 +125,7 @@ public class PaypalNotificationController {
 			//txn_type=subscr_signup
 			// check notification validation
 			
-			logger.debug("res:"+res+" uri:"+request.getRequestURI());
+			logger.debug("res:"+res+" querystring:"+request.getQueryString());
 			
 			if (res.equals("VERIFIED")) {
 								
