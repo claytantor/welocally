@@ -113,12 +113,44 @@ public class PaypalNotificationController {
 			in.close();
 
 			// assign posted variables to local variables
+			/*
+			 *  - [item_number=71d14d4574db]
+ - [residence_country=US]
+ - [period3=1 M]
+ - [period1=1 M]
+ - [verify_sign=AM-lQIiNYo1ooBjV7r75PXJhBPuIAIrt-AlLgxCNY2x1SYM5F5Dr.0UB]
+ - [business=clay_1314558577_biz@ratecred.com]
+ - [first_name=Test]
+ - [payer_id=D6V5WV763Y5YJ]
+ - [payer_email=clay_1314675261_per@ratecred.com]
+ - [subscr_id=I-K3TF1UJ2UMCM]
+ - [btn_id=1882543]
+ - [receiver_email=clay_1314558577_biz@ratecred.com]
+ - [notify_version=3.2]
+ - [recurring=1]
+ - [txn_type=subscr_signup]
+ - [test_ipn=1]
+ - [mc_currency=USD]
+ - [payer_status=verified]
+ - [custom=62415d7d0bde]
+ - [subscr_date=20:55:43 Aug 29, 2011 PDT]
+ - [charset=windows-1252]
+ - [amount3=5.99]
+ - [amount1=0.00]
+ - [ipn_track_id=1BGNUC1HK762WB6Z9jsOcg]
+ - [item_name=Welocally Places for Wordpress BETA DEV]
+ - [last_name=User]
+ - [mc_amount1=0.00]
+ - [mc_amount3=5.99]
+ - [reattempt=1]
+			 */
 			String itemName = request.getParameter("item_name");
 			String itemNumber = request.getParameter("item_number");
-			String paymentStatus = request.getParameter("payment_status");
-			String paymentAmount = request.getParameter("mc_gross");
+			String payerStatus = request.getParameter("payer_status");
+			String paymentAmount = request.getParameter("mc_amount3");
 			String paymentCurrency = request.getParameter("mc_currency");
 			String orderId = request.getParameter("subscr_id");
+			String ipnTrack = request.getParameter("ipn_track_id");
 			String receiverEmail = request.getParameter("receiver_email");
 			String payerEmail = request.getParameter("payer_email");
 			String publisherKey = request.getParameter("custom");
@@ -136,9 +168,8 @@ public class PaypalNotificationController {
 				//need a check on supported product ids
 				if(o == null 
 						&& txType.equals("subscr_signup")
-						&& itemNumber.equals(productItemNumber)
-						&& paymentStatus != null
-						&& paymentStatus.equalsIgnoreCase("Completed")
+						//&& itemNumber.equals(productItemNumber) should check products
+						&& ipnTrack != null
 						&& merchantEmail.equalsIgnoreCase(receiverEmail))
 				{
 									
@@ -149,9 +180,10 @@ public class PaypalNotificationController {
 					 logger.debug("new order:"+orderId);
 					 o = new Order();
 					 o.setExternalTxId(orderId);
-					 o.setStatus(paymentStatus);
+					 //should be tracking no field
+					 o.setExternalOrderItemCode(ipnTrack);
+					 o.setStatus(txType);
 					 o.setPrice(Float.valueOf(paymentAmount));
-					 o.setExternalOrderItemCode(itemNumber);
 					 o.setSku(itemNumber);
 					 o.setBuyerEmail(payerEmail);
 					 o.setQuantity(1);
@@ -177,9 +209,11 @@ public class PaypalNotificationController {
 					
 					if(publisher != null) {
 						publisher.setSubscriptionStatus("CANCELLED");
+						o.setStatus(txType);
 					}
 					
 					publisherService.save(publisher);
+					orderManagerService.saveOrder(o);
 					
 					
 				} else {
