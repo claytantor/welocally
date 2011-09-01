@@ -11,6 +11,8 @@ public interface OrderDao extends BaseDao<Order> {
 	
 	public Order findByTxId(String txId); 
 	
+	public List<Order> findByPublisherKey(String publisherKey); 
+	
 	public List<Order> findByOwner(Patron towards);	
 
 }

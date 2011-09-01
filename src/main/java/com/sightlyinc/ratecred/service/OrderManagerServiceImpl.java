@@ -24,13 +24,12 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 		
 	@Autowired
 	private OrderDao orderDao;
-	
-	@Autowired
-	private VoucherDao voucherDao; 
-		
+
+
+
 	@Override
-	public List<Order> findOrdersByRater(Patron rater) throws BLServiceException {
-		return orderDao.findByOwner(rater);
+	public List<Order> findOrderByPublisherKey(String publisherKey) {
+		return orderDao.findByPublisherKey(publisherKey);
 	}
 
 	@Override
@@ -55,19 +54,9 @@ public class OrderManagerServiceImpl implements OrderManagerService {
 		return orderDao.findByPrimaryKey(id);
 	}
 
-	@Override
-	public Voucher findVoucherByPrimaryKey(Long id) throws BLServiceException {
-		throw new RuntimeException("NO IMPL");
-	}
 	
-	//------------ injection -----------------//
-	public void setVoucherDao(VoucherDao voucherDao) {
-		this.voucherDao = voucherDao;
-	}
+	
 
-	public void setOrderDao(OrderDao orderDao) {
-		this.orderDao = orderDao;
-	}
 
 
 

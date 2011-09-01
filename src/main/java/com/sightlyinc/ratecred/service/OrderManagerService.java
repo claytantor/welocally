@@ -13,12 +13,16 @@ public interface OrderManagerService {
 	
 	public Order findOrderByTxId(String txId) throws BLServiceException;
 	
+	public List<Order> findOrderByPublisherKey(String publisherKey);
+	
+	
+	
 	public Order findOrderByChannelAndExternalId(String channel, String externalId) 
 		throws BLServiceException;
-	public List<Order> findOrdersByRater(Patron rater) throws BLServiceException;
+	
+	
 	
 	public Long saveOrder(Order order) throws BLServiceException;
 	
-	public Voucher findVoucherByPrimaryKey(Long id) throws BLServiceException;
-
+	
 }

@@ -31,6 +31,30 @@ public class OrderDaoDefaultImpl
 
 
 	@Override
+	//the publisher key is the buyer name, shoudl be refactored
+	public List<Order> findByPublisherKey(final String publisherKey) {
+		List result = getHibernateTemplateOverride().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+				throws HibernateException, SQLException 
+				{
+	
+				Query query = session.createQuery(
+					"select entityimpl from "+Order.class.getName()+" as entityimpl " +
+							"where entityimpl.buyerName = :buyerName");
+				
+				query.setString("buyerName", publisherKey);
+								
+				List list = query.list();
+	
+				return list;
+	
+			}
+		});
+		return result;
+	}
+
+
+	@Override
 	public Order findByTxId(final String externalTxId) {
 		return (Order)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
