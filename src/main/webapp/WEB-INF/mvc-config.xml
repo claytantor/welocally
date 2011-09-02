@@ -153,7 +153,7 @@
 
     <bean id="add-feature-json"
         class="org.springframework.web.servlet.view.velocity.VelocityView">
-        <property name="url" value="patron/add-feature-json.vm"/>
+        <property name="url" value="add-feature-json.vm"/>
         <property name="contentType" value="application/json"/>
     </bean>
 	

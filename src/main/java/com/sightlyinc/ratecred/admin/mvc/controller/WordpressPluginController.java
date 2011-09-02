@@ -89,7 +89,7 @@ public class WordpressPluginController {
         return "";
     }
     
-    @RequestMapping(value="/add", method=RequestMethod.POST)
+    @RequestMapping(value="/add",  method = RequestMethod.POST)
 	public ModelAndView chooserAddPlace(
 			@RequestBody String addPlaceJSON,
 			Model m,
@@ -105,6 +105,7 @@ public class WordpressPluginController {
 			MappingJsonFactory jsonFactory = new MappingJsonFactory();
 			JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(sw);
 			jacksonMapper.writeValue(jsonGenerator, f);
+			sw.flush();
 			sw.close();
 			modelAndView.addObject("feature", sw.getBuffer().toString());
 

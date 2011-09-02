@@ -518,7 +518,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 				if(featureId != null){
 					place.setSimpleGeoId(featureId);
 					placeManagerService.savePlace(place);
-					return client.getPlace(featureId);
+					return (Feature)results.get("feature");
 				}
 				
 				
@@ -526,9 +526,9 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 				logger.error("cannot save feature", e);
 			} catch (GeocoderException e) {
 				logger.error("cannot save feature", e);
-			} catch (IOException e) {
+			} /*catch (IOException e) {
 				logger.error("cannot save feature", e);
-			} catch (BLServiceException e) {
+			}*/ catch (BLServiceException e) {
 				logger.error("cannot save feature", e);
 			}
 			
