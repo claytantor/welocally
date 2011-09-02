@@ -181,7 +181,8 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
         Feature feature = transformPlace(place);
         Map<String, Object> result = null;
         try {
-            result = client.addPlace(feature);           
+            result = client.addPlace(feature);
+            result.put("feature", feature);
         } catch (IOException e) {
             logger.error("cannot add place",e);
         } catch (JSONException e) {
