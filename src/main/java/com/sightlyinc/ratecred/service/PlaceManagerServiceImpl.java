@@ -71,7 +71,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 	public void saveNewLocationInfo(Long placeId) throws BLServiceException
 	{
 		Place p = findPlaceByPrimaryKey(placeId);
-		List<Place> nPlaces = locationClient.findPlaces(p.getLatitude(), p.getLongitude(), 0.5);
+		List<Place> nPlaces = locationClient.findPlacesByLocation(p.getLatitude(), p.getLongitude(), 0.5);
 		Collections.sort(nPlaces, new PobabilisticNameAndLocationPlaceComparitor(p));
 		if(nPlaces != null && nPlaces.size()>0 &&
 				StringUtils.compareStrings(p.getName(), nPlaces.get(0).getName())>0.65)

@@ -36,7 +36,7 @@ public class SimpleGeoLocationClientTest extends BaseTest {
 		double radiusInKMeters = 0.25;
 		
 		List<Place> places = 
-			locationClient.findPlaces(lat, lon, radiusInKMeters);
+			locationClient.findPlacesByLocation(lat, lon, radiusInKMeters);
 		for (Place place : places) {
 			logger.debug("place:"+place.toString());
 		}

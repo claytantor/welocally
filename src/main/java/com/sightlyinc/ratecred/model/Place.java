@@ -1,5 +1,7 @@
 package com.sightlyinc.ratecred.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -96,9 +98,18 @@ public class Place extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "business_location_id")
 	private BusinessLocation businessLocation;
+	
+	@Transient
+	private List<String> categories = new ArrayList<String>();
 		
 	
 	
+	public List<String> getCategories() {
+		return categories;
+	}
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
 	public String getTwitterId() {
 		return twitterId;
 	}

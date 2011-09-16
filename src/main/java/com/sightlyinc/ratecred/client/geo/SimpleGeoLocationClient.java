@@ -47,11 +47,35 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 	}
 	
 	@Override
-	public List<Place> findPlaces(double lat, double lon, double radiusInKMeters) {
+	public List<Place> findPlacesByLocation(double lat, double lon, double radiusInKMeters) {
 		return findPlacesSynchronous(lat, lon, radiusInKMeters);
 	}
+	
 
     @Override
+	public List<Place> findPlacesByQuery(String address, String query, String category, double radiusInKMeters) {
+    	final List<Place> places = new ArrayList<Place>();		
+		
+		try {
+			FeatureCollection afeatures = client.searchByAddress(address, query, category, radiusInKMeters);
+			for (Feature feature : afeatures.getFeatures()) {
+				
+				logger.debug(feature.getProperties());		
+				Place p = new Place();
+				transformFeature(feature,p);
+				p.setType("SG");
+				places.add(p);
+			}
+			
+			
+		} catch (IOException e) {
+			logger.error("problem getting places", e);
+		}
+		
+		return places;
+	}
+
+	@Override
     public Place findById(String id) {
         return findByIdSynchronous(id);
     }
@@ -169,6 +193,7 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 		try {
 			if(classifiers != null && !classifiers.isNull(0)) {
 				JSONObject first = classifiers.getJSONObject(0);
+				p.getCategories().add(first.getString("category"));
 			}
 		} catch (JSONException e) {
 			logger.debug(e.getMessage());
