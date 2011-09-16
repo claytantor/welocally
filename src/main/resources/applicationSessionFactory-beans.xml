@@ -45,6 +45,7 @@
 				<value>com.sightlyinc.ratecred.authentication.Role</value>
             </list>
         </property>
+<!--
 		<property name="entityInterceptor">
 		    <bean class="com.sightlyinc.ratecred.interceptor.PersistenceInterceptor">
 		    	<property name="persistenceInformerListener">
@@ -52,6 +53,7 @@
 				</property>
 		    </bean>
 		</property>        
+-->
 		<property name="hibernateProperties">
 			<ref bean="hibernateDatabaseProperties"/>
 		</property>	 
