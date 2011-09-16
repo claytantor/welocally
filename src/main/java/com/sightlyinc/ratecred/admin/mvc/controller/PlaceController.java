@@ -1,28 +1,42 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
-import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
-import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
-import com.sightlyinc.ratecred.pojo.Location;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.MappingJsonFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.xml.JsonEncoder;
+import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
+import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
 import com.sightlyinc.ratecred.admin.model.Feature;
+import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
 import com.sightlyinc.ratecred.model.Place;
+import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.pojo.Location;
 import com.sightlyinc.ratecred.service.PlaceManagerService;
-import org.springframework.web.servlet.ModelAndView;
+import com.sightlyinc.ratecred.service.PublisherService;
 
 
 @Controller
@@ -31,6 +45,8 @@ public class PlaceController {
 
 	static Logger logger = Logger.getLogger(PlaceController.class);
 
+    @Autowired
+    private PublisherService publisherService;
     
 	@Autowired
 	private PlaceManagerService placeManagerService;
@@ -40,6 +56,9 @@ public class PlaceController {
 
     @Autowired
     private GeoPlacesClient geoPlacesClient;
+    
+    @Autowired
+    private ObjectMapper jacksonMapper;
 
     @ModelAttribute("encoder")
     public JsonEncoder getJsonEncoder() {
@@ -121,13 +140,6 @@ public class PlaceController {
 		logger.debug("adding place from place chooser");
         ModelAndView modelAndView = new ModelAndView("save-place");
 
-/*
-        String name = "",
-        street = "",
-        city = "",
-        state = "",
-        zip = "";
-*/
 
         Place place = new Place();
         place.setName(name);
@@ -210,6 +222,114 @@ public class PlaceController {
         model.addAttribute("places", places);
         return "place/list_json";
     }
+    
+	@RequestMapping(value="/query", method = RequestMethod.GET)
+	public String getPlacesByQuery(
+			@RequestHeader("publisher-key") String publisherKey, 
+    		@RequestHeader("welocally-baseurl") String baseurl,
+    		@RequestParam("address") String address,
+			@RequestParam(value="query", required=false) String query,
+			@RequestParam(value="category",required=false) String category,
+			@RequestParam(value="radius",required=false) Long radius,
+			Model model)
+	{
+		logger.debug("getPlacesByQuery");
+		if (publisherKey != null) {
+            String[] keys = publisherKey.split("\\x2e");
+
+            // look up the selected publisher
+            Publisher publisher = 
+            	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
+            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBER"))
+            {
+            	List<Place> places = 
+    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
+            	model.addAttribute("places", places);
+            	return "places";
+            } else {
+            	Map<String,String> errorMap = new HashMap<String,String>();
+            	if(publisher == null){
+            		errorMap.put("errorCode:", "101");
+            		errorMap.put("errorMessage:", "Could not find publisher with key:"+publisherKey);
+            	} else {
+               		errorMap.put("errorCode:", "102");
+            		errorMap.put("errorMessage:", "Subscription status invalid for publisher with key:"+publisherKey);
+            	}
+            	
+            	try {
+					model.addAttribute("mapperResult", makeJsonString(jacksonMapper, errorMap));
+					return "mapper-result";
+				} catch (IOException e) {
+					logger.error("cannot serialize message", e);
+				}
+            	
+            }
+		}
+		
+		
+		return "error";
+		
+		
+	}
+	
+	@RequestMapping(value="/querytest", method = RequestMethod.GET)
+	public String getPlacesByQueryTest(
+			@RequestParam("publisher-key") String publisherKey, 
+			@RequestParam("welocally-baseurl") String baseurl,
+    		@RequestParam("address") String address,
+			@RequestParam(value="query", required=false) String query,
+			@RequestParam(value="category",required=false) String category,
+			@RequestParam(value="radius",required=false) Long radius,
+			Model model)
+	{
+		logger.debug("getPlacesByQuery TEST");
+		if (publisherKey != null) {
+            String[] keys = publisherKey.split("\\x2e");
+
+            // look up the selected publisher
+            Publisher publisher = 
+            	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
+            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBER"))
+            {
+            	List<Place> places = 
+    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
+            	model.addAttribute("places", places);
+            	return "places";
+            } else {
+            	Map<String,String> errorMap = new HashMap<String,String>();
+            	if(publisher == null){
+            		errorMap.put("errorCode:", "101");
+            		errorMap.put("errorMessage:", "Could not find publisher with key:"+publisherKey);
+            	} else {
+               		errorMap.put("errorCode:", "102");
+            		errorMap.put("errorMessage:", "Subscription status invalid for publisher with key:"+publisherKey);
+            	}
+            	
+            	try {
+					model.addAttribute("mapperResult", makeJsonString(jacksonMapper, errorMap));
+					return "mapper-result";
+				} catch (IOException e) {
+					logger.error("cannot serialize message", e);
+				}
+            	
+            }
+		}
+		
+		
+		return "error";
+		
+		
+	}
+	
+	private String makeJsonString(ObjectMapper jacksonMapper, Object serialize) throws IOException{
+		StringWriter sw = new StringWriter();   // serialize
+		MappingJsonFactory jsonFactory = new MappingJsonFactory();
+		JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(sw);
+		jacksonMapper.writeValue(jsonGenerator, serialize);
+		sw.flush();
+		sw.close();
+		return sw.toString();
+	}
  
 /**
  * so the reason we do this instead of using the service is that

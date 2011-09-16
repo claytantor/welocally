@@ -1,0 +1,23 @@
+#set($plist = $itool.wrap($places))
+{
+#if(${placesSearchToken})	"token": "${placesSearchToken}",#end
+	"places": [
+	#foreach($place in $plist)
+	#set ($place = $plist.more()){
+	  	"externalId": "${place.simpleGeoId}",
+	  	"type": "$!{place.type}", 
+	  	"name": "$!{place.name}", 	  		
+#if(${place.latitude})		"latitude": $!{place.latitude},
+#end
+#if(${place.longitude})		"longitude": $!{place.longitude},
+#end
+	  	"address": "$!{place.address}", 
+	  	"city": "$!{place.city}", 
+	  	"state": "$!{place.state}",   	
+#if(${place.categories})
+	  	"categories":[#set($clist = $itool.wrap($place.categories))	  		
+#foreach($cat in $clist)#set ($cat = $clist.more())"$cat"#if(${clist.hasMore()}),#end#end]	
+#end	  		
+	}#if(${plist.hasMore()}),#end
+#end]
+}

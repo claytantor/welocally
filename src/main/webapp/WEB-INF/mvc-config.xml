@@ -156,5 +156,19 @@
         <property name="url" value="add-feature-json.vm"/>
         <property name="contentType" value="application/json"/>
     </bean>
+    
+    <bean id="mapper-result-json"
+        class="org.springframework.web.servlet.view.velocity.VelocityView">
+        <property name="url" value="mapper-result-json.vm"/>
+        <property name="contentType" value="application/json"/>
+    </bean>
+    
+    <bean id="places-json"
+        class="org.springframework.web.servlet.view.velocity.VelocityView">
+        <property name="url" value="places-json.vm"/>
+        <property name="contentType" value="application/json"/>
+    </bean>
+    
+    
 	
 </beans>
