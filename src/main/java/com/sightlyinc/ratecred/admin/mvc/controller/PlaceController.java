@@ -68,7 +68,7 @@ public class PlaceController {
 		
 	@RequestMapping(method= RequestMethod.GET)
 	public String addPlace(Model model) {
-		model.addAttribute("placeForm",new Place());
+		model.addAttribute("placeForm", new Place());
 		return "place/edit";
 	}	
 	
@@ -229,8 +229,8 @@ public class PlaceController {
     		@RequestHeader("welocally-baseurl") String baseurl,
     		@RequestParam("address") String address,
 			@RequestParam(value="query", required=false) String query,
-			@RequestParam(value="category",required=false) String category,
-			@RequestParam(value="radius",required=false) Long radius,
+			@RequestParam(value="category",defaultValue = "") String category,
+			@RequestParam(value="radius",defaultValue = "1") long radius,
 			Model model)
 	{
 		logger.debug("getPlacesByQuery");
@@ -240,7 +240,7 @@ public class PlaceController {
             // look up the selected publisher
             Publisher publisher = 
             	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBER"))
+            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
             {
             	List<Place> places = 
     				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
@@ -278,8 +278,8 @@ public class PlaceController {
 			@RequestParam("welocally-baseurl") String baseurl,
     		@RequestParam("address") String address,
 			@RequestParam(value="query", required=false) String query,
-			@RequestParam(value="category",required=false) String category,
-			@RequestParam(value="radius",required=false) Long radius,
+			@RequestParam(value="category",defaultValue = "") String category,
+			@RequestParam(value="radius", defaultValue = "1") long radius,
 			Model model)
 	{
 		logger.debug("getPlacesByQuery TEST");
@@ -289,7 +289,7 @@ public class PlaceController {
             // look up the selected publisher
             Publisher publisher = 
             	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBER"))
+            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
             {
             	List<Place> places = 
     				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
@@ -314,7 +314,7 @@ public class PlaceController {
             	
             }
 		}
-		
+
 		
 		return "error";
 		

@@ -6,10 +6,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<c:url value='/publisher/place/querytest.json' var="searchPlacesAction"/>
 <c:url value='/publisher/place/feature.json' var="savePlaceByFeatureAction"/>
 <c:url value='/publisher/place/chooser-add.json' var="addPlaceAction"/>
 <script>
-var sgPlacesClient = new simplegeo.PlacesClient('bb8HCTrBtUZs78EwUVJvXG6ugWkrjNvM');
+    var publisherKey = '${param['publisherKey']}';
+    var welocallyBaseurl = 'http://www.welocally.com/';
 var jsonObjFeatures = []; //declare features array
 var selectedFeatureIndex = 0;
 
@@ -17,42 +19,47 @@ function getLocationsByAddress(address, options) {
 	
 	$('#selectable').empty();
 	jsonObjFeatures = [];
-	sgPlacesClient.searchFromAddress(address, options, function(err, data) {
-  	    if (err) {
-  	        console.error(err);
-  	    } else {
-  	    	
-  	    	$.each(data.features, function(i,item){ 
-  	    		//console.log(JSON.stringify(item));
-  	    		jsonObjFeatures.push(item);	    		
-  	    		$('#selectable').html(buildListItemForFeature(item,i));
-  		    });
+	$.ajax('${searchPlacesAction}', {
+        data : {
+            'publisher-key' : publisherKey,
+            'welocally-baseurl' : welocallyBaseurl,
+            'address' : address,
+            'query' : options.q
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+            console.error(textStatus);
+        },
+        success : function(data, textStatus, jqXHR) {
+            $.each(data.places, function(i,item){
+                //console.log(JSON.stringify(item));
+                jsonObjFeatures.push(item);
+                $('#selectable').html($('#selectable').html() + buildListItemForPlace(item,i));
+            });
 
-  	    	$( "#dialog-modal" ).dialog({
-  	    		height: 500,
-  				width: 500,
-                close: function(event, ui) {
-                    $('#results').hide();
-                    $('#place-search').val('')
-                    $("#add-span").hide();
-                }
-  			});
-  			
-  	    	$("#dialog-modal").dialog("option", "position", "center"); 
+            $( "#dialog-modal" ).dialog({
+                height: 500,
+                width: 500,
+              close: function(event, ui) {
+                  $('#results').hide();
+                  $('#place-search').val('')
+                  $("#add-span").hide();
+              }
+            });
 
-  	    	$('#results').show();
-            $("#add-span").show();
-            $("#add-form-div").hide();
+            $("#dialog-modal").dialog("option", "position", "center");
 
-  	    }
-  	});
+            $('#results').show();
+          $("#add-span").show();
+          $("#add-form-div").hide();
+        }
+    });
 }
 
 
-function buildListItemForFeature(feature,i) {
-        var itemLabel = '<b>'+feature.properties.name+'</b>';
-        if (feature.properties.address) {
-            itemLabel += "<br>" + feature.properties.address;
+function buildListItemForPlace(place,i) {
+        var itemLabel = '<b>'+place.name+'</b>';
+        if (place.address) {
+            itemLabel += "<br>" + place.address;
         }
 		return '<li class=\"ui-widget-content\" id="f'+i+'" title="select place">'+itemLabel+'</li>';
 }
