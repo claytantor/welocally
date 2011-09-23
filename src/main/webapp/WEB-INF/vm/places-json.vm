@@ -12,7 +12,10 @@
 #end
 	  	"address": "$!{place.address}", 
 	  	"city": "$!{place.city}", 
-	  	"state": "$!{place.state}",   	
+	  	"state": "$!{place.state}",
+	  	"postalCode": "$!{place.zip}",
+	  	"phone": "$!{place.phone}",
+	  	"website": "$!{place.url}",   	
 #if(${place.categories})
 	  	"categories":[
 #foreach($cat in $place.categories) "$cat"#if($velocityCount < $place.categories.size()),#end#end]

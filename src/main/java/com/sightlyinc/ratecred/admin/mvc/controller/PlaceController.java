@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -113,7 +116,7 @@ public class PlaceController {
     }
     
     
-	@RequestMapping(method=RequestMethod.POST)
+	@RequestMapping(value="/save",method=RequestMethod.POST)
 	public String create(@Valid Place placeForm, BindingResult result) {
 		logger.debug("got post action");
 		try {			
@@ -279,7 +282,7 @@ public class PlaceController {
     		@RequestParam("address") String address,
 			@RequestParam(value="query", required=false) String query,
 			@RequestParam(value="category",defaultValue = "") String category,
-			@RequestParam(value="radius", defaultValue = "1") long radius,
+			@RequestParam(value="radius", defaultValue = "10") long radius,
 			Model model)
 	{
 		logger.debug("getPlacesByQuery TEST");
@@ -315,10 +318,78 @@ public class PlaceController {
             }
 		}
 
-		
 		return "error";
+				
+	}
+	
+	
+	@RequestMapping(value="/queryplaces", method = RequestMethod.POST)
+	public ModelAndView getPlacesByQueryJson(@RequestBody String requestJson)
+	{
+		logger.debug("getPlacesByQueryJson");
+		ModelAndView mav = new ModelAndView("places");
+		List<String> errors = new ArrayList<String>();
+		
+		String publisherKey = null;
+		String baseurl = null;
+		String address = null;
+		String query = null;
+		String category = "";
+		Long radius = 10l;
+		
+		try {
+            JSONObject jsonObject = new JSONObject(requestJson);
+
+            publisherKey = jsonObject.getString("publisherKey");
+            baseurl = jsonObject.getString("baseurl");
+            address = jsonObject.getString("address");
+            query = jsonObject.getString("query");
+            if(!jsonObject.isNull("category"))          	
+            	category = jsonObject.getString("category");
+            if(!jsonObject.isNull("radius"))          	
+            	radius = new Long(jsonObject.getInt("radius"));
+            
+            
+        } catch (JSONException e) {
+            e.printStackTrace();
+            errors.add("Unable to parse request, please check the format of your data");
+        }
 		
 		
+		if (publisherKey  != null) {
+            String[] keys = publisherKey.split("\\x2e");
+
+            // look up the selected publisher
+            Publisher publisher = 
+            	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
+            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
+            {
+            	List<Place> places = 
+    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
+            	mav.getModel().put("places", places);
+            	mav.setViewName("places");
+            } else {
+            	Map<String,String> errorMap = new HashMap<String,String>();
+            	if(publisher == null){
+            		errorMap.put("errorCode:", "101");
+            		errorMap.put("errorMessage:", "Could not find publisher with key:"+publisherKey);
+            	} else {
+               		errorMap.put("errorCode:", "102");
+            		errorMap.put("errorMessage:", "Subscription status invalid for publisher with key:"+publisherKey);
+            	}
+            	
+            	try {
+            		mav.getModel().put("mapperResult", makeJsonString(jacksonMapper, errorMap));
+					mav.setViewName("mapper-result");
+				} catch (IOException e) {
+					logger.error("cannot serialize message", e);
+				}
+            	
+            }
+		}
+
+		return mav;
+				
 	}
 	
 	private String makeJsonString(ObjectMapper jacksonMapper, Object serialize) throws IOException{
