@@ -62,12 +62,6 @@ public class PaypalNotificationController {
 	@Value("${paypal.merchant.email:clay_1314558577_biz@ratecred.com}")
 	private String merchantEmail;
 	
-	@Value("${paypal.subscription.item-number:4cb094d23eb9}")
-	private String productItemNumber;
-
-	//lame way to do this
-	@Value("${paypal.subscription:5.99}")
-	private String subscriptionAmount;
 	
 	/**
 	 * Handles requests sent by the Wordpress plugin when users publish a post.
@@ -209,6 +203,7 @@ public class PaypalNotificationController {
 						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
 					
 					if(publisher != null) {
+						logger.debug("canecling subscription for publisher:"+publisher.getSiteName()+" with key:"+publisher.getKey());
 						publisher.setSubscriptionStatus("CANCELLED");
 						o.setStatus(txType);
 					}

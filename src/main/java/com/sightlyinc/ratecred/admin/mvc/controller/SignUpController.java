@@ -50,9 +50,7 @@ public class SignUpController {
     @Autowired
     private PublisherService publisherService;
     
-//    @Autowired
-//    private SimpleGeoJsonTokenDao simpleGeoJsonTokenDao;
-//    
+
     @Autowired
     private NetworkMemberService networkMemberService;
     
@@ -65,6 +63,9 @@ public class SignUpController {
     
     @Value("${signUpController.paypal.nonTrailButtonKey:CYUU2TQ7EJYFY}")
     private String nonTrialButtonKey;
+    
+    @Value("${paypal.callback.endpoint:https://www.sandbox.paypal.com/cgi-bin/webscr}")
+    private String paypalFormEndpoint;
     
 
     @ModelAttribute("signup")
@@ -218,6 +219,7 @@ public class SignUpController {
                         response.put("token", publisher.getJsonToken());
                         response.put("subscriptionStatus", publisher.getSubscriptionStatus());
                         response.put("serviceEndDateMillis", publisher.getServiceEndDateMillis());
+                        response.put("paypalFormEndpoint", paypalFormEndpoint);
                         
                         //check for existing orders, dont let people repeat trails
                         List<Order> publisherOrders = 
