@@ -82,7 +82,7 @@ public class EbeEventHarvester implements EventHarvester {
 					event.getPlace().setAddress(placeLocation.getAddressOne());
 					event.getPlace().setCity(placeLocation.getCity());
 					event.getPlace().setState(placeLocation.getState());
-					event.getPlace().setZip(placeLocation.getPostalCode());
+					event.getPlace().setPostalCode(placeLocation.getPostalCode());
 					event.getPlace().setLatitude(placeLocation.getLat());
 					event.getPlace().setLongitude(placeLocation.getLng());
 				}

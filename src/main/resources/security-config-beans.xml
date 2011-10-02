@@ -14,10 +14,8 @@
     	<intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />        
-        <intercept-url pattern="/publisher/place/feature.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/publisher/place/querytest.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/publisher/place/queryplaces.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/publisher/place/query.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/publisher/place/addplace.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/widget/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <!-- <intercept-url pattern="/widget/generator" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />

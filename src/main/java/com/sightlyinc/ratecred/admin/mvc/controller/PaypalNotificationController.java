@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.dao.SimpleGeoJsonTokenDao;
@@ -250,14 +251,9 @@ public class PaypalNotificationController {
         serviceEndDateMillis += (2592000000L*1);
         
         publisher.setServiceEndDateMillis(serviceEndDateMillis);
-        SimpleGeoJsonToken simpleGeoJsonToken = simpleGeoJsonTokenDao.getCurrentToken();
-        if (simpleGeoJsonToken != null) {
-            publisher.setSimpleGeoJsonToken(simpleGeoJsonToken.getJsonToken());
-            publisher.setSubscriptionStatus("SUBSCRIBER");
-        } else {
-            //errors.add("Unable to assign a SimpleGeo JSON token, please try again");
-        	logger.debug("cannot set simple geo token");
-        }
+        publisher.setJsonToken(GUIDGenerator.createId().replaceAll("-", ""));
+        publisher.setSubscriptionStatus("SUBSCRIBER");
+               
         
         orderManagerService.saveOrder(o);
         

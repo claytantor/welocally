@@ -151,9 +151,9 @@
         <property name="contentType" value="application/json"/>
     </bean>
 
-    <bean id="add-feature-json"
+    <bean id="add-place-json"
         class="org.springframework.web.servlet.view.velocity.VelocityView">
-        <property name="url" value="add-feature-json.vm"/>
+        <property name="url" value="add-place-json.vm"/>
         <property name="contentType" value="application/json"/>
     </bean>
     

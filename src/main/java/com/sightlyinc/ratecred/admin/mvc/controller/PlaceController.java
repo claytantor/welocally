@@ -2,8 +2,6 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
@@ -23,18 +23,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.noi.utility.string.StringUtils;
 import com.noi.utility.xml.JsonEncoder;
 import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
 import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
+import com.sightlyinc.ratecred.admin.model.AjaxError;
+import com.sightlyinc.ratecred.admin.model.AjaxErrors;
 import com.sightlyinc.ratecred.admin.model.Feature;
+import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
 import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
+import com.sightlyinc.ratecred.client.geo.SimpleGeoLocationClient;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.pojo.Location;
@@ -53,6 +57,9 @@ public class PlaceController {
     
 	@Autowired
 	private PlaceManagerService placeManagerService;
+	
+	@Autowired
+	private JsonModelProcessor jsonModelProcessor;
 
     @Autowired
     private YahooGeocoder yahooGeocoder;
@@ -149,13 +156,13 @@ public class PlaceController {
         place.setAddress(street);
         place.setCity(city);
         place.setState(state);
-        place.setZip(zip);
+        place.setPostalCode(zip);
         try {
             Location location = yahooGeocoder.geocode(
                     place.getAddress() + " " +
                     place.getCity() + " " +
                     place.getState() + " " +
-                    place.getZip()
+                    place.getPostalCode()
             );
 
             place.setLatitude(location.getLat());
@@ -226,166 +233,192 @@ public class PlaceController {
         return "place/list_json";
     }
     
-	@RequestMapping(value="/query", method = RequestMethod.GET)
-	public String getPlacesByQuery(
-			@RequestHeader("publisher-key") String publisherKey, 
-    		@RequestHeader("welocally-baseurl") String baseurl,
-    		@RequestParam("address") String address,
-			@RequestParam(value="query", required=false) String query,
-			@RequestParam(value="category",defaultValue = "") String category,
-			@RequestParam(value="radius",defaultValue = "1") long radius,
-			Model model)
-	{
-		logger.debug("getPlacesByQuery");
-		if (publisherKey != null) {
-            String[] keys = publisherKey.split("\\x2e");
+    @RequestMapping(value="/addplace",  method = RequestMethod.POST)
+	public ModelAndView chooserAddPlace(
+			@RequestBody String requestJson)  
+    {
+		logger.debug("adding place from place chooser");
+		
+		ModelAndView mav = new ModelAndView("add-place");
+		
 
-            // look up the selected publisher
-            Publisher publisher = 
-            	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
-            {
-            	List<Place> places = 
-    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
-            	model.addAttribute("places", places);
-            	return "places";
-            } else {
-            	Map<String,String> errorMap = new HashMap<String,String>();
-            	if(publisher == null){
-            		errorMap.put("errorCode:", "101");
-            		errorMap.put("errorMessage:", "Could not find publisher with key:"+publisherKey);
-            	} else {
-               		errorMap.put("errorCode:", "102");
-            		errorMap.put("errorMessage:", "Subscription status invalid for publisher with key:"+publisherKey);
-            	}
-            	
-            	try {
-					model.addAttribute("mapperResult", makeJsonString(jacksonMapper, errorMap));
-					return "mapper-result";
-				} catch (IOException e) {
-					logger.error("cannot serialize message", e);
-				}
-            	
-            }
-		}
+		String siteKey = null;
+		String siteToken = null;
+		AjaxErrors eajax = new AjaxErrors();
 		
+		JSONObject jsonObject = null;
 		
-		return "error";
-		
-		
-	}
+		try {
+            jsonObject = new JSONObject(requestJson);
+
+            siteKey = jsonObject.getString("siteKey");
+            logger.debug("siteKey:"+siteKey);
+            
+            siteToken = jsonObject.getString("siteToken");
+            logger.debug("siteToken:"+siteToken);
+                 
+  	
+			if (jsonObject !=null && siteKey  != null) {
 	
-	@RequestMapping(value="/querytest", method = RequestMethod.GET)
-	public String getPlacesByQueryTest(
-			@RequestParam("publisher-key") String publisherKey, 
-			@RequestParam("welocally-baseurl") String baseurl,
-    		@RequestParam("address") String address,
-			@RequestParam(value="query", required=false) String query,
-			@RequestParam(value="category",defaultValue = "") String category,
-			@RequestParam(value="radius", defaultValue = "10") long radius,
-			Model model)
-	{
-		logger.debug("getPlacesByQuery TEST");
-		if (publisherKey != null) {
-            String[] keys = publisherKey.split("\\x2e");
+	            // look up the selected publisher
+	            Publisher publisher = 
+	            	publisherService.findByNetworkKeyAndPublisherKey("welocally", siteKey);
+	            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
+	            {
+	            	
+	            	Place place = null;	
+	    			if(geoPlacesClient instanceof SimpleGeoLocationClient){
+	    				place = 
+	    					jsonModelProcessor.saveNewPlaceAsFromPostJson(jsonObject);	    				
+	    			}
+	    			
+	    			StringWriter sw = new StringWriter();   // serialize
+	    			MappingJsonFactory jsonFactory = new MappingJsonFactory();
+	    			JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(sw);
+	    			jacksonMapper.writeValue(jsonGenerator, place);
+	    			sw.flush();
+	    			sw.close();
+	
+	    			mav.addObject("place", sw.getBuffer().toString());
+	            	         	
+	            	
+	            } else {
+	            	
+	            	if(publisher == null){
+	                    eajax.getErrors().add(
+	                			new AjaxError(101,"Could not find publisher with key:"+siteKey));
+	            	} else {
+	                    eajax.getErrors().add(
+	                			new AjaxError(102,"Subscription status invalid for publisher with key:"+
+	                    				siteKey+" "+publisher.getSubscriptionStatus()));
+	            	}
+	            	
+	            }
+	            
+	            
+			}
+		
+		} catch (JSONException e) {
+            logger.error("problem with request", e);
+            eajax.getErrors().add(
+        			new AjaxError(103,"Problem parsing request."));
 
-            // look up the selected publisher
-            Publisher publisher = 
-            	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
-            {
-            	List<Place> places = 
-    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
-            	model.addAttribute("places", places);
-            	return "places";
-            } else {
-            	Map<String,String> errorMap = new HashMap<String,String>();
-            	if(publisher == null){
-            		errorMap.put("errorCode:", "101");
-            		errorMap.put("errorMessage:", "Could not find publisher with key:"+publisherKey);
-            	} else {
-               		errorMap.put("errorCode:", "102");
-            		errorMap.put("errorMessage:", "Subscription status invalid for publisher with key:"+publisherKey);
-            	}
-            	
-            	try {
-					model.addAttribute("mapperResult", makeJsonString(jacksonMapper, errorMap));
-					return "mapper-result";
-				} catch (IOException e) {
-					logger.error("cannot serialize message", e);
-				}
-            	
-            }
+        } catch (IOException e) {
+        	logger.error("problem with request", e);
+            eajax.getErrors().add(
+        			new AjaxError(105,"Problem while generating response."));
+		} catch (Exception e) {
+        	logger.error("problem with request", e);
+            eajax.getErrors().add(
+        			new AjaxError(106,"Problem back at Welocally please report: "+e.getStackTrace()[0].toString().replace(".", " ")));
+		}
+		
+		
+		//if errors send them instead
+		if(eajax.getErrors().size()>0) {
+			try {
+	    		mav.getModel().put("mapperResult", makeJsonString(jacksonMapper, eajax));
+				mav.setViewName("mapper-result");
+			} catch (IOException e) {
+				logger.error("cannot serialize message", e);
+			}
 		}
 
-		return "error";
-				
+		return mav;
+
 	}
 	
 	
 	@RequestMapping(value="/queryplaces", method = RequestMethod.POST)
-	public ModelAndView getPlacesByQueryJson(@RequestBody String requestJson)
+	public ModelAndView getPlacesByQueryJson(
+			@RequestBody String requestJson)
 	{
 		logger.debug("getPlacesByQueryJson");
 		ModelAndView mav = new ModelAndView("places");
-		List<String> errors = new ArrayList<String>();
-		
-		String publisherKey = null;
-		String baseurl = null;
+			
 		String address = null;
 		String query = null;
 		String category = "";
 		Long radius = 10l;
 		
+		String siteKey = null;
+		String siteToken = null;
+		AjaxErrors eajax = new AjaxErrors();
+		JSONObject jsonObject = null;
 		try {
-            JSONObject jsonObject = new JSONObject(requestJson);
+		
+            jsonObject = new JSONObject(requestJson);
 
-            publisherKey = jsonObject.getString("publisherKey");
-            baseurl = jsonObject.getString("baseurl");
+            siteKey = jsonObject.getString("siteKey");
+            logger.debug("siteKey:"+siteKey);
+            
+            siteToken = jsonObject.getString("siteToken");
+            logger.debug("siteToken:"+siteToken);
+            
+            //required fields
             address = jsonObject.getString("address");
             query = jsonObject.getString("query");
+            
+            if(
+            	StringUtils.isEmpty(address) 
+            	|| StringUtils.isEmpty(query) )
+            {         	
+            	eajax.getErrors().add(
+            			new AjaxError(104,"Required field is missing, please check all required fields."));
+            }
+            
+                   
             if(!jsonObject.isNull("category"))          	
             	category = jsonObject.getString("category");
             if(!jsonObject.isNull("radius"))          	
             	radius = new Long(jsonObject.getInt("radius"));
-            
-            
-        } catch (JSONException e) {
-            e.printStackTrace();
-            errors.add("Unable to parse request, please check the format of your data");
-        }
-		
-		
-		if (publisherKey  != null) {
-            String[] keys = publisherKey.split("\\x2e");
+	            
+	     
+			
+			if (jsonObject != null && siteKey  != null) {
+	
+	            // look up the selected publisher
+	            Publisher publisher = 
+	            	publisherService.findByNetworkKeyAndPublisherKey("welocally", siteKey);
+	            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
+	            {
+	            	List<Place> places = 
+	    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
+	            	mav.getModel().put("places", places);
+	            	mav.setViewName("places");
+	            } else {
+	            	
+	            	if(publisher == null){
+	                    eajax.getErrors().add(
+	                			new AjaxError(101,"Could not find publisher with key:"+siteKey));
+	            	} else {
+	                    eajax.getErrors().add(
+	                			new AjaxError(102,"Subscription status invalid for publisher with key:"+
+	                    				siteKey+" "+publisher.getSubscriptionStatus()));
+	            	}
+	            	
+	            }
+			}
+		} 
+		catch (JSONException e) {
+            logger.error("problem with request", e);
+            eajax.getErrors().add(
+        			new AjaxError(103,"Problem parsing request."));
 
-            // look up the selected publisher
-            Publisher publisher = 
-            	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && "SUBSCRIBER".equals(publisher.getSubscriptionStatus()))
-            {
-            	List<Place> places = 
-    				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
-            	mav.getModel().put("places", places);
-            	mav.setViewName("places");
-            } else {
-            	Map<String,String> errorMap = new HashMap<String,String>();
-            	if(publisher == null){
-            		errorMap.put("errorCode:", "101");
-            		errorMap.put("errorMessage:", "Could not find publisher with key:"+publisherKey);
-            	} else {
-               		errorMap.put("errorCode:", "102");
-            		errorMap.put("errorMessage:", "Subscription status invalid for publisher with key:"+publisherKey);
-            	}
-            	
-            	try {
-            		mav.getModel().put("mapperResult", makeJsonString(jacksonMapper, errorMap));
-					mav.setViewName("mapper-result");
-				} catch (IOException e) {
-					logger.error("cannot serialize message", e);
-				}
-            	
-            }
+        }
+		catch (Exception e) {
+	        	logger.error("problem with request", e);
+	            eajax.getErrors().add(
+	        			new AjaxError(106,"Problem back at Welocally please report: "+e.getStackTrace()[0].toString().replace(".", " ")));
+		}
+		//if errors send them instead
+		if(eajax.getErrors().size()>0) {
+			try {
+	    		mav.getModel().put("mapperResult", makeJsonString(jacksonMapper, eajax));
+				mav.setViewName("mapper-result");
+			} catch (IOException e) {
+				logger.error("cannot serialize message", e);
+			}
 		}
 
 		return mav;
@@ -422,7 +455,7 @@ public class PlaceController {
 		if(f.getProperties().get("city") != null)
 			p.setCity(f.getProperties().get("city").toString());
 		if(f.getProperties().get("postalcode") != null)
-			p.setZip(f.getProperties().get("postalcode").toString());
+			p.setPostalCode(f.getProperties().get("postalcode").toString());
 		if(f.getProperties().get("province") != null)
 			p.setState(f.getProperties().get("province").toString());
 		if(f.getProperties().get("phone") != null)

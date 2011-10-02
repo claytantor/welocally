@@ -467,29 +467,67 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 		return null;
 	}
 	
-	
+	public Place saveNewPlaceAsFromPostJson(JSONObject requestJSONObject) {
+		Place place = null;
+		try {
+			
+			place = new Place();
+			place.setName(requestJSONObject.getString("placeName"));
+			place.setAddress(requestJSONObject.getString("placeStreet"));
+			place.setCity(requestJSONObject.getString("placeCity"));
+			place.setState(requestJSONObject.getString("placeState"));
+			place.setPostalCode(requestJSONObject.getString("placeZip"));
+			place.setPhone(requestJSONObject.getString("placePhone"));
+			place.setUrl(requestJSONObject.getString("placeWeb"));
+
+			Location location = geocoder.geocode(
+			        place.getAddress() + " " +
+			        place.getCity() + " " +
+			        place.getState() + " " +
+			        place.getPostalCode()
+			);
+
+			place.setLatitude(location.getLat());
+			place.setLongitude(location.getLng());
+
+			// geocode worked, post to simplegeo
+			Map<String, Object> results = geoPlacesClient.addPlace(place);
+			
+			//now get the feature for the place
+			/*
+			 * {
+			 * id=SG_3PEIEghIV0LKXwleJnCHhY_37.828654_-122.249411@1313970667, 
+			 * token=707f75becc5011e09fc712313819f139, 
+			 * uri=http://api.simplegeo.com/1.0/features/SG_3PEIEghIV0LKXwleJnCHhY_37.828654_-122.249411@1313970667.json
+			 * }
+			 */
+			String featureId = results.get("id").toString();
+			if(featureId != null){
+				place.setSimpleGeoId(featureId);
+			}
+			
+			
+		} catch (JSONException e) {
+			logger.error("cannot save feature", e);
+		} catch (GeocoderException e) {
+			logger.error("cannot save feature", e);
+		} 
+		
+		return place;
+	}
 	
 
     @Override
 	public Feature saveNewPlaceAsFeatureFromPostJson(JSONObject requestJSONObject) {
 
  			try {
-				/*
-				 * 	"placeName": "Shimizu Sushi",
-					"placeStreet": "4290 Piedmont Ave",
-					"placeCity": "Oakland",
-					"placeState": "CA",
-					"placeZip": "94611",
-				  	"placePhone": "+1 510 653-7672",
-				   	"placeWeb": "",
-					"placeCats": "Restaurant, Sushi" 			
-				 */
+				
 				Place place = new Place();
 				place.setName(requestJSONObject.getString("placeName"));
 				place.setAddress(requestJSONObject.getString("placeStreet"));
 				place.setCity(requestJSONObject.getString("placeCity"));
 				place.setState(requestJSONObject.getString("placeState"));
-				place.setZip(requestJSONObject.getString("placeZip"));
+				place.setPostalCode(requestJSONObject.getString("placeZip"));
 				place.setPhone(requestJSONObject.getString("placePhone"));
 				place.setUrl(requestJSONObject.getString("placeWeb"));
 
@@ -497,7 +535,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 				        place.getAddress() + " " +
 				        place.getCity() + " " +
 				        place.getState() + " " +
-				        place.getZip()
+				        place.getPostalCode()
 				);
 
 				place.setLatitude(location.getLat());

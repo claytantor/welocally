@@ -612,7 +612,7 @@ public class DefaultPatronAwardsService implements PatronAwardsService {
 								p.setAddress(location.getAddressOne());
 								p.setCity(location.getCity());
 								p.setState(location.getState());
-								p.setZip(location.getPostalCode());
+								p.setPostalCode(location.getPostalCode());
 								p.setLatitude(location.getLat());
 								p.setLongitude(location.getLng());
 								
