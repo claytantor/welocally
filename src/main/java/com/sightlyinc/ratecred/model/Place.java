@@ -54,7 +54,10 @@ public class Place extends BaseEntity {
 	private String address;
 	private String city;
 	private String state;
-	private String zip;
+	
+	@Column(name="zip")
+	private String postalCode;
+	
 	@Column(name="twitter_id")
 	private String twitterId;
 	@Column(name="simple_geo_id")
@@ -156,11 +159,11 @@ public class Place extends BaseEntity {
 	public void setState(String state) {
 		this.state = state;
 	}
-	public String getZip() {
-		return zip;
+	public String getPostalCode() {
+		return postalCode;
 	}
-	public void setZip(String zip) {
-		this.zip = zip;
+	public void setPostalCode(String zip) {
+		this.postalCode = zip;
 	}
 	public String getPhone() {
 		return phone;

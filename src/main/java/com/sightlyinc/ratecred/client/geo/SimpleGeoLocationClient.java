@@ -229,7 +229,7 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
         properties.put("address", place.getAddress());
         properties.put("city", place.getCity());
         properties.put("province", place.getState());
-        properties.put("postcode", place.getZip());
+        properties.put("postcode", place.getPostalCode());
         properties.put("name", place.getName());
         properties.put("phone", place.getPhone());
         properties.put("website", place.getUrl());

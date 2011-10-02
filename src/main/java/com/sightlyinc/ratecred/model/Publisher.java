@@ -38,7 +38,7 @@ public class Publisher extends BaseEntity {
 	private String mapIconUrl;
 
     @Column(name="simple_geo_json_token")
-    private String simpleGeoJsonToken;
+    private String jsonToken;
 
     @Column(name="service_end_date")
     private Long serviceEndDateMillis;
@@ -168,12 +168,12 @@ public class Publisher extends BaseEntity {
         this.userPrincipal = userPrincipal;
     }
 
-    public String getSimpleGeoJsonToken() {
-        return simpleGeoJsonToken;
+    public String getJsonToken() {
+        return jsonToken;
     }
 
-    public void setSimpleGeoJsonToken(String simpleGeoJsonToken) {
-        this.simpleGeoJsonToken = simpleGeoJsonToken;
+    public void setJsonToken(String simpleGeoJsonToken) {
+        this.jsonToken = simpleGeoJsonToken;
     }
 
     public Long getServiceEndDateMillis() {
