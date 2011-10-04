@@ -37,7 +37,7 @@ public class Publisher extends BaseEntity {
 	@Column(name="map_icon_url")
 	private String mapIconUrl;
 
-    @Column(name="simple_geo_json_token")
+    @Column(name="json_token")
     private String jsonToken;
 
     @Column(name="service_end_date")
