@@ -181,12 +181,17 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 			p.setCity(f.getProperties().get("city").toString());
 		if(f.getProperties().get("province") != null)
 			p.setState(f.getProperties().get("province").toString());
+		if(f.getProperties().get("postcode") != null)
+			p.setPostalCode(f.getProperties().get("postcode").toString());
+		
 		if(f.getProperties().get("phone") != null)
 			p.setPhone(f.getProperties().get("phone").toString());
 		if(f.getProperties().get("url") != null && f.getProperties().get("website").toString().startsWith("http"))
 			p.setUrl(f.getProperties().get("website").toString().toLowerCase());
 		else if(f.getProperties().get("website") != null)
 			p.setUrl("http://"+f.getProperties().get("website").toString().toLowerCase());
+		else if(f.getProperties().get("menulink") != null && f.getProperties().get("website") == null)
+			p.setUrl(f.getProperties().get("menulink").toString().toLowerCase());
 		
 		//use first cat
 		JSONArray classifiers = (JSONArray)f.getProperties().get("classifiers");
