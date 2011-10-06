@@ -13,7 +13,7 @@
 	  	"address": "$!{place.address}", 
 	  	"city": "$!{place.city}", 
 	  	"state": "$!{place.state}",
-	  	"postalCode": "$!{place.zip}",
+	  	"postalCode": "$!{place.postalCode}",
 	  	"phone": "$!{place.phone}",
 	  	"website": "$!{place.url}",   	
 #if(${place.categories})
