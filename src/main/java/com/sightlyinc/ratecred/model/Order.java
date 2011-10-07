@@ -93,8 +93,8 @@ public class Order extends BaseEntity {
 	private Integer quantity;
 	
 	@ManyToOne
-	@JoinColumn(name = "patron_id")
-	private Patron owner;
+	@JoinColumn(name = "publisher_id")
+	private Publisher owner;
 	
 	@ManyToOne
 	@JoinColumn(name = "offer_id")
@@ -218,12 +218,14 @@ public class Order extends BaseEntity {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	public Patron getOwner() {
+
+	public Publisher getOwner() {
 		return owner;
 	}
-	public void setOwner(Patron owner) {
+	public void setOwner(Publisher owner) {
 		this.owner = owner;
 	}
+	
 	public Offer getOffer() {
 		return offer;
 	}

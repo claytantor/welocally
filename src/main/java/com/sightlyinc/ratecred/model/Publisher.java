@@ -69,6 +69,10 @@ public class Publisher extends BaseEntity {
 	@JoinColumn(name = "publisher_id")
 	private Set<OfferEconomics> offerEconomics;
 	
+	@OneToMany
+	@JoinColumn(name = "publisher_id")
+	private Set<Order> orders;
+	
 	@OneToMany(cascade={CascadeType.ALL})
 	@JoinColumn(name = "publisher_id")
 	@JsonIgnore
@@ -195,4 +199,13 @@ public class Publisher extends BaseEntity {
     public boolean isServiceExpired() {
         return (serviceEndDateMillis == null || serviceEndDateMillis < new Date().getTime());
     }
+	public Set<Order> getOrders() {
+		return orders;
+	}
+	public void setOrders(Set<Order> orders) {
+		this.orders = orders;
+	}
+    
+    
+    
 }
