@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
@@ -57,9 +58,16 @@ public class PublisherController {
 		}
     }
 	
+	@ModelAttribute("subscriptionStatusTypes")
+    public String[] getSubscriptionStatusTypes() {
+		String[] subscriptionTypes = new String[]{ "KEY_ASSIGNED", "SUBSCRIBER","CANCELLED" };
+		return subscriptionTypes;
+    }
+	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(Model model) {
 		Publisher publisherForm = new Publisher(); 
+		
 		model.addAttribute("publisherForm",publisherForm);
 		return "publisher/edit";
 	}
@@ -81,7 +89,11 @@ public class PublisherController {
 				p.setUrl(form.getUrl());
 				p.setMapIconUrl(form.getMapIconUrl());
 				p.setIconUrl(form.getIconUrl());
+				
 				p.setKey(getPublisherKeyFromName(form.getSiteName()));
+				
+				if(!StringUtils.isEmpty(form.getSubscriptionStatus()))
+					p.setSubscriptionStatus(form.getSubscriptionStatus());
 				
 				//set the member
 				//prepopulate member

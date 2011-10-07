@@ -8,6 +8,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <c:set var="pageTitle" value="Publisher Edit"/>
 <jsp:include page="../head.jsp"/>
@@ -45,6 +46,15 @@
 					<form:label	for="summary" path="summary" cssErrorClass="error">Summary</form:label><br/>
 					<form:textarea path="summary" rows="1" cols="10" /> <form:errors path="summary" class="error" />			
 				</p>	
+				<sec:authorize ifAnyGranted="ROLE_ADMIN">
+				<p>
+					<form:label	for="subscriptionStatus" path="subscriptionStatus" cssErrorClass="error">Subscription Status</form:label><br/>
+					<form:select path="subscriptionStatus">
+					<form:option value="NONE" label="Select Status" />
+					<form:options items="${subscriptionStatusTypes}" />
+					</form:select>	
+				</p>		
+				</sec:authorize>		
 				<p>
 					<form:label	for="iconUrl" path="iconUrl" cssErrorClass="error">Icon Url (256x256)</form:label><br/>
 					<form:input path="iconUrl" id="iconUrl" class="textinput"/> <form:errors path="iconUrl" class="error"/>			

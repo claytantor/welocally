@@ -1,0 +1,26 @@
+An Order Has Been Made!
+================================
+
+Order
+================================
+	status: $!{order.status}
+	title: $!{order.title}
+	description: $!{order.description}
+	price: $!{order.price}	
+	quantity: $!{order.quantity}
+	externalTxId: $!{order.externalTxId}
+	channel: $!{order.channel}
+	buyerName: $!{order.buyerName}
+	buyerEmail: $!{order.buyerEmail}
+	externalOrderItemCode: $!{order.externalOrderItemCode}
+	sku: $!{order.sku}
+		
+Publisher:
+================================
+	url: $!{order.owner.url}
+	siteName: $!{order.owner.siteName}
+	key: $!{order.owner.key}
+	description: $!{order.owner.description}	
+	summary: $!{order.owner.summary}	
+    jsonToken: $!{order.owner.jsonToken}
+    subscriptionStatus: $!{order.owner.subscriptionStatus}

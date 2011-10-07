@@ -10,6 +10,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,18 +22,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.hibernate.GUIDGenerator;
+import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
+import com.sightlyinc.ratecred.admin.velocity.PublisherOrderGenerator;
 import com.sightlyinc.ratecred.dao.SimpleGeoJsonTokenDao;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.model.SimpleGeoJsonToken;
-import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.OrderManagerService;
 import com.sightlyinc.ratecred.service.PublisherService;
 
@@ -44,6 +44,15 @@ import com.sightlyinc.ratecred.service.PublisherService;
 public class PaypalNotificationController {
 
 	static Logger logger = Logger.getLogger(PaypalNotificationController.class);
+	
+	@Value("${admin.adminEmailAccountTo:clay@welocally.com}")
+	private String adminEmailAccountTo;
+	
+	@Value("${admin.adminEmailAccountFrom:mailer@ratecred.com}")
+	private String adminEmailAccountFrom;
+	
+	@Autowired
+	private MailerQueueService mailerQueueService;
 	
     @Autowired
     private PublisherService publisherService;
@@ -78,6 +87,7 @@ public class PaypalNotificationController {
 		try {
 			// read post from PayPal system and add 'cmd'
 			Enumeration en = request.getParameterNames();
+			StringBuffer paramsBuf = new StringBuffer();
 			String str = "cmd=_notify-validate";
 			while (en.hasMoreElements()) {
 				String paramName = (String) en.nextElement();
@@ -85,6 +95,7 @@ public class PaypalNotificationController {
 				str = str + "&" + paramName + "="
 						+ URLEncoder.encode(paramValue, "utf-8");
 				logger.debug("["+paramName+"="+paramValue+"]");
+				paramsBuf.append("["+paramName+"="+paramValue+"]\n");
 			}
 
 			// post back to PayPal system to validate
@@ -150,6 +161,7 @@ public class PaypalNotificationController {
 			String payerEmail = request.getParameter("payer_email");
 			String publisherKey = request.getParameter("custom");
 			String txType = request.getParameter("txn_type");
+			String payerId = request.getParameter("payer_id");
 			//txn_type=subscr_signup
 			// check notification validation
 			
@@ -183,6 +195,8 @@ public class PaypalNotificationController {
 					 o.setBuyerEmail(payerEmail);
 					 o.setQuantity(1);
 					 o.setBuyerName(publisherKey);
+					 o.setTitle(itemName);
+					
 					 				 
 					 //complete subscription
 					logger.debug("processing order:"+o.getExternalTxId());
@@ -191,7 +205,7 @@ public class PaypalNotificationController {
 						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
 					
 					if(publisher != null)
-						processPublisherOrder(publisher, o);
+						processPublisherOrder(publisher, o, paramsBuf.toString());
 											 
 					 
 					 
@@ -210,6 +224,13 @@ public class PaypalNotificationController {
 					
 					publisherService.save(publisher);
 					orderManagerService.saveOrder(o);
+					
+					//dont fail on email problems
+					try{
+						sendOrderStatusEmail(o, paramsBuf.toString()); 
+					} catch(Exception e){
+						logger.error("could not send email",e);
+					}
 					
 					
 				} else {
@@ -237,7 +258,7 @@ public class PaypalNotificationController {
 	}
 	
 	
-	private void processPublisherOrder(Publisher publisher, Order o) throws BLServiceException {
+	private void processPublisherOrder(Publisher publisher, Order o, String params) throws BLServiceException {
 		
 		logger.debug("processPublisherOrder order:"+o.getExternalTxId()+" key:"+publisher.getKey());
 		      
@@ -248,13 +269,41 @@ public class PaypalNotificationController {
         publisher.setServiceEndDateMillis(serviceEndDateMillis);
         publisher.setJsonToken(GUIDGenerator.createId().replaceAll("-", ""));
         publisher.setSubscriptionStatus("SUBSCRIBER");
-               
+        o.setOwner(publisher);       
         
         orderManagerService.saveOrder(o);
         
         //enable the user
         publisher.getUserPrincipal().setEnabled(true);
         publisherService.save(publisher);
+        
+      //dont fail on email problems
+		try{
+			sendOrderStatusEmail(o,params); 
+		} catch(Exception e){
+			logger.error("could not send email",e);
+		}
+        
+	}
+	
+	
+	private void sendOrderStatusEmail(Order o, String params) 
+	{
+				
+		Map model = new HashMap();
+		model.put("order", o);
+		PublisherOrderGenerator generator = 
+			new PublisherOrderGenerator(model);
+		
+
+		mailerQueueService.sendMessage(
+				adminEmailAccountFrom, 
+				"Welocally Mailer Bot",
+				adminEmailAccountTo, 
+				"Welocally Admin", 
+				"[Welocally Admin] Subscription "+o.getOwner().getSubscriptionStatus(), 
+				generator.makeDisplayString()+params,
+				"text/plain");		
 	}
 	
 

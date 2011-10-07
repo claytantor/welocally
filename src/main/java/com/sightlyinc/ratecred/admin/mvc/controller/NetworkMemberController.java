@@ -31,11 +31,6 @@ public class NetworkMemberController {
 	
 	static Logger logger = Logger.getLogger(NetworkMemberController.class);
 	
-//	@Autowired  
-//	@Qualifier("networkMemberValidator")
-//    private Validator validator;  
-
-
 	@Autowired
 	private NetworkMemberService networkMemberService;
 	
