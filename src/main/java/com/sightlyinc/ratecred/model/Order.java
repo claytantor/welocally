@@ -81,6 +81,8 @@ public class Order extends BaseEntity {
 	@Column(name="external_id")
 	private String externalOrderItemCode;
 	
+	
+	
 	private String sku;
 	private String title;
 	
