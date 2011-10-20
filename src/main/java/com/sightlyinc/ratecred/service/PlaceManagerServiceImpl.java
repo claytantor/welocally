@@ -92,7 +92,7 @@ public class PlaceManagerServiceImpl implements PlaceManagerService {
 			p.setLongitude(top.getLongitude());
 			p.setSimpleGeoId(top.getSimpleGeoId());
 			//p.setSubcategory(top.getSubcategory());
-			p.setUrl(top.getUrl());
+			p.setWebsite(top.getWebsite());
 			placeDao.save(p);
 							
 		}

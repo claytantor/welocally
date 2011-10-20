@@ -219,10 +219,10 @@ public class Place extends BaseEntity {
 	}
 	
 		
-	public String getUrl() {
+	public String getWebsite() {
 		return url;
 	}
-	public void setUrl(String url) {
+	public void setWebsite(String url) {
 		this.url = url;
 	}
 	public BusinessLocation getBusinessLocation() {

@@ -1,0 +1,1 @@
+ALTER TABLE `business` ADD COLUMN `metadata` TEXT NULL  AFTER `description`;

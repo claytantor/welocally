@@ -5,11 +5,10 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -60,35 +59,17 @@ public class NetworkMember extends BaseEntity {
 	@Column(columnDefinition="TEXT")
 	private String description;
 	
-//	@Column(name="icon_url")
-//	private String iconUrl;
-//	
-//	@Column(name="map_icon_url")
-//	private String mapIconUrl;
-	
 	@Column(name="primary_email")
 	private String primaryEmail;
 	
 	@Column(name="paypal_email")
 	private String paypalEmail;
 	
-/*	*//**
-	 * so we are choosing to have three foreign keys to the entity types
-	 * possible for a member and then letting business logic manage what 
-	 * entity it is, this may be a good use case for table inheritance 
-	 * with hibernate. right now we are going to have three keys to support it
-	 * but they will live in the external table that is being referenced
-	 * 
-	 * http://docs.jboss.org/hibernate/core/3.3/reference/en/html/inheritance.html
-	 * 
-	 *//*
-	@Column(name = "member_type", columnDefinition="enum ('PUBLISHER','AFFILIATE','MERCHANT')")
-	@Enumerated(EnumType.STRING)
-	private MemberType type;*/
-	
+
 	@OneToMany
 	@JoinColumn(name="network_member_id")
 	@JsonIgnore
+	@OrderBy("subscriptionStatus, siteName")
 	private Set<Publisher> publishers;
 	
 	@OneToMany
@@ -137,38 +118,6 @@ public class NetworkMember extends BaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-//	public String getIconUrl() {
-//		return iconUrl;
-//	}
-//
-//	public void setIconUrl(String iconUrl) {
-//		this.iconUrl = iconUrl;
-//	}
-//
-//	public String getMapIconUrl() {
-//		return mapIconUrl;
-//	}
-//
-//	public void setMapIconUrl(String mapIconUrl) {
-//		this.mapIconUrl = mapIconUrl;
-//	}
-
-//	public MemberType getType() {
-//		return type;
-//	}
-//
-//	public void setType(MemberType type) {
-//		this.type = type;
-//	}
-
-	/*public UserPrincipal getPrincipal() {
-		return principal;
-	}
-
-	public void setPrincipal(UserPrincipal principal) {
-		this.principal = principal;
-	}*/
 
 	public String getPrimaryEmail() {
 		return primaryEmail;
