@@ -12,6 +12,12 @@
 		<org.drools.version>2.1</org.drools.version>
 		<org.hibernate.version>3.3.2.GA</org.hibernate.version>
 	</properties>   
+	<pluginRepositories>
+    <pluginRepository>
+        <id>c5-public-repository</id>
+        <url>http://mvn.carbonfive.com/public</url>
+    </pluginRepository>
+	</pluginRepositories>
 	<build>
     <plugins>
       <plugin>
@@ -106,10 +112,12 @@
 	          	<password>${database.password}</password>
             	<migrationsPath>src/main/sql/upgrade/</migrationsPath>
           </configuration>
-      </plugin>   
-    
-         
+      </plugin>            
     </plugins>
+    
+
+    
+    
   </build>  
   <dependencies>
     <dependency>
