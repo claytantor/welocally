@@ -15,7 +15,7 @@
 	  	"state": "$!{place.state}",
 	  	"postalCode": "$!{place.postalCode}",
 	  	"phone": "$!{place.phone}",
-	  	"website": "$!{place.url}",   	
+	  	"website": "$!{place.website}",   	
 #if(${place.categories})
 	  	"categories":[
 #foreach($cat in $place.categories) "$cat"#if($velocityCount < $place.categories.size()),#end#end]

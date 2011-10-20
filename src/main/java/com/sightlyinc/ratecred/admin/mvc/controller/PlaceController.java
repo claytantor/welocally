@@ -461,11 +461,11 @@ public class PlaceController {
 		if(f.getProperties().get("phone") != null)
 			p.setPhone(f.getProperties().get("phone").toString());
 		if(f.getProperties().get("url") != null && f.getProperties().get("website").toString().startsWith("http"))
-			p.setUrl(f.getProperties().get("website").toString().toLowerCase());
+			p.setWebsite(f.getProperties().get("website").toString().toLowerCase());
 		else if(f.getProperties().get("website") != null)
-			p.setUrl("http://"+f.getProperties().get("website").toString().toLowerCase());
+			p.setWebsite("http://"+f.getProperties().get("website").toString().toLowerCase());
 		else if(f.getProperties().get("menulink") != null)
-			p.setUrl(f.getProperties().get("menulink").toString().toLowerCase());
+			p.setWebsite(f.getProperties().get("menulink").toString().toLowerCase());
 		
 		
 	}

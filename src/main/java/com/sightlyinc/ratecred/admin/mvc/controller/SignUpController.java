@@ -161,11 +161,11 @@ public class SignUpController {
             if (StringUtils.isBlank(siteName)) {
                 errors.add("Please provide the name for your site");
             }
-            if (StringUtils.isBlank(description)) {
-                errors.add("Please provide the description of your site");
-            }
+//            if (StringUtils.isBlank(description)) {
+//                errors.add("Please provide the description of your site");
+//            }
             if (StringUtils.isBlank(email)) {
-                errors.add("Please provide your email address");
+                errors.add("Please provide a real email address");
             }
 
             if (errors.isEmpty()) {

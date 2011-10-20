@@ -40,21 +40,30 @@
 			<h2>welocally publishers</h2>
 			<hr/>			
 			<div class="fill-frame">
-				<h3>sites</h3>		
+				<h3>sites:${fn:length(member.publishers)}</h3>		
 			</div>			
 			<div class="fill-frame">
 			<c:if test="${not empty member.publishers}">
 				<c:set var="publishers" value="${member.publishers}" scope="request"/>
 				<div class="simple-box span-24">	
 					<div class="span-24 last">
-						<c:forEach var="publisher" items="${publishers}">
-						<div class="span-24 last">
-							<div class="strong-12 span-5"><a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>							
-							<div class="span-10">
-								<div class="span-10"><a href="${publisher.url}">${publisher.url}</a></div>
+						<c:forEach var="publisher" items="${publishers}" varStatus="status">
+						<c:choose>
+						    <c:when test='${(status.index)%2 eq 0}'>
+						      <c:set var="rowColor" value="even-row" scope="page"/>
+						    </c:when>
+						    <c:otherwise>
+						      <c:set var="rowColor" value="odd-row" scope="page"/>
+						    </c:otherwise>
+					  	</c:choose>
+											
+						<div class="${rowColor} span-24 last">
+							<div class="strong-12 span-10"><a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>							
+							<div class="span-8">
+								<div class="span-10"><a href="${publisher.url}" target="_new">${publisher.url}</a></div>
 								<div class="span-10">${publisher.summary}</div>				
 							</div>	
-							<div class="span-4">${publisher.subscriptionStatus}</div>	
+							<div class="span-2">${publisher.subscriptionStatus}</div>	
 						</div>
 						</c:forEach>
 					</div>					
@@ -63,9 +72,6 @@
 			</div>
 		</div>
 		</sec:authorize>
-		
-	
-
 	</div>
 </div>
 

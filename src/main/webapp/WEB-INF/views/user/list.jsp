@@ -30,16 +30,24 @@
 		<div class="span-24 last">
 			<div class="span-24 last">
 				<div class="strong-10 span-1">id</div>
-				<div class="strong-10 span-4">username</div>
+				<div class="strong-10 span-8">username</div>
 				<div class="strong-10 span-2">expired</div>
 				<div class="strong-10 span-2">enabled</div>
 				<div class="strong-10 span-2">locked</div>	
 				<div class="strong-10 span-4">roles</div>				
 			</div>
-			<c:forEach var="user" items="${userPrincipals}">
-			<div class="span-24 last">
+			<c:forEach var="user" items="${userPrincipals}"  varStatus="status">
+			<c:choose>
+			    <c:when test='${(status.index)%2 eq 0}'>
+			      <c:set var="rowColor" value="even-row" scope="page"/>
+			    </c:when>
+			    <c:otherwise>
+			      <c:set var="rowColor" value="odd-row" scope="page"/>
+			    </c:otherwise>
+		  	</c:choose>
+			<div class="${rowColor} span-24 last">
 				<div class="text-10 span-1">${user.id}</div>
-				<div class="text-10  span-4"><a href="<c:url value='/admin/user/${user.id}'/>">${user.username}</a></div>
+				<div class="text-10  span-8"><a href="<c:url value='/admin/user/${user.id}'/>">${user.username}</a></div>
 				<div class="text-10  span-2">${user.credentialsExpired}</div>
 				<div class="text-10  span-2">${user.enabled}</div>
 				<div class="text-10  span-2">${user.locked}</div>

@@ -120,3 +120,7 @@ textarea { width: 500px; height: 150px; }
 
 /*------- forms */
 .textinput { width: 500px; }
+
+.even-row {background: #DDEBC7; }
+.odd-row {background: #ffffff; }
+

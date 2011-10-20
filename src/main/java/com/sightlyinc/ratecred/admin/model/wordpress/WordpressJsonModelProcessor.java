@@ -478,7 +478,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 			place.setState(requestJSONObject.getString("placeState"));
 			place.setPostalCode(requestJSONObject.getString("placeZip"));
 			place.setPhone(requestJSONObject.getString("placePhone"));
-			place.setUrl(requestJSONObject.getString("placeWeb"));
+			place.setWebsite(requestJSONObject.getString("placeWeb"));
 
 			Location location = geocoder.geocode(
 			        place.getAddress() + " " +
@@ -529,7 +529,7 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 				place.setState(requestJSONObject.getString("placeState"));
 				place.setPostalCode(requestJSONObject.getString("placeZip"));
 				place.setPhone(requestJSONObject.getString("placePhone"));
-				place.setUrl(requestJSONObject.getString("placeWeb"));
+				place.setWebsite(requestJSONObject.getString("placeWeb"));
 
 				Location location = geocoder.geocode(
 				        place.getAddress() + " " +
