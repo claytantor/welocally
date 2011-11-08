@@ -18,7 +18,7 @@
   </category>
 
   <category name="org.codehouse">
-    <priority value="error"/>
+    <priority value="debug"/>
   </category>
 
 	<category name="com.simplegeo">

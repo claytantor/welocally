@@ -29,7 +29,14 @@
 				<form:hidden path="id" />
 				<form:hidden path="version" />
 				<form:hidden path="networkMember.id" />
-				
+				<p>
+					<form:label	for="key" path="key" cssErrorClass="error">Site Key</form:label><br/>
+					<form:input path="key" id="key" class="textinput"/> <form:errors path="key" class="error" />			
+				</p>	
+				<p>
+					<form:label	for="jsonToken" path="jsonToken" cssErrorClass="error">Site Token</form:label><br/>
+					<form:input path="jsonToken" id="jsonToken" class="textinput"/> <form:errors path="jsonToken" class="error" />			
+				</p>									
 				<p>
 					<form:label	for="siteName" path="siteName" cssErrorClass="error">Site Name</form:label><br/>
 					<form:input path="siteName" id="siteName" class="textinput"/> <form:errors path="siteName" class="error" />			

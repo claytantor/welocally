@@ -17,7 +17,10 @@ public interface JsonModelProcessor {
     public void saveEventAndPlaceFromPostJson(JSONObject jsonObject, Publisher publisher, String status);
     public void saveArticleAndPlaceFromPostJson(JSONObject jsonObject, Publisher publisher, String status);
     public Feature saveNewPlaceAsFeatureFromPostJson(JSONObject jsonObject);
-    public Place saveNewPlaceAsFromPostJson(JSONObject requestJSONObject);
+    public Place saveNewPlaceFromPostJson(JSONObject requestJSONObject);
+    public Place updatePlaceFromPostJson(JSONObject requestJSONObject);
+    
+  
     
     public boolean isEventPost(JSONObject jsonPost);
     public boolean isArticlePost(JSONObject jsonPost);

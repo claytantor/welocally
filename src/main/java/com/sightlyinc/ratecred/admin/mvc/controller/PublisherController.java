@@ -83,6 +83,8 @@ public class PublisherController {
 			if(p!= null)
 			{
 				p.setMonthlyPageviews(form.getMonthlyPageviews());
+				p.setKey(form.getKey());
+				p.setJsonToken(form.getJsonToken());
 				p.setSiteName(form.getSiteName());
 				p.setDescription(form.getDescription());
 				p.setSummary(form.getSummary());

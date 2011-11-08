@@ -25,6 +25,10 @@
 				<h2>admin activities</h2>
 				<hr/>
 			</div>
+			<div>
+				<h3>place</h3>
+				<div><a href="<c:url value='/publisher/place/finder'/>">place finder</a></div>
+			</div>
 			<div class="bottom-10 fill-frame">
 				<h3>user</h3>
 				<div><a href="<c:url value='/admin/user/list'/>">list all</a></div>

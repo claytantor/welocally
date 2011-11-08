@@ -16,6 +16,7 @@
     	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />        
         <intercept-url pattern="/publisher/place/queryplaces.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/publisher/place/addplace.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/publisher/place/loadspreadsheet.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/widget/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <!-- <intercept-url pattern="/widget/generator" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />

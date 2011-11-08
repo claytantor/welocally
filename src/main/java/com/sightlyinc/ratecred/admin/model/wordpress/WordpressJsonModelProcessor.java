@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.admin.model.wordpress;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -467,7 +468,89 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 		return null;
 	}
 	
-	public Place saveNewPlaceAsFromPostJson(JSONObject requestJSONObject) {
+	public Place saveNewPlaceFromPostJson(JSONObject requestJSONObject) {
+		
+		try {
+			if(!StringUtils.isEmpty(requestJSONObject.getString("placeName")))
+				return saveNewPlaceFromPostJsonOne(requestJSONObject);
+		} catch (JSONException e) {
+			logger.debug("not type one");
+		}
+		
+		try {
+			if(!StringUtils.isEmpty(requestJSONObject.getString("name")))
+				return saveNewPlaceFromPostJsonTwo(requestJSONObject);
+		} catch (JSONException e) {
+			logger.debug("not type two");
+		}
+		
+		return null;
+
+	}
+	
+	
+	
+	@Override
+	public Place updatePlaceFromPostJson(JSONObject requestJSONObject) {
+		Place place = null;
+		try {
+			
+			/*
+			 * {
+				    "externalId": "",
+				    "name": "Acme House of Music",
+				    "address": "3715 MacArthur Blvd",
+				    "city": "Oakland",
+				    "state": "CA",
+				    "zip": "94619",
+				    "phone": "510-530-7234",
+				    "web": "http://www.acmehouseofmusic.com",
+				    "cats": ""
+				}
+			 * 
+			 */
+			
+			place = geoPlacesClient.findById(requestJSONObject.getString("externalId"));
+			place.setSimpleGeoId(requestJSONObject.getString("externalId"));
+			place.setName(requestJSONObject.getString("name"));
+			place.setAddress(requestJSONObject.getString("address"));
+			place.setCity(requestJSONObject.getString("city"));
+			place.setState(requestJSONObject.getString("state"));
+			place.setPostalCode(requestJSONObject.getString("zip"));
+			place.setPhone(requestJSONObject.getString("phone"));
+			place.setWebsite(requestJSONObject.getString("web"));
+
+			Location location = geocoder.geocode(
+			        place.getAddress() + " " +
+			        place.getCity() + " " +
+			        place.getState() + " " +
+			        place.getPostalCode()
+			);
+
+			place.setLatitude(location.getLat());
+			place.setLongitude(location.getLng());
+			String[] categories = 
+				requestJSONObject.getString("category").split(",");
+			List<String> categoryList = Arrays.asList(categories);
+			place.setCategories(categoryList);
+			
+			// geocode worked, post to simplegeo
+			geoPlacesClient.savePlace(place);
+			
+			
+		} catch (JSONException e) {
+			logger.error("cannot save feature", e);
+		} catch (GeocoderException e) {
+			logger.error("cannot save feature", e);
+		} 
+		
+		return place;
+	}
+
+	public Place saveNewPlaceFromPostJsonOne(JSONObject requestJSONObject) {
+		
+		
+		
 		Place place = null;
 		try {
 			
@@ -490,6 +573,74 @@ public class WordpressJsonModelProcessor implements JsonModelProcessor {
 			place.setLatitude(location.getLat());
 			place.setLongitude(location.getLng());
 
+			// geocode worked, post to simplegeo
+			Map<String, Object> results = geoPlacesClient.addPlace(place);
+			
+			//now get the feature for the place
+			/*
+			 * {
+			 * id=SG_3PEIEghIV0LKXwleJnCHhY_37.828654_-122.249411@1313970667, 
+			 * token=707f75becc5011e09fc712313819f139, 
+			 * uri=http://api.simplegeo.com/1.0/features/SG_3PEIEghIV0LKXwleJnCHhY_37.828654_-122.249411@1313970667.json
+			 * }
+			 */
+			String featureId = results.get("id").toString();
+			if(featureId != null){
+				place.setSimpleGeoId(featureId);
+			}
+			
+			
+		} catch (JSONException e) {
+			logger.error("cannot save feature", e);
+		} catch (GeocoderException e) {
+			logger.error("cannot save feature", e);
+		} 
+		
+		return place;
+	}
+	
+	public Place saveNewPlaceFromPostJsonTwo(JSONObject requestJSONObject) {
+		Place place = null;
+		try {
+			
+			/*
+			 * {
+				    "externalId": "",
+				    "name": "Acme House of Music",
+				    "address": "3715 MacArthur Blvd",
+				    "city": "Oakland",
+				    "state": "CA",
+				    "zip": "94619",
+				    "phone": "510-530-7234",
+				    "web": "http://www.acmehouseofmusic.com",
+				    "cats": ""
+				}
+			 * 
+			 */
+			
+			place = new Place();
+			place.setName(requestJSONObject.getString("name"));
+			place.setAddress(requestJSONObject.getString("address"));
+			place.setCity(requestJSONObject.getString("city"));
+			place.setState(requestJSONObject.getString("state"));
+			place.setPostalCode(requestJSONObject.getString("zip"));
+			place.setPhone(requestJSONObject.getString("phone"));
+			place.setWebsite(requestJSONObject.getString("web"));
+
+			Location location = geocoder.geocode(
+			        place.getAddress() + " " +
+			        place.getCity() + " " +
+			        place.getState() + " " +
+			        place.getPostalCode()
+			);
+
+			place.setLatitude(location.getLat());
+			place.setLongitude(location.getLng());
+			String[] categories = 
+				requestJSONObject.getString("category").split(",");
+			List<String> categoryList = Arrays.asList(categories);
+			place.setCategories(categoryList);
+			
 			// geocode worked, post to simplegeo
 			Map<String, Object> results = geoPlacesClient.addPlace(place);
 			
