@@ -1,0 +1,3 @@
+ALTER TABLE `place` CHANGE COLUMN `url` `website` VARCHAR(1024) NULL DEFAULT NULL  ;
+ALTER TABLE `place` ADD COLUMN `website_type` VARCHAR(45) NULL  AFTER `website` ;
+

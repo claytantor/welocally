@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import com.simplegeo.client.types.Geometry;
-import com.simplegeo.client.types.Point;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,8 +18,11 @@ import org.springframework.stereotype.Component;
 import com.sightlyinc.ratecred.model.Place;
 import com.simplegeo.client.SimpleGeoPlacesClient;
 import com.simplegeo.client.callbacks.SimpleGeoCallback;
+import com.simplegeo.client.types.CategoryCollection;
 import com.simplegeo.client.types.Feature;
 import com.simplegeo.client.types.FeatureCollection;
+import com.simplegeo.client.types.Geometry;
+import com.simplegeo.client.types.Point;
 
 // @TODO refactor name
 @Component("locationPlacesClient")
@@ -118,6 +119,22 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
     }
 
 	
+	@Override
+	public Map<String, Object> savePlace(Place place) {
+		Feature feature = transformPlace(place);
+        Map<String, Object> result = null;
+        try {
+            result = client.updatePlace(feature);
+            result.put("feature", feature);
+        } catch (IOException e) {
+            logger.error("cannot add place",e);
+        } catch (JSONException e) {
+        	logger.error("cannot add place",e);
+        }
+        return result;
+		
+	}
+
 	protected List<Place> findPlacesSynchronous(double lat, double lon, double radiusInKMeters) {		
 		
 		final List<Place> places = new ArrayList<Place>();		
@@ -186,12 +203,14 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 		
 		if(f.getProperties().get("phone") != null)
 			p.setPhone(f.getProperties().get("phone").toString());
-		if(f.getProperties().get("url") != null && f.getProperties().get("website").toString().startsWith("http"))
-			p.setWebsite(f.getProperties().get("website").toString().toLowerCase());
-		else if(f.getProperties().get("website") != null)
-			p.setWebsite("http://"+f.getProperties().get("website").toString().toLowerCase());
+		
+		if(f.getProperties().get("url") != null)
+			p.setWebsite(makeUrlString(f.getProperties().get("url").toString().toLowerCase()));
+		else if(f.getProperties().get("website") != null){
+			p.setWebsite(makeUrlString(f.getProperties().get("website").toString().toLowerCase()));
+		}
 		else if(f.getProperties().get("menulink") != null && f.getProperties().get("website") == null)
-			p.setWebsite(f.getProperties().get("menulink").toString().toLowerCase());
+			p.setWebsite(makeUrlString(f.getProperties().get("menulink").toString().toLowerCase()));
 		
 		//use first cat
 		JSONArray classifiers = (JSONArray)f.getProperties().get("classifiers");
@@ -205,6 +224,14 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 		}
 		
 		//return p;
+	}
+	
+	private String makeUrlString(String preurl){
+		if(!preurl.startsWith("http")){
+			return "http://"+preurl;
+		} else {
+			return preurl;
+		}
 	}
 	
 	public Map<String, Object> addPlace(Place place) {
@@ -229,7 +256,7 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
 
         // TODO is it necessary to set this? is this the correct value?
         feature.setType("Feature");
-
+        feature.setSimpleGeoId(place.getSimpleGeoId());
         HashMap<String, Object> properties = new HashMap<String, Object>();
         properties.put("address", place.getAddress());
         properties.put("city", place.getCity());
@@ -238,6 +265,8 @@ public class SimpleGeoLocationClient implements GeoPlacesClient,SimpleGeoPlaceMa
         properties.put("name", place.getName());
         properties.put("phone", place.getPhone());
         properties.put("website", place.getWebsite());
+        
+        
         properties.put("private", false);
         feature.setProperties(properties);
 

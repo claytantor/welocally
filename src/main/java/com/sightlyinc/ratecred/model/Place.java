@@ -75,7 +75,8 @@ public class Place extends BaseEntity {
 	@Column(columnDefinition="TEXT")
 	private String description;
 	
-	private String url;
+	private String website;
+	
 	private String flag;
 
 	@JsonProperty
@@ -88,6 +89,9 @@ public class Place extends BaseEntity {
 	
 	@Transient
 	private String addressFull;
+	
+	@Column(name="website_type")
+	private String websiteType;
 	
 	// relations
 	@OneToMany
@@ -104,8 +108,7 @@ public class Place extends BaseEntity {
 	
 	@Transient
 	private List<String> categories = new ArrayList<String>();
-		
-	
+			
 	
 	public List<String> getCategories() {
 		return categories;
@@ -220,10 +223,10 @@ public class Place extends BaseEntity {
 	
 		
 	public String getWebsite() {
-		return url;
+		return website;
 	}
 	public void setWebsite(String url) {
-		this.url = url;
+		this.website = url;
 	}
 	public BusinessLocation getBusinessLocation() {
 		return businessLocation;
