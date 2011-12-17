@@ -2,11 +2,10 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.welocally</groupId>
-  <artifactId>sightly-ratecred-service</artifactId>
-  <name>Sightly Inc. : RateCred : Services Module</name>
+  <artifactId>services</artifactId>
+  <name>Welocally : Services Module</name>
   <version>0.9.4</version>
-  <!-- foo -->
-  <description>The services tier for the ratecred project.</description>
+  <description>The services tier for the welocally project.</description>
 	<properties>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 		<org.drools.version>2.1</org.drools.version>
@@ -51,49 +50,6 @@
       </configuration>
     </plugin> 
     
-    <!-- this needs to be in a profile -->
-    <!-- 
-    <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>sql-maven-plugin</artifactId>
-        <version>1.4</version>
-
-        <dependencies>
-          <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.13</version>
-          </dependency>
-        </dependencies>
-
-        <configuration>
-          <driver>${database.driverClassName}</driver>
-          <url>${database.url}</url>
-          <username>${database.username}</username>
-          <password>${database.password}</password>
-          <skip>${maven.test.skip}</skip>
-        </configuration>
-
-        <executions>
-          <execution>
-            <id>create-test-db</id>
-            <phase>site-deploy</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <autocommit>true</autocommit>
-              <srcFiles>
-                <srcFile>src/main/sql/create_ratecred.sql</srcFile>
-                <srcFile>src/main/sql/ratecred.sql</srcFile>
-                <srcFile>src/main/sql/data.sql</srcFile>
-              </srcFiles>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-       -->
- 
       <plugin>
           <groupId>com.carbonfive.db-support</groupId>
           <artifactId>db-migration-maven-plugin</artifactId>
@@ -114,9 +70,6 @@
           </configuration>
       </plugin>            
     </plugins>
-    
-
-    
     
   </build>  
   <dependencies>
@@ -187,8 +140,6 @@
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
-            
-    <!-- data -->
     <dependency>
   		<groupId>org.hibernate</groupId>
   		<artifactId>hibernate-core</artifactId>
@@ -413,8 +364,4 @@
 		<!-- drools  -->
   <!-- twitter4j -->
   </dependencies>
-  
-
-
-
 </project>

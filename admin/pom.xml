@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.sightlyinc</groupId>
-  <artifactId>ratecred-webadmin</artifactId>
+  <groupId>com.welocally</groupId>
+  <artifactId>admin</artifactId>
   <packaging>war</packaging>
   <version>0.9.4</version>
 	<properties>
-		<web.finalName>rcadmin</web.finalName>
+		<web.finalName>admin</web.finalName>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 		<org.springframework.security.version>2.0.4</org.springframework.security.version>
 		<org.drools.version>2.1</org.drools.version>
@@ -14,8 +14,8 @@
 
 		<!-- sightly inc stuff -->
 		<dependency>
-			<groupId>com.sightlyinc</groupId>
-			<artifactId>sightly-ratecred-service</artifactId>
+			<groupId>com.welocally</groupId>
+			<artifactId>services</artifactId>
 			<version>0.9.4</version>
 			<exclusions>
 				<exclusion>
