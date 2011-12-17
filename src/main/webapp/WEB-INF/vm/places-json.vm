@@ -5,13 +5,13 @@
 	{
 	  	"externalId": "${place.simpleGeoId}",
 	  	"type": "$!{place.type}", 
-	  	"name": "$!{place.name}", 	  		
+	  	"name": "$!{encoder.encodeString($place.name)}", 	  		
 #if(${place.latitude})		"latitude": $!{place.latitude},
 #end
 #if(${place.longitude})		"longitude": $!{place.longitude},
 #end
-	  	"address": "$!{place.address}", 
-	  	"city": "$!{place.city}", 
+	  	"address": "$!{encoder.encodeString($place.address)}", 
+	  	"city": "$!{encoder.encodeString($place.city)}", 
 	  	"state": "$!{place.state}",
 	  	"postalCode": "$!{place.postalCode}",
 	  	"phone": "$!{place.phone}",

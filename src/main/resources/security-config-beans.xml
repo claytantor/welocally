@@ -28,6 +28,7 @@
 	</http>
 
     <authentication-provider user-service-ref="userPrincipalService">
+    	<password-encoder hash="md5"/>
 <!--
         <password-encoder hash="md5"/>
         <user-service>

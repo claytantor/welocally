@@ -8,9 +8,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +33,17 @@ import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherOrderGenerator;
+import com.sightlyinc.ratecred.authentication.UserNotFoundException;
+import com.sightlyinc.ratecred.authentication.UserPrincipal;
+import com.sightlyinc.ratecred.authentication.UserPrincipalService;
+import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.dao.SimpleGeoJsonTokenDao;
 import com.sightlyinc.ratecred.model.Order;
+import com.sightlyinc.ratecred.model.PaymentNotification;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.model.User;
 import com.sightlyinc.ratecred.service.OrderManagerService;
+import com.sightlyinc.ratecred.service.PaymentNotificationService;
 import com.sightlyinc.ratecred.service.PublisherService;
 
 /**
@@ -58,7 +69,13 @@ public class PaypalNotificationController {
     private PublisherService publisherService;
     
     @Autowired
-    private SimpleGeoJsonTokenDao simpleGeoJsonTokenDao;
+    private UserPrincipalService userService;
+    
+    @Autowired
+    private PaymentNotificationService paymentNotificationService; 
+    
+//    @Autowired
+//    private SimpleGeoJsonTokenDao simpleGeoJsonTokenDao;
 
 	@Autowired
 	OrderManagerService orderManagerService;
@@ -98,6 +115,20 @@ public class PaypalNotificationController {
 				paramsBuf.append("["+paramName+"="+paramValue+"]\n");
 			}
 
+			//save the notification
+			PaymentNotification notification = new PaymentNotification();
+			notification.setPublisherKey(request.getParameter("custom"));
+			notification.setTransactionType(request.getParameter("txn_type"));
+			notification.setExternalKey(request.getParameter("ipn_track_id"));
+			notification.setNotficationBody(paramsBuf.toString());
+			notification.setTimeCreated(Calendar.getInstance().getTimeInMillis());
+			notification.setTimeUpdated(Calendar.getInstance().getTimeInMillis());			
+			paymentNotificationService.save(notification);
+			
+			//send an email on all notifications
+			sendNotificationEmail(paramsBuf.toString()); 
+			
+						
 			// post back to PayPal system to validate
 			// NOTE: change http: to https: in the following URL to verify using
 			// SSL (for increased security).
@@ -150,38 +181,37 @@ public class PaypalNotificationController {
  - [mc_amount3=5.99]
  - [reattempt=1]
 			 */
-			String itemName = request.getParameter("item_name");
-			String itemNumber = request.getParameter("item_number");
-			String payerStatus = request.getParameter("payer_status");
-			String paymentAmount = request.getParameter("mc_amount3");
-			String paymentCurrency = request.getParameter("mc_currency");
-			String orderId = request.getParameter("subscr_id");
-			String ipnTrack = request.getParameter("ipn_track_id");
-			String receiverEmail = request.getParameter("receiver_email");
-			String payerEmail = request.getParameter("payer_email");
-			String publisherKey = request.getParameter("custom");
-			String txType = request.getParameter("txn_type");
-			String payerId = request.getParameter("payer_id");
-			//txn_type=subscr_signup
-			// check notification validation
+			
 			
 			
 			if (res.equals("VERIFIED")) {
+				
+				String itemName = request.getParameter("item_name");
+				String itemNumber = request.getParameter("item_number");
+				String payerStatus = request.getParameter("payer_status");
+				String publisherKey = request.getParameter("custom");	
+				String receiverEmail = request.getParameter("receiver_email");
+				String orderId = request.getParameter("txn_id");
+				String txType = request.getParameter("txn_type");
+				String ipnTrack = request.getParameter("ipn_track_id");
 								
 				// check that paymentStatus=Completed
 				// check that txnId has not been previously processed
 				Order  o = this.orderManagerService.findOrderByTxId(orderId);
 				
-				//need a check on supported product ids
 				if(o == null 
 						&& txType.equals("subscr_signup")
-						//&& itemNumber.equals(productItemNumber) should check products
 						&& ipnTrack != null
 						&& merchantEmail.equalsIgnoreCase(receiverEmail))
 				{
-									
+							
+					String paymentCurrency = request.getParameter("mc_currency");
+					String payerEmail = request.getParameter("payer_email");
+					String payerId = request.getParameter("payer_id");
+					String paymentAmount = request.getParameter("mc_amount3");
+					
 					// process payment
-					//this shpudl have the subscription and the 
+					//this should have the subscription and the 
 					//tx id, since we dont have the tx id order on cancel
 					//we need a refactor
 					 logger.debug("new order:"+orderId);
@@ -194,46 +224,84 @@ public class PaypalNotificationController {
 					 o.setSku(itemNumber);
 					 o.setBuyerEmail(payerEmail);
 					 o.setQuantity(1);
-					 o.setBuyerName(publisherKey);
+					 o.setBuyerKey(publisherKey);
 					 o.setTitle(itemName);
-					
-					 				 
+					 o.setExternalPayerId(payerId);
+					 o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
+					 o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
+									 				 
 					 //complete subscription
-					logger.debug("processing order:"+o.getExternalTxId());
-					//find the publisher by custom field
-					Publisher publisher = 
+					 logger.debug("processing order:"+o.getExternalTxId());
+					 //find the publisher by custom field
+					 Publisher publisher = 
 						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
 					
 					if(publisher != null)
-						processPublisherOrder(publisher, o, paramsBuf.toString());
-											 
+						processPublisherOrder(publisher, o, paramsBuf.toString());					 
 					 
+				} else if(o == null //prepay txn_type=web_accept
+						&& txType.equals("web_accept")
+						&& ipnTrack != null
+						&& merchantEmail.equalsIgnoreCase(receiverEmail))
+				{
+									
+					String paymentCurrency = request.getParameter("mc_currency");
+					String payerEmail = request.getParameter("payer_email");				
+					String payerId = request.getParameter("payer_id");
+					String paymentAmount = request.getParameter("mc_gross");
+					
+					// process payment
+					// this should have the subscription and the 
+					// tx id, since we dont have the tx id order on cancel
+					// we need a refactor
+					 logger.debug("new order:"+orderId);
+					 o = new Order();
+					 o.setExternalTxId(orderId);
+					 //should be tracking no field
+					 o.setExternalOrderItemCode(ipnTrack);
+					 o.setStatus(txType);
+					 o.setPrice(Float.valueOf(paymentAmount));
+					 o.setSku(itemNumber);
+					 o.setBuyerEmail(payerEmail);
+					 o.setQuantity(1);
+					 o.setBuyerKey(publisherKey);
+					 o.setTitle(itemName);
+					 o.setExternalPayerId(payerId);
+					 o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
+					 o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
+									 				 
+					 //complete subscription
+					 logger.debug("processing order:"+o.getExternalTxId());
+					 //find the publisher by custom field
+					 Publisher publisher = 
+						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
+					
+					if(publisher != null)
+						processPublisherOrder(publisher, o, paramsBuf.toString());					 
 					 
 				} else if(o != null 
 						&& txType.equals("subscr_cancel") 
 						&& publisherKey != null) {
 					
-					Publisher publisher = 
-						publisherService.findByNetworkKeyAndPublisherKey("welocally", publisherKey);
+					processSubscriptionChange( txType, "CANCELLED", publisherKey,
+							o, paramsBuf.toString());
+										
+				} else if(o != null 
+						&& txType.equals("subscr_failed") 
+						&& publisherKey != null) {
 					
-					if(publisher != null) {
-						logger.debug("canecling subscription for publisher:"+publisher.getSiteName()+" with key:"+publisher.getKey());
-						publisher.setSubscriptionStatus("CANCELLED");
-						o.setStatus(txType);
-					}
+					processSubscriptionChange( txType, "SUBSCRIPTION FAILURE", publisherKey,
+							o, paramsBuf.toString());
+										
+				}  else if(o != null 
+						&& txType.startsWith("recurring_payment_suspended") 
+						&& publisherKey != null) {
 					
-					publisherService.save(publisher);
-					orderManagerService.saveOrder(o);
+					processSubscriptionChange( txType, "SUSPENDED", publisherKey,
+							o, paramsBuf.toString());
 					
-					//dont fail on email problems
-					try{
-						sendOrderStatusEmail(o, paramsBuf.toString()); 
-					} catch(Exception e){
-						logger.error("could not send email",e);
-					}
-					
-					
-				} else {
+				}
+				else {
 					logger.debug("an order was already found, or " +
 							"there was a validation problem with the txid:"+orderId);
 				}
@@ -257,32 +325,76 @@ public class PaypalNotificationController {
 		return modelAndView;
 	}
 	
+	private void processSubscriptionChange(String txType, String statusType, String publisherKey,
+			Order o, String body) throws BLServiceException {
+		
+		Publisher publisher = publisherService.findByPublisherKey(publisherKey);
+
+		if (publisher != null) {
+			logger.debug("canceling subscription for publisher:"
+					+ publisher.getSiteName() + " with key:"
+					+ publisher.getKey());
+			publisher.setSubscriptionStatus(statusType);
+			o.setStatus(txType);
+		}
+
+		publisherService.save(publisher);
+		orderManagerService.saveOrder(o);
+
+		// dont fail on email problems
+		try {
+			sendOrderStatusEmail(o, body);
+		} catch (Exception e) {
+			logger.error("could not send email", e);
+		}
+	}
+	
 	
 	private void processPublisherOrder(Publisher publisher, Order o, String params) throws BLServiceException {
 		
-		logger.debug("processPublisherOrder order:"+o.getExternalTxId()+" key:"+publisher.getKey());
-		      
-        long serviceEndDateMillis = new Date().getTime();
+		logger.debug("processPublisherOrder");
+		           
         
-        serviceEndDateMillis += (2592000000L*1);
-        
-        publisher.setServiceEndDateMillis(serviceEndDateMillis);
-        publisher.setJsonToken(GUIDGenerator.createId().replaceAll("-", ""));
-        publisher.setSubscriptionStatus("SUBSCRIBER");
-        o.setOwner(publisher);       
-        
-        orderManagerService.saveOrder(o);
-        
-        //enable the user
-        publisher.getUserPrincipal().setEnabled(true);
-        publisherService.save(publisher);
-        
-      //dont fail on email problems
-		try{
+		try {
+			long serviceEndDateMillis = new Date().getTime();
+	        
+	        serviceEndDateMillis += (2592000000L*1);
+	        
+	        String publisherToken = GUIDGenerator.createId().replaceAll("-", "");
+	        
+	        //update the password to be the key
+			UserPrincipal up = userService.loadUser(publisher.getKey());
+			String hashedPass = userService.makeMD5Hash(publisherToken);					
+			up.setPassword(hashedPass);
+			userService.activateWithRoles(up, Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
+			
+			publisher.setServiceEndDateMillis(serviceEndDateMillis);
+	        publisher.setJsonToken(publisherToken);
+	        publisher.setSubscriptionStatus("SUBSCRIBER");
+	        o.setOwner(publisher);       
+	        
+	        orderManagerService.saveOrder(o);
+	        
+	        //enable the user
+	        publisher.getUserPrincipal().setEnabled(true);
+	        publisherService.save(publisher);
+	        
+
 			sendOrderStatusEmail(o,params); 
+
+			
+		} catch (UserPrincipalServiceException e) {
+			logger.error("could not find user problem",e);
+		} catch (UserNotFoundException e) {
+			logger.error("cound not find user problem",e);
 		} catch(Exception e){
-			logger.error("could not send email",e);
+			logger.error("problem",e);
 		}
+        
+        
+        
+        
+        
         
 	}
 	
@@ -303,6 +415,21 @@ public class PaypalNotificationController {
 				"Welocally Admin", 
 				"[Welocally Admin] Subscription "+o.getOwner().getSubscriptionStatus(), 
 				generator.makeDisplayString()+params,
+				"text/plain");		
+	}
+	
+	private void sendNotificationEmail(String params) 
+	{
+				
+		Map model = new HashMap();
+
+		mailerQueueService.sendMessage(
+				adminEmailAccountFrom, 
+				"Welocally Mailer Bot",
+				adminEmailAccountTo, 
+				"Welocally Admin", 
+				"[Welocally Admin] Paypal Notfication", 
+				params,
 				"text/plain");		
 	}
 	

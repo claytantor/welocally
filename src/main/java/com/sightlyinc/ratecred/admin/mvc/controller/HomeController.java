@@ -1,5 +1,7 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.context.SecurityContextHolder;
@@ -9,12 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.sightlyinc.ratecred.authentication.Role;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
+import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
+import com.sightlyinc.ratecred.service.PublisherService;
 
 @Controller
 @RequestMapping(value="/home")
@@ -28,6 +33,11 @@ public class HomeController {
 	@Autowired
 	NetworkMemberService networkMemberService;
 	
+	@Autowired
+	PublisherService publisherService;
+	
+	
+	
 	@RequestMapping(method=RequestMethod.GET)
 	public String home(Model model) {
 		
@@ -38,9 +48,24 @@ public class HomeController {
 		try {
 			UserPrincipal principal = 
 				userPrincipalService.loadUser(details.getUsername());
-			NetworkMember member =
-				networkMemberService.findMemberByUserPrincipal(principal); 
-			model.addAttribute("member", member);
+			
+			if(userPrincipalService.hasUserRole(principal, "ROLE_PUBLISHER")){
+				Publisher p = publisherService.findByPublisherKey(details.getUsername());
+				model.addAttribute("publisher", p);
+				
+			} else if(userPrincipalService.hasUserRole(principal, "ROLE_MEMBER")) {
+				NetworkMember member =
+					networkMemberService.findMemberByUserPrincipal(principal);
+				
+				model.addAttribute("member", member); 
+			}
+			
+			
+			
+			Set<Role> roles = principal.getRoles();
+			
+			
+			
 			
 		} catch (UserPrincipalServiceException e) {
 			logger.error("", e);

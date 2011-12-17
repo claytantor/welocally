@@ -244,7 +244,9 @@ public class PlaceController {
 		JSONObject jsonObject = null;
 
 		try {
-			jsonObject = new JSONObject(requestJson);
+			//the inbound jason can be full of extra slashes that can cause problems, clean it it
+			String j2 = JsonEncoder.getInstance().encodeString(requestJson);
+			jsonObject = new JSONObject(j2);
 
 			siteKey = jsonObject.getString("siteKey");
 			logger.debug("siteKey:" + siteKey);

@@ -1,10 +1,15 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
@@ -13,11 +18,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noi.utility.string.StringUtils;
+import com.sightlyinc.ratecred.admin.model.AjaxLogin;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
@@ -60,7 +68,7 @@ public class PublisherController {
 	
 	@ModelAttribute("subscriptionStatusTypes")
     public String[] getSubscriptionStatusTypes() {
-		String[] subscriptionTypes = new String[]{ "KEY_ASSIGNED", "SUBSCRIBER","CANCELLED" };
+		String[] subscriptionTypes = new String[]{ "KEY_ASSIGNED", "SUBSCRIBER","CANCELLED","SUBSCRIPTION FAILURE","SUSPENDED" };
 		return subscriptionTypes;
     }
 	
@@ -129,6 +137,8 @@ public class PublisherController {
 			.replaceAll(" ", "-");
     }
 	
+	
+	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
 	public String getPublisherById(@PathVariable Long id, Model model) {
 		logger.debug("view");
@@ -144,6 +154,45 @@ public class PublisherController {
 				publisherService.findByPrimaryKey(id));
 		return "publisher/edit";
 	}
+	
+	/*@RequestMapping(value="/plugin/login", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> loginPublisher(@RequestBody String requestJson) {
+		Map<String, Object> response = new HashMap<String, Object>();
+        List<String> errors = new ArrayList<String>();
+		logger.debug("login");
+		
+		String publisherKey = null;
+        String publisherToken = null;
+
+        try {
+            JSONObject jsonObject = new JSONObject(requestJson);
+
+            publisherKey = jsonObject.getString("publisherKey");
+            publisherToken = jsonObject.getString("publisherToken");
+            
+        } catch (JSONException e) {
+            logger.error("problem parsing json", e);
+            errors.add("Unable to parse request, please check the format of your data");
+        }
+        
+        if (errors.isEmpty() && 
+        		!StringUtils.isEmpty(publisherToken) &&
+        		!StringUtils.isEmpty(publisherKey)) {
+        	Publisher p = publisherService.findByPublisherKeyAndToken(publisherKey, publisherToken);
+        	AjaxLogin ajaxLogin = new AjaxLogin("SUCCEED", "http://www.yahoo.com");
+        	response.put("ajaxLogin", ajaxLogin);
+        	
+        } else {
+        	errors.add("required information missing");
+        }
+        	
+        response.put("errors", errors);
+		return response;
+	}*/
+	
+	
+	
 	
 	@RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
 	public String deletePublisher(@PathVariable Long id, Model model) {

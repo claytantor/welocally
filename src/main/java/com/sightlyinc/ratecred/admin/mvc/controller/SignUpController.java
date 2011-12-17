@@ -7,18 +7,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.AuthenticationProvider;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.ui.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noi.utility.string.StringUtils;
@@ -26,7 +35,6 @@ import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
-import com.sightlyinc.ratecred.dao.SimpleGeoJsonTokenDao;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Publisher;
@@ -46,6 +54,7 @@ public class SignUpController {
 
     @Autowired
     private UserPrincipalService userService;
+    
 
     @Autowired
     private PublisherService publisherService;
@@ -63,6 +72,9 @@ public class SignUpController {
     
     @Value("${signUpController.paypal.nonTrailButtonKey:CYUU2TQ7EJYFY}")
     private String nonTrialButtonKey;
+    
+    @Value("${signUpController.paypal.yearPayKey:BRT4H8JZQ56RN}")
+    private String yearPayKey;
     
     @Value("${paypal.callback.endpoint:https://www.sandbox.paypal.com/cgi-bin/webscr}")
     private String paypalFormEndpoint;
@@ -127,6 +139,22 @@ public class SignUpController {
 
         return viewName;
     }
+    
+    @RequestMapping(value="/plugin/login", method=RequestMethod.GET)
+	public String homePublisher(@RequestParam String siteKey, @RequestParam String siteToken, HttpServletRequest request, Model model) {
+    	LOGGER.debug("home");
+		
+			
+		// Must be called from request filtered by Spring Security, otherwise SecurityContextHolder is not updated
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(siteKey, siteToken);
+        token.setDetails(new WebAuthenticationDetails(request));
+        Authentication authentication = ((AuthenticationProvider)userService).authenticate(token);
+        LOGGER.debug("Logging in with [{}]"+ authentication.getPrincipal());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		return "redirect:/home";
+
+	}
 
     @RequestMapping(value = "/plugin/key")
     @ResponseBody
@@ -161,13 +189,13 @@ public class SignUpController {
             if (StringUtils.isBlank(siteName)) {
                 errors.add("Please provide the name for your site");
             }
-//            if (StringUtils.isBlank(description)) {
-//                errors.add("Please provide the description of your site");
-//            }
             if (StringUtils.isBlank(email)) {
                 errors.add("Please provide a real email address");
             }
 
+            String key = UUID.randomUUID().toString();
+            key = key.substring(key.lastIndexOf('-') + 1);
+            
             if (errors.isEmpty()) {
                 // TODO move all this logic into a service method
                 UserPrincipal user = userService.findUserByEmail(email);
@@ -175,7 +203,7 @@ public class SignUpController {
                     user = new UserPrincipal();
                     user.setEmail(email);
                     user.setPassword(Long.toString(System.currentTimeMillis()));
-                    user.setUsername(email);
+                    user.setUsername(key);
                     user.setEnabled(false);
                     try {
                         userService.saveUserPrincipal(user);
@@ -198,9 +226,8 @@ public class SignUpController {
                         publisher.setDescription(description);
                         NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
                         publisher.setNetworkMember(defaultNetworkMember);
-                        // TODO put this UUID logic in its own method in a service class somewhere
-                        String key = UUID.randomUUID().toString();
-                        key = key.substring(key.lastIndexOf('-') + 1);
+
+
                         publisher.setKey(key);
                         publisher.setSubscriptionStatus("KEY_ASSIGNED");
 
@@ -224,11 +251,16 @@ public class SignUpController {
                         //check for existing orders, dont let people repeat trails
                         List<Order> publisherOrders = 
                         	orderManagerService.findOrderByPublisherKey(publisher.getKey());
-                        if(publisherOrders == null || publisherOrders.size() ==0){
-                        	response.put("buttonToken", trialButtonKey);
+                        
+                        if(publisher.getSubscriptionStatus().equals("SUBSCRIPTION FAILURE")
+                    			|| publisher.getSubscriptionStatus().equals("SUSPENDED")){
+                    		response.put("buttonToken", yearPayKey);
+                    	} else if(publisher.getSubscriptionStatus().equals("CANCELLED")){
+                        		response.put("buttonToken", nonTrialButtonKey);
+                     	
                         } else {
-                        	response.put("buttonToken", nonTrialButtonKey);
-                        }
+                        	response.put("buttonToken", trialButtonKey);
+                        }  
                         
                     }
                 }
