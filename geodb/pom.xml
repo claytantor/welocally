@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.welocally.geodb</groupId>
+  <artifactId>geodb</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>geodb Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+		<web.finalName>geodb</web.finalName>
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<org.springframework.security.version>2.0.4</org.springframework.security.version>
+  </properties>
+  <dependencies>   
+    <!--  Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${org.springframework.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${org.springframework.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.spring-security-oauth</groupId>
+			<artifactId>spring-security-oauth</artifactId>
+			<version>3.17</version>
+		</dependency>
+    
+    
+    <dependency>
+    	<groupId>mongodb</groupId>
+    	<artifactId>mongo</artifactId>
+    	<version>2.7.2</version>
+    </dependency>
+    
+   
+
+	<dependency>
+    	<groupId>org.opensymphony.quartz</groupId>
+    	<artifactId>quartz</artifactId>
+    	<version>1.6.1</version>
+    </dependency>    
+    
+	<dependency>
+    	<groupId>org.codehaus.jackson</groupId>
+    	<artifactId>jackson-core-lgpl</artifactId>
+    	<version>1.7.1</version>
+    </dependency>
+	<dependency>
+    	<groupId>org.codehaus.jackson</groupId>
+    	<artifactId>jackson-mapper-lgpl</artifactId>
+    	<version>1.7.1</version>
+    </dependency>    
+	<dependency>
+		<groupId>net.sf.ehcache</groupId>
+		<artifactId>ehcache-core</artifactId>
+		<version>2.2.0</version>
+		<type>jar</type>
+		<scope>compile</scope>
+	</dependency>   	
+	<dependency>
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20090211</version>
+	</dependency>
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.12</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-core</artifactId>
+		<version>3.3.0</version>
+	</dependency>	
+	<dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-spatial</artifactId>
+		<version>3.3.0</version>
+	</dependency>		
+	<dependency>
+		<groupId>org.tuckey</groupId>
+		<artifactId>urlrewritefilter</artifactId>
+		<version>3.1.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.velocity</groupId>
+		<artifactId>velocity</artifactId>
+		<version>1.7</version>
+	</dependency>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.10</version>
+	</dependency>   
+  </dependencies>
+
+</project>
