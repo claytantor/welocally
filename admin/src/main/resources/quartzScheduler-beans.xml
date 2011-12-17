@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	        	<!-- <ref bean="raterAwardsUpdateOffersTrigger" />
+	        	<ref bean="unlockOffersTrigger" /> -->
+	            <!-- <ref bean="offerCheckTrigger" />
+	            <ref bean="raterAwardsTrigger" /> -->
+	        </list>
+	    </property>
+		<!-- <property name="dataSource" ref="LocalDS"/> -->
+	    <property name="transactionManager" ref="transactionManager"/>
+	</bean>
+	
+	
+</beans>

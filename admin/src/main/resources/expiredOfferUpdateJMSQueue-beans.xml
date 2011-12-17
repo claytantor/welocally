@@ -1,0 +1,46 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/jms 
+        http://www.springframework.org/schema/jms/spring-jms.xsd	
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://activemq.apache.org/schema/core 
+		http://activemq.apache.org/schema/core/activemq-core-5.1.0.xsd">
+
+	<!--  ActiveMQ destinations to use  -->
+	<amq:queue id="expiredOfferUpdateDestination" physicalName="com.sightlyinc.ratecred.offer.update" />
+ 
+ 	<!-- Spring JMS Template -->
+	<bean id="expiredOfferUpdateJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="defaultDestination">
+			<ref bean="expiredOfferUpdateDestination" />
+		</property>
+		<property name="connectionFactory" ref="pooledFactory"/>
+	</bean>
+
+	<!-- this is the Message Driven POJO (MDP) -->
+	<bean id="expiredOfferUpdateMessageListener"
+		class="com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageListener">
+		<!-- <property name="sessionFactory"><ref bean="sessionFactory"/></property> -->
+		<property name="mapper"><ref bean="jacksonMapper"/></property>
+		<!-- <property name="raterAwardsService"><ref bean="raterAwardsService"/></property> -->
+		<!-- <property name="ratingManagerService"><ref bean="ratingManagerService"/></property> -->
+		<property name="awardManagerService"><ref bean="awardManagerService"/></property>
+		<property name="sleepInSeconds" value="4"/>		
+	</bean>
+
+	
+	<!-- and this is the message listener container -->
+	<bean id="expiredOfferUpdateContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="jmsFactory"/>
+	    <property name="destination" ref="expiredOfferUpdateDestination"/>
+	    <property name="messageListener" ref="expiredOfferUpdateMessageListener" />
+	    <property name="sessionTransacted" value="true"/>
+	    <property name="transactionManager" ref="transactionManager"/>
+	</bean>	
+
+</beans>

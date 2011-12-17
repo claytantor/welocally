@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<config charset="UTF-8">
+ 
+     <var-def name="url">http://www.eastbayexpress.com/ebx/EventSearch?narrowByDate=&amp;eventCategory=&amp;city=Oakland&amp;neighborhood=&amp;keywords=</var-def>
+    
+ 
+     <file action="write" path="${outFile}">
+        <template><![CDATA[ <events time="${sys.datetime("dd.MM.yyyy, HH:mm:ss")}"> ]]></template>
+			<xquery>
+				<xq-param name="doc">
+					<html-to-xml>
+						<http url="${url}"/>
+					</html-to-xml>
+				</xq-param>
+				<xq-expression><![CDATA[
+					declare variable $doc as node() external;
+					for $listing in $doc//div[@class="listing"] 
+						let $name := data($listing/h3/a[1]) 
+						let $url := data($listing/h3/a[1]/@href) 
+						let $eventCategory := data($listing//span[@class="eventCategories"]/a[1]) 
+						let $when := normalize-space($listing/text()[3])
+						let $locationName := data($listing//span[@class="locationLabel"]/a[1]) 
+						let $description := normalize-space(data($listing//div[@class="descripTxt"][1]/text()[1])) 
+						let $address := data($listing//div[@class="descripTxt"][2]/text()[2])
+						let $address2 := substring($address, 0, string-length($address)-2)
+						
+						
+						return
+							<event>	
+								<name>{data($name)}</name>
+								<url>{data($url)}</url>
+								<categories>{data($eventCategory)}</categories>
+								<when>{data($when)}</when>
+								<phone>{
+									if (empty($listing/text()[4]))
+				      					then data("")
+				      					else normalize-space($listing/text()[4])
+								}</phone>								
+								<description>{data($description)}</description>
+								<place>
+									<name>{data($locationName)}</name>
+									<addressFull>{concat($address2, " CA")}</addressFull>
+								</place>	                   
+							</event>
+				]]></xq-expression>
+			</xquery>
+		<![CDATA[ </events> ]]>
+    </file>	
+ 
+</config>

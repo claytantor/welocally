@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://activemq.apache.org/schema/core 
+		http://activemq.apache.org/schema/core/activemq-core-5.4.2.xsd"> 
+
+	<bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+	    <property name="config" value="classpath:activemq-cfg.xml" />
+	    <property name="start" value="true" />
+	</bean>
+	
+	<amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost:61617"/>
+	
+     <!-- lets wrap in a pool to avoid creating a connection per send -->
+     <bean id="pooledFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+       <property name="targetConnectionFactory">
+         <ref local="jmsFactory" />
+       </property>
+     </bean>
+	
+
+</beans>

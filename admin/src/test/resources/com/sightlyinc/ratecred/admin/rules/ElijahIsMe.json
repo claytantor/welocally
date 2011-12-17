@@ -1,0 +1,59 @@
+{
+ "id": 3300, 
+ "userName": "ElijahIsMe",
+ "score": 10, 
+ "status": "USER",
+ "metrics": {
+ 	"status": "good",
+	"ratings": 1,
+	"rank": 267,	
+	"received": 1,
+	"given": 0,
+	"score": 15
+ }, 
+ "raterImage": {
+ 	"id": 212, 
+ 	"contentType": "", 
+ 	"filename": "http://a3.twimg.com/profile_images/1141092071/IMG_20101009_202902-1_normal.jpg", 
+ 	"type": "TWITTER"
+  },
+ "awards": [
+  ],	
+  "ratings": [
+
+	  {
+	  	"id": 1374, 
+	  	"type": "Restaurant or Bar",
+	  	"notes": "Great food and great service. ",
+	  	"timeCreatedMills": 1289256426655,
+	  	"raterRating": 4.0,
+	  	"compliments": [
+			{
+				"id": 2643,
+				"note": "Good chili on a cold day is like mana from heaven! Welcome to RateCred!",
+				"timeCreatedMills": 1289257235000,
+				"owner": { 
+					 "id": 20, 
+					 "userName": "claytantor",
+					 "score": 4815, 
+					 "status": "USER",  
+					 "raterImage": {
+					 	"id": 82, 
+					 	"contentType": "image/gif", 
+					 	"filename": "http://a1.twimg.com/profile_images/1125469989/me_new2_normal.jpg", 
+					 	"type": "TWITTER"
+					  }
+				}					
+			}		],
+	  	"place": {
+	  		"id": 3125,
+	  		"type": "", 
+	  		"name": "Gold Star Chili (Mulberry)", 	  		
+			"latitude": 39.193599,
+			"longitude": -84.242563,
+	  		"address": "1040 State Route 28", 
+	  		"city": "Milford", 
+	  		"state": "OH"   		
+	  	}
+	  }  ]	
+}

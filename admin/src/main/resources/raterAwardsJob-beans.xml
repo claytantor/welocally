@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	
+<!-- 	<bean name="raterAwardsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="com.sightlyinc.ratecred.admin.job.RaterAwardsJob" />
+	  <property name="jobDataAsMap">
+	    <map>
+	      <entry key="sessionFactory">
+	      		<ref bean="sessionFactory" />
+	      </entry>	    
+	      <entry key="offerPoolService">
+	      		<ref bean="offerPoolService" />
+	      </entry> 
+	      <entry key="ratingManagerService">
+	      		<ref bean="ratingManagerService" />
+	      </entry>
+	      <entry key="awardManagerService">
+	      		<ref bean="awardManagerService" />
+	      </entry>
+	      <entry key="raterAwardsService">
+	      		<ref bean="raterAwardsService" />
+	      </entry>
+	      <entry key="ratingRulesUrl">
+	      		<value>${raterAwardsJob.ratingRulesUrl}</value>
+	      </entry>	
+	      <entry key="millisSince">
+	      		<value>${raterAwardsJob.millisSince}</value>
+	      </entry>		      	      	      	      	       	       	          
+	    </map>
+	  </property>
+	</bean>
+
+	
+	<bean id="raterAwardsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	    <property name="jobDetail" ref="raterAwardsJob" />
+	    <property name="cronExpression" value="${raterAwardsTrigger.cronExpression}" />
+	</bean> -->
+	
+	
+</beans>
