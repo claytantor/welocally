@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Order;
 
@@ -60,7 +61,7 @@ public class OrderManagerServiceTest {
 			 o.setSku("92920210saksis");
 			 o.setBuyerEmail("joe@foo.com");
 			 o.setQuantity(1);
-			 o.setBuyerName("name");
+			 o.setBuyerKey(GUIDGenerator.createId());
 			 
 			 orderManagerService.saveOrder(o);
 		} catch (NumberFormatException e) {

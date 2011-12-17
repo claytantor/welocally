@@ -37,6 +37,55 @@ import javax.persistence.Table;
   `status` VARCHAR(45) NULL DEFAULT NULL ,
   `time_created` BIGINT(20) NULL DEFAULT NULL ,
   `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  
+  
+  [item_number=]
+[shipping_method=Default]
+[residence_country=US]
+[shipping_discount=0.00]
+[verify_sign=A6wG0UoVz6n9iNjyem4bin4H2gBeAmBMmTLkfjMgyLYGWgS36OLo8uI2]
+[insurance_amount=0.00]
+[address_country=United States]
+[address_city=San Jose]
+[address_status=confirmed]
+[business=clay_1314558577_biz@ratecred.com]
+[payment_status=Completed]
+[transaction_subject=welocallywpdev]
+[protection_eligibility=Eligible]
+[shipping=0.00]
+[payer_id=D6V5WV763Y5YJ]
+[first_name=Test]
+[payer_email=clay_1314675261_per@ratecred.com]
+[btn_id=2352782]
+[txn_id=1WR48273AG091110C]
+[quantity=1]
+[receiver_email=clay_1314558577_biz@ratecred.com]
+[notify_version=3.4]
+[txn_type=web_accept]
+[payer_status=verified]
+[mc_gross=59.99]
+[test_ipn=1]
+[mc_currency=USD]
+[custom=welocallywpdev]
+[payment_date=16:25:36 Dec 01, 2011 PST]
+[charset=windows-1252]
+[address_country_code=US]
+[payment_gross=59.99]
+[address_zip=95131]
+[ipn_track_id=vwu4FpXRF2LPSm-SpVJAPw]
+[address_state=CA]
+[discount=0.00]
+[tax=0.00]
+[handling_amount=0.00]
+[item_name=Welocally Places 1YR Prepay]
+[address_name=Test User]
+[last_name=User]
+[payment_type=instant]
+[receiver_id=KEPU9HHFUN97N]
+[address_street=1 Main St]
+
+  
+  
  * 
  * @author claygraham
  *
@@ -53,8 +102,8 @@ public class Order extends BaseEntity {
 	
 	private String channel;
 	
-	@Column(name="buyer_name")
-	private String buyerName;
+	@Column(name="buyer_key")
+	private String buyerKey;
 	
 	@Column(name="buyer_email")
 	private String buyerEmail;
@@ -68,7 +117,11 @@ public class Order extends BaseEntity {
 	@Column(name="address_two")
 	private String addressFieldTwo;
 	
+	@Column(name="external_payer_id")
+	private String externalPayerId;
+	
 	private String city;
+	
 	private String state;
 	
 	@Column(name="postal_code")
@@ -80,9 +133,7 @@ public class Order extends BaseEntity {
 	//amazon  order item id
 	@Column(name="external_id")
 	private String externalOrderItemCode;
-	
-	
-	
+		
 	private String sku;
 	private String title;
 	
@@ -126,16 +177,13 @@ public class Order extends BaseEntity {
 	}
 
 
-	public String getBuyerName() {
-		return buyerName;
+	
+	public String getBuyerKey() {
+		return buyerKey;
 	}
-
-
-	public void setBuyerName(String buyerName) {
-		this.buyerName = buyerName;
+	public void setBuyerKey(String buyerKey) {
+		this.buyerKey = buyerKey;
 	}
-
-
 	public String getChannel() {
 		return channel;
 	}
@@ -236,6 +284,12 @@ public class Order extends BaseEntity {
 	}
 
 
+	public String getExternalPayerId() {
+		return externalPayerId;
+	}
+	public void setExternalPayerId(String externalPayerId) {
+		this.externalPayerId = externalPayerId;
+	}
 	public Set<Voucher> getVoucher() {
 		return voucher;
 	}

@@ -911,6 +911,23 @@ CREATE  TABLE IF NOT EXISTS `event` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- -----------------------------------------------------
+-- Table `payment_notification`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `payment_notification` ;
+
+CREATE  TABLE `payment_notification` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `version` INT NULL,
+  `external_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `publisher_key` VARCHAR(255) NULL DEFAULT NULL ,
+  `txn_type` VARCHAR(255) NULL DEFAULT NULL ,
+  `notification_body` TEXT NULL DEFAULT NULL ,
+  `time_created` BIGINT(20) NULL DEFAULT NULL ,
+  `time_updated` BIGINT(20) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) 
+);
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

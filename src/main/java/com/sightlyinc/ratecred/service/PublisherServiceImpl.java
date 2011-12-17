@@ -58,5 +58,10 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
         return publisherDao.findByMaxServiceEndDateWithNullSimpleGeoToken(maxServiceEndDate);
     }
 
+	@Override
+	public Publisher findByPublisherKey(String publisherKey) {
+		return publisherDao.findByPublisherKey(publisherKey);
+	}
+
 
 }

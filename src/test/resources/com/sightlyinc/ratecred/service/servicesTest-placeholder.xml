@@ -18,7 +18,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>${test.properties}</value>
+				<value>${footest.properties}</value>
 			</list>
 			
 		</property>

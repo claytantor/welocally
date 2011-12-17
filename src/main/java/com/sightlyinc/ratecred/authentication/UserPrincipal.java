@@ -3,13 +3,24 @@ package com.sightlyinc.ratecred.authentication;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.userdetails.UserDetails;
 
-import javax.persistence.*;
+import com.sightlyinc.ratecred.model.BaseEntity;
 
 /**
  * 
@@ -19,19 +30,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="user_principal")
-public class UserPrincipal implements Authentication, UserDetails {
+public class UserPrincipal extends BaseEntity implements Authentication, UserDetails {
 
-	// id for entity
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-	private Long id;
 
     @Transient
 	private Boolean authenticated;
 
-	// properties
-	private java.lang.Integer version = new Integer(0);
     
     @Column(name = "user_name")
 	private String username;
@@ -123,36 +127,8 @@ public class UserPrincipal implements Authentication, UserDetails {
 	}
 
 	
-	/**
-	 * @return Returns the id.
-	 */
-	public Long getId() {
-		return id;
-	}
 
-	/**
-	 * @param id
-	 *            The id to set.
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
 
-	
-	/**
-	 * @return Returns the version.
-	 */
-	public java.lang.Integer getVersion() {
-		return version;
-	}
-
-	/**
-	 * @param version
-	 *            The version to set.
-	 */
-	public void setVersion(java.lang.Integer version) {
-		this.version = version;
-	}
 
 	/**
 	 * @param password

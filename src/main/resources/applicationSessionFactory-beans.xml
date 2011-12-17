@@ -41,6 +41,7 @@
 				<value>com.sightlyinc.ratecred.model.RatingAttribute</value>
 				<value>com.sightlyinc.ratecred.model.Voucher</value>
 				<value>com.sightlyinc.ratecred.model.SimpleGeoJsonToken</value>
+				<value>com.sightlyinc.ratecred.model.PaymentNotification</value>
 				<value>com.sightlyinc.ratecred.authentication.UserPrincipal</value>
 				<value>com.sightlyinc.ratecred.authentication.Role</value>
             </list>

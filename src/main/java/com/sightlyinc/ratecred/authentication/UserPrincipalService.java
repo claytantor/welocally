@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.authentication;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
 
@@ -35,9 +36,15 @@ public interface UserPrincipalService {
 	public List<Role> findAllRoles() throws UserPrincipalServiceException;
 	public Role findRole(String name) throws UserPrincipalServiceException;
 	
-	//public Long saveUserRole(Role r) throws UserPrincipalServiceException;
+	public Boolean hasUserRole(UserPrincipal up, String roleName) throws UserPrincipalServiceException;
 
     void signUp(UserPrincipal user, List<String> roleNames) throws UserPrincipalServiceException;
+    
+    void activateWithRoles(UserPrincipal entity, List<String> roleNames) throws UserPrincipalServiceException;
 
     UserPrincipal findUserByEmail(String email);
+    
+    
+    public String makeMD5Hash(String unhashed) throws NoSuchAlgorithmException;
+    public void updateAllPasswordsToMD5();
 }

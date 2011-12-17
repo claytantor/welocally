@@ -4,7 +4,7 @@
   <groupId>com.sightlyinc</groupId>
   <artifactId>sightly-ratecred-service</artifactId>
   <name>Sightly Inc. : RateCred : Services Module</name>
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.4</version>
   <!-- foo -->
   <description>The services tier for the ratecred project.</description>
 	<properties>
@@ -123,7 +123,7 @@
     <dependency>
       <groupId>com.newobjectivity</groupId>
       <artifactId>noi-utility</artifactId>
-      <version>2.2.5</version>
+      <version>2.2.6</version>
       <exclusions>
       	<exclusion>
       		<artifactId>cglib-full</artifactId>

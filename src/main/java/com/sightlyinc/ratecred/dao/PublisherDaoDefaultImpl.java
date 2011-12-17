@@ -29,6 +29,28 @@ extends AbstractDao<Publisher>
 	}
 
     @Override
+	public Publisher findByPublisherKey(final String key) {
+    	return (Publisher)getHibernateTemplateOverride().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+			throws HibernateException, SQLException 
+			{
+
+				Query query = session.createQuery(
+					"select distinct entityimpl from "+Publisher.class.getName()+
+					" as entityimpl where entityimpl.key = :key");
+				
+				query.setString("key", key);
+				
+				
+				Publisher t = (Publisher)query.uniqueResult();
+							
+				return t;
+	
+			}
+		});	
+	}
+
+	@Override
 	public Publisher findByNetworkMemberAndKey(final String networkMemberKey,
 			final String key) {
     	return (Publisher)getHibernateTemplateOverride().execute(new HibernateCallback() {

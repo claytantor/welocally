@@ -1,5 +1,8 @@
 package com.sightlyinc.ratecred.authentication;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.ProviderException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,6 +12,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
@@ -29,8 +33,12 @@ import com.sightlyinc.ratecred.model.Publisher;
 @Transactional(readOnly = true)
 public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincipalService, AuthenticationProvider {
 
+	@Value("${authenticationProvider.useMD5Hash:true}")
+	private Boolean useMD5Hash;
+	
     @Autowired
 	private UserPrincipalDao userPrincipalDao;
+    
     @Autowired
 	private RoleDao roleDao;
 	
@@ -41,8 +49,68 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	public Role findRole(String name) throws UserPrincipalServiceException {
 		return roleDao.findByName(name);
 	}
+	
+	
+	
+	@Override
+	public String makeMD5Hash(String unhashed) throws NoSuchAlgorithmException {
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");  
+		messageDigest.update(unhashed.getBytes(),0, unhashed.length());  
+		String hashedPass = new BigInteger(1,messageDigest.digest()).toString(16);  
+		if (hashedPass.length() < 32) {
+		   hashedPass = "0" + hashedPass; 
+		}
+		return hashedPass;
+	}
 
+
+
+	@Transactional(readOnly = false)
+	public void updateAllPasswordsToMD5() {
+		try {
+			List<UserPrincipal> up = findAll();
+			for (UserPrincipal userPrincipal : up) {
+				String hashedPass = makeMD5Hash(userPrincipal.getPassword());
+				System.out.println("UPDATE `user_principal` SET `password`='"+hashedPass+"' WHERE `user_name`='"+userPrincipal.getUsername()+"'");
+				userPrincipal.setPassword(hashedPass);
+				
+				saveUserPrincipal(userPrincipal);				
+			}
+		} catch (NoSuchAlgorithmException e) {
+			logger.error("no md5 hash", e);
+		} catch (BLServiceException e) {
+			logger.error("problem getting user", e);
+		} catch (UserPrincipalServiceException e) {
+			logger.error("problem saving user", e);
+		}		
+	}
+
+	
+	
+	
     @Override
+    @Transactional(readOnly = false)
+	public void activateWithRoles(UserPrincipal entity, List<String> roleNames)
+			throws UserPrincipalServiceException {
+        // create a role for the user so they can log in
+        try {
+        	
+        	entity.setCredentialsExpired(false);
+        	entity.setLocked(false);
+        	entity.setEnabled(true);
+        	
+            saveUserPrincipalRoles(entity, roleNames);
+
+            userPrincipalDao.save(entity);
+        } catch (BLServiceException e) {
+            throw new UserPrincipalServiceException(e);
+        }
+		
+	}
+
+
+
+	@Override
     @Transactional(readOnly = false)
     public void signUp(UserPrincipal entity, List<String> roleNames) throws UserPrincipalServiceException {
         UserPrincipal user = userPrincipalDao.findByEmail(entity.getEmail());
@@ -113,6 +181,21 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 		
 		
 	}
+	
+	
+
+	@Override
+	public Boolean hasUserRole(UserPrincipal up, String roleName)
+			throws UserPrincipalServiceException {
+		for (Role role : up.getRoles()) {
+			if(role.getRole().equals(roleName))
+				return true;
+			
+		}
+		return false;
+	}
+
+
 
 	@Override
 	public UserPrincipal loadUserEmail(String email)
@@ -141,7 +224,15 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 			UserDetails details =
 				loadUserByUsername(username);
 			
-			if(details.getPassword().equals(password))
+			String checkPassword = password;
+			try {
+				if(useMD5Hash)
+					checkPassword = makeMD5Hash(checkPassword);
+			} catch (NoSuchAlgorithmException e) {
+				logger.error("cannot make hash of password", e);
+			}
+							
+			if(details.getPassword().equals(checkPassword))
 				return true;
 			
 		} catch (DataAccessException e) {

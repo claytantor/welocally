@@ -40,9 +40,9 @@ public class OrderDaoDefaultImpl
 	
 				Query query = session.createQuery(
 					"select entityimpl from "+Order.class.getName()+" as entityimpl " +
-							"where entityimpl.buyerName = :buyerName");
+							"where entityimpl.buyerKey = :buyerKey");
 				
-				query.setString("buyerName", publisherKey);
+				query.setString("buyerKey", publisherKey);
 								
 				List list = query.list();
 	
