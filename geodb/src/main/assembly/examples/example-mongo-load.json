@@ -1,0 +1,8 @@
+{
+	"class":"com.welocally.geodb.util.MongoLoader",
+	"command": {		
+		"host":"localhost",
+		"db":"geodb",
+		"collection":"places"		
+	}
+}

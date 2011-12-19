@@ -1,0 +1,8 @@
+Welocally
+===================================
+
+services - the services project, this has all the spring based services for our admin project.
+
+admin - the admin project where all the customer accounts and tokens are managed.
+
+geodb - this is a REST & JSON based geo database.

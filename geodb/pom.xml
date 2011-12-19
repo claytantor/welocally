@@ -1,19 +1,128 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.welocally.geodb</groupId>
-  <artifactId>geodb</artifactId>
-  <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>geodb Maven Webapp</name>
-  <url>http://maven.apache.org</url>
-  <properties>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.welocally.geodb</groupId>
+	<artifactId>geodb</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>geodb Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<properties>
 		<web.finalName>geodb</web.finalName>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<org.springframework.security.version>2.0.4</org.springframework.security.version>
-  </properties>
-  <dependencies>   
-    <!--  Spring -->
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>war</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.1.1</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>assemble</id>
+			<build>
+				<plugins>
+					<!-- <plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<appendAssemblyId>true</appendAssemblyId>
+							<dependencySets>
+						        <dependencySet>
+						            <outputDirectory>/</outputDirectory>
+						            <unpack>true</unpack>
+						            <unpackOptions>
+						                <excludes>
+						                    <exclude>META-INF/spring.handlers</exclude>
+						                    <exclude>META-INF/spring.schemas</exclude>
+						                </excludes>
+						            </unpackOptions>
+						            <scope>runtime</scope>
+						        </dependencySet>
+						    </dependencySets>
+						    <files>
+						        <file>
+						            <source>${project.basedir}/src/main/resources/META-INF/spring.handlers</source>
+						            <outputDirectory>META-INF</outputDirectory>
+						        </file>
+						        <file>
+						            <source>${project.basedir}/src/main/resources/META-INF/spring.schemas</source>
+						            <outputDirectory>META-INF</outputDirectory>
+						        </file>
+						    </files>							
+							<archive>
+								<manifest>
+									<mainClass>com.welocally.geodb.services.app.GeoDBUtilsApp</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+
+					</plugin> -->
+					
+					 <plugin>
+						 <groupId>org.apache.maven.plugins</groupId>
+						 <artifactId>maven-shade-plugin</artifactId>
+						 <version>1.4</version>
+						 <executions>
+						  <execution>
+						   <phase>package</phase>
+						   <goals>
+						          <goal>shade</goal>
+						   </goals>
+						   <configuration>
+						    <transformers>
+						     <transformer
+						   implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+						      <mainClass>com.welocally.geodb.services.app.GeoDBUtilsApp</mainClass>
+						     </transformer>
+						     <transformer
+						      implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						      <resource>META-INF/spring.handlers</resource>
+						     </transformer>
+						     <transformer
+						      implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						     <resource>META-INF/spring.schemas</resource>
+						     </transformer>
+						    </transformers>
+						    <shadedArtifactAttached>true</shadedArtifactAttached>
+						    <!-- optional -->
+						    <shadedClassifierName>executable</shadedClassifierName>
+						     </configuration>
+						   </execution>
+						  </executions>
+						</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<!--  Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -33,98 +142,92 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${org.springframework.security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${org.springframework.security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.spring-security-oauth</groupId>
-			<artifactId>spring-security-oauth</artifactId>
-			<version>3.17</version>
-		</dependency>
-    
-    
-    <dependency>
-    	<groupId>mongodb</groupId>
-    	<artifactId>mongo</artifactId>
-    	<version>2.7.2</version>
-    </dependency>
-    
-   
 
-	<dependency>
-    	<groupId>org.opensymphony.quartz</groupId>
-    	<artifactId>quartz</artifactId>
-    	<version>1.6.1</version>
-    </dependency>    
-    
-	<dependency>
-    	<groupId>org.codehaus.jackson</groupId>
-    	<artifactId>jackson-core-lgpl</artifactId>
-    	<version>1.7.1</version>
-    </dependency>
-	<dependency>
-    	<groupId>org.codehaus.jackson</groupId>
-    	<artifactId>jackson-mapper-lgpl</artifactId>
-    	<version>1.7.1</version>
-    </dependency>    
-	<dependency>
-		<groupId>net.sf.ehcache</groupId>
-		<artifactId>ehcache-core</artifactId>
-		<version>2.2.0</version>
-		<type>jar</type>
-		<scope>compile</scope>
-	</dependency>   	
-	<dependency>
-		<groupId>org.json</groupId>
-		<artifactId>json</artifactId>
-		<version>20090211</version>
-	</dependency>
-	<dependency>
-		<groupId>log4j</groupId>
-		<artifactId>log4j</artifactId>
-		<version>1.2.12</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.lucene</groupId>
-		<artifactId>lucene-core</artifactId>
-		<version>3.3.0</version>
-	</dependency>	
-	<dependency>
-		<groupId>org.apache.lucene</groupId>
-		<artifactId>lucene-spatial</artifactId>
-		<version>3.3.0</version>
-	</dependency>		
-	<dependency>
-		<groupId>org.tuckey</groupId>
-		<artifactId>urlrewritefilter</artifactId>
-		<version>3.1.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.velocity</groupId>
-		<artifactId>velocity</artifactId>
-		<version>1.7</version>
-	</dependency>
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.10</version>
-	</dependency>   
-  </dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+		        <groupId>org.springframework.security</groupId>
+		        <artifactId>spring-security-config</artifactId>
+		        <version>${spring.version}</version>
+		</dependency>	
+		<dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-config</artifactId>
+	        <version>${spring.version}</version>
+    	</dependency>
+			
+		<dependency>
+			<groupId>mongodb</groupId>
+			<artifactId>mongo</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.opensymphony.quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-lgpl</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-lgpl</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.2.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-spatial</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
+	</dependencies>
 
 </project>
