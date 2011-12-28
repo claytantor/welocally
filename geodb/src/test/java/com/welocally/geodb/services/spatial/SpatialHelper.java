@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 public class SpatialHelper {
 	   
 	
-		@Value("${spatialSearch.maxSearchRadiusKm:100.000000}")
+		@Value("${spatialSearch.maxSearchRadiusKm:20.0}")
 		private Double maxKm;
 		
-		@Value("${spatialSearch.minSearchRadiusKm:1.000000}")
+		@Value("${spatialSearch.minSearchRadiusKm:10.0}")
 		private Double minKm;
 		
 	

@@ -2,6 +2,8 @@ package com.welocally.geodb.web.mvc;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.welocally.geodb.services.db.DbException;
+import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.index.DirectoryException;
 import com.welocally.geodb.services.spatial.Point;
+import com.welocally.geodb.services.spatial.SpatialConversionUtils;
+import com.welocally.geodb.services.spatial.SpatialIndexException;
+import com.welocally.geodb.services.spatial.SpatialIndexService;
 import com.welocally.geodb.services.spatial.SpatialSearchException;
 import com.welocally.geodb.services.spatial.SpatialSearchService;
 
@@ -26,16 +32,41 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	static Logger logger = 
 		Logger.getLogger(PlaceControllerV1.class);
 	
-	@Autowired 
-	SpatialSearchService searchService;
+	@Autowired SpatialSearchService searchService;
 	
 	@Autowired JsonDatabase jsonDatabase;
 	
-
+	@Autowired IdGen idGen; 
+	
+	@Autowired SpatialConversionUtils spatialConversionUtils; 
+	
+	@Autowired SpatialIndexService spatialIndexService;
+	
 		
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ModelAndView put(@PathVariable String id, @RequestBody String requestJson){
+	@RequestMapping(method = RequestMethod.PUT)
+	public ModelAndView put(@RequestBody String requestJson){
 		ModelAndView mav = new ModelAndView("mapper-result");
+		
+		try {
+			JSONObject place = 
+				new JSONObject(requestJson);
+			place.put("owner", "welocally");
+			Point p = spatialConversionUtils.getJSONPoint(place);
+			if(p != null){		
+				jsonDatabase.put(place, "new_places", idGen.genPoint(p));
+				spatialIndexService.indexPlace(place);
+			}		
+		} catch (JSONException e) {
+			logger.error("could not get results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		} catch (DbException e) {
+			logger.error("could not get results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		} catch (SpatialIndexException e) {
+			logger.error("could not index results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		}
+		
 		
 		return mav;
 	}
@@ -44,11 +75,8 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	public ModelAndView get(@PathVariable String id, Model m){
 		ModelAndView mav = new ModelAndView("mapper-result");
 		try {
-			JSONArray results = new JSONArray();
-			results.put(jsonDatabase.findById("places", id));
-			mav.addObject(
-					"mapperResult", 
-					results.toString());
+			JSONObject place = jsonDatabase.findById("places", id);
+			mav.addObject("mapperResult", place.toString());
 			
 		} catch (DbException e) {
 			logger.error("could not get results");
@@ -72,8 +100,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			mav.addObject(
 					"mapperResult", 
 					results.toString());
-			
-			
+					
 		} catch (SpatialSearchException e) {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
@@ -86,6 +113,23 @@ public class PlaceControllerV1 extends AbstractJsonController {
 		}	
 		
 		return mav;
+	}
+
+	public void setJsonDatabase(JsonDatabase jsonDatabase) {
+		this.jsonDatabase = jsonDatabase;
+	}
+
+	public void setSearchService(SpatialSearchService searchService) {
+		this.searchService = searchService;
+	}
+
+	public void setIdGen(IdGen idGen) {
+		this.idGen = idGen;
+	}
+
+	public void setSpatialConversionUtils(
+			SpatialConversionUtils spatialConversionUtils) {
+		this.spatialConversionUtils = spatialConversionUtils;
 	}
 	
 

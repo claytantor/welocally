@@ -1,10 +1,10 @@
 package com.welocally.geodb.services.spatial;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
@@ -12,10 +12,16 @@ import org.apache.lucene.index.IndexWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoException;
 
+@Component
 public class SpatialExamples {
+	
+	@Value("${SpatialExamples.examplesFile:/data/placesAU.geojson}")
+	private String examplesFile;
 	
 	static Logger logger = 
 		Logger.getLogger(SpatialExamples.class);
@@ -49,14 +55,16 @@ public class SpatialExamples {
                 
     }
     
-	public static void createExampleLocationsGeo(SpatialHelper spatialHelper, IndexWriter writer)
+	public void createExampleLocationsGeo(SpatialHelper spatialHelper, IndexWriter writer)
 			throws Exception {
 		try {
+			logger.debug(examplesFile);
+
+			InputStream i4 = SpatialExamples.class.getResourceAsStream(
+			"/data/placesAU.geojson");		
 			
-			//final SpatialHelper spatialHelper = new SpatialHelper(10.0d, 20.0d);
-			
-			FileReader reader = 
-				new FileReader(new File("/Users/claygraham/data/projects/geodb/src/test/resources/data/placesAU.geojson"));
+			InputStreamReader reader = 
+				new InputStreamReader(i4);
 			
 			BufferedReader br = new BufferedReader(reader); 
 			String str = null; 

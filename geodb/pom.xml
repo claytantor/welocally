@@ -4,16 +4,38 @@
 	<groupId>com.welocally.geodb</groupId>
 	<artifactId>geodb</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.8.0</version>
 	<name>geodb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<web.finalName>geodb</web.finalName>
+		<web.port>9080</web.port>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<org.springframework.security.version>2.0.4</org.springframework.security.version>
 	</properties>
 
 	<profiles>
+	
+		<profile>
+			<id>tomcat</id>
+			<build>
+				<plugins>
+					<plugin>
+				        <groupId>org.codehaus.mojo</groupId>
+				        <artifactId>tomcat-maven-plugin</artifactId>
+				        <version>1.0</version>
+						<configuration>
+							 <systemProperties>
+					            <geodb_core.properties>${geodb_core.properties}</geodb_core.properties>
+					            <geodb_web.properties>${geodb_web.properties}</geodb_web.properties>
+					          </systemProperties>
+							  <path>/${web.finalName}</path>
+							  <port>${web.port}</port>
+						</configuration>
+					</plugin>	
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>war</id>
 			<build>
@@ -29,46 +51,7 @@
 		<profile>
 			<id>assemble</id>
 			<build>
-				<plugins>
-					<!-- <plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<appendAssemblyId>true</appendAssemblyId>
-							<dependencySets>
-						        <dependencySet>
-						            <outputDirectory>/</outputDirectory>
-						            <unpack>true</unpack>
-						            <unpackOptions>
-						                <excludes>
-						                    <exclude>META-INF/spring.handlers</exclude>
-						                    <exclude>META-INF/spring.schemas</exclude>
-						                </excludes>
-						            </unpackOptions>
-						            <scope>runtime</scope>
-						        </dependencySet>
-						    </dependencySets>
-						    <files>
-						        <file>
-						            <source>${project.basedir}/src/main/resources/META-INF/spring.handlers</source>
-						            <outputDirectory>META-INF</outputDirectory>
-						        </file>
-						        <file>
-						            <source>${project.basedir}/src/main/resources/META-INF/spring.schemas</source>
-						            <outputDirectory>META-INF</outputDirectory>
-						        </file>
-						    </files>							
-							<archive>
-								<manifest>
-									<mainClass>com.welocally.geodb.services.app.GeoDBUtilsApp</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-
-					</plugin> -->
-					
+				<plugins>				
 					 <plugin>
 						 <groupId>org.apache.maven.plugins</groupId>
 						 <artifactId>maven-shade-plugin</artifactId>
@@ -95,7 +78,7 @@
 						     </transformer>
 						    </transformers>
 						    <shadedArtifactAttached>true</shadedArtifactAttached>
-						    <!-- optional -->
+
 						    <shadedClassifierName>executable</shadedClassifierName>
 						     </configuration>
 						   </execution>
@@ -107,18 +90,48 @@
 		</profile>
 	</profiles>
 	<build>
+		<finalName>${web.finalName}</finalName>
 		<plugins>
+
+					
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warName>${web.finalName}</warName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.2</version>
+				<configuration>
+		          <skipTests>true</skipTests>
+		        </configuration>
+			</plugin> 
 		</plugins>
-
 	</build>
 
 	<dependencies>
@@ -145,7 +158,11 @@
 			<artifactId>spring-oxm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId> 
+			<version>${spring.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -228,6 +245,13 @@
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.0-rc1</version>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 </project>

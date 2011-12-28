@@ -2,6 +2,8 @@ package com.welocally.geodb.services.spatial;
 
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -9,6 +11,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.spatial.tier.projections.CartesianTierPlotter;
 import org.apache.lucene.spatial.tier.projections.IProjector;
 import org.apache.lucene.spatial.tier.projections.SinusoidalProjector;
@@ -63,12 +66,17 @@ public class LuceneSpatialIndexService implements SpatialIndexService,CommandSup
 
 	@Autowired
 	private SpatialDocumentFactory documentFactory;
+	
+	//private IndexWriter writer; 
 
+	
 
 	@Override
 	public void doCommand(JSONObject command) throws CommandException {
 		try {
 			index(command.getInt("maxDocs"));
+		} catch (SpatialIndexException e ) {
+			throw new CommandException(e);
 		} catch (JSONException e) {
 			throw new CommandException(e);
 		}
@@ -77,7 +85,7 @@ public class LuceneSpatialIndexService implements SpatialIndexService,CommandSup
 	/* (non-Javadoc)
 	 * @see com.welocally.geodb.services.spatial.SpatialIndexService#index()
 	 */
-	public void index(int maxdocs) {
+	public void index(int maxdocs)  throws SpatialIndexException {
 		logger.debug("initializing");
 				
 		try {
@@ -113,16 +121,18 @@ public class LuceneSpatialIndexService implements SpatialIndexService,CommandSup
 		} 
 		catch (DbException e) {
 			logger.error("cant get documents for indexing", e);
+			throw new SpatialIndexException(e);
 		} 
 		catch (CorruptIndexException e) {
 			logger.error("cant get documents for indexing", e);
+			throw new SpatialIndexException(e);
 		} catch (IOException e) {
 			logger.error("cant get documents for indexing", e);
+			throw new SpatialIndexException(e);
 		} catch (Exception e) {
 			logger.error("cant get documents for indexing", e);
+			throw new SpatialIndexException(e);
 		}
-
-		
 
 	}
 	
@@ -133,7 +143,8 @@ public class LuceneSpatialIndexService implements SpatialIndexService,CommandSup
 		
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_33,
 				new StandardAnalyzer(Version.LUCENE_33));
-		final IndexWriter writer = 
+		
+		IndexWriter writer = 
 			new IndexWriter(placeDirectory.getDirectory(collectionName), 
 					config);
 
@@ -157,6 +168,8 @@ public class LuceneSpatialIndexService implements SpatialIndexService,CommandSup
 		writer.close(true);
 		logger.debug("finished indexing");
 	}
+	
+	
 
 	public void addPage(DbPage page, IndexWriter writer) {
 		// this is only getting first page, we need
@@ -166,41 +179,61 @@ public class LuceneSpatialIndexService implements SpatialIndexService,CommandSup
 			// don't fail on a specific doc
 			try {
 				JSONObject place = page.getObjects().getJSONObject(i);
-				// Term removeTerm = new Term("_id", place.getString("_id"));
-				// placeIndexWriter.getIndexWriter().deleteDocuments(removeTerm);
+				indexPlace( place);
 
-				logger.debug("adding document for _id:"
-						+ place.getString("_id"));
-				
-
-				JSONObject geom = place.getJSONObject("geometry");
-				JSONArray coords = geom.getJSONArray("coordinates");
-				Point coord = new Point(
-						Double.parseDouble(coords.getString(1)), Double
-								.parseDouble(coords.getString(0)));
-				
-				final Document doc = documentFactory.makePlaceDocument(place);
-				addSpatialLcnFields(coord, doc);
-				writer.addDocument(doc);
-				
-
+			} catch (SpatialIndexException e) {
+				logger.warn("cant index a documenent", e);
 			} catch (JSONException e) {
 				logger.warn("cant index a documenent", e);
-			} catch (CorruptIndexException e) {
-				logger.warn("cant index a documenent", e);
-			} catch (IOException e) {
-				logger.warn("cant index a documenent", e);
-			} catch (DocumentContentException e) {
-				logger.warn("cant index a documenent", e);
-			} catch (Exception e) {
-				logger.warn("cant index a documenent", e);
 			}
-
 		}
 	}
 
 
 	
+	
+	public void indexPlace(JSONObject place) throws SpatialIndexException{
+		
+		// don't fail on a specific doc
+		try {
+			logger.debug("adding document for _id:"
+					+ place.getString("_id"));
+			
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_33,
+					new StandardAnalyzer(Version.LUCENE_33));
+			
+			IndexWriter writer = 
+				new IndexWriter(placeDirectory.getDirectory("places"), 
+						config);
+	
+			JSONObject geom = place.getJSONObject("geometry");
+			JSONArray coords = geom.getJSONArray("coordinates");
+			Point coord = new Point(
+					Double.parseDouble(coords.getString(1)), Double
+							.parseDouble(coords.getString(0)));
+			
+			final Document doc = documentFactory.makePlaceDocument(place);
+			Term removeTerm = new Term("_id", place.getString("_id"));
+			writer.deleteDocuments(removeTerm);
+			addSpatialLcnFields(coord, doc);
+			writer.addDocument(doc);
+		} catch (JSONException e) {
+			logger.warn("cant index a documenent", e);
+			throw new SpatialIndexException(e);
+		} catch (CorruptIndexException e) {
+			logger.warn("cant index a documenent", e);
+			throw new SpatialIndexException(e);
+		} catch (IOException e) {
+			logger.warn("cant index a documenent", e);
+			throw new SpatialIndexException(e);
+		} catch (DocumentContentException e) {
+			logger.warn("cant index a documenent", e);
+			throw new SpatialIndexException(e);
+		} catch (Exception e) {
+			logger.warn("cant index a documenent", e);
+			throw new SpatialIndexException(e);
+		}
+	}
 
 
 	public double getMiles(final double km) {

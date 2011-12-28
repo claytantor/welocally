@@ -32,7 +32,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>${ratecred_admin_web.properties}</value>
+				<value>${admin.properties}</value>
 			</list>			
 		</property>
 	</bean>

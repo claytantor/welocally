@@ -28,8 +28,8 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>${ratecred_core.properties}</value>
-				<value>${ratecred_admin_web.properties}</value>
+				<value>${services.properties}</value>
+				<value>${admin.properties}</value>
 			</list>
 			
 		</property>

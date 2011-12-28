@@ -1,7 +1,10 @@
 package com.welocally.geodb.services.spatial;
 
+import org.json.JSONObject;
+
 public interface SpatialIndexService {
 
-	public abstract void index(int maxDocs);
+	public void index(int maxDocs) throws SpatialIndexException;
+	public void indexPlace(JSONObject place) throws SpatialIndexException;
 
 }

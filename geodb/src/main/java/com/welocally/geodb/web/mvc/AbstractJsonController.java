@@ -1,7 +1,9 @@
 package com.welocally.geodb.web.mvc;
 
 import java.io.IOException;
+import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.welocally.geodb.services.component.JsonObjectSerializer;
@@ -12,6 +14,23 @@ public abstract class AbstractJsonController {
 	
 	@Autowired
 	JsonObjectSerializer jsonObjectSerializer;
+	
+	protected String makeObjectJson(JSONObject obj){
+		try {
+			String serialized = jsonObjectSerializer.serialize(obj);
+			return serialized;
+		} catch (IOException e1) {
+			return "[{\"errorMessage\":\"server error\",\"errorCode\":106 }]";
+		}
+	}
+	
+	protected String makeModelJson(Map<String,Object> model){
+		try {
+			return jsonObjectSerializer.serialize(model);
+		} catch (IOException e1) {
+			return "[{\"errorMessage\":\"server error\",\"errorCode\":106 }]";
+		}
+	}
 	
 	protected String makeErrorsJson(Exception e){
 		try {
