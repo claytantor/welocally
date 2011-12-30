@@ -34,6 +34,17 @@
 	<bean id="jacksonMapper"  
 		class="org.codehaus.jackson.map.ObjectMapper" />
 		
+	 <!-- this bean must not be lazily initialized if the exporting is to happen -->
+	  <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+	    <property name="beans">
+	      <map>
+	        <entry key="bean:name=indexMonitor1" value-ref="indexMonitor"/>
+	      </map>
+	    </property>
+	  </bean>
+	
+	  
+		
 	
 
 </beans>

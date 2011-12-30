@@ -2,6 +2,7 @@ package com.welocally.geodb.services.db;
 
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public interface JsonDatabase {
@@ -14,7 +15,7 @@ public interface JsonDatabase {
 	
 	public DbPage findAll(String collectionName, int pageNum) throws DbException;
 	
-	public List<Object> findDistinct(String collectionName, String key, JSONObject query)
+	public JSONArray findDistinct(String collectionName, String key, JSONObject query)
 		throws DbException;
 	
 	public DbPage findByExample(String collectionName, int pageNumber, JSONObject example)

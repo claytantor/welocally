@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -49,21 +50,15 @@ import com.mongodb.MongoException;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations="classpath:geodb-applicationContext.xml")
-public class GeoSpatialTest {
+public class GeoSpatialTooTest {
 	static Logger logger = 
-		Logger.getLogger(GeoSpatialTest.class);
+		Logger.getLogger(GeoSpatialTooTest.class);
 	
-    public static String LAT_FIELD = "lat";
-    public static String LON_FIELD = "lng";
+	@Autowired SpatialDocumentFactory spatialDocumentFactory;
 	
-    public static final double MILE = 1.609344;
-    
+	@Autowired SpatialConversionUtils spatialConversionUtils;
 	
-	private double maxMiles = 250, minMiles = 1;
-	private IProjector projector = new SinusoidalProjector();
-	private CartesianTierPlotter ctp = new CartesianTierPlotter(0, projector, CartesianTierPlotter.DEFALT_FIELD_PREFIX);
-	// startTier is 14 for 25 miles, 15 for 1 miles in lucene 3.0
-	private int startTier = ctp.bestFit(maxMiles), endTier = ctp.bestFit(minMiles);
+	@Autowired SpatialSearchService spatialSearchService;
 	
 	
 	/**
@@ -109,7 +104,7 @@ public class GeoSpatialTest {
 			Directory dir = new RAMDirectory();
 			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_33,
 					new StandardAnalyzer(Version.LUCENE_33));
-			 IndexWriter writer = new IndexWriter(dir, config);
+			IndexWriter writer = new IndexWriter(dir, config);
 			createExampleLocationsGeo(writer,"/data/placesAU.geojson");
 			writer.commit();
 			writer.close(true);
@@ -118,12 +113,16 @@ public class GeoSpatialTest {
 			IndexSearcher searcher = new IndexSearcher(dir, true);
 			double testDistance = getMiles(1.0D);
 			Point p = new Point(-12.523060,131.041473);
-			List<String> locations = find(searcher, p, testDistance, "Litchfield Vet Hospital");
-			for ( String location : locations) {
-				logger.debug("location found: " + location);
+			JSONArray locations = 
+				spatialSearchService.find(
+						searcher, p, testDistance, "Litchfield Vet Hospital");
+			for (int i = 0; i < locations.length(); i++) {
+				JSONObject placeFound = locations.getJSONObject(i);
+				JSONObject properties = placeFound.getJSONObject("properties");
+				logger.debug("location found: " + properties.getString("name"));
 			}
 			
-			Assert.assertEquals(1, locations.size());
+			Assert.assertEquals(1, locations.length());
 					
 			
 			
@@ -146,11 +145,11 @@ public class GeoSpatialTest {
 
 	
 	public double getMiles( double km) {
-        return km / MILE;
+        return km / spatialConversionUtils.MILE;
     }
  
     public double getKm( double miles) {
-        return miles * MILE;
+        return miles * spatialConversionUtils.MILE;
     }
     
 	public void createExampleLocationsGeo(IndexWriter writer, String examplesFile)
@@ -158,7 +157,7 @@ public class GeoSpatialTest {
 		try {
 			logger.debug(examplesFile);
 		
-			InputStream i4 = GeoSpatialTest.class.getResourceAsStream(examplesFile);		
+			InputStream i4 = GeoSpatialTooTest.class.getResourceAsStream(examplesFile);		
 			
 			InputStreamReader reader = 
 				new InputStreamReader(i4);
@@ -169,15 +168,10 @@ public class GeoSpatialTest {
 				
 				JSONObject place = 
 					new JSONObject(str);
-				
-				JSONObject properties = place.getJSONObject("properties");
-				JSONObject geom = place.getJSONObject("geometry");
-				JSONArray coords = geom.getJSONArray("coordinates");
-				Point coord = 
-					new Point(
-							Double.parseDouble(coords.getString(1)), 
-							Double.parseDouble(coords.getString(0)));
-				addLoc(writer, place, coord);
+						
+				writer.addDocument(
+						spatialDocumentFactory.makePlaceDocument(place));
+
 				
 			} 
 			reader.close(); 
@@ -196,70 +190,7 @@ public class GeoSpatialTest {
 		
 	}
 	
-	public void addLoc(IndexWriter writer, JSONObject place, Point coord) 
-		throws CorruptIndexException, IOException, JSONException {
-		Document doc = new Document();
-		JSONObject properties = place.getJSONObject("properties");
-		doc.add(new Field("name", properties.getString("name"), Field.Store.YES, Index.ANALYZED));
-		doc.add(new Field("metafile", "doc", Store.YES, Index.ANALYZED));
-		addSpatialLcnFields(coord, doc);
-		writer.addDocument(doc);
-	}
+
 	
-	private void addSpatialLcnFields(Point coord, Document document) {
-		document.add(new Field(LAT_FIELD, NumericUtils
-				.doubleToPrefixCoded(coord.getLat()), Field.Store.YES,
-				Field.Index.NOT_ANALYZED));
-		document.add(new Field(LON_FIELD, NumericUtils
-				.doubleToPrefixCoded(coord.getLon()), Field.Store.YES,
-				Field.Index.NOT_ANALYZED));
-		addCartesianTiers(coord, document);
-	}
 
-
-
-	private void addCartesianTiers(Point coord, Document document) {
-	   for (int tier = startTier; tier <= endTier; tier++) {
-	      ctp = new CartesianTierPlotter(tier, projector, CartesianTierPlotter.DEFALT_FIELD_PREFIX);
-	      double boxId = ctp.getTierBoxId(coord.getLat(), coord.getLon());
-	      document.add(new Field(ctp.getTierFieldName(), NumericUtils
-	         .doubleToPrefixCoded(boxId), Field.Store.YES,
-	         Field.Index.NOT_ANALYZED_NO_NORMS));
-	   }
-	}
-	
-	private List<String> find(IndexSearcher searcher, Point start, double miles, String queryString) throws IOException, ParseException  {
-
-		      List<String> result = new ArrayList<String>();		      	      
-		      
-		      final DistanceQueryBuilder dq = new DistanceQueryBuilder(
-						start.getLat(), start.getLon(), 
-						miles, 
-						LAT_FIELD,
-						LON_FIELD,
-						CartesianTierPlotter.DEFALT_FIELD_PREFIX, 
-						true, 
-						startTier,
-						
-						endTier);
-
-		      Query query = new TermQuery(new Term("metafile", "doc"));
-		     		      
-		      BooleanQuery bq = new BooleanQuery();
-
-		      Query queryName = new QueryParser(Version.LUCENE_33, "name",
-						new StandardAnalyzer(Version.LUCENE_33)).parse(queryString);
-		      
-		      bq.add(query, BooleanClause.Occur.MUST);
-		      bq.add(queryName, BooleanClause.Occur.MUST);
-
-		      TopDocs hits = searcher.search(dq.getQuery(bq), 10);
-		      		      
-		      logger.debug("total hits:"+ hits.totalHits);
-		      for (int i = 0; i < hits.totalHits && i<hits.scoreDocs.length ; i++) {
-		         Document doc = searcher.doc(hits.scoreDocs[i].doc);
-		         result.add(doc.get("name"));
-		      }
-		      return result;
-	}
 }

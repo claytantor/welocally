@@ -27,7 +27,7 @@
 var jsonObjFeatures = []; //declare features array
 var markersArray = [];
 var selectedFeatureIndex = 0;
-var selectedCategories='';
+var selectedClassifierLevel='';
 var map;
 var geocoder;
 var selectedGeocode;
@@ -41,36 +41,7 @@ var selectedPlace = {
 	}
 };
 
-var currentCategories;
 
-/*var selectedPlace = {
-			properties: {
-				phone: "+1 907 452 3532",
-				website: "http://google.com",
-				address: "1410 S Cushman St",
-				name: "Thrifty Liquor Store",
-				province: "AK",
-				owner: "welocally",
-				postcode: "99701",
-				city: "Fairbanks",
-				country: "US"
-			},
-			type: "Place",
-			classifiers: [
-            {
-                category: "Food & Beverages",
-                subcategory: "Liquor & Beverages",
-                type: "Retail Goods"
-            }
-       		],
-            geometry: {
-				type: "Point",
-				coordinates: [
-					-147.718066,
-					64.836155
-				]
-			}
-		};*/
 
 function addMarker(location) {
   marker = new google.maps.Marker({
@@ -109,7 +80,7 @@ function deleteOverlays() {
 }
 
 
-
+http://localhost:8080/geodb/place/1_0/search.json?q=Sushi&loc=37.8261015_-122.2091333&radiusKm=100
 function getLocationsByAddress(address, keyword, radiusKm) {	
 	jQuery('#welocally-post-error').removeClass('welocally-error');
 	jQuery('#welocally-post-error').show();
@@ -141,8 +112,8 @@ function getLocationsByAddress(address, keyword, radiusKm) {
 	};
 				
 	$.ajax({
-	  type: 'POST',
-	  url: '<c:url value="/publisher/place/queryplaces2.json"/>',
+	  type: 'GET',
+	  url: '/geodb/place/1_0/search.json?q=Sushi&loc=37.8261015_-122.2091333&radiusKm=100',
 	  dataType: 'json',
 	  contentType: 'application/json',
 	  data: JSON.stringify(options),
@@ -254,10 +225,6 @@ function verifyGeocode(geocode) {
 	
 	//verified
 	if(hasAll){
-		//jQuery('#verify-geocode-status').html('verified');
-		//jQuery('#verify-geocode-status').removeClass();
-		//jQuery('#verify-geocode-status').addClass('verified-geocode fade');	
-		
 		selectedGeocode = geocode;
 		
 		//set the model
@@ -301,8 +268,17 @@ function verifyGeocode(geocode) {
 		jQuery('#street-address-saved').show(); 
 		
 		//setup the cats
-		jQuery('#categories-section').show(); 		
-		getTypes();
+		selectedPlace.classifiers = [];
+		var placeClassifier = {
+			type: '',
+			category: '',
+			subcategory: ''
+		};
+		selectedPlace.classifiers.push(placeClassifier);
+		
+		jQuery('#categories-section').show(); 
+		
+		getCategories(null, null);
 				
 		
 	} else {		
@@ -322,18 +298,31 @@ function findCategory(categoryName){
 	return cat;
 }
 
-function getTypes() {
 
-	selectedPlace.classifiers = [];
-	var placeClassifier = {
-		type: '',
-		category: '',
-		subcategory: ''
-	};
-	selectedPlace.classifiers.push(placeClassifier);
+function getCategories(type, category) {
+
+	var params = {};
+	var base;
+	var urlValue =  '/geodb/classifier/1_0/types.json';
+	selectedClassifierLevel = 'Type';
+	if(type != null && category == null){
+		base = type;
+		var urlValue =  '/geodb/classifier/1_0/categories.json';
+		selectedClassifierLevel = 'Category';
+		params.type = type;
+		urlValue = urlValue+"?"+jQuery.param(params);
+	} else if(type != null && category != null){
+		base = category;
+		var urlValue =  '/geodb/classifier/1_0/subcategories.json';
+		selectedClassifierLevel = 'Subcategory';
+		params.type = type;
+		params.category = category;
+		urlValue = urlValue+"?"+jQuery.param(params);
+	}
+	
 	jQuery.ajax({
 		  type: 'GET',
-		  url : '/geodb/category/1_0/types.json',
+		  url : urlValue,
           contentType: 'application/json', // don't do this or request params won't get through
           dataType : 'json',
 		  error : function(jqXHR, textStatus, errorThrown) {
@@ -342,48 +331,29 @@ function getTypes() {
 					jQuery('#welocally-post-error').addClass('welocally-error error fade');
 		  },		  
 		  success : function(data, textStatus, jqXHR) {
+		  	
 		  	jQuery('#welocally-post-error').html('');
+		  	jQuery('#edit-place-categories-selection-list').html('');
+		  	
+		  	if(base != null && data.length==1){
+		  		jQuery('#edit-place-categories-selection-list').append('<li style="display:inline-block;">'+base+'</li>');
+		  	}
+		  	
 			if(data.errors != null) {
 				buildErrorMessages(data.errors);		
 			} else {
 				currentCategories = data;
 				jQuery.each(data, function(key, val) {
-					jQuery('#edit-place-categories-selection-list').append('<li style="display:inline-block;">'+val.name+'</li>');					
-				});
-							
-				
+					if(val != null && val != '' ) {
+						jQuery('#edit-place-categories-selection-list').append('<li style="display:inline-block;">'+val+'</li>');	
+					}
+				});				
 			}
 		  }
 		});
 }
 
-function getChildrenCats(parentId) {
-	jQuery.ajax({
-		  type: 'GET',
-		  url : '/geodb/category/1_0/children.json?parentId='+parentId,
-          contentType: 'application/json', // don't do this or request params won't get through
-          dataType : 'json',
-		  error : function(jqXHR, textStatus, errorThrown) {
-					console.error(textStatus);
-					jQuery('#welocally-post-error').html('ERROR : '+textStatus);
-					jQuery('#welocally-post-error').addClass('welocally-error error fade');
-		  },		  
-		  success : function(data, textStatus, jqXHR) {
-		  	jQuery('#welocally-post-error').html('');
-			if(data.errors != null) {
-				buildErrorMessages(data.errors);		
-			} else {
-				currentCategories = data;
-				jQuery('#edit-place-categories-selection-list').html('');
-				jQuery.each(data, function(key, val) {
-					jQuery('#edit-place-categories-selection-list').append('<li style="display:inline-block;">'+val.name+'</li>');					
-				});
-							
-				
-			}
-		  }
-		});
-}
+
 
 
 function getShortNameForType(type_name, address_components){
@@ -492,10 +462,7 @@ jQuery(document).ready(function(jQuery) {
     	jQuery("#edit-place-form").show();
     	jQuery('#map_canvas').height( 401 );
     	jQuery('#map_canvas').width( '100%' );
-    	
-
-		
-			    	
+    		    	
         return false;
     });
     
@@ -559,36 +526,14 @@ jQuery(document).ready(function(jQuery) {
 			return false;
 		}*/
 
-                
-        /*var options = { 
-            externalId: jQuery('#edit-place-external-id').val(),
-        	name: jQuery('#edit-place-name').val(),
-        	address: jQuery('#edit-place-street').val(),
-        	city: jQuery('#edit-place-city').val(),
-        	state: jQuery('#edit-place-state').val(),
-        	zip: jQuery('#edit-place-zip').val(),
- 	      	phone: jQuery('#edit-place-phone').val(),
-    	   	web: jQuery('#edit-place-web').val(),
-    	   	webType: jQuery('#edit-place-web-type').val(),
-    	   	category: jQuery('#edit-place-cats').val()  
-       		
-        };*/
-        
-        /*var newPlace = {
-			properties: {
-				phone: "+1 907 452 3532",
-				address: "1410 S Cushman St",
-				name: "Thrifty Liquor Store",
-				province: "AK",
-				owner: "welocally",
-				postcode: "99701",
-				city: "Fairbanks",
-				country: "US"
-			},
-			type: "Place"
-		};*/
+	
+		if(jQuery('#edit-place-phone').val() != null){
+			selectedPlace.properties.phone=jQuery('#edit-place-phone').val();
+		}
 		
-
+		if(jQuery('#edit-place-web').val() != null){
+			selectedPlace.properties.website=jQuery('#edit-place-web').val();
+		}
         
 		jQuery.ajax({
 		  type: 'PUT',
@@ -654,21 +599,22 @@ jQuery(document).ready(function(jQuery) {
 	
 	jQuery( "#edit-place-categories-selection-list" ).selectable({
 		   selected: function(event, ui) {
-		   		var selectedCat = findCategory(ui.selected.innerText);
-			   	if(selectedCat != null){
+		   		//var selectedCat = findCategory(ui.selected.innerText);
+			   	//if(selectedCat != null){
+			   	
 			   		
-			   		if(selectedCat.type == 'Type'){
-			   			selectedPlace.classifiers[0].type = selectedCat.name;
-			   		} else if(selectedCat.type == 'Category'){
-			   			selectedPlace.classifiers[0].category = selectedCat.name;
-			   		} else if(selectedCat.type == 'Subcategory'){
-			   			selectedPlace.classifiers[0].subcategory = selectedCat.name;
+			   		if(selectedClassifierLevel == 'Type'){
+			   			selectedPlace.classifiers[0].type = ui.selected.innerText;
+			   		} else if(selectedClassifierLevel == 'Category'){
+			   			selectedPlace.classifiers[0].category = ui.selected.innerText;
+			   		} else if(selectedClassifierLevel == 'Subcategory'){
+			   			selectedPlace.classifiers[0].subcategory = ui.selected.innerText;
 			   		}
 			   		
 			   		jQuery( "#edit-place-categories-selected")
 			   			.append(
 			   			'<li class="categories-selected-list-item">'+
-			   			selectedCat.type+':'+selectedCat.name+'</li>');
+			   			selectedClassifierLevel+':'+ui.selected.innerText+'</li>');
 			   		
 			   		if(selectedPlace.classifiers[0].type != '' &&
 			   			selectedPlace.classifiers[0].category != '' &&
@@ -680,9 +626,16 @@ jQuery(document).ready(function(jQuery) {
 			   			jQuery( '#edit-place-optional-section').show();
 			   			
 			   		} else {
-			   			getChildrenCats(selectedCat._id);
+			   			var type = null;
+			   			var category = null;
+			   		 	if(selectedPlace.classifiers[0].type != '')
+			   		 		type= selectedPlace.classifiers[0].type;
+			   		 	if(selectedPlace.classifiers[0].category != '')
+			   		 		category= selectedPlace.classifiers[0].category;	
+			   		 		
+			   			getCategories(type, category);
 			   		}
-			   	}
+			   	//}
 			   	
 		   },
 		   unselected: function(event, ui) {

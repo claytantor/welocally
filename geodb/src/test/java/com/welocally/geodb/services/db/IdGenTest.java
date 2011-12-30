@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.welocally.geodb.services.spatial.GeoSpatialTest;
 import com.welocally.geodb.services.spatial.Point;
 
 
@@ -18,7 +17,7 @@ import com.welocally.geodb.services.spatial.Point;
 public class IdGenTest {
 	
 	static Logger logger = 
-		Logger.getLogger(GeoSpatialTest.class);
+		Logger.getLogger(IdGenTest.class);
 	
 	@Autowired IdGen idGen;
 	

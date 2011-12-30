@@ -2,14 +2,12 @@ package com.welocally.geodb.services.db;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,10 +64,10 @@ public class MongoJsonDatabase implements JsonDatabase {
 			
 		} catch (MongoException e) {
 			logger.error("db problem", e);
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		} catch (JSONException e) {
 			logger.error("json problem", e);
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		}
 		
 	}
@@ -93,12 +91,15 @@ public class MongoJsonDatabase implements JsonDatabase {
 
 			DBObject obj = coll.findOne(query);
 			
+			if(obj == null)
+				throw new DbException(DbException.Type.OBJECT_NOT_FOUND,new RuntimeException("object not found"));
+			
 			dbObjectJson = new JSONObject(obj.toString());
 			
 		} catch (MongoException e) {
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		} catch (JSONException e) {
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		}
 
 		return dbObjectJson;
@@ -115,9 +116,10 @@ public class MongoJsonDatabase implements JsonDatabase {
 		return findByExample( collectionName,  pageNumber, null);
 	}
 	
-	public List<Object> findDistinct(String collectionName, String key, JSONObject query)
+	public JSONArray findDistinct(String collectionName, String key, JSONObject query)
 	throws DbException {
 		
+		JSONArray result = new JSONArray();
 		List<Object> names = new ArrayList<Object>();
 		
 		try {
@@ -132,10 +134,14 @@ public class MongoJsonDatabase implements JsonDatabase {
 				names = coll.distinct(key);
 			}
 		} catch (JSONException e) {
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		}
 		
-		return names;
+		for (Object object : names) {
+			result.put(object.toString());
+		}
+		
+		return result;
 	}
 	
 	public DbPage findByExample(String collectionName, int pageNumber, JSONObject example)
@@ -210,9 +216,9 @@ public class MongoJsonDatabase implements JsonDatabase {
 	        pageResult.setPageSize(pageResult.getObjects().length());
 			
 		} catch (MongoException e) {
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		} catch (JSONException e) {
-			throw new DbException(e);
+			throw new DbException(DbException.Type.DB_ERROR,e);
 		}
 		return pageResult;
 	}

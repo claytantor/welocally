@@ -25,11 +25,10 @@ public class PlaceDirectory  {
 		directoryPlaces = new SimpleFSDirectory(new File(directoryFileNamePlaces));
 	}
 	
-	public Directory getDirectory(String collectionName) throws DirectoryException{
-		if(collectionName.equals("places"))
-			return directoryPlaces;
-		else
-			throw new DirectoryException("cannot find directory:"+collectionName); 
+	public Directory getDirectory() throws DirectoryException{
+		
+		return directoryPlaces;
+		
 						
 	}
 }

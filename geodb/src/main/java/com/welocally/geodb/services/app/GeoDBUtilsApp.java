@@ -62,8 +62,6 @@ public class GeoDBUtilsApp {
 	    	}
 	    	
 	    	if(!buf.toString().isEmpty()){ 
-	    		
-	    		
 	    	    		
 	    		JSONObject harness = new JSONObject(buf.toString());
 	    		

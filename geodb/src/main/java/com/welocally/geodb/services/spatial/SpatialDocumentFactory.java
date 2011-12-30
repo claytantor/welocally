@@ -1,10 +1,21 @@
 package com.welocally.geodb.services.spatial;
 
+import java.io.IOException;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.spatial.tier.projections.CartesianTierPlotter;
+import org.apache.lucene.spatial.tier.projections.IProjector;
+import org.apache.lucene.spatial.tier.projections.SinusoidalProjector;
+import org.apache.lucene.util.NumericUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.welocally.geodb.services.index.DocumentContentException;
@@ -12,41 +23,12 @@ import com.welocally.geodb.services.index.DocumentContentException;
 @Component
 public class SpatialDocumentFactory {
 	
+	
+	@Autowired SpatialConversionUtils spatialConversionUtils;
+	
 
-//    
 	/**
-	 * {
-    "_id": "SG_4mgIoipAcMRxxAbUX8b5Ls_-12.523856_131.043243@1303236333",
-    "properties": {
-        "tags": [
-            "upholsterer"
-        ],
-        "phone": "+61 8 8983 4134",
-        "classifiers": [
-            {
-                "category": "Retail",
-                "subcategory": "Repair Shop",
-                "type": "Services"
-            }
-        ],
-        "address": "Shop 12 Stavris Complex 465 Stuart Hwy",
-        "name": "Intrim",
-        "owner": "simplegeo",
-        "province": "NT",
-        "postcode": "0835",
-        "href": "http://api.simplegeo.com/1.0/features/SG_4mgIoipAcMRxxAbUX8b5Ls_-12.523856_131.043243@1303236333.json",
-        "country": "AU",
-        "city": "Coolalinga"
-    },
-    "type": "Feature",
-    "geometry": {
-        "type": "Point",
-        "coordinates": [
-            131.043243408,
-            -12.523856163
-        ]
-    }
-}
+	 * 
 	 * @param placeObject
 	 * @return
 	 * @throws JSONException
@@ -55,12 +37,19 @@ public class SpatialDocumentFactory {
 	{
 				
 		JSONObject properties = placeObject.getJSONObject("properties");
+		JSONObject geom = placeObject.getJSONObject("geometry");
+		JSONArray coords = geom.getJSONArray("coordinates");
+		Point coord = 
+			new Point(
+					Double.parseDouble(coords.getString(1)), 
+					Double.parseDouble(coords.getString(0)));
 		
 		Document doc = new Document();
 		
-		
-		doc.add(new Field("_id", placeObject.getString("_id"), Field.Store.YES,
-				Field.Index.NOT_ANALYZED));
+		if(!placeObject.isNull("_id")){
+			doc.add(new Field("_id", placeObject.getString("_id"), Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
+		}
 			
 		doc.add(new Field("name", properties.getString("name"), Field.Store.YES,
 				Field.Index.NOT_ANALYZED));
@@ -70,7 +59,10 @@ public class SpatialDocumentFactory {
 		
 		doc.add(new Field("search", makeSearchableContent(properties), Field.Store.YES,
 				Field.Index.ANALYZED));
-						
+		
+		doc.add(new Field("metafile", "doc", Store.YES, Index.ANALYZED));
+		addSpatialLcnFields(coord, doc);
+								
 		
 		return doc;
 		
@@ -101,6 +93,26 @@ public class SpatialDocumentFactory {
 		}
 		
 		return buf.toString();	
+	}
+		
+	private void addSpatialLcnFields(Point coord, Document document) {
+		document.add(new Field(spatialConversionUtils.LAT_FIELD, NumericUtils
+				.doubleToPrefixCoded(coord.getLat()), Field.Store.YES,
+				Field.Index.NOT_ANALYZED));
+		document.add(new Field(spatialConversionUtils.LON_FIELD, NumericUtils
+				.doubleToPrefixCoded(coord.getLon()), Field.Store.YES,
+				Field.Index.NOT_ANALYZED));
+		addCartesianTiers(coord, document);
+	}
+	
+	private void addCartesianTiers(Point coord, Document document) {
+	   for (int tier = spatialConversionUtils.getStartTier(); tier <= spatialConversionUtils.getEndTier(); tier++) {
+		  CartesianTierPlotter ctp = new CartesianTierPlotter(tier, spatialConversionUtils.getProjector(), CartesianTierPlotter.DEFALT_FIELD_PREFIX);
+	      double boxId = ctp.getTierBoxId(coord.getLat(), coord.getLon());
+	      document.add(new Field(ctp.getTierFieldName(), NumericUtils
+	         .doubleToPrefixCoded(boxId), Field.Store.YES,
+	         Field.Index.NOT_ANALYZED_NO_NORMS));
+	   }
 	}
 	
 
