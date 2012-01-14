@@ -8,7 +8,7 @@ import com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator;
 import com.sightlyinc.ratecred.model.Award;
 
 /**
- * test 2
+ * test 3
  * @author claygraham
  *
  */
