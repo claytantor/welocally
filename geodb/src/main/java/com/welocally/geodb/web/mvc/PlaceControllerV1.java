@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,9 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	
 	@Autowired SpatialConversionUtils spatialConversionUtils; 
 	
-	//@Autowired SpatialIndexService spatialIndexService;
+	@Autowired 
+	@Qualifier("luceneMongoSpatialIndexService")
+	SpatialIndexService spatialIndexService;
 	
 		
 	@RequestMapping(method = RequestMethod.PUT)
@@ -55,7 +58,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			Point p = spatialConversionUtils.getJSONPoint(place);
 			if(p != null){		
 				jsonDatabase.put(place, "new_places", idGen.genPoint(p));
-				//spatialIndexService.indexPlace(place);
+				spatialIndexService.indexPlace(place);
 			}		
 		} catch (JSONException e) {
 			logger.error("could not get results");
@@ -64,10 +67,11 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
-//		catch (SpatialIndexException e) {
-//			logger.error("could not index results");
-//			mav.addObject("mapperResult", makeErrorsJson(e));
-//		}
+		catch (SpatialIndexException e) {
+			logger.error("could not index results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		}
+
 		
 		
 		return mav;

@@ -82,24 +82,35 @@ public class LuceneSpatialSearchService implements SpatialSearchService {
 						true, 
 						spatialConversionUtils.getStartTier(),					
 						spatialConversionUtils.getEndTier());
+			
+			// Create a distance sort
+	        // As the radius filter has performed the distance calculations
+	        // already, pass in the filter to reuse the results.
+	        final DistanceFieldComparatorSource dsort = new DistanceFieldComparatorSource(dq.getDistanceFilter());
+	        final Sort sort = new Sort(new SortField("geo_distance", dsort));
 
-			  Query query = new TermQuery(new Term("metafile", "doc"));
-			 		      
-			  BooleanQuery bq = new BooleanQuery();
+	        Query query = new TermQuery(new Term("metafile", "doc"));
 
-			  Query queryName = new QueryParser(Version.LUCENE_33, "search",
-						new StandardAnalyzer(Version.LUCENE_33)).parse(queryString);
-			  
-			  bq.add(query, BooleanClause.Occur.MUST);
-			  bq.add(queryName, BooleanClause.Occur.MUST);
+			BooleanQuery bq = new BooleanQuery();
 
-			  TopDocs hits = searcher.search(dq.getQuery(bq), 10);
-			  		      
-			  logger.debug("total hits:"+ hits.totalHits);
-			  for (int i = 0; i < hits.totalHits && i<hits.scoreDocs.length ; i++) {
-			     Document doc = searcher.doc(hits.scoreDocs[i].doc);
-			     result.put(new JSONObject(doc.get("place")));  
-			  }
+			Query queryName = new QueryParser(Version.LUCENE_33, "search",
+					new StandardAnalyzer(Version.LUCENE_33)).parse(queryString);
+
+			bq.add(query, BooleanClause.Occur.MUST);
+			bq.add(queryName, BooleanClause.Occur.MUST);
+
+			TopDocs hits = searcher.search(dq.getQuery(bq), 10, sort);
+			Map distances = dq.getDistanceFilter().getDistances();
+
+			logger.debug("total hits:" + hits.totalHits);
+			for (int i = 0; i < hits.totalHits && i < hits.scoreDocs.length; i++) {
+				int docID = hits.scoreDocs[i].doc;
+				Document doc = searcher.doc(docID);
+				JSONObject placeResult = new JSONObject(doc.get("place"));
+				placeResult.put("geo_distance", getKm(Double.parseDouble(distances.get(docID).toString())));
+				result.put(placeResult);
+			}
+			
 		} catch (CorruptIndexException e) {
 			logger.error("problem with search",e);
 			throw new SpatialSearchException(e);

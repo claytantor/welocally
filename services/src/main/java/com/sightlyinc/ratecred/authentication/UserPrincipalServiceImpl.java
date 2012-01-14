@@ -111,6 +111,17 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 
 
 	@Override
+	public void deactivate(UserPrincipal entity)
+			throws UserPrincipalServiceException {
+    	entity.setCredentialsExpired(false);
+    	entity.setLocked(true);
+    	entity.setEnabled(true);
+        userPrincipalDao.save(entity);
+	}
+
+
+
+	@Override
     @Transactional(readOnly = false)
     public void signUp(UserPrincipal entity, List<String> roleNames) throws UserPrincipalServiceException {
         UserPrincipal user = userPrincipalDao.findByEmail(entity.getEmail());

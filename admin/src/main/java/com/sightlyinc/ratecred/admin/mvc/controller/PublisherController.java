@@ -1,6 +1,8 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,17 +83,21 @@ public class PublisherController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public String create(@Valid Publisher form, BindingResult result, Model model) {
+	public String save(@Valid Publisher form, BindingResult result, Model model) {
 		logger.debug("got post action");
 		Publisher p = new Publisher();
 		try {	
 			if(form.getId() != null)
 				p = publisherService.findByPrimaryKey(form.getId());
 			
+			
 			if(p!= null)
 			{
 				p.setMonthlyPageviews(form.getMonthlyPageviews());
+				
+				//this should not be editable without a process
 				p.setKey(form.getKey());
+				
 				p.setJsonToken(form.getJsonToken());
 				p.setSiteName(form.getSiteName());
 				p.setDescription(form.getDescription());
@@ -100,19 +106,44 @@ public class PublisherController {
 				p.setMapIconUrl(form.getMapIconUrl());
 				p.setIconUrl(form.getIconUrl());
 				
-				p.setKey(getPublisherKeyFromName(form.getSiteName()));
-				
 				if(!StringUtils.isEmpty(form.getSubscriptionStatus()))
 					p.setSubscriptionStatus(form.getSubscriptionStatus());
 				
-				//set the member
-				//prepopulate member
-				UserDetails details = 
-				(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
+
+				
 							
-				UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
-				NetworkMember member = networkMemberService.findMemberByUserPrincipal(principal);
+				UserPrincipal principal=null;
+				try {
+					principal = userPrincipalService.loadUser(p.getKey());
+					//exists
+					principal.setPassword(form.getJsonToken());
+					userPrincipalService.saveUserPrincipal(principal);
+				} catch (UserNotFoundException e) {
+					//create the principal if missing
+					//update the password to be the key
+					principal = new UserPrincipal();
+					principal.setUsername(p.getKey());
+				} catch (org.springframework.security.userdetails.UsernameNotFoundException e){
+					principal = new UserPrincipal();
+					principal.setUsername(p.getKey());
+				}
+
+				
+				String hashedPass = userPrincipalService.makeMD5Hash(form.getJsonToken());					
+				principal.setPassword(hashedPass);
+				
+				if(p.getSubscriptionStatus().equals("SUBSCRIBER"))
+					userPrincipalService.activateWithRoles(principal, Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
+				else
+					userPrincipalService.deactivate(principal);
+//				//set the member
+//				//prepopulate member
+				UserDetails adminDetails = 
+				(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
+				UserPrincipal networkPrincipal = userPrincipalService.loadUser(adminDetails.getUsername());
+				NetworkMember member = networkMemberService.findMemberByUserPrincipal(networkPrincipal);
 				p.setNetworkMember(member);
+				
 							
 				Long id = publisherService.save(p);
 				return "redirect:/publisher/publisher/"+id.toString();
@@ -123,6 +154,9 @@ public class PublisherController {
 			}
 		
 		} catch (UserPrincipalServiceException e) {
+			logger.error("", e);
+			return null;
+		} catch (NoSuchAlgorithmException e) {
 			logger.error("", e);
 			return null;
 		} catch (UserNotFoundException e) {

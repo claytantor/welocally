@@ -12,8 +12,11 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
+import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.Version;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,20 +26,17 @@ import org.springframework.stereotype.Component;
 import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
-import com.welocally.geodb.services.db.DbPage;
-import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.index.DirectoryException;
 import com.welocally.geodb.services.index.DocumentContentException;
-import com.welocally.geodb.services.index.PlaceDirectory;
 import com.welocally.geodb.services.jmx.IndexMonitor;
 import com.welocally.geodb.services.util.WelocallyJSONUtils;
 
 @Component
-public class LuceneNFSSpatialIndexService implements SpatialIndexService,CommandSupport  {
+public class LuceneRAMSpatialIndexService implements SpatialIndexService,CommandSupport  {
 
-	static Logger logger = Logger.getLogger(LuceneNFSSpatialIndexService.class);
+	static Logger logger = Logger.getLogger(LuceneRAMSpatialIndexService.class);
 	
-	@Autowired PlaceDirectory placeDirectory;
+	
 	
 	@Autowired SpatialConversionUtils spatialConversionUtils;
 	
@@ -45,12 +45,19 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 	@Autowired IndexMonitor indexMonitor;
 	
 	@Autowired WelocallyJSONUtils welocallyJSONUtils;
+	
+	Directory placeDirectory = new RAMDirectory();
+	
+	private String target;
+	
+	
 
 
 	@Override
 	public void doCommand(JSONObject command) throws CommandException {
 		try {
 			indexMonitor.reset();
+			this.target = command.getString("target");
 			index(command.getString("source") , command.getInt("maxDocs") );
 		} catch (SpatialIndexException e ) {
 			throw new CommandException(e);
@@ -62,7 +69,7 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 	/* (non-Javadoc)
 	 * @see com.welocally.geodb.services.spatial.SpatialIndexService#index()
 	 */
-	public void index( String collectionName,int maxdocs)  throws SpatialIndexException {
+	public void index( String source, int maxdocs)  throws SpatialIndexException {
 		logger.debug("initializing");
 				
 		try {
@@ -70,7 +77,7 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 				String[] files=null;
 				try {
 					//files = placeDirectory.getDirectory(collectionName).listAll();
-					files = placeDirectory.getDirectory().listAll();
+					files = placeDirectory.listAll();
 					
 					boolean indexExists = false;
 					for (String file : files) {
@@ -81,12 +88,12 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 					}
 					
 					if(!indexExists){
-						generateIndex(collectionName, maxdocs);
+						generateIndex(source, target, maxdocs);
 					}
 					
 					
 				} catch (NoSuchDirectoryException e) {
-					generateIndex(collectionName, maxdocs);
+					generateIndex(source, target, maxdocs);
 				}
 				
 		} 
@@ -107,7 +114,7 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 
 	}
 	
-	private void generateIndex(String collectionName, int maxDocs) 
+	private void generateIndex(String source, String target, int maxDocs) 
 		throws CorruptIndexException, LockObtainFailedException, IOException, 
 		DirectoryException, DbException, JSONException, DocumentContentException {
 
@@ -116,17 +123,17 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 				new StandardAnalyzer(Version.LUCENE_33));
 		
 		IndexWriter writer = 
-			new IndexWriter(placeDirectory.getDirectory(), 
+			new IndexWriter(placeDirectory, 
 					config);
 		
-		InputStream i4 = new FileInputStream(new File(collectionName));		
+		InputStream i4 = new FileInputStream(new File(source));		
 		
 		InputStreamReader reader = 
 			new InputStreamReader(i4);
 		
 		BufferedReader br = new BufferedReader(reader); 
 		String str = null; 
-		while((str = br.readLine()) != null) { 
+		while((str = br.readLine()) != null && indexMonitor.getCount()<maxDocs) { 
 			
 			JSONObject place = 
 				new JSONObject(str);
@@ -142,7 +149,10 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 		reader.close(); 
 		writer.commit();
 		writer.close(true);
-
+		
+		//now copy the directory
+		writeDirectoryFiles(placeDirectory, target);
+		
 		
 		logger.debug("finished indexing");
 	}
@@ -151,6 +161,18 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 	public void indexPlace(JSONObject place) throws SpatialIndexException {
 		throw new SpatialIndexException("NO IMPL");
 		
+	}
+	
+	private void writeDirectoryFiles(Directory sourceDir, String targetDir) throws IOException{
+
+			Directory target = new SimpleFSDirectory(new File(targetDir));
+			
+
+			//Directory to; // the directory to copy to
+			 for (String file : sourceDir.listAll()) {
+				 sourceDir.copy(target, file, file); // newFile can be either file, or a new name
+			 }
+
 	}
 	
 	

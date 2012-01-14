@@ -30,11 +30,6 @@ public class AdminPublisherController {
 
         modelAndView.addObject("publishers", expiringPublishers);
 
-        // name, url, service end date
-        // publisher key
-        // simplegeo json token
-        // sort by date
-        // make already expired red ... ?
 
         return modelAndView;
     }

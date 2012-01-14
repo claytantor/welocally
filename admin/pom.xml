@@ -393,25 +393,20 @@
 	<build>
 		<finalName>${web.finalName}</finalName>
 		<plugins>
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
-				<version>1.</version>
+				<version>1.1</version>
 				<configuration>
 					 <systemProperties>
-			            <ratecred_core.properties>${ratecred_core.properties}</ratecred_core.properties>
-			            <ratecred_admin_web.properties>${ratecred_admin_web.properties}</ratecred_admin_web.properties>
+			            <services.properties>${services.properties}</services.properties>
+			            <admin.properties>${admin.properties}</admin.properties>
 			          </systemProperties>
 					  <path>/${web.finalName}</path>
-					  <ajpPort>8009</ajpPort>
-					  <ajpProtocol>ajp</ajpProtocol>
+					  <port>8081</port>
 				</configuration>
-			</plugin> -->
-			 <plugin>
-	          <groupId>org.apache.tomcat.maven</groupId>
-	          <artifactId>tomcat6-maven-plugin</artifactId>
-	          <version>2.0-SNAPSHOT</version>
-        	</plugin>				
+			</plugin> 
+				
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

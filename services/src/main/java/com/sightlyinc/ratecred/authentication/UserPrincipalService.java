@@ -41,6 +41,7 @@ public interface UserPrincipalService {
     void signUp(UserPrincipal user, List<String> roleNames) throws UserPrincipalServiceException;
     
     void activateWithRoles(UserPrincipal entity, List<String> roleNames) throws UserPrincipalServiceException;
+    void deactivate(UserPrincipal entity) throws UserPrincipalServiceException;
 
     UserPrincipal findUserByEmail(String email);
     

@@ -48,11 +48,8 @@ public class MongoJsonDatabase implements JsonDatabase {
 	}
 	
 	
-	
-	
 	@Override
-	public void put(JSONObject doc, String collectionName, String id) throws DbException {
-		
+	public void put(JSONObject doc, String collectionName, String id) throws DbException {		
 		try {
 			DBCollection coll = 
 				db.getCollection(collectionName);
@@ -71,8 +68,6 @@ public class MongoJsonDatabase implements JsonDatabase {
 		}
 		
 	}
-
-
 
 
 	/* (non-Javadoc)
@@ -146,39 +141,6 @@ public class MongoJsonDatabase implements JsonDatabase {
 	
 	public DbPage findByExample(String collectionName, int pageNumber, JSONObject example)
 	throws DbException {
-//		DbPage pageResult = new DbPage();
-//		try {
-//			DBCollection coll = 
-//				db.getCollection(collectionName);
-//			
-//			DBCursor cur = null;
-//			
-//			if(example == null){
-//				cur = 
-//					coll.find().skip((pageNumber-1)*this.pageSize).limit(pageSize);
-//			} else {
-//				cur = 
-//					coll.find(makeDBObjectFromJSON(example)).skip((pageNumber-1)*this.pageSize).limit(pageSize);				
-//			}
-//					
-//			int total = cur.count();
-//			pageResult.setCount(total);
-//			
-//			pageResult.setPageNum(pageNumber);
-//
-//	        while(cur.hasNext()) {
-//	            DBObject obj = cur.next();
-//	            pageResult.getObjects().put(new JSONObject(obj.toString()));
-//	        }
-//	        
-//	        pageResult.setPageSize(pageResult.getObjects().length());
-//			
-//		} catch (MongoException e) {
-//			throw new DbException(e);
-//		} catch (JSONException e) {
-//			throw new DbException(e);
-//		}
-//		return pageResult;
 		
 		return findByExampleIncluding( collectionName,  pageNumber,  example, null);
 	}

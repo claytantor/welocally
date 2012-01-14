@@ -7,6 +7,11 @@ import org.apache.log4j.Logger;
 import com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator;
 import com.sightlyinc.ratecred.model.Award;
 
+/**
+ * test 
+ * @author claygraham
+ *
+ */
 public class DescendingAwardDateComparitor implements Comparator<Award>{
 	
 	static Logger logger = Logger.getLogger(DescendingAwardDateComparitor.class);

@@ -3,39 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.welocally.geodb</groupId>
 	<artifactId>geodb</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<version>0.8.0</version>
 	<name>geodb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<web.finalName>geodb</web.finalName>
-		<web.port>9080</web.port>
+		<web.port>8082</web.port>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<org.springframework.security.version>2.0.4</org.springframework.security.version>
 	</properties>
-
-	<profiles>
-	
-		<profile>
-			<id>tomcat</id>
-			<build>
-				<plugins>
-					<plugin>
-				        <groupId>org.codehaus.mojo</groupId>
-				        <artifactId>tomcat-maven-plugin</artifactId>
-				        <version>1.0</version>
-						<configuration>
-							 <systemProperties>
-					            <geodb_core.properties>${geodb_core.properties}</geodb_core.properties>
-					            <geodb_web.properties>${geodb_web.properties}</geodb_web.properties>
-					          </systemProperties>
-							  <path>/${web.finalName}</path>
-							  <port>${web.port}</port>
-						</configuration>
-					</plugin>	
-				</plugins>
-			</build>
-		</profile>
+	<profiles>	
 		<profile>
 			<id>war</id>
 			<build>
@@ -45,6 +23,8 @@
 						<artifactId>maven-war-plugin</artifactId>
 						<version>2.1.1</version>
 					</plugin>
+					
+					
 				</plugins>
 			</build>
 		</profile>
@@ -92,8 +72,19 @@
 	<build>
 		<finalName>${web.finalName}</finalName>
 		<plugins>
-
-					
+			<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>tomcat-maven-plugin</artifactId>
+		        <version>1.1</version>
+				<configuration>
+					 <systemProperties>
+			            <geodb_core.properties>${geodb_core.properties}</geodb_core.properties>
+			            <geodb_web.properties>${geodb_web.properties}</geodb_web.properties>
+			          </systemProperties>
+					  <path>/${web.finalName}</path>
+					  <port>${web.port}</port>
+				</configuration>
+			</plugin>					
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

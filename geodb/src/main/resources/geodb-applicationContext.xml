@@ -26,6 +26,11 @@
 	<!-- property placeholder -->
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>${geodb_core.properties}</value>
+			</list>			
+		</property>
 		<property name="systemPropertiesModeName">
 			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
 		</property>

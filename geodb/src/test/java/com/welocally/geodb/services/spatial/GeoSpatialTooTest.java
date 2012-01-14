@@ -119,7 +119,7 @@ public class GeoSpatialTooTest {
 			for (int i = 0; i < locations.length(); i++) {
 				JSONObject placeFound = locations.getJSONObject(i);
 				JSONObject properties = placeFound.getJSONObject("properties");
-				logger.debug("location found: " + properties.getString("name"));
+				logger.debug("location found: " + placeFound.toString());
 			}
 			
 			Assert.assertEquals(1, locations.length());

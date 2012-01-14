@@ -80,8 +80,7 @@ function deleteOverlays() {
 }
 
 
-http://localhost:8080/geodb/place/1_0/search.json?q=Sushi&loc=37.8261015_-122.2091333&radiusKm=100
-function getLocationsByAddress(address, keyword, radiusKm) {	
+function searchLocations(location, queryString, radiusKm) {	
 	jQuery('#welocally-post-error').removeClass('welocally-error');
 	jQuery('#welocally-post-error').show();
 	jQuery('#welocally-post-error').html('<em>Loading Places...</em>');
@@ -89,7 +88,7 @@ function getLocationsByAddress(address, keyword, radiusKm) {
 	jsonObjFeatures = [];
 	
 	
-	var missingRequired = false;
+	/*var missingRequired = false;
 	var fields = '';
 	if (!jQuery("#place-address").val().match(/\S/)) {
 		missingRequired = true;
@@ -103,20 +102,21 @@ function getLocationsByAddress(address, keyword, radiusKm) {
 	if(missingRequired){
 		buildMissingFieldsErrorMessages(fields);
 		return false;
-	}
+	}*/
 	    
-    var options = {
-		address : address,
-		radius: radiusKm,
-		query : keyword
-	};
+    var params = {
+    	q: queryString,
+    	loc: location.lat()+'_'+location.lng(),
+    	radiusKm: 20
+    }
+    
+    urlValue = "/geodb/place/1_0/search.json?"+jQuery.param(params);
 				
 	$.ajax({
 	  type: 'GET',
-	  url: '/geodb/place/1_0/search.json?q=Sushi&loc=37.8261015_-122.2091333&radiusKm=100',
+	  url: urlValue,
 	  dataType: 'json',
 	  contentType: 'application/json',
-	  data: JSON.stringify(options),
 	  error : function(jqXHR, textStatus, errorThrown) {
 			console.error(textStatus);
 
@@ -128,19 +128,19 @@ function getLocationsByAddress(address, keyword, radiusKm) {
 		    jQuery('#welocally-post-error').removeClass('welocally-error');
 		    jQuery('#welocally-post-error').hide();
 	  		jQuery('#welocally-post-error').html('');
-	  		if(data.places != null && data.places.length == 0) {
+	  		if(data != null && data.length == 0) {
 	  			jQuery('#welocally-post-error').append('<div class="welocally-context-help"></div>');
 	  			jQuery('#welocally-post-error').append('Sorry no places were found that match your query, try again or add this as a new place.');
 	  			jQuery('#welocally-post-error').addClass('welocally-update updated fade');
 	  			
-	  		} else if(data.places != null && data.places.length > 0) {
-				jQuery.each(data.places, function(i,item){
+	  		} else if(data != null && data.length > 0) {
+				jQuery.each(data, function(i,item){
 					console.log(JSON.stringify(item));
 					jsonObjFeatures.push(item);	    		
 					jQuery('#selectable').append(buildListItemForPlace(item,i));
 					jQuery("#results").show();	
 				});
-			} else if(data.places == null && data.errors != null) {
+			} else if(data == null && data.errors != null) {
 			
 				buildErrorMessages(data.errors);	
 					
@@ -152,17 +152,17 @@ function getLocationsByAddress(address, keyword, radiusKm) {
 }
 
 function buildListItemForPlace(place,i) {
-        var itemLabel = '<b>'+place.name+'</b>';
-        if (place.address) {
-            itemLabel += "<br>" + place.address;
+        var itemLabel = '<b>'+place.properties.name+'</b>';
+        if (place.properties.address) {
+            itemLabel += "<br>" + place.properties.address;
         }
 		return '<li class=\"ui-widget-content\" id="f'+i+'" title="select place">'+itemLabel+'</li>';
 }
 
 function buildSelectedInfoForPlace(place) {
-        var itemLabel = '<b>'+place.name+'</b>';
-        if (place.address) {
-            itemLabel += "<br>" + place.address;
+        var itemLabel = '<b>'+place.properties.name+'</b>';
+        if (place.properties.address) {
+            itemLabel += "<br>" + place.properties.address;
         }
 		return '<div class=\"selected-place-info\">'+itemLabel+'</div>';
 }
@@ -198,18 +198,17 @@ function setSelectedPlaceInfo(selectedItem) {
 	
 	//build the categories
 	buildCategorySelectionsForPlace(selectedItem, jQuery("#selectable-cat")); 
-	
+	jQuery("#results").hide();
 	jQuery("#selected-place").show();		
 	
 }
 
-function verifyGeocode(geocode) {
+function verifyGeocode(geocode, mode) {
+
+
 	
 	
-	var hasAll = hasType("street_number", geocode.address_components);
-	if(hasAll){
-		hasAll = hasType("route", geocode.address_components);
-	}
+	var hasAll = hasType("country", geocode.address_components);
 	if(hasAll){
 		hasAll = hasType("locality", geocode.address_components);
 	}
@@ -219,9 +218,17 @@ function verifyGeocode(geocode) {
 	if(hasAll){
 		hasAll = hasType("postal_code", geocode.address_components);
 	}
-	if(hasAll){
-		hasAll = hasType("country", geocode.address_components);
+	
+	if(mode=='edit-place-address-section'){
+		if(hasAll){
+			hasAll = hasType("route", geocode.address_components);
+		}
+		
+		if(hasAll){
+			hasAll = hasType("street_number", geocode.address_components);
+		}
 	}
+	
 	
 	//verified
 	if(hasAll){
@@ -262,27 +269,46 @@ function verifyGeocode(geocode) {
 		map.setCenter(geocode.geometry.location);								
 		addMarker(geocode.geometry.location);
 		
-		jQuery('#street-name-input').hide(); 
-		jQuery('#edit-place-street-selected').html(geocode.formatted_address);
-		jQuery('#edit-place-street-selected').addClass('verified-geocode fade');	
-		jQuery('#street-address-saved').show(); 
+
 		
-		//setup the cats
-		selectedPlace.classifiers = [];
-		var placeClassifier = {
-			type: '',
-			category: '',
-			subcategory: ''
-		};
-		selectedPlace.classifiers.push(placeClassifier);
+		//search-street-address-section | edit-place-address-section
+		//============================
+		if(mode == 'search-place-address-section'){
+
+			jQuery('#street-name-input').hide(); 
+			jQuery('#place-street-selected').html(geocode.formatted_address);
+			jQuery('#place-street-selected').addClass('verified-geocode fade');	
+			jQuery('#street-address-saved').show(); 			
+			searchLocations(geocode.geometry.location, selectedPlace.properties.name, 30);
+			
+		} else if(mode == 'edit-place-address-section'){
+			jQuery('#street-name-input').hide(); 
+			jQuery('#place-street-selected').show();
+			jQuery('#place-street-selected').html(geocode.formatted_address);
+			jQuery('#place-street-selected').addClass('verified-geocode fade');	
+			jQuery('#street-address-saved').show(); 	
+
+			//if mode is add
+			//=======================
+			//setup the cats
+			selectedPlace.classifiers = [];
+			var placeClassifier = {
+				type: '',
+				category: '',
+				subcategory: ''
+			};
+			selectedPlace.classifiers.push(placeClassifier);
+				
+			jQuery('#categories-section').show(); 
+			getCategories(null, null);		
+		}
 		
-		jQuery('#categories-section').show(); 
-		
-		getCategories(null, null);
+			
+
 				
 		
 	} else {		
-		jQuery('#edit-place-street-title').addClass('error-txt');
+		jQuery('#place-street-title').addClass('error-txt');
 		jQuery('#map_canvas').hide();
 	}
 
@@ -432,7 +458,6 @@ function setSelectedPlaceInfoForEditForm(place) {
 //init
 jQuery(document).ready(function(jQuery) {
 
-	//37.840157,-122.167969 37.834192,-122.242813
 	geocoder = new google.maps.Geocoder();
 	
 	 
@@ -440,6 +465,12 @@ jQuery(document).ready(function(jQuery) {
 	
 	
 	$( "input:submit, button",".action" ).button();
+	
+
+	jQuery('#search-place-name-section').append(jQuery('#edit-place-name-title'));
+	jQuery('#search-place-name-section').append(jQuery('#place-name-input'));
+	jQuery('#search-place-name-section').append(jQuery('#place-name-saved'));
+	jQuery('#place-name-title').html('Search Term: Enter a search term such as the place name or the category ie. "pizza"');
 	
 	jQuery("#welocally_default_search_radius").val('8');
 	
@@ -453,11 +484,21 @@ jQuery(document).ready(function(jQuery) {
 
 	
 
-    jQuery( "#edit-place-action" ).click(function() {
-    
+    jQuery( "#add-place-action" ).click(function() {
+
+		//put the fields
+		//put the name search in the top
+		jQuery('#edit-place-name-section').append(jQuery('#place-name-title'));
+		jQuery('#edit-place-name-section').append(jQuery('#place-name-input'));
+		jQuery('#edit-place-name-section').append(jQuery('#place-name-saved'));
+		jQuery('#place-name-saved').hide();
+		jQuery('#place-name-input').show();
+		jQuery('#place-name-title').html('Place Name: Enter the <strong>full name</strong> of the place you want to add.');
+
+        
     	jQuery('#welocally-post-error').removeClass('welocally-error welocally-update error updated fade');
 		jQuery('#welocally-post-error').html('');
-	
+		jQuery("#results").hide();
     	jQuery("#place-selector").hide();
     	jQuery("#edit-place-form").show();
     	jQuery('#map_canvas').height( 401 );
@@ -658,26 +699,59 @@ jQuery(document).ready(function(jQuery) {
 	
 	
 	jQuery( '#save-place-name-action' ).click(function() {
-		console.log("save-place-name-action");	
-		
+
+
+		//search-place-name-section || edit-place-name-section
+		var mode = this.parentElement.parentElement.id;
+		console.log("save-place-name-action mode:"+mode);	
+
+		//finde mode		
 		if (!jQuery("#edit-place-name").val().match(/\S/)) {
             jQuery("#edit-place-name-title").removeClass(); 
             jQuery("#edit-place-name-title").addClass('error-txt')
             
         } else {
+        	       	
         	jQuery('#place-name-input').hide();
         	selectedPlace.properties.name = jQuery("#edit-place-name").val();
         	jQuery('#edit-place-name-selected').html(selectedPlace.properties.name);
         	
         	jQuery('#place-name-saved').css("display","inline-block");
         	jQuery('#place-name-saved').show();
-        	        	
-        	jQuery('#street-address-section').css("display","inline-block");
-        	jQuery('#street-address-section').show();
+        	
+        	jQuery('#edit-place-name-title').hide(); 
+
+
+        	if(mode=='search-place-name-section'){
+            	//put the address search in the top
+    			jQuery('#search-place-address-section').append(jQuery('#street-name-input'));
+    			jQuery('#place-street-title').html('Location: Choose the location or full address you would like to search from. ie. Oakland, CA');
+    			jQuery('#search-place-address-section').append(jQuery('#map_canvas'));
+    			jQuery('#search-place-address-section').append(jQuery('#street-address-saved'));
+
+        	} else if(mode=='edit-place-name-section') {
+        		//put the address search in the top
+        		jQuery('#street-name-input').show(); 
+				jQuery('#place-street-selected').hide();
+				jQuery('#street-address-saved').hide(); 
+        		       		
+    			jQuery('#edit-place-address-section').append(jQuery('#street-name-input'));
+    			jQuery('#place-street-title').html('Location: Please enter the <strong>full address</strong> for the place you would like to add. ie. 2069 Antioch Ct Oakland, CA 94611');
+    			jQuery('#edit-place-address-section').append(jQuery('#map_canvas'));
+    			jQuery('#edit-place-address-section').append(jQuery('#street-address-saved'));
+    			jQuery('#edit-place-address-section').show();
+
+    			//hide the map and geocoding fields 
+    			jQuery('#map_canvas').hide();
+
+    			
+        	}      	        	
+        	
+
+			
+			
+             	
         }
-		
-		
-		
 		
 		return false;		
 	});
@@ -702,13 +776,16 @@ jQuery(document).ready(function(jQuery) {
 		}
 		
 		var address = jQuery('#edit-place-street').val();
+		
+		//determine mode from parent context
+		var mode = this.parentElement.parentElement.id;
+		
 		geocoder.geocode( { 'address': address}, function(results, status) {
 			console.log("geocode result");
 			if (status == google.maps.GeocoderStatus.OK) {
 				jQuery('#edit-place-street').val(results[0].formatted_address);
-				verifyGeocode(results[0]);
-				
-				
+				verifyGeocode(results[0], mode);
+						
 			} else {
 				console.log("Geocode was not successful for the following reason: " + status);
 		  	} 
@@ -811,7 +888,7 @@ jQuery(document).ready(function(jQuery) {
 	 
 	
     #add-span { }
-    #edit-place-action { }
+    #add-place-action { }
     #selection { margin-bottom: 10px; }
     #add-form-div { margin-top: 5px; display:none; }
    
@@ -838,10 +915,7 @@ jQuery(document).ready(function(jQuery) {
 	#selectable { list-style-type: none; margin: 0; padding: 0; }
 	#selectable li { margin: 3px 3px 3px 0; padding: 0.2em; cursor: pointer; }	
 	#categories-choice {  margin-bottom: 10px; display:none; }	
-	
-	
-	
-	
+		
 		
 	/* ------ selected place */
 	#selected-place { margin-bottom: 10px; width: 100%; display:none; }
@@ -902,6 +976,28 @@ jQuery(document).ready(function(jQuery) {
 	 	
 </style>
 <body>
+	<div style="display:none">
+			
+		<div id="place-name-input" class="action" style="display:inline-block">
+			<div id="place-name-title">*Place Name: <em>Required</em></div>
+			<input type="text" id="edit-place-name" name="edit-place-name" class="edit-field" value="Grinders Submarine Sandwiches">
+			<button id="save-place-name-action" href="#">Save</button>
+		</div>							
+		<div id="place-name-saved" class="action" style="display:none">
+			<div id="edit-place-name-selected" class="selected-place-field">&nbsp;</div>
+			<button id="edit-place-name-action" href="#">Edit</button>
+		</div>		
+		<div id="street-name-input" class="action" style="display:inline-block">
+			<div id="place-street-title">*Full Address: <em>Required</em></div>
+			<input type="text" id="edit-place-street" name="edit-place-street" class="edit-field" value="2069 Antioch Ct Oakland, CA 94611, USA">
+			<button class="action" id="geocode-action" href="#">Geocode</button>				        	
+		</div>
+		<div id="map_canvas" style="width:100%; height:300px; display:none"></div>
+		<div id="street-address-saved" class="action" style="display:none">				        		
+			<div id="place-street-selected" class="selected-place-field">&nbsp;</div>				        		
+			<button class="action" id="edit-place-street-action" href="#">Edit</button>						
+		</div>	
+	</div>
 	<div class="container">
 		<div class="span-24">	
 			<div id="welocally-post-error" class="welocally-error">No Errors...</div>				
@@ -911,13 +1007,13 @@ jQuery(document).ready(function(jQuery) {
 				<div id="all_place_info">
 					<!-- start place selector -->
 					<div id="place-selector">
-						<div class="meta-title2">Select Place</div>
-						<div>	
-							<div>*<em>Please enter the closest address, this can just be the city and state (ie. Oakland, CA), or the full address...</em> REQUIRED</div>
-							<div style="margin-bottom:5px">
-								<input type="text" id="place-address" 
-									class="search-field" 
-									value="">
+						<div class="meta-title2">Search Places</div>
+						
+							<div id="search-place-name-section"></div>
+							
+							<div id="search-place-address-section"></div>
+							
+							<div id="place-find-range-section" style="display:none">
 								<select id="welocally_default_search_radius" name="welocally_default_search_radius" >
 									<option value="2">2 km</option>
 									<option value="4">4 km</option>
@@ -926,15 +1022,18 @@ jQuery(document).ready(function(jQuery) {
 									<option value="16">16 km</option>
 									<option value="25">25 km</option>
 									<option value="50">50 km</option>
-								</select>&nbsp;<em>Distance in Km</em> 	
-									
+								</select>&nbsp;<em>Distance in Km</em> 										
 							</div>	
-							<div>*<em>What is the name of the place you are writing about or a simillar keyword...</em> REQUIRED</div> 
-							<div><input type="text" id="place-search" class="search-field"></div>
-							<div>
-								<button id="search-places-action">find places</button>
-					            <span id="add-span">don't see a match?&nbsp;&nbsp;<button id="edit-place-action">add new place</button></span>
-					      
+							
+							
+							<div id="place-find-query-section" style="display:none">						
+								<div>*<em>What is the name of the place you are writing about or a simillar keyword...</em> REQUIRED</div> 
+								<div><input type="text" id="place-search" class="search-field" value="foo"></div>
+							</div>
+							
+							
+							<div id="place-find-actions" class="action" style="display:none">
+								<button id="search-places-action">find places</button>			    					      
 							</div>
 						</div>
 						<div id="results">
@@ -942,7 +1041,11 @@ jQuery(document).ready(function(jQuery) {
 								<ol id="selectable">
 								</ol>	
 							</div>
-						</div>		
+							<div style="display:inline-block;" class="action">
+								<div id="add-span">don't see a match?&nbsp;&nbsp;</div><button id="add-place-action">add new place</button>
+							</div>
+						</div>	
+							
 					</div> 
 					<!-- end place selector -->
 					<!-- start place selector -->
@@ -954,7 +1057,6 @@ jQuery(document).ready(function(jQuery) {
 							<ol id="selectable-cat"></ol> 
 						</div>
 						<button id="btn-new-select" href="#">new selection</button>
-						<button id="edit-place" href="#">edit selected place</button>
 					</div> 
 					<!-- end place selector -->	
 					<!-- add place form -->	
@@ -962,32 +1064,10 @@ jQuery(document).ready(function(jQuery) {
 				    	<div id="place-form-title" class="meta-title2">Add New Place</div>
 				    					    	
 				    	<input type="hidden" id="edit-place-external-id" name="PlaceSelected">
-				    	
-				    	
-				    	<div id="place-name-section">
-				    		<div id="place-name-input" class="action" style="display:inline-block">
-								<div id="edit-place-name-title">*Place Name: <em>Required</em></div>
-								<input type="text" id="edit-place-name" name="edit-place-name" class="edit-field" value="Grinders Submarine Sandwiches">
-								<button id="save-place-name-action" href="#">Save</button>
-							</div>							
-							<div id="place-name-saved" class="action" style="display:none">
-								<div id="edit-place-name-selected" class="selected-place-field">&nbsp;</div>
-								<button id="edit-place-name-action" href="#">Edit</button>
-							</div>							
-				        </div>
+				    				    	
+				    	<div id="edit-place-name-section"></div>
 				        
-				        <div id="street-address-section" style="display:none">
-				        	<div id="street-name-input" class="action" style="display:inline-block">
-				        		<div id="edit-place-street-title">*Full Address: <em>Required</em></div>
-				        		<input type="text" id="edit-place-street" name="edit-place-street" class="edit-field" value="2069 Antioch Ct Oakland, CA 94611, USA">
-				        		<button class="action" id="geocode-action" href="#">Geocode</button>				        	
-				        	</div>
-				        	<div id="map_canvas" style="width:100%; height:300px; display:none"></div>
-				        	<div id="street-address-saved" class="action" style="display:none">				        		
-				        		<div id="edit-place-street-selected" class="selected-place-field">&nbsp;</div>				        		
-								<button class="action" id="edit-place-street-action" href="#">Edit</button>						
-				        	</div>
-				        </div>
+				        <div id="edit-place-address-section" style="display:none"></div>
 				        
 				        <div id="categories-section" style="display:none">
 				        	<div style="margin-top:15px; margin-bottom:-15px; height:20px;">*Category Info: <em>Required</em></div>
@@ -1010,9 +1090,8 @@ jQuery(document).ready(function(jQuery) {
 	        			<div class="action" style="display:inline-block; margin-top:10px;">
 							<button id="cancel-add-link" href="#">Cancel</button>
 							<button id="save-place-action" href="#" style="display:none">Add Place</button>
-				        </div>
-			   
-				    </div>
+				        </div> 	   
+				    </div> 
 				   
 				</div>	 <!-- end add place form -->		
 			

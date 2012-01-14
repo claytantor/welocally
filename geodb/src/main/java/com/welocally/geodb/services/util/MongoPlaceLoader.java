@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.DB;
@@ -34,6 +35,8 @@ public class MongoPlaceLoader implements CommandSupport {
 	
 	private DBCollection mongoCollection = 
 		null;
+	
+	@Autowired WelocallyJSONUtils welocallyJSONUtils;
 
 	@Override
 	public void doCommand(JSONObject command) throws CommandException {
@@ -79,13 +82,7 @@ public class MongoPlaceLoader implements CommandSupport {
 					JSONObject place = 
 						new JSONObject(s);
 					
-					//place.put("sgid", place.getString("id"));
-					place.put("_id", place.getString("id").replaceAll("SG_", "WL_"));
-					place.put("owner", "welocally");
-					place.put("type", "Place");
-					place.remove("id");
-					JSONObject properties = place.getJSONObject("properties");
-					properties.remove("href");
+					welocallyJSONUtils.updatePlaceToWelocally(place);
 					
 					logger.debug("adding document:"+place.getString("_id"));
 					DBObject placeJson = (DBObject)JSON.parse(place.toString());				
@@ -113,5 +110,7 @@ public class MongoPlaceLoader implements CommandSupport {
 		}
 		
 	}
+	
+	
 
 }
