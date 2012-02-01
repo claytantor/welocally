@@ -1,7 +1,7 @@
 package com.sightlyinc.ratecred.authentication;
 
 import javax.persistence.*;
-
+//the stuff
 @Entity
 @Table(name="role")
 public class Role {
