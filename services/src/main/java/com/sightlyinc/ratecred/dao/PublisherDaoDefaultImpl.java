@@ -17,6 +17,12 @@ import com.sightlyinc.ratecred.model.Publisher;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * how the publisher gets data 
+ * 
+ * @author claygraham
+ *
+ */
 @Repository("publisherDao")
 public class PublisherDaoDefaultImpl 
 extends AbstractDao<Publisher>  
