@@ -126,7 +126,16 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 		
 		BufferedReader br = new BufferedReader(reader); 
 		String str = null; 
+		if(maxDocs <= 0) // 0 or less indicates no max
+		{
+			maxDocs = Integer.MAX_VALUE;
+		}
+		int docCount = 0;
 		while((str = br.readLine()) != null) { 
+			if(docCount > maxDocs)
+			{
+				break;
+			}
 			
 			JSONObject place = 
 				new JSONObject(str);
