@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.welocally.geodb</groupId>
 	<artifactId>geodb</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.8.0</version>
 	<name>geodb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
