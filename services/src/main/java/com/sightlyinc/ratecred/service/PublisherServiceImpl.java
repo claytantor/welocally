@@ -2,6 +2,7 @@ package com.sightlyinc.ratecred.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.dao.PublisherDao;
+import com.sightlyinc.ratecred.dao.SiteDao;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.model.Site;
 
 @Service
 public class PublisherServiceImpl extends AbstractTransactionalService<Publisher>
@@ -17,6 +20,13 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 	
 	@Autowired
 	private PublisherDao publisherDao; 
+	
+//	@Autowired
+//	private SiteDao siteDao; 
+	
+	
+	
+	
 
 	@Override
 	public BaseDao<Publisher> getDao() {
@@ -24,8 +34,8 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 	}
 
     @Override
-    public Publisher findBySiteName(String siteName) {
-        return publisherDao.findBySiteName(siteName);
+    public Publisher findByName(String name) {
+    	throw new RuntimeException("NO IMPL");
     }
 
     
@@ -36,10 +46,6 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 		return publisherDao.findByNetworkMemberAndKey(networkMemberKey, publisherKey);
 	}
 
-	@Override
-	public List<Publisher> findBySiteNameLike(String siteName) {
-		return publisherDao.findBySiteNameLike(siteName);
-	}
 
 	@Override
 	public List<Publisher> findByUserPrincipal(UserPrincipal up) {
@@ -61,6 +67,17 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 	@Override
 	public Publisher findByPublisherKey(String publisherKey) {
 		return publisherDao.findByPublisherKey(publisherKey);
+	}
+
+	@Override
+	public void delete(Publisher entity) {
+		/*Set<Site> sites = entity.getSites();
+		for (Site site : sites) {
+			siteDao.delete(site);
+		}
+		entity*/
+		
+		super.delete(entity);
 	}
 
 

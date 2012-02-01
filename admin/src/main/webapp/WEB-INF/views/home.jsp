@@ -45,7 +45,7 @@
 			<h2>welocally publishers</h2>
 			<hr/>			
 			<div class="fill-frame">
-				<h3>sites:${fn:length(member.publishers)}</h3>		
+				<h3>publishers:${fn:length(member.publishers)}</h3>		
 			</div>			
 			<div class="fill-frame">
 			<c:if test="${not empty member.publishers}">
@@ -65,11 +65,11 @@
 						<div class="${rowColor} span-24 last">
 							<div class="span-21">
 								<div class="strong-12 span-10">
-									<a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.siteName}</a>
+									<a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.name}</a>
 								</div>
-								<div class="span-10">
+								<%--<div class="span-10">
 									<a href="${publisher.url}" target="_new">${publisher.url}</a>
-								</div>
+								</div> --%>
 							</div>							
 							<div class="align-right span-2">${publisher.subscriptionStatus}</div>	
 						</div>
@@ -102,22 +102,33 @@
 		</div>
 		<div class="area main span-18 last">
 			<div class="border-bottom bottom-10 span-18 last">
-				<h3>Publisher Info For ${publisher.siteName}</h3>
+				<h3>Publisher Info For ${publisher.name}</h3>
 				<div>Subscription Status:${publisher.subscriptionStatus}</div>
 				<div>Publisher Key:${publisher.key}</div>
 				<div>Publisher Token:${publisher.jsonToken}</div>
-				<div>Site Url:${publisher.url}</div>
+				<%--<div>Site Url:${publisher.url}</div>
 				<div>Site Summary:${publisher.summary}</div>
-				<div>Subscription Status:${publisher.subscriptionStatus}</div>
+				<div>Subscription Status:${publisher.subscriptionStatus}</div> --%>
 			</div>
 			<div class="bottom-10 span-18 last">
 				<h3>Orders</h3>
-				<div>
+				<div class="span-24 last">
 					<table width="100%" cellpadding="0" cellspacing="0" border="0">
-					<c:forEach var="order" items="${publisher.orders}">			
+					<c:forEach var="order" items="${publisher.orders}">		
 						<tr>
-							<td>${order.buyerEmail}</td><td>${order.title}</td><td>${order.price}</td>
+							<td><div class="span-24 last">${order.buyerEmail}</div></td>						
 						</tr>
+						<c:forEach var="orderLine" items="${order.orderLines}">
+						<tr>
+							<td>
+								<div class="span-4">name:${orderLine.itemSku.name}</div>
+								<div class="span-4">price:${orderLine.itemSku.price}</div>
+								<div class="span-4">qty_orig:${orderLine.quantityOrig}</div>
+							</td>
+											
+						</tr>	
+						</c:forEach>
+	
 					</c:forEach>
 					</table>
 				</div>

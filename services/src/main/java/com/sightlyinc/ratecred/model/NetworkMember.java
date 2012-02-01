@@ -69,7 +69,7 @@ public class NetworkMember extends BaseEntity {
 	@OneToMany
 	@JoinColumn(name="network_member_id")
 	@JsonIgnore
-	@OrderBy("subscriptionStatus, siteName")
+	@OrderBy("subscriptionStatus, name")
 	private Set<Publisher> publishers;
 	
 	@OneToMany

@@ -69,9 +69,10 @@ public class Article extends BaseEntity implements GeoPersistable {
 	}
 	
 	protected String getPublisherLayerPrefix(Publisher publisher) {
-    	return publisher.getNetworkMember().getMemberKey()+"."+
-			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
-			.replaceAll(" ", "-");
+//    	return publisher.getNetworkMember().getMemberKey()+"."+
+//			publisher.getSiteName().toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
+//			.replaceAll(" ", "-");
+		throw new RuntimeException("NO IMPL");
     }
 	
 	

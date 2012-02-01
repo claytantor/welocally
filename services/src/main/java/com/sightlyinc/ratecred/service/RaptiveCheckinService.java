@@ -39,25 +39,25 @@ public class RaptiveCheckinService implements CheckinService {
 	
 	private static final Log logger = LogFactory.getLog(RaptiveCheckinService.class);
 	
-	@Value("${aggegator.consumerKey}")	
+	@Value("${aggegator.consumerKey:a}")	
 	private String aggegatorConsumerKey;
 	
-	@Value("${aggegator.consumerSecret}")
+	@Value("${aggegator.consumerSecret:b}")
 	private String aggegatorConsumerSecret;
 	
-	@Value("${aggegator.baseUrl}")
+	@Value("${aggegator.baseUrl:http://foo.com}")
 	private String aggegatorBaseUrl;
 	
-	@Value("${aggegator.reqUrl}")
+	@Value("${aggegator.reqUrl:http://foo.com}")
 	private String reqUrl;
 	
-	@Value("${aggegator.accessUrl}")
+	@Value("${aggegator.accessUrl:http://foo.com}")
 	private String accessUrl;
 	
-	@Value("${aggegator.authzUrl}")
+	@Value("${aggegator.authzUrl:http://foo.com}")
 	private String authzUrl;
 	
-	@Value("${aggegator.checkinCallbackUrl}")
+	@Value("${aggegator.checkinCallbackUrl:http://foo.com}")
 	private String checkinCallbackUrl;
 	
 	@Autowired

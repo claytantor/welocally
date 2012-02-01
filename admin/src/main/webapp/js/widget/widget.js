@@ -1,7 +1,7 @@
 // TODO - add full support for the "open graph" meta elements
 // TODO - add more specifics to each service, such as buzz "imageurl"
-if (!window.RATECRED) {
-        window.RATECRED = {
+if (!window.WELOCALLY) {
+        window.WELOCALLY = {
                 util: {
                         update: function() {
                                 var obj = arguments[0], i = 1, len=arguments.length, attr;

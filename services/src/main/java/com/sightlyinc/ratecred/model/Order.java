@@ -1,13 +1,18 @@
 package com.sightlyinc.ratecred.model;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.sightlyinc.ratecred.model.ProductLine.ProductLineStatus;
 
 /**
  * 
@@ -95,6 +100,7 @@ import javax.persistence.Table;
 @Table(name="cust_order")
 public class Order extends BaseEntity {
 
+	public enum OrderStatus { SUBSCRIBED, CANCELED, REGISTERED }
 	
 	//this is the id that is used to get the voucher
 	@Column(name="external_txid")
@@ -120,6 +126,9 @@ public class Order extends BaseEntity {
 	@Column(name="external_payer_id")
 	private String externalPayerId;
 	
+	@Column(name="representitive_code")
+	private String representitiveCode;
+		
 	private String city;
 	
 	private String state;
@@ -133,40 +142,45 @@ public class Order extends BaseEntity {
 	//amazon  order item id
 	@Column(name="external_id")
 	private String externalOrderItemCode;
-		
-	private String sku;
-	private String title;
 	
-	@Column(columnDefinition="TEXT")
-	private String description;
+	//decimal(20,8)
+	@Column(name="total")
+	private BigDecimal total;
 	
-	private Float price;
-	private String status;
+	@Column(name="discount")
+	private BigDecimal discount;
 	
-	private Integer quantity;
+	@Column(name="status")
+	@Enumerated(EnumType.STRING)
+	private OrderStatus status;
 	
+	@OneToMany
+	@JoinColumn(name = "cust_order_id")	
+	private Set<OrderLine> orderLines;
+	
+	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
+	
+	
+
 	@ManyToOne
 	@JoinColumn(name = "publisher_id")
 	private Publisher owner;
 	
-	@ManyToOne
-	@JoinColumn(name = "offer_id")
-	private Offer offer;
+
 	
-	@OneToMany
-	@JoinColumn(name = "cust_order_id")
-	private Set<Voucher> voucher;
-
-
-	public String getStatus() {
+	
+	public OrderStatus getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+
+
+	public void setStatus(OrderStatus status) {
 		this.status = status;
 	}
 
-	
-	
+
 	public String getExternalTxId() {
 		return externalTxId;
 	}
@@ -238,36 +252,6 @@ public class Order extends BaseEntity {
 	public void setExternalOrderItemCode(String externalOrderItemCode) {
 		this.externalOrderItemCode = externalOrderItemCode;
 	}
-	public String getSku() {
-		return sku;
-	}
-	public void setSku(String sku) {
-		this.sku = sku;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public Float getPrice() {
-		return price;
-	}
-	public void setPrice(Float price) {
-		this.price = price;
-	}
-	public Integer getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
 
 	public Publisher getOwner() {
 		return owner;
@@ -275,27 +259,20 @@ public class Order extends BaseEntity {
 	public void setOwner(Publisher owner) {
 		this.owner = owner;
 	}
-	
-	public Offer getOffer() {
-		return offer;
-	}
-	public void setOffer(Offer offer) {
-		this.offer = offer;
-	}
 
-
+	public BigDecimal getDiscount() {
+		return discount;
+	}
+	public void setDiscount(BigDecimal discount) {
+		this.discount = discount;
+	}
 	public String getExternalPayerId() {
 		return externalPayerId;
 	}
 	public void setExternalPayerId(String externalPayerId) {
 		this.externalPayerId = externalPayerId;
 	}
-	public Set<Voucher> getVoucher() {
-		return voucher;
-	}
-	public void setVoucher(Set<Voucher> voucher) {
-		this.voucher = voucher;
-	}
+
 	public String getBuyerEmail() {
 		return buyerEmail;
 	}
@@ -304,6 +281,34 @@ public class Order extends BaseEntity {
 	public void setBuyerEmail(String buyerEmail) {
 		this.buyerEmail = buyerEmail;
 	}
+	
+	public String getRepresentitiveCode() {
+		return representitiveCode;
+	}
+	public void setRepresentitiveCode(String representitiveCode) {
+		this.representitiveCode = representitiveCode;
+	}
+	
+	public BigDecimal getTotal() {
+		return total;
+	}
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+	
+	public Set<OrderLine> getOrderLines() {
+		return orderLines;
+	}
+	public void setOrderLines(Set<OrderLine> orderLines) {
+		this.orderLines = orderLines;
+	}
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
 		
 
 }

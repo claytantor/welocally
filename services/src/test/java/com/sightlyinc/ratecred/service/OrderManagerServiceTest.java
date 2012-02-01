@@ -28,7 +28,7 @@ public class OrderManagerServiceTest {
 		Logger.getLogger(OrderManagerServiceTest.class);
 	
 	@Autowired
-	private OrderManagerService orderManagerService;
+	private OrderService orderManagerService;
 		
 	@Before
 	public void setup(){
@@ -55,12 +55,12 @@ public class OrderManagerServiceTest {
 				 
 			}
 			
-			 o.setStatus("PAID");
-			 o.setPrice(Float.valueOf("5.99"));
+			 o.setStatus(Order.OrderStatus.SUBSCRIBED);
+			 //o.setPrice(Float.valueOf("5.99"));
 			 o.setExternalOrderItemCode("ERY4");
-			 o.setSku("92920210saksis");
+			 //o.setSku("92920210saksis");
 			 o.setBuyerEmail("joe@foo.com");
-			 o.setQuantity(1);
+			 //o.setQuantity(1);
 			 o.setBuyerKey(GUIDGenerator.createId());
 			 
 			 orderManagerService.saveOrder(o);

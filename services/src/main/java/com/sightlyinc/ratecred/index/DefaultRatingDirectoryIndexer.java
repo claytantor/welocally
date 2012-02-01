@@ -29,8 +29,8 @@ public class DefaultRatingDirectoryIndexer implements RatingDirectoryIndexer {
 	static Logger logger = 
 		Logger.getLogger(DefaultRatingDirectoryIndexer.class);
 	
-	@Autowired
-	@Qualifier("ratingIndexWriter")
+	//@Autowired
+	//@Qualifier("ratingIndexWriter")
 	private IndexWriter indexWriter;
 	
 	@Autowired

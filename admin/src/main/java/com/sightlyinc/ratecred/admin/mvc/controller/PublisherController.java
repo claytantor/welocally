@@ -93,16 +93,16 @@ public class PublisherController {
 			
 			if(p!= null)
 			{
-				p.setMonthlyPageviews(form.getMonthlyPageviews());
+				//p.setMonthlyPageviews(form.getMonthlyPageviews());
 				
 				//this should not be editable without a process
 				p.setKey(form.getKey());
 				
 				p.setJsonToken(form.getJsonToken());
-				p.setSiteName(form.getSiteName());
+				p.setName(form.getName());
 				p.setDescription(form.getDescription());
 				p.setSummary(form.getSummary());
-				p.setUrl(form.getUrl());
+				//p.setUrl(form.getUrl());
 				p.setMapIconUrl(form.getMapIconUrl());
 				p.setIconUrl(form.getIconUrl());
 				
@@ -263,9 +263,10 @@ public class PublisherController {
 
     @RequestMapping("/search")
     public String searchByName(@RequestParam("siteName") String siteName, Model model) {
-        logger.debug("search by siteName");
-        List<Publisher> publisers = publisherService.findBySiteNameLike(siteName);
-        model.addAttribute("publishers", publisers);
-        return "publisher/list_json";
+//        logger.debug("search by siteName");
+//        List<Publisher> publisers = publisherService.findBySiteNameLike(siteName);
+//        model.addAttribute("publishers", publisers);
+//        return "publisher/list_json";
+    	throw new RuntimeException("NO IMPL");
     }
 }

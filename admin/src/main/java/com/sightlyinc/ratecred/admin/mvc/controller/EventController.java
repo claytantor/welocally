@@ -115,7 +115,7 @@ public class EventController {
 		logger.debug("list");
 		Publisher publisher = publisherService.findByPrimaryKey(publisherId);
 		model.addAttribute("publisher", publisher);
-		model.addAttribute("events", publisher.getEvents());
+		//model.addAttribute("events", publisher.getEvents());
 		return "event/list";
 	}
 

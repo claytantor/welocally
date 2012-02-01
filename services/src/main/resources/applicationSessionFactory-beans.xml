@@ -42,6 +42,14 @@
 				<value>com.sightlyinc.ratecred.model.Voucher</value>
 				<value>com.sightlyinc.ratecred.model.SimpleGeoJsonToken</value>
 				<value>com.sightlyinc.ratecred.model.PaymentNotification</value>
+								
+				<value>com.sightlyinc.ratecred.model.OrderLine</value>
+				<value>com.sightlyinc.ratecred.model.Product</value>
+				<value>com.sightlyinc.ratecred.model.ProductLine</value>
+				<value>com.sightlyinc.ratecred.model.ItemSku</value>
+				<value>com.sightlyinc.ratecred.model.Site</value>
+				<value>com.sightlyinc.ratecred.model.Contact</value>
+				
 				<value>com.sightlyinc.ratecred.authentication.UserPrincipal</value>
 				<value>com.sightlyinc.ratecred.authentication.Role</value>
             </list>

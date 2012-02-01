@@ -3,11 +3,18 @@ package com.sightlyinc.ratecred.model;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 
 @PersistenceObservable
@@ -15,10 +22,10 @@ import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 @Table(name="publisher")
 public class Publisher extends BaseEntity {
 	
-	private String url;
-	
-	@Column(name="site_name")
-	private String siteName;
+	public enum PublisherStatus { KEY_ASSIGNED, CANCELED, REGISTERED, SUBSCRIBED }
+
+	@Column(name="name")
+	private String name;
 	
 	@Column(name="key_value")
 	private String key;
@@ -27,10 +34,7 @@ public class Publisher extends BaseEntity {
 	private String description;	
 
 	private String summary;	
-	
-	@Column(name="monthly_pageviews")
-	private Integer monthlyPageviews;
-	
+		
 	@Column(name="icon_url")
 	private String iconUrl;
 	
@@ -55,74 +59,46 @@ public class Publisher extends BaseEntity {
 	public void setServiceEndDateMillis(Long serviceEndDateMillis) {
 		this.serviceEndDateMillis = serviceEndDateMillis;
 	}
-
+	
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
 	private NetworkMember networkMember;
+	
+	
+	@OneToMany(cascade = {CascadeType.ALL })
+	@JoinColumn(name = "publisher_id")
+	public Set<Site> sites;
+	
+	@OneToMany
+	@JoinColumn(name = "publisher_id")
+	public Set<Contact> contacts;
+
 
     @OneToOne
     @JoinColumn(name="user_principal_id")
     @JsonIgnore
     private UserPrincipal userPrincipal;
 
-	@OneToMany
-	@JoinColumn(name = "publisher_id")
-	private Set<OfferEconomics> offerEconomics;
-	
+
 	@OneToMany
 	@JoinColumn(name = "publisher_id")
 	private Set<Order> orders;
 	
-	@OneToMany(cascade={CascadeType.ALL})
-	@JoinColumn(name = "publisher_id")
-	@JsonIgnore
-	private Set<Event> events;
-	
-	@OneToMany(cascade={CascadeType.ALL})
-	@JoinColumn(name = "publisher_id")
-	@JsonIgnore
-	private Set<Article> articles;
-
 	public String getKey() {
 		return key;
 	}
 	public void setKey(String key) {
 		this.key = key;
 	}
-	public String getSiteName() {
-		return siteName;
-	}
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
-	}
+	
 
-
-	public Integer getMonthlyPageviews() {
-		return monthlyPageviews;
-	}
-	public void setMonthlyPageviews(Integer monthlyPageviews) {
-		this.monthlyPageviews = monthlyPageviews;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
 	public NetworkMember getNetworkMember() {
 		return networkMember;
 	}
 	public void setNetworkMember(NetworkMember networkMember) {
 		this.networkMember = networkMember;
 	}
-    @JsonIgnore
-	public Set<OfferEconomics> getOfferEconomics() {
-		return offerEconomics;
-	}
-    @JsonIgnore
-	public void setOfferEconomics(Set<OfferEconomics> offerEconomics) {
-		this.offerEconomics = offerEconomics;
-	}
+	    
 	public String getDescription() {
 		return description;
 	}
@@ -146,22 +122,6 @@ public class Publisher extends BaseEntity {
 	}
 	public void setMapIconUrl(String mapIconUrl) {
 		this.mapIconUrl = mapIconUrl;
-	}
-	@JsonIgnore
-	public Set<Event> getEvents() {
-		return events;
-	}
-	@JsonIgnore
-	public void setEvents(Set<Event> events) {
-		this.events = events;
-	}
-	@JsonIgnore
-	public Set<Article> getArticles() {
-		return articles;
-	}
-	@JsonIgnore
-	public void setArticles(Set<Article> articles) {
-		this.articles = articles;
 	}
 
     public UserPrincipal getUserPrincipal() {
@@ -204,6 +164,24 @@ public class Publisher extends BaseEntity {
 	}
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Set<Site> getSites() {
+		return sites;
+	}
+	public void setSites(Set<Site> sites) {
+		this.sites = sites;
+	}
+	public Set<Contact> getContacts() {
+		return contacts;
+	}
+	public void setContacts(Set<Contact> contacts) {
+		this.contacts = contacts;
 	}
     
     

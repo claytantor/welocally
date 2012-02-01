@@ -273,6 +273,17 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 		
 	}
 	
+	
+	
+	@Override
+	public UserPrincipal findByUserName(String username)
+			throws UserPrincipalServiceException {
+		return getUserPrincipalDao().findByUserName(username);
+	}
+
+
+
+	
 
 
 	/* (non-Javadoc)

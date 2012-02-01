@@ -78,8 +78,8 @@ public class RatingManagerServiceImpl implements RatingManagerService {
 	@Autowired
 	private PlaceDao placeDao;
 	
-	@Autowired
-	@Qualifier("ratingDirectory")
+	//@Autowired
+	//@Qualifier("ratingDirectory")
 	private Directory ratingDirectory;	
 	
 	@Autowired

@@ -1,5 +1,7 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import javax.management.RuntimeErrorException;
+
 import com.sightlyinc.ratecred.model.Article;
 import com.sightlyinc.ratecred.model.Event;
 import com.sightlyinc.ratecred.model.Place;
@@ -96,26 +98,27 @@ public class WidgetController {
             
             
             if (publisher != null) {
-                if (url.startsWith(p.getUrl())) {
-                    article.setPublisher(p);
-
-                    // look up the selected place
-                    Place place = placeManagerService.findPlaceByPrimaryKey(placeId);
-                    if (place != null) {
-                        article.setPlace(place);
-
-                        articleService.save(article);
-
-                        LOGGER.debug("publish widget saved new article with url " + url);
-                        modelAndView.addObject("status", "Queued for publish");
-                    } else {
-                        LOGGER.debug("publish widget could not find place with id " + placeId);
-                        modelAndView.addObject("status", "Invalid place: " + placeId);
-                    }
-                } else {
-                    LOGGER.debug("publish widget article URL does not start with publisher URL");
-                    modelAndView.addObject("status", "Article URL must start with " + p.getUrl());
-                }
+//                if (url.startsWith(p.getUrl())) {
+//                    article.setPublisher(p);
+//
+//                    // look up the selected place
+//                    Place place = placeManagerService.findPlaceByPrimaryKey(placeId);
+//                    if (place != null) {
+//                        article.setPlace(place);
+//
+//                        articleService.save(article);
+//
+//                        LOGGER.debug("publish widget saved new article with url " + url);
+//                        modelAndView.addObject("status", "Queued for publish");
+//                    } else {
+//                        LOGGER.debug("publish widget could not find place with id " + placeId);
+//                        modelAndView.addObject("status", "Invalid place: " + placeId);
+//                    }
+//                } else {
+//                    LOGGER.debug("publish widget article URL does not start with publisher URL");
+//                    modelAndView.addObject("status", "Article URL must start with " + p.getUrl());
+//                }
+            	throw new RuntimeException("NO IMPL");
             } else {
                 LOGGER.debug("publish widget could not find publisher with key " + publisher);
                 modelAndView.addObject("status", "Invalid publisher: " + publisher);
@@ -176,26 +179,27 @@ public class WidgetController {
             Publisher publisher = publisherService.findByNetworkKeyAndPublisherKey(
         		keys[0], keys[1]);
             if (publisher != null) {
-                if (url.startsWith(publisher.getUrl())) {
-                    event.setPublisher(publisher);
-
-                    // look up the selected place
-                    Place place = placeManagerService.findPlaceByPrimaryKey(placeId);
-                    if (place != null) {
-                        event.setPlace(place);
-
-                        eventService.save(event);
-
-                        LOGGER.debug("publish widget saved new event with url " + url);
-                        modelAndView.addObject("status", "Queued for publish");
-                    } else {
-                        LOGGER.debug("publish widget could not find place with id " + placeId);
-                        modelAndView.addObject("status", "Invalid place: " + placeId);
-                    }
-                } else {
-                    LOGGER.debug("publish widget event URL does not start with publisher URL");
-                    modelAndView.addObject("status", "Event URL must start with " + publisher.getUrl());
-                }
+//                if (url.startsWith(publisher.getUrl())) {
+//                    event.setPublisher(publisher);
+//
+//                    // look up the selected place
+//                    Place place = placeManagerService.findPlaceByPrimaryKey(placeId);
+//                    if (place != null) {
+//                        event.setPlace(place);
+//
+//                        eventService.save(event);
+//
+//                        LOGGER.debug("publish widget saved new event with url " + url);
+//                        modelAndView.addObject("status", "Queued for publish");
+//                    } else {
+//                        LOGGER.debug("publish widget could not find place with id " + placeId);
+//                        modelAndView.addObject("status", "Invalid place: " + placeId);
+//                    }
+//                } else {
+//                    LOGGER.debug("publish widget event URL does not start with publisher URL");
+//                    modelAndView.addObject("status", "Event URL must start with " + publisher.getUrl());
+//                }
+            	throw new RuntimeException("NO IMPL");
             } else {
                 LOGGER.debug("publish widget could not find publisher with id " + publisherKey);
                 modelAndView.addObject("status", "Invalid publisher: " + publisherKey);

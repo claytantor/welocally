@@ -108,7 +108,7 @@ public class ArticleController {
 		logger.debug("list");
 		Publisher publisher = publisherService.findByPrimaryKey(publisherId);
 		model.addAttribute("publisher", publisher);
-		model.addAttribute("articles", publisher.getArticles());
+		//model.addAttribute("articles", publisher.getArticles());
 		return "article/list";
 	}
 

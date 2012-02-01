@@ -4,10 +4,9 @@ import java.util.List;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Order;
-import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.Voucher;
+import com.sightlyinc.ratecred.model.Product;
 
-public interface OrderManagerService {
+public interface OrderService {
 	
 	public Order findOrderByPrimaryKey(Long id) throws BLServiceException;
 	
@@ -15,7 +14,7 @@ public interface OrderManagerService {
 	
 	public List<Order> findOrderByPublisherKey(String publisherKey);
 	
-	
+	public Order makeOrderFromProduct(Product p) throws BLServiceException;
 	
 	public Order findOrderByChannelAndExternalId(String channel, String externalId) 
 		throws BLServiceException;

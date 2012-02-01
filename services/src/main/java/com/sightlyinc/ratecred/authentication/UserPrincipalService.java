@@ -16,6 +16,8 @@ public interface UserPrincipalService {
 	public UserPrincipal loadUserByAuthId(String authId) throws UserPrincipalServiceException,UserNotFoundException;
 	public UserPrincipal loadUserEmail(String authId) throws UserPrincipalServiceException,UserNotFoundException;
 	
+	public UserPrincipal findByUserName(String username) throws UserPrincipalServiceException;
+	
 	public void saveUserPrincipalRoles(UserPrincipal up, Set<Role> roles) throws UserPrincipalServiceException;
 	public void saveUserPrincipalRoles(UserPrincipal up, List<String> roles) throws BLServiceException;
 	

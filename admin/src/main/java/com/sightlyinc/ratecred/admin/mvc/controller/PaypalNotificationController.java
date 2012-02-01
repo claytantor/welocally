@@ -42,7 +42,7 @@ import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.PaymentNotification;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.User;
-import com.sightlyinc.ratecred.service.OrderManagerService;
+import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PaymentNotificationService;
 import com.sightlyinc.ratecred.service.PublisherService;
 
@@ -78,7 +78,7 @@ public class PaypalNotificationController {
 //    private SimpleGeoJsonTokenDao simpleGeoJsonTokenDao;
 
 	@Autowired
-	OrderManagerService orderManagerService;
+	OrderService orderManagerService;
 	
 	@Value("${paypal.callback.endpoint:https://www.sandbox.paypal.com/cgi-bin/webscr}")
 	//https://www.paypal.com/cgi-bin/webscr
@@ -219,13 +219,20 @@ public class PaypalNotificationController {
 					 o.setExternalTxId(orderId);
 					 //should be tracking no field
 					 o.setExternalOrderItemCode(ipnTrack);
-					 o.setStatus(txType);
-					 o.setPrice(Float.valueOf(paymentAmount));
-					 o.setSku(itemNumber);
+					 o.setStatus(Order.OrderStatus.SUBSCRIBED);
+					 
+					 //lookup by product by product sku
+					 
+					 //o.setPrice(Float.valueOf(paymentAmount));
+					 //o.setSku(itemNumber);
+					 
 					 o.setBuyerEmail(payerEmail);
-					 o.setQuantity(1);
+					 
+					 //o.setQuantity(1);
 					 o.setBuyerKey(publisherKey);
-					 o.setTitle(itemName);
+					 
+					 //o.setTitle(itemName);
+					 
 					 o.setExternalPayerId(payerId);
 					 o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
 					 o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
@@ -259,13 +266,13 @@ public class PaypalNotificationController {
 					 o.setExternalTxId(orderId);
 					 //should be tracking no field
 					 o.setExternalOrderItemCode(ipnTrack);
-					 o.setStatus(txType);
-					 o.setPrice(Float.valueOf(paymentAmount));
-					 o.setSku(itemNumber);
+					 o.setStatus(Order.OrderStatus.SUBSCRIBED);
+					 //o.setPrice(Float.valueOf(paymentAmount));
+					 //o.setSku(itemNumber);
 					 o.setBuyerEmail(payerEmail);
-					 o.setQuantity(1);
+					 //o.setQuantity(1);
 					 o.setBuyerKey(publisherKey);
-					 o.setTitle(itemName);
+					 //o.setTitle(itemName);
 					 o.setExternalPayerId(payerId);
 					 o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
 					 o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
@@ -332,10 +339,10 @@ public class PaypalNotificationController {
 
 		if (publisher != null) {
 			logger.debug("canceling subscription for publisher:"
-					+ publisher.getSiteName() + " with key:"
+					+ publisher.getName() + " with key:"
 					+ publisher.getKey());
 			publisher.setSubscriptionStatus(statusType);
-			o.setStatus(txType);
+			o.setStatus(Order.OrderStatus.CANCELED);
 		}
 
 		publisherService.save(publisher);

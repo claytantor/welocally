@@ -18,45 +18,73 @@
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h2><a href="<c:url value='/home' />">${publisher.networkMember.name}</a> : ${publisher.siteName}</h2>
-		<hr/>
-		<h3>${publisher.networkMember.memberKey}.${publisher.key}</h3>
-		<div class="actions span-24 last">
-			<a href="<c:url value='/publisher/publisher/edit/${publisher.id}' />" class="button">edit</a>
-		</div>
-
-		<div class="padding-5 span-24 last">
-			<div class="strong-12 span-1">id:${publisher.id}</div>
-			<div class="span-4">${publisher.subscriptionStatus}</div>
-			<div class="span-16 last">
-				<div class="span-16"><a href="${publisher.url}">${publisher.url}</a></div>
-				<div class="span-16">${publisher.description}</div>
-							
-			</div>	
+		<div class="span-24 last">
+			<h2><a href="<c:url value='/home' />">${publisher.networkMember.name}</a> : ${publisher.name}</h2>
 		</div>
 		<div class="bottom-10 frame span-24 last">
-			<h3>orders</h3>
+			<div class="actions span-24 last" >
+				<div class="actions span-12" style="text-align:left">
+					<h3>Publisher</h3>
+				</div>
+				<div class="actions span-12 last" style="text-align:right">
+					<a href="<c:url value='/publisher/publisher/edit/${publisher.id}' />" class="button">edit</a>
+					<a href="<c:url value='/publisher/publisher/delete/${publisher.id}' />" class="button">delete</a>
+				</div>				
+			</div>
+			<div class="span-24 last">
+				<div class="span-4">status</div><div class="strong-12 span-20 last">${publisher.subscriptionStatus}</div>
+				<div class="span-4">key</div><div class="strong-12 span-20 last">${publisher.key}</div>
+				<c:if test="${not empty publisher.jsonToken}">
+				<div class="span-4">token</div><div class="strong-12 span-20 last">${publisher.jsonToken}</div>
+				</c:if>
+				
+			</div>
+		</div>
+		<div class="bottom-10 frame span-24 last">
+			<h3>Sites</h3>
 			<div class="span-24 last">
 				<table width="100%" cellpadding="0" cellspacing="0" border="0">
-				<c:forEach var="order" items="${publisher.orders}">			
+				<c:forEach var="site" items="${publisher.sites}">		
+					<tr><td>${site.name}</td></tr>	
+				</c:forEach>
+				</table>
+			</div>
+		</div>			
+		<div class="bottom-10 frame span-24 last">
+			<h3>Orders</h3>
+			<div class="span-24 last">
+				<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<c:forEach var="order" items="${publisher.orders}">		
 					<tr>
-						<td>${order.buyerEmail}</td><td>${order.title}</td><td>${order.price}</td>
+						<td><div class="span-24 last">${order.buyerEmail}</div></td>						
 					</tr>
+					<tr>
+						<td>
+							<div class="span-16"><h3>Items</h3></div>							
+						</td>										
+					</tr>
+					<tr>
+						<td>
+							<div class="span-8"><strong>Name</strong></div>							
+							<div class="span-4"><strong>Original Qty</strong></div>
+							<div class="span-4"><strong>Price</strong></div>
+						</td>										
+					</tr>
+					<c:forEach var="orderLine" items="${order.orderLines}">
+					<tr>
+						<td>
+							<div class="span-8">${orderLine.itemSku.name}</div>							
+							<div class="span-4">${orderLine.quantityOrig}</div>
+							<div class="span-4">${orderLine.itemSku.price}</div>
+						</td>										
+					</tr>	
+					</c:forEach>
+
 				</c:forEach>
 				</table>
 			</div>
 		</div>	
-		<div class="bottom-10 frame span-24 last">
-			<h3>event</h3>
-			<div><a href="<c:url value='/publisher/event/list?publisherId=${publisher.id}'/>">list all</a></div>
-			<div><a href="<c:url value='/publisher/event?publisherId=${publisher.id}'/>">create</a></div>
-		</div>
-		
-		<div class="bottom-10 frame  span-24 last">
-			<h3>article</h3>
-			<div><a href="<c:url value='/publisher/article/list?publisherId=${publisher.id}'/>">list all</a></div>
-			<div><a href="<c:url value='/publisher/article?publisherId=${publisher.id}'/>">create</a></div>
-		</div>			
+			
 		
 		
 	</div>

@@ -17,15 +17,15 @@ import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Place;
 
 @Repository("orderDao")
-public class OrderDaoDefaultImpl 
+public class OrderDaoImpl 
 	extends AbstractDao<Order> 
 	implements OrderDao {
 
-	static Logger logger = Logger.getLogger(OrderDaoDefaultImpl.class);
+	static Logger logger = Logger.getLogger(OrderDaoImpl.class);
     
    
     
-	public OrderDaoDefaultImpl() {
+	public OrderDaoImpl() {
 		super(Order.class);
 	}
 

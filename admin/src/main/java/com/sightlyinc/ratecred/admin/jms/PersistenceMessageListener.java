@@ -165,8 +165,9 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
     }
 
     private String getPublisherLayerPrefix(Publisher publisher) {
-    	return publisher.getNetworkMember().getMemberKey()+"."+
-			publisher.getKey();
+//    	return publisher.getNetworkMember().getMemberKey()+"."+
+//			publisher.getKey();
+    	throw new RuntimeException("NO IMPL");
     }
     
 //    private String getMemberLayerPrefix(NetworkMember member) {

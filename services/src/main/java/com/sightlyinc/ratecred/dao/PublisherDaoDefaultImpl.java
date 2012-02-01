@@ -76,7 +76,7 @@ extends AbstractDao<Publisher>
 	}
 
 	@Override
-    public Publisher findBySiteName(final String siteName) {
+    public Publisher findBySiteName(final String name) {
 
     	return (Publisher)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
@@ -85,9 +85,9 @@ extends AbstractDao<Publisher>
 
 				Query query = session.createQuery(
 					"select distinct entityimpl from "+Publisher.class.getName()+
-					" as entityimpl where entityimpl.siteName = :siteName");
+					" as entityimpl where entityimpl.name = :name");
 				
-				query.setString("siteName", siteName);
+				query.setString("name", name);
 				
 				Publisher t = (Publisher)query.uniqueResult();
 							
@@ -98,10 +98,10 @@ extends AbstractDao<Publisher>
     }
 
     @Override
-    public List<Publisher> findBySiteNameLike(final String siteName) {
+    public List<Publisher> findBySiteNameLike(final String name) {
 //        return (List<Publisher>) getCurrentSession()
 //            .createCriteria(this.getPersistentClass())
-//            .add(Restrictions.ilike("siteName", '%' + siteName + '%'))
+//            .add(Restrictions.ilike("name", '%' + name + '%'))
 //            .list();
     	return (List<Publisher>)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
@@ -110,9 +110,9 @@ extends AbstractDao<Publisher>
 
 				Query query = session.createQuery(
 					"select distinct entityimpl from "+Publisher.class.getName()+
-					" as entityimpl where entityimpl.siteName like :siteName");
+					" as entityimpl where entityimpl.name like :name");
 				
-				query.setString("siteName", "%"+siteName+"%");
+				query.setString("name", "%"+name+"%");
 				
 				List<Publisher> t = (List<Publisher>)query.list();
 							
@@ -137,8 +137,8 @@ extends AbstractDao<Publisher>
             {
 
                 Query query = session.createQuery(
-                    "select distinct entityimpl from "+Publisher.class.getName()+
-                    " as entityimpl where entityimpl.url = :siteUrl");
+                    "select distinct pub from "+Publisher.class.getName()+
+                    " as pub inner join pub.sites site where site.url = :siteUrl");
 
                 query.setString("siteUrl", siteUrl);
 
@@ -156,7 +156,7 @@ extends AbstractDao<Publisher>
         criteria.add(Restrictions.isNotNull("simpleGeoJsonToken"));
         criteria.add(Restrictions.le("serviceEndDateMillis", maxServiceEndDate));
         criteria.addOrder(Order.asc("serviceEndDateMillis"));
-        criteria.addOrder(Order.asc("siteName"));
+        criteria.addOrder(Order.asc("name"));
         return (List<Publisher>) criteria.list();
     }
 }

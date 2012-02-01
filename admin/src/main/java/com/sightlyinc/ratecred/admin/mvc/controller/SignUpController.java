@@ -3,8 +3,10 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +40,9 @@ import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.model.Site;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
-import com.sightlyinc.ratecred.service.OrderManagerService;
+import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PublisherService;
 
 /**
@@ -64,7 +67,7 @@ public class SignUpController {
     private NetworkMemberService networkMemberService;
     
 	@Autowired
-	private OrderManagerService orderManagerService;
+	private OrderService orderManagerService;
 	
     
     @Value("${signUpController.paypal.trailButtonKey:VC6W4WB2VLHAE}")
@@ -221,8 +224,23 @@ public class SignUpController {
                         publisher.setUserPrincipal(user);
                         
                         publisher.setIconUrl(iconUrl);
-                        publisher.setUrl(siteUrl);
-                        publisher.setSiteName(siteName);
+                        
+                        Site s = new Site();
+                        s.setName(siteName);
+                        s.setDescription(description);
+                        s.setUrl(siteUrl);
+                        s.setActive(true);
+                        s.setVerified(false);
+                        
+                        
+                        Set<Site> sites = new HashSet<Site>();
+                        sites.add(s);
+                        publisher.setSites(sites);
+                        
+                        publisher.setName(siteName);
+                        
+                        //publisher.setUrl(siteUrl);
+                        //publisher.setSiteName(siteName);
                         publisher.setDescription(description);
                         NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
                         publisher.setNetworkMember(defaultNetworkMember);
