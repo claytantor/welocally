@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * how the publisher gets data 
+ * how the publisher gets data another shot
  * 
  * @author claygraham
  *
