@@ -57,10 +57,10 @@ public class SpatialDocumentFactory {
 //		doc.add(new Field("place", placeObject.toString(), Field.Store.YES,
 //				Field.Index.NOT_ANALYZED));
 //		
-//		doc.add(new Field("search", makeSearchableContent(properties), Field.Store.YES,
-//				Field.Index.ANALYZED));
-//		
-//		doc.add(new Field("metafile", "doc", Store.YES, Index.ANALYZED));
+		doc.add(new Field("search", makeSearchableContent(properties), Field.Store.YES,
+				Field.Index.ANALYZED));
+		
+		doc.add(new Field("metafile", "doc", Store.YES, Index.ANALYZED));
 		addSpatialLcnFields(coord, doc);
 								
 		

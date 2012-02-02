@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.welocally.geodb</groupId>
 	<artifactId>geodb</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<version>0.8.0</version>
 	<name>geodb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -214,12 +214,12 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>3.3.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-spatial</artifactId>
-			<version>3.3.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tuckey</groupId>

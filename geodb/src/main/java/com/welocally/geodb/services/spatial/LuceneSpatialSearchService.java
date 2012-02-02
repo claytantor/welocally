@@ -98,15 +98,20 @@ public class LuceneSpatialSearchService implements SpatialSearchService {
 
 			bq.add(query, BooleanClause.Occur.MUST);
 			bq.add(queryName, BooleanClause.Occur.MUST);
-
-			TopDocs hits = searcher.search(dq.getQuery(bq), 10, sort);
+			Query searchQuery = dq.getQuery(bq);
+			logger.info("Querying: " + searchQuery);
+			TopDocs hits = searcher.search(searchQuery, 10, sort);
+			logger.info("Returned " + hits.totalHits +" documents");
 			Map distances = dq.getDistanceFilter().getDistances();
 
 			logger.debug("total hits:" + hits.totalHits);
 			for (int i = 0; i < hits.totalHits && i < hits.scoreDocs.length; i++) {
 				int docID = hits.scoreDocs[i].doc;
 				Document doc = searcher.doc(docID);
-				JSONObject placeResult = new JSONObject(doc.get("place"));
+				// JSONObject placeResult = new JSONObject(doc.get("place"));
+				JSONObject placeResult = new JSONObject();
+				placeResult.put("id", docID);
+				placeResult.put("search", doc.get("search"));
 				placeResult.put("geo_distance", getKm(Double.parseDouble(distances.get(docID).toString())));
 				result.put(placeResult);
 			}

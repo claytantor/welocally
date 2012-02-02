@@ -1,5 +1,7 @@
 package com.welocally.geodb.web.mvc;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.IndexSearcher;
 import org.json.JSONArray;
@@ -46,7 +48,14 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	@Qualifier("luceneMongoSpatialIndexService")
 	SpatialIndexService spatialIndexService;
 	
-		
+    IndexSearcher indexSearcher;
+                    
+    @PostConstruct
+    public void init() throws Exception {
+	logger.debug("Initialization lifecycle event from @PostConstruct annotated method.");
+	// if this isn't thread safe, a pool may be necesary
+	indexSearcher = searchService.getPlaceSearcher();
+    }
 	@RequestMapping(method = RequestMethod.PUT)
 	public ModelAndView put(@RequestBody String requestJson){
 		ModelAndView mav = new ModelAndView("mapper-result");
@@ -60,15 +69,9 @@ public class PlaceControllerV1 extends AbstractJsonController {
 				jsonDatabase.put(place, "new_places", idGen.genPoint(p));
 				spatialIndexService.indexPlace(place);
 			}		
-		} catch (JSONException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		} catch (DbException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		} 
-		catch (SpatialIndexException e) {
-			logger.error("could not index results");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("could not get results: " + e, e);
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		}
 
@@ -107,9 +110,8 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			String[] parts = loc.split("_");
 			
 			Point p = new Point(Double.parseDouble(parts[0]),Double.parseDouble(parts[1]));
-			IndexSearcher searcher = searchService.getPlaceSearcher();
 			JSONArray results = 
-				searchService.find(searcher, p, radiusKm, q);
+				searchService.find(indexSearcher, p, radiusKm, q);
 			
 			mav.addObject(
 					"mapperResult", 
@@ -117,11 +119,11 @@ public class PlaceControllerV1 extends AbstractJsonController {
 					
 		} 
 		catch (SpatialSearchException e) {
-			logger.error("could not get results");
+			logger.error("could not get results", e);
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
 		catch (Exception e) {
-			logger.error("could not get results");
+			logger.error("could not get results", e);
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		}	
 		
