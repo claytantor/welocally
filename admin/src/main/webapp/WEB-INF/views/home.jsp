@@ -65,7 +65,7 @@
 						<div class="${rowColor} span-24 last">
 							<div class="span-21">
 								<div class="strong-12 span-10">
-									<a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.name}</a>
+									${publisher.id}&nbsp;<a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.name}</a>
 								</div>
 								<%--<div class="span-10">
 									<a href="${publisher.url}" target="_new">${publisher.url}</a>

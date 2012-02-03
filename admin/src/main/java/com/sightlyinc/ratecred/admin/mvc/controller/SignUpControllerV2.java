@@ -200,6 +200,7 @@ public class SignUpControllerV2 {
         String description = null;
         String iconUrl = null;
 
+        logger.debug("requestJson:"+requestJson);
         try {
             JSONObject jsonObject = new JSONObject(requestJson);
             if(!jsonObject.isNull("siteKey"))
@@ -210,8 +211,8 @@ public class SignUpControllerV2 {
             siteName = jsonObject.getString("siteName");
             description = jsonObject.getString("siteDescription");
             iconUrl = jsonObject.getString("iconUrl");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+        	logger.error("cant make request.",e);
             errors.add("Unable to parse request, please check the format of your data");
         }
 
@@ -227,15 +228,23 @@ public class SignUpControllerV2 {
                 errors.add("Please provide a real email address");
             }
 
-            if(key == null || key.isEmpty()){
+            if(key == null || key.isEmpty() || siteName.equals("delete")){
             	key = UUID.randomUUID().toString();
                 key = key.substring(key.lastIndexOf('-') + 1);
                 response.put("key", key);
                 response.put("subscriptionStatus", "KEY_ASSIGNED");               
             } else {
             	Publisher p = publisherService.findByPublisherKey(key);
-            	response.put("key", key);
-                response.put("subscriptionStatus", p.getSubscriptionStatus());
+            	if(p != null){
+            		key = UUID.randomUUID().toString();
+                    key = key.substring(key.lastIndexOf('-') + 1);
+                    response.put("key", key);
+                    response.put("subscriptionStatus", "KEY_ASSIGNED");  
+            	} else {
+            		response.put("key", key);
+                    response.put("subscriptionStatus", p.getSubscriptionStatus());
+            	}
+            	
             }
         }
             
