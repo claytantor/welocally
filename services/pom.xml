@@ -6,13 +6,28 @@
 	<groupId>com.welocally</groupId>
 	<artifactId>services</artifactId>
 	<name>Welocally : Services Module</name>
-	<version>0.9.4</version>
+	<version>0.9.4-SNAPSHOT</version>
 	<description>The services tier for the welocally project. Transactional.</description>
 	<properties>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 		<org.drools.version>2.1</org.drools.version>
 		<org.hibernate.version>3.3.2.GA</org.hibernate.version>
 	</properties>
+	<distributionManagement>
+	 <site>
+	  <id>s3.site</id>
+	  <url>s3://1h8amwp9wtkkhvmv5782.maven/releases/site</url>
+	 </site>
+	 <repository>
+	  <id>s3.release</id>
+	  <url>s3://1h8amwp9wtkkhvmv5782.maven/releases/release</url>
+	 </repository>
+	 <snapshotRepository>
+	  <id>s3.snapshot</id>
+	  <url>s3://1h8amwp9wtkkhvmv5782.maven/releases/snapshot</url>
+	 </snapshotRepository>
+	</distributionManagement>	
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>c5-public-repository</id>
@@ -74,6 +89,13 @@
 
 		</plugins>
 
+		<extensions>
+		  <extension>
+		    <groupId>org.kuali.maven.wagons</groupId>
+		    <artifactId>maven-s3-wagon</artifactId>
+		    <version>1.1.10</version>
+		  </extension>
+		 </extensions>
 	</build>
 	<dependencies>
 
@@ -370,4 +392,7 @@
 		<!-- drools  -->
 		<!-- twitter4j -->
 	</dependencies>
+	
+	
+
 </project>
