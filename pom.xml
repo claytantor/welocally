@@ -20,7 +20,7 @@
 	  <id>s3.snapshot</id>
 	  <url>s3://1h8amwp9wtkkhvmv5782.maven/releases/snapshot</url>
 	 </snapshotRepository>
-	</distributionManagement>		
+   	</distributionManagement>		
   <modules>
     <module>geodb</module>
     <module>services</module>
