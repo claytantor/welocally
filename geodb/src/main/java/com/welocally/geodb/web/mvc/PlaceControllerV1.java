@@ -1,5 +1,7 @@
 package com.welocally.geodb.web.mvc;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.IndexSearcher;
 import org.json.JSONArray;
@@ -7,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
-import com.welocally.geodb.services.index.DirectoryException;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.spatial.SpatialIndexException;
@@ -29,7 +31,7 @@ import com.welocally.geodb.services.spatial.SpatialSearchService;
 
 @Controller
 @RequestMapping("/place/1_0")
-public class PlaceControllerV1 extends AbstractJsonController {
+public class PlaceControllerV1 extends ShardableJsonController {
 	
 	static Logger logger = 
 		Logger.getLogger(PlaceControllerV1.class);
@@ -41,6 +43,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	@Autowired IdGen idGen; 
 	
 	@Autowired SpatialConversionUtils spatialConversionUtils; 
+	
 	
 	@Autowired 
 	@Qualifier("luceneMongoSpatialIndexService")
@@ -71,8 +74,6 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			logger.error("could not index results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		}
-
-		
 		
 		return mav;
 	}
@@ -100,30 +101,47 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	}
 	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView search(@RequestParam String q, @RequestParam String loc,  @RequestParam Double radiusKm,  Model m){
+	public ModelAndView search(@RequestParam String q, @RequestParam String loc,  @RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
 		ModelAndView mav = new ModelAndView("mapper-result");
 		
-		try {
-			String[] parts = loc.split("_");
+		
+		if(shardNodeList.equals("none")){
+			try {
+				String[] parts = loc.split("_");
+				
+				Point p = new Point(Double.parseDouble(parts[0]),Double.parseDouble(parts[1]));
+				IndexSearcher searcher = searchService.getPlaceSearcher();
+				JSONArray results = 
+					searchService.find(searcher, p, radiusKm, q);
+				
+				mav.addObject(
+						"mapperResult", 
+						results.toString());
+						
+			} 
+			catch (SpatialSearchException e) {
+				logger.error("could not get results");
+				mav.addObject("mapperResult", makeErrorsJson(e));
+			} 
+			catch (Exception e) {
+				logger.error("could not get results");
+				mav.addObject("mapperResult", makeErrorsJson(e));
+			}	
+		} else {
+			String response = shardRequest(req).toString();
+			if(response != null && !response.isEmpty()){
+				mav.addObject(
+						"mapperResult", 
+						shardRequest(req).toString());
+			} else {
+				RuntimeException e = new RuntimeException("shards did not return result");
+				logger.error("could not get results");
+				mav.addObject("mapperResult", makeErrorsJson(e));
+			}
+				
 			
-			Point p = new Point(Double.parseDouble(parts[0]),Double.parseDouble(parts[1]));
-			IndexSearcher searcher = searchService.getPlaceSearcher();
-			JSONArray results = 
-				searchService.find(searcher, p, radiusKm, q);
-			
-			mav.addObject(
-					"mapperResult", 
-					results.toString());
-					
-		} 
-		catch (SpatialSearchException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		} 
-		catch (Exception e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		}	
+		}
+		
 		
 		return mav;
 	}
