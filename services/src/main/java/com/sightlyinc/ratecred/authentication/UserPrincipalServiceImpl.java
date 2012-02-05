@@ -111,6 +111,7 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 
 
 	@Override
+	@Transactional(readOnly = false)
 	public void deactivate(UserPrincipal entity)
 			throws UserPrincipalServiceException {
     	entity.setCredentialsExpired(false);

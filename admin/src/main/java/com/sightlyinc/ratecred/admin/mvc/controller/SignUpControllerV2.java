@@ -35,10 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.hibernate.GUIDGenerator;
-import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
@@ -50,6 +48,7 @@ import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
+import com.sightlyinc.ratecred.model.Contact;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Product;
@@ -59,6 +58,7 @@ import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.ProductService;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.sightlyinc.ratecred.util.JavaMailer;
 
 /**
  * @author sam
@@ -85,7 +85,7 @@ public class SignUpControllerV2 {
     private NetworkMemberService networkMemberService;
     
 	@Autowired
-	private OrderService orderManagerService;
+	private OrderService orderService;
 	
 	@Autowired
 	private ObjectMapper jacksonMapper;
@@ -102,10 +102,9 @@ public class SignUpControllerV2 {
     
     
     @Autowired
-	private MailerQueueService mailerQueueService;
+	private JavaMailer mailer;
     
-	@Value("${admin.adminEmailAccountTo:clay@welocally.com}")
-	private String adminEmailAccountTo;
+
 	
 	@Value("${admin.adminEmailAccountFrom:mailer@ratecred.com}")
 	private String adminEmailAccountFrom;
@@ -300,8 +299,7 @@ public class SignUpControllerV2 {
                     }
 				}
 								
-				if(eajax.getErrors().isEmpty()){
-					
+				if(eajax.getErrors().isEmpty()){					
 					//try to look up the publisher
 					Publisher publisher = publisherService.findByPublisherKey(key);
 					if(publisher == null){
@@ -333,12 +331,12 @@ public class SignUpControllerV2 {
 
 	                  	publisher.setKey(key);
 	                  	publisher.setSubscriptionStatus("REGISTERED");
-
+	                  		             
 	                  	publisherService.save(publisher);
 												
 						//ok go find the free product and use it to build the order
 						Product freeProduct = productService.findProductBySku(freeProductSku);
-						Order o = orderManagerService.makeOrderFromProduct(freeProduct);
+						Order o = orderService.makeOrderFromProduct(freeProduct);
 						
 						o.setStatus(Order.OrderStatus.REGISTERED);
 						o.setBuyerEmail(jsonObject.getString("siteEmail"));
@@ -346,28 +344,42 @@ public class SignUpControllerV2 {
 						o.setExternalPayerId(jsonObject.getString("siteEmail"));
 						o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
 						o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
+						o.setChannel("SELF_SIGNUP");
 									 				 
 						//complete subscription
 						logger.debug("processing order:"+o.getExternalTxId());
 						
 						
 						if(publisher != null){
-							orderManagerService.saveOrder(o);	
+							orderService.save(o);	
 							processPublisherOrder(publisher, o, requestJson);	
 						}
 						
 					} else if (publisher != null && siteToken != null && publisher.getSubscriptionStatus().equals("REGISTERED")){
-						if(publisher.getJsonToken().equals(siteToken)){
+						if(publisher.getJsonToken().equals(siteToken)){						
 							
+							//MOVE TO SERVICE
 							//activate the user
 							UserPrincipal up = userService.loadUser(publisher.getKey());
+							up.setEmail(email);
 							up.setEnabled(true);
 							up.setLocked(false);
 							up.setCredentialsExpired(false);
 							userService.saveUserPrincipal(up);
 							
 							//set the status of the publisher
+							Contact c = new Contact();
+							c.setEmail(email);
+							c.setActive(true);
 							publisher.setSubscriptionStatus("SUBSCRIBED");
+							if(publisher.getContacts() != null){
+								publisher.getContacts().add(c);
+							} else {
+								Set<Contact> contacts = new HashSet<Contact>();
+								contacts.add(c);
+								publisher.setContacts(contacts);
+							}
+
 							publisherService.save(publisher);
 						}
 						
@@ -429,9 +441,10 @@ public class SignUpControllerV2 {
 			publisher.setServiceEndDateMillis(serviceEndDateMillis);
 	        publisher.setJsonToken(publisherToken);
 	        publisher.setSubscriptionStatus("REGISTERED");
-	        o.setOwner(publisher);       
+	        o.setOwner(publisher);   
 	        
-	        orderManagerService.saveOrder(o);
+	        
+	        orderService.save(o);
 	        
 	        //enable the user
 	        publisher.getUserPrincipal().setEnabled(true);
@@ -462,7 +475,7 @@ public class SignUpControllerV2 {
 		PublisherRegistrationGenerator generator = 
 			new PublisherRegistrationGenerator(model);
 			
-		mailerQueueService.sendMessage(
+		mailer.sendMessage(
 				adminEmailAccountFrom, 
 				"Welocally Mailer Bot",
 				o.getBuyerEmail(), 

@@ -1,0 +1,108 @@
+<html>
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Telex' rel='stylesheet' type='text/css'>
+</head>
+<style>
+body{
+	font-family: Telex, sans-serif;
+}
+
+.padding-bottom-10 {
+	padding-bottom: 10px;
+}
+
+.htitle {
+	font-size: 1.2em;
+}
+.htext {
+	font-style: italic;
+}
+.ptitle {
+	font-size: 0.8em;
+}
+.ptext {
+	font-family: monospace;
+	font-weight: bold;
+	font-size: large;
+	margin-bottom:5px;
+}
+.items {
+	font-size: 0.8em;
+}
+
+.otitle {
+	width: 100px;
+}
+</style>
+<body>
+<div class="padding-bottom-10">
+	<div class="htitle">Welocally Order Confirmation</div>
+	<div class="htext"><p>Thanks so much for your order with Welocally. We are sending you this order 
+	confirmation for your records, keep it in a safe place so you can refer to it later if you need
+	too. Your publisher key and token are essentially your user name and password in our system, so 
+	hang on to it.</p>
+	<p>You publisher key and token can be used by going to the subscription settings of the Welocally Places
+		plugin and pressing the "Edit: button, then enter the key and token from this email and "Save Settings".</p>
+	</div>
+</div>
+<div class="padding-bottom-10">
+<div class="htitle"><h3>Publisher Info</h3></div>
+<div>
+	<div class="ptitle">Publisher Key:</div>
+	<div class="ptext"><h4>$!{order.owner.key}</h4></div>
+</div>
+<div>
+	<div class="ptitle">Publisher Token:</div>
+	<div class="ptext"><h4>$!{order.owner.jsonToken}</h4></div>
+</div>
+<div>
+	<div class="ptitle">Publisher Status:</div>
+	<div class="ptext"><h4>$!{order.owner.subscriptionStatus}</h4></div>
+</div>
+</div>
+<div>&nbsp;</div>
+<div class="padding-bottom-10">
+	<div class="htitle">Order</div>
+	<table width="100%">
+		<tr>
+			<td class="otitle">total:</td><td><strong>$number.currency($order.total)</strong></td>
+		</tr>
+		<tr>
+			<td class="otitle">name:</td><td>$!{order.product.name}</td>
+		</tr>		
+		<tr>
+			<td class="otitle">sku:</td><td>$!{order.product.sku}</td>
+		</tr>
+		<tr>			
+			<td class="otitle">status:</td><td>$!{order.status}</td>
+		</tr>
+		<tr>
+			<td class="otitle">tx id:</td><td>$!{order.externalTxId}</td>
+		</tr>
+		<tr>
+			<td class="otitle">channel:</td><td>$!{order.channel}</td>
+		<tr>		
+	</table>
+</div>
+<div class="padding-bottom-10">
+	<div class="htitle">Items</div>
+	<div class="items">
+	<table width="100%">
+		 <tr>
+    		<th>Name</th>  		
+    		<th>Qty</th>
+    		<th>Price</th>
+    		<th>Total</th>
+  		</tr>
+#foreach($line in $order.orderLines)
+		<tr>
+			<td>${line.itemSku.name}</td><td>$number.integer($line.quantityOrig)</td><td>$number.currency($line.itemSku.price)</td><td>$number.currency($line.lineTotal)</td>
+		</tr>
+#end	
+		<tr><td colspan="4" align="right"><strong>$number.currency($order.total)</strong></td></tr>	
+	</table>
+	</div>
+</div>
+
+</body>
+</html>

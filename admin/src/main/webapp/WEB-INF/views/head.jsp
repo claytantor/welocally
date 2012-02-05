@@ -14,6 +14,7 @@
 		<script type="text/javascript" src="<c:url value='/js/jquery-ui-timepicker-addon.js' />"></script>
 		<script type="text/javascript" src="http://cdn.simplegeo.com/js/1.2/simplegeo.places.jq.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="<c:url value='/js/welocally.js' />"></script>
 		
 		<!-- http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js -->
 		<link type="text/css" href="<c:url value='/css/custom-theme/jquery-ui-1.8.13.custom.css' />" rel="stylesheet" media="screen" />

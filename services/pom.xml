@@ -390,6 +390,11 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.13</version>
 		</dependency>
+		<dependency>
+			<groupId>org.codemonkey.simplejavamail</groupId>
+			<artifactId>simple-java-mail</artifactId>
+			<version>2.0</version>
+		</dependency>
 
 		<!-- drools  -->
 		<!-- twitter4j -->

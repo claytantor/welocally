@@ -27,15 +27,26 @@
 				<h2>admin activities</h2>
 				<hr/>
 			</div>
-			<div>
-				<h3>place</h3>
-				<div><a href="<c:url value='/publisher/place/finder'/>">place finder</a></div>
+			<div class="padding-5">
+				<ul class="list-none actions">
+					<li class="inline-block" style="width:100px">place</li>
+					<li class="inline-block"><a href="<c:url value='/publisher/place/finder'/>">search</a></li>
+				</ul>
 			</div>
-			<div class="bottom-10 fill-frame">
-				<h3>user</h3>
-				<div><a href="<c:url value='/admin/user/list'/>">list all</a></div>
-				<div><a href="<c:url value='/admin/user'/>">create</a></div>
-			</div>			
+			<div class="padding-5">
+				<ul class="list-none actions">
+					<li class="inline-block" style="width:100px">user</li>
+					<li class="inline-block"><a href="<c:url value='/admin/user/list'/>">list all</a></li>
+					<li class="inline-block"><a href="<c:url value='/admin/user'/>">create</a></li>
+				</ul>
+			</div>	
+			<div class="padding-5">
+				<ul class="list-none actions">
+					<li class="inline-block" style="width:100px">publisher</li>
+					<li class="inline-block"><a href="<c:url value='/publisher'/>">create</a></li>
+				</ul>
+			</div>				
+					
 			<div >
 				<img src="<c:url value='/images/spacer.gif'/>" height="10"/>
 			</div>
@@ -65,7 +76,7 @@
 						<div class="${rowColor} span-24 last">
 							<div class="span-21">
 								<div class="strong-12 span-10">
-									${publisher.id}&nbsp;<a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.name}</a>
+									${publisher.id}&nbsp;<a href="<c:url value='/publisher/${publisher.id}'/>">${publisher.name}</a>
 								</div>
 								<%--<div class="span-10">
 									<a href="${publisher.url}" target="_new">${publisher.url}</a>

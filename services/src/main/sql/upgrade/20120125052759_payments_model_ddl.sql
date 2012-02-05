@@ -52,8 +52,8 @@ DROP TABLE IF EXISTS `contact`;
 CREATE TABLE `contact` (
 	`id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
 	`version` INT NULL,
-	`first_name` varchar(255) NOT NULL,
-	`last_name` varchar(255) NOT NULL,
+	`first_name` varchar(255) DEFAULT NULL,
+	`last_name` varchar(255) DEFAULT NULL,
 	`gender` varchar(32) DEFAULT NULL,
 	`title` varchar(128) DEFAULT NULL,
 	`mobile` varchar(32) DEFAULT NULL,

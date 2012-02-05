@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.sightlyinc.ratecred.model.ProductLine.ProductLineStatus;
 
@@ -100,7 +101,7 @@ import com.sightlyinc.ratecred.model.ProductLine.ProductLineStatus;
 @Table(name="cust_order")
 public class Order extends BaseEntity {
 
-	public enum OrderStatus { SUBSCRIBED, CANCELED, REGISTERED }
+	public enum OrderStatus { SUBSCRIBED, CANCELED, REGISTERED, PROVISIONED }
 	
 	//this is the id that is used to get the voucher
 	@Column(name="external_txid")
@@ -309,6 +310,6 @@ public class Order extends BaseEntity {
 		this.product = product;
 	}
 
-		
+	
 
 }

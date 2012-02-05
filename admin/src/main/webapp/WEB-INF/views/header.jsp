@@ -7,7 +7,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript"  >
 	$(function() {
-		$( "a", ".actions" ).button();
+		$( "input:submit, a", ".actions" ).button();
 		$("button").button();
 	});
 </script>

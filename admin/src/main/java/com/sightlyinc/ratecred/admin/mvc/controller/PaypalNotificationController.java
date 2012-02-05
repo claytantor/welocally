@@ -8,13 +8,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,21 +28,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.hibernate.GUIDGenerator;
-import com.noi.utility.mail.MailerQueueService;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherOrderGenerator;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
-import com.sightlyinc.ratecred.dao.SimpleGeoJsonTokenDao;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.PaymentNotification;
 import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.model.User;
 import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PaymentNotificationService;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.sightlyinc.ratecred.util.JavaMailer;
 
 /**
  * @author sam
@@ -63,7 +59,7 @@ public class PaypalNotificationController {
 	private String adminEmailAccountFrom;
 	
 	@Autowired
-	private MailerQueueService mailerQueueService;
+	private JavaMailer mailer;
 	
     @Autowired
     private PublisherService publisherService;
@@ -346,7 +342,7 @@ public class PaypalNotificationController {
 		}
 
 		publisherService.save(publisher);
-		orderManagerService.saveOrder(o);
+		orderManagerService.save(o);
 
 		// dont fail on email problems
 		try {
@@ -380,7 +376,7 @@ public class PaypalNotificationController {
 	        publisher.setSubscriptionStatus("SUBSCRIBER");
 	        o.setOwner(publisher);       
 	        
-	        orderManagerService.saveOrder(o);
+	        orderManagerService.save(o);
 	        
 	        //enable the user
 	        publisher.getUserPrincipal().setEnabled(true);
@@ -415,7 +411,7 @@ public class PaypalNotificationController {
 			new PublisherOrderGenerator(model);
 		
 
-		mailerQueueService.sendMessage(
+		mailer.sendMessage(
 				adminEmailAccountFrom, 
 				"Welocally Mailer Bot",
 				adminEmailAccountTo, 
@@ -430,7 +426,7 @@ public class PaypalNotificationController {
 				
 		Map model = new HashMap();
 
-		mailerQueueService.sendMessage(
+		mailer.sendMessage(
 				adminEmailAccountFrom, 
 				"Welocally Mailer Bot",
 				adminEmailAccountTo, 

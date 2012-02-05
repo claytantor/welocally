@@ -63,7 +63,7 @@ public class OrderManagerServiceTest {
 			 //o.setQuantity(1);
 			 o.setBuyerKey(GUIDGenerator.createId());
 			 
-			 orderManagerService.saveOrder(o);
+			 orderManagerService.save(o);
 		} catch (NumberFormatException e) {
 			logger.error("cannot save", e);
 			Assert.fail(e.getMessage());

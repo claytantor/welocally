@@ -28,9 +28,7 @@
 		<script type="text/javascript" src="http://cdn.simplegeo.com/js/1.2/simplegeo.places.jq.min.js"></script>
 		<script type="text/javascript" src="http://cdn.simplegeo.com/js/1.2/simplegeo.storage.jq.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-
-
-	
+		<script type="text/javascript" src="<c:url value='/js/welocally.js' />"></script>	
 	</head>
 <script type="text/javascript" >
 

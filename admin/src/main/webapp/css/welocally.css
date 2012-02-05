@@ -43,11 +43,22 @@ ul#icons {margin: 0; padding: 0;}
 ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
 ul#icons span.ui-icon {float: left; margin: 0 4px;}
 
-
+.align-right{ text-align:right;}
+.align-left{ text-align:left;}
 
 
 
 /*------- classes */
+
+.list-none {
+list-style-type:none;
+display:inline-block;
+}
+
+.inline-block {
+ display:-moz-inline-box; -moz-box-orient:vertical;
+ display:inline-block; vertical-align:top; word-wrap:break-word;
+}
 
 .strong-16 {
 	font: bold 1.6em verdana, arial, helvetica, sans-serif;

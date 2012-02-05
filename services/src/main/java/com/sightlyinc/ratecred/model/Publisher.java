@@ -32,8 +32,6 @@ public class Publisher extends BaseEntity {
 	
 	@Column(name="description",columnDefinition="TEXT")
 	private String description;	
-
-	private String summary;	
 		
 	@Column(name="icon_url")
 	private String iconUrl;
@@ -69,7 +67,7 @@ public class Publisher extends BaseEntity {
 	@JoinColumn(name = "publisher_id")
 	public Set<Site> sites;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name = "publisher_id")
 	public Set<Contact> contacts;
 
@@ -105,12 +103,7 @@ public class Publisher extends BaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getSummary() {
-		return summary;
-	}
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
+
 	public String getIconUrl() {
 		return iconUrl;
 	}

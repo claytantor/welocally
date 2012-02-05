@@ -78,8 +78,5 @@ public class Site {
 		this.keywords = keywords;
 	}
 		
-	
-	
-	
 
 }

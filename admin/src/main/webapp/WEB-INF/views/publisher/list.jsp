@@ -26,7 +26,7 @@
 			<c:forEach var="publisher" items="${publishers}">
 			<div class="span-24 last">
 				<div class="strong-12 span-1">${publisher.id}</div>
-				<div class="strong-12 span-6"><a href="<c:url value='/publisher/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>
+				<div class="strong-12 span-6"><a href="<c:url value='/publisher/${publisher.id}'/>">${publisher.siteName}</a></div>
 				<div class="span-10">
 					<div class="span-10"><a href="${publisher.url}">${publisher.url}</a></div>
 					<div class="span-10">${publisher.description}</div>				

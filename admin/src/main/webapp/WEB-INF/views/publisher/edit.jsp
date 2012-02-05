@@ -12,6 +12,21 @@
 <html>
 <c:set var="pageTitle" value="Publisher Edit"/>
 <jsp:include page="../head.jsp"/>
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$('#keygen').click(function(){
+		$('#key').val(WELOCALLY.util.keyGenerator());
+		return false;
+	});
+	
+	$('#tokengen').click(function(){
+		$('#jsonToken').val(WELOCALLY.util.tokenGenerator());
+		return false;
+	});
+	
+});
+</script>
 <body>
 <div class="container">
 	<div class="span-24">
@@ -30,28 +45,22 @@
 				<form:hidden path="version" />
 				<form:hidden path="networkMember.id" />
 				<p>
+					<form:label	for="name" path="name" cssErrorClass="error">Publisher Name</form:label><br/>
+					<form:input path="name" id="name" class="textinput"/> <form:errors path="name" class="error" />			
+				</p>	
+				<p>
 					<form:label	for="key" path="key" cssErrorClass="error">Site Key</form:label><br/>
-					<form:input path="key" id="key" class="textinput"/> <form:errors path="key" class="error" />			
+					<form:input path="key" id="key" class="textinput"/> <form:errors path="key" class="error" />
+					<span class="actions"><a id="keygen" href="">generate</a></span>			
 				</p>	
 				<p>
 					<form:label	for="jsonToken" path="jsonToken" cssErrorClass="error">Site Token</form:label><br/>
-					<form:input path="jsonToken" id="jsonToken" class="textinput"/> <form:errors path="jsonToken" class="error" />			
-				</p>									
-				<p>
-					<form:label	for="siteName" path="siteName" cssErrorClass="error">Site Name</form:label><br/>
-					<form:input path="siteName" id="siteName" class="textinput"/> <form:errors path="siteName" class="error" />			
-				</p>	
-				<p>
-					<form:label	for="url" path="url" cssErrorClass="error">Site Url</form:label><br/>
-					<form:input path="url" id="url" class="textinput"/> <form:errors path="url" class="error"/>			
-				</p>							
+					<form:input path="jsonToken" id="jsonToken" class="textinput"/> <form:errors path="jsonToken" class="error" />
+					<span class="actions"><a id="tokengen" href="">generate</a></span>			
+				</p>															
 				<p>
 					<form:label	for="description" path="description" cssErrorClass="error">Description</form:label><br/>
 					<form:textarea path="description" rows="1" cols="10" /> <form:errors path="description" class="error" />			
-				</p>	
-				<p>
-					<form:label	for="summary" path="summary" cssErrorClass="error">Summary</form:label><br/>
-					<form:textarea path="summary" rows="1" cols="10" /> <form:errors path="summary" class="error" />			
 				</p>	
 				<sec:authorize ifAnyGranted="ROLE_ADMIN">
 				<p>
@@ -62,22 +71,10 @@
 					</form:select>	
 				</p>		
 				</sec:authorize>		
-				<p>
-					<form:label	for="iconUrl" path="iconUrl" cssErrorClass="error">Icon Url (256x256)</form:label><br/>
-					<form:input path="iconUrl" id="iconUrl" class="textinput"/> <form:errors path="iconUrl" class="error"/>			
-				</p>
-				<p>
-					<form:label	for="mapIconUrl" path="mapIconUrl" cssErrorClass="error">Map Icon Url (64x64)</form:label><br/>
-					<form:input path="mapIconUrl" id="mapIconUrl" class="textinput"/> <form:errors path="mapIconUrl" class="error"/>			
-				</p>													
-				<p>
-					<form:label	for="monthlyPageviews" path="monthlyPageviews" cssErrorClass="error">Monthly Page Views</form:label><br/>
-					<form:input path="monthlyPageviews" id="monthlyPageviews" class="textinput"/> <form:errors path="monthlyPageviews" class="error"/>			
-				</p>
 																																																		
-				<p>	
+				<div class="actions">	
 					<input type="submit" />
-				</p>
+				</div>
 			</fieldset>
 		</form:form>
 

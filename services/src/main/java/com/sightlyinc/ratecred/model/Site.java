@@ -2,6 +2,8 @@ package com.sightlyinc.ratecred.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -34,6 +36,10 @@ public class Site extends BaseEntity {
 	
 	@Column(name="notes",columnDefinition="TEXT")
 	private String notes;
+	
+	@ManyToOne
+	@JoinColumn(name = "publisher_id")
+	private Publisher publisher;
 		
 	public String getUrl() {
 		return url;
@@ -41,8 +47,6 @@ public class Site extends BaseEntity {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	
 	
 	public String getName() {
 		return name;
@@ -73,6 +77,12 @@ public class Site extends BaseEntity {
 	}
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+	public Publisher getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
 	}
 	
 
