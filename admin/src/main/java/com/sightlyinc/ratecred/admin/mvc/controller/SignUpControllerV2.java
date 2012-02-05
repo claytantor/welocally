@@ -234,7 +234,7 @@ public class SignUpControllerV2 {
                 response.put("subscriptionStatus", "KEY_ASSIGNED");               
             } else {
             	Publisher p = publisherService.findByPublisherKey(key);
-            	if(p != null){
+            	if(p == null){
             		key = UUID.randomUUID().toString();
                     key = key.substring(key.lastIndexOf('-') + 1);
                     response.put("key", key);
