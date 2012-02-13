@@ -104,9 +104,12 @@ public class GeoDBUtilsApp {
 	throws CommandException, JSONException{
 		Properties p = System.getProperties();
 		String loggingConfig = p.getProperty("log4j.config");
+		//FileInputStream f = new FileInputStream(new File(loggingConfig));
+		System.out.println("trying to setup logging config:"+p.getProperty("log4j.config"));
 		if(loggingConfig != null){
-			DOMConfigurator.configureAndWatch(loggingConfig);
+			DOMConfigurator.configure(loggingConfig);
 		}
+		logger.debug("finished");
 		
 	}
 	

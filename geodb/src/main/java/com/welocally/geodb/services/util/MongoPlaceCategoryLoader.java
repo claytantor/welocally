@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.welocally.geodb.services.app.CommandException;
@@ -24,7 +25,9 @@ public class MongoPlaceCategoryLoader implements CommandSupport {
 	static Logger logger = 
 		Logger.getLogger(MongoPlaceCategoryLoader.class);
 	
-	@Autowired JsonDatabase jsonDatabase;
+	@Autowired 
+	@Qualifier("mongoJsonDatabase")
+	JsonDatabase jsonDatabase;
 	
 	@Autowired IdGen idGen;
 	

@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoException;
@@ -29,7 +30,9 @@ public class MongoCategoryLoader implements CommandSupport {
 	static Logger logger = 
 		Logger.getLogger(MongoCategoryLoader.class);
 	
-	@Autowired JsonDatabase jsonDatabase;
+	@Autowired 
+	@Qualifier("mongoJsonDatabase")
+	JsonDatabase jsonDatabase;
 	
 	@Autowired IdGen idGen;
 	

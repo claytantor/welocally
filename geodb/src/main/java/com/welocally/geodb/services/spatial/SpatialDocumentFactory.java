@@ -68,6 +68,42 @@ public class SpatialDocumentFactory {
 		
 	}
 	
+	
+	public Document makePlaceDocumentForIndex(JSONObject placeObject) throws JSONException, DocumentContentException
+	{
+				
+		JSONObject properties = placeObject.getJSONObject("properties");
+		JSONObject geom = placeObject.getJSONObject("geometry");
+		JSONArray coords = geom.getJSONArray("coordinates");
+		Point coord = 
+			new Point(
+					Double.parseDouble(coords.getString(1)), 
+					Double.parseDouble(coords.getString(0)));
+		
+		Document doc = new Document();
+		
+		if(!placeObject.isNull("_id")){
+			doc.add(new Field("_id", placeObject.getString("_id"), Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
+		}
+			
+//		doc.add(new Field("name", properties.getString("name"), Field.Store.YES,
+//				Field.Index.NOT_ANALYZED));
+//		
+//		doc.add(new Field("place", placeObject.toString(), Field.Store.YES,
+//				Field.Index.NOT_ANALYZED));
+		
+		doc.add(new Field("search", makeSearchableContent(properties), Field.Store.YES,
+				Field.Index.ANALYZED));
+		
+		doc.add(new Field("metafile", "doc", Store.YES, Index.ANALYZED));
+		addSpatialLcnFields(coord, doc);
+								
+		
+		return doc;
+		
+	}
+	
 	public String makeSearchableContent(JSONObject placeProperties) throws JSONException{
 		StringBuffer buf = new StringBuffer();
 		buf.append(placeProperties.getString("name")+" ");

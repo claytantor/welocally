@@ -373,7 +373,7 @@ public class PaypalNotificationController {
 			
 			publisher.setServiceEndDateMillis(serviceEndDateMillis);
 	        publisher.setJsonToken(publisherToken);
-	        publisher.setSubscriptionStatus("SUBSCRIBER");
+	        publisher.setSubscriptionStatus("SUBSCRIBED");
 	        o.setOwner(publisher);       
 	        
 	        orderManagerService.save(o);

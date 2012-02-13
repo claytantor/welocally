@@ -260,7 +260,7 @@ public class PlaceController {
 				Publisher publisher = publisherService
 						.findByNetworkKeyAndPublisherKey("welocally", siteKey);
 				if (publisher != null
-						&& "SUBSCRIBER".equals(publisher
+						&& "SUBSCRIBED".equals(publisher
 								.getSubscriptionStatus())) {
 
 					Place place = null;
@@ -628,7 +628,7 @@ public class PlaceController {
 				Publisher publisher = publisherService
 						.findByNetworkKeyAndPublisherKey("welocally", siteKey);
 				if (publisher != null
-						&& "SUBSCRIBER".equals(publisher
+						&& "SUBSCRIBED".equals(publisher
 								.getSubscriptionStatus())) {
 					List<Place> places = geoPlacesClient.findPlacesByQuery(
 							address, query, category, radius);

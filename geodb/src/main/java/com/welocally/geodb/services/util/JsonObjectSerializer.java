@@ -1,4 +1,4 @@
-package com.welocally.geodb.services.component;
+package com.welocally.geodb.services.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonObjectSerializer {
 	
-	@Autowired
-	private ObjectMapper jacksonMapper;
+	private ObjectMapper jacksonMapper = new ObjectMapper();
 	
 	public String serialize(Object o) throws IOException{
 		StringWriter sw = new StringWriter(); // serialize

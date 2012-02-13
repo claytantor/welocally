@@ -13,6 +13,7 @@ import org.apache.lucene.util.Version;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.welocally.geodb.services.app.CommandException;
@@ -39,6 +40,7 @@ public class LuceneMongoSpatialIndexService implements SpatialIndexService,Comma
 	@Autowired IndexMonitor indexMonitor;
 
 	@Autowired
+	@Qualifier("mongoJsonDatabase")
 	private JsonDatabase jsonDatabase;
 
 

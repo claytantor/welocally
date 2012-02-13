@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.welocally.geodb.services.db.DbException;
+import com.welocally.geodb.services.db.DynamoJsonDatabase;
 import com.welocally.geodb.services.db.IdGen;
-import com.welocally.geodb.services.db.JsonDatabase;
 
 
 @Controller
@@ -25,7 +26,9 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	static Logger logger = 
 		Logger.getLogger(PlaceControllerV1.class);
 	
-	@Autowired JsonDatabase jsonDatabase;
+	@Autowired 
+	@Qualifier("dynamoJsonDatabase")
+	DynamoJsonDatabase jsonDatabase;
 	
 	@Autowired IdGen idGen; 
 	
@@ -50,7 +53,7 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 			JSONObject example = new JSONObject();
 			example.put("type", "Type");
 			
-			JSONArray types = jsonDatabase.findDistinct("classifiers", "type", null);
+			JSONArray types = jsonDatabase.findTypes();
 
 			mav.addObject("mapperResult", types.toString());
 			
@@ -65,20 +68,17 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	}
 	
 	@RequestMapping(value = "/categories", method = RequestMethod.GET)
-	public ModelAndView getCategoriese(@RequestParam String type, Model m){
+	public ModelAndView getCategories(@RequestParam String type, Model m){
 		ModelAndView mav = new ModelAndView("mapper-result");
 		try {
-			JSONObject example = new JSONObject();
-			example.put("type", type);
+			/*JSONObject example = new JSONObject();
+			example.put("type", type);*/
 			
-			JSONArray types = jsonDatabase.findDistinct("classifiers", "category", example);
+			JSONArray types = jsonDatabase.findCatgories(type);
 
 			mav.addObject("mapperResult", types.toString());
 			
 		} catch (DbException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		} catch (JSONException e) {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
@@ -89,21 +89,22 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	public ModelAndView getSubCategories(@RequestParam String type, @RequestParam String category, Model m){
 		ModelAndView mav = new ModelAndView("mapper-result");
 		try {
-			JSONObject example = new JSONObject();
-			example.put("type", type);
-			example.put("category", category);
+//			JSONObject example = new JSONObject();
+//			example.put("type", type);
+//			example.put("category", category);
 			
-			JSONArray types = jsonDatabase.findDistinct("classifiers", "subcategory", example);
+			JSONArray types = jsonDatabase.findSubcatgories(type, category);
 
 			mav.addObject("mapperResult", types.toString());
 			
 		} catch (DbException e) {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
-		} catch (JSONException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
+//		catch (JSONException e) {
+//			logger.error("could not get results");
+//			mav.addObject("mapperResult", makeErrorsJson(e));
+//		} 
 		return mav;
 	}
 	

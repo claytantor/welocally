@@ -64,7 +64,9 @@ public class PublisherController {
 	
 	@ModelAttribute("subscriptionStatusTypes")
     public String[] getSubscriptionStatusTypes() {
-		String[] subscriptionTypes = new String[]{ "KEY_ASSIGNED", "SUBSCRIBER","CANCELLED","SUBSCRIPTION FAILURE","SUSPENDED" };
+		String[] subscriptionTypes = new String[] { "KEY_ASSIGNED",
+				"REGISTERED", "SUBSCRIBED", "CANCELLED",
+				"SUBSCRIPTION FAILURE", "SUSPENDED" };
 		return subscriptionTypes;
     }
 	
@@ -119,7 +121,7 @@ public class PublisherController {
 				String hashedPass = userPrincipalService.makeMD5Hash(form.getJsonToken());					
 				principal.setPassword(hashedPass);
 				
-				if(p.getSubscriptionStatus().equals("SUBSCRIBER"))
+				if(p.getSubscriptionStatus().equals("SUBSCRIBED"))
 					userPrincipalService.activateWithRoles(principal, Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
 				else
 					userPrincipalService.deactivate(principal);

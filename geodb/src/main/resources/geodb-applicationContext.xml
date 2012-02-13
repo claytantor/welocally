@@ -44,6 +44,7 @@
 	    <property name="beans">
 	      <map>
 	        <entry key="bean:name=indexMonitor1" value-ref="indexMonitor"/>
+	        <entry key="bean:name=loadMonitor1" value-ref="loadMonitor"/>
 	      </map>
 	    </property>
 	  </bean>

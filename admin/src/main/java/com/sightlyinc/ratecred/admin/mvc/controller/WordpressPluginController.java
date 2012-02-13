@@ -81,7 +81,7 @@ public class WordpressPluginController {
             // look up the selected publisher
             Publisher publisher = 
             	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBER"))
+            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBED"))
             {
             	List<Place> places = 
     				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
@@ -130,7 +130,7 @@ public class WordpressPluginController {
             // look up the selected publisher
             Publisher publisher = 
             	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBER"))
+            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBED"))
             {
             	List<Place> places = 
     				geoPlacesClient.findPlacesByQuery(address, query, category, radius);

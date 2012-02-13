@@ -1,5 +1,8 @@
 package com.welocally.geodb.web.mvc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -24,8 +27,6 @@ import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
-import com.welocally.geodb.services.spatial.SpatialIndexException;
-import com.welocally.geodb.services.spatial.SpatialIndexService;
 import com.welocally.geodb.services.spatial.SpatialSearchException;
 import com.welocally.geodb.services.spatial.SpatialSearchService;
 
@@ -38,20 +39,24 @@ public class PlaceControllerV1 extends ShardableJsonController {
 	
 	@Autowired SpatialSearchService searchService;
 	
-	@Autowired JsonDatabase jsonDatabase;
+	@Autowired 
+	@Qualifier("mongoJsonDatabase")
+	JsonDatabase jsonDatabase;
 	
 	@Autowired IdGen idGen; 
 	
-	@Autowired SpatialConversionUtils spatialConversionUtils; 
+	@Autowired SpatialConversionUtils spatialConversionUtils; 	
 	
+	@Value("${placesDatabase.collectionName:places}")
+	String placesCollection;
 	
-	@Autowired 
-	@Qualifier("luceneMongoSpatialIndexService")
-	SpatialIndexService spatialIndexService;
+//	@Autowired 
+//	@Qualifier("luceneMongoSpatialIndexService")
+//	SpatialIndexService spatialIndexService;
 	
 		
 	@RequestMapping(method = RequestMethod.PUT)
-	public ModelAndView put(@RequestBody String requestJson){
+	public ModelAndView put(@RequestBody String requestJson, HttpServletRequest req){
 		ModelAndView mav = new ModelAndView("mapper-result");
 		
 		try {
@@ -59,9 +64,15 @@ public class PlaceControllerV1 extends ShardableJsonController {
 				new JSONObject(requestJson);
 			place.put("owner", "welocally");
 			Point p = spatialConversionUtils.getJSONPoint(place);
+			String id=idGen.genPoint(p);
 			if(p != null){		
-				jsonDatabase.put(place, "new_places", idGen.genPoint(p));
-				spatialIndexService.indexPlace(place);
+				jsonDatabase.put(place, placesCollection, id);
+				//spatialIndexService.indexPlace(place);
+				Map<String, Object> result = new HashMap<String,Object>();
+				result.put("id", id);
+				result.put("status", "SUCCEED");
+				
+				mav.addObject("mapperResult", makeModelJson(result));
 			}		
 		} catch (JSONException e) {
 			logger.error("could not get results");
@@ -70,10 +81,10 @@ public class PlaceControllerV1 extends ShardableJsonController {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
-		catch (SpatialIndexException e) {
-			logger.error("could not index results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		}
+//		catch (SpatialIndexException e) {
+//			logger.error("could not index results");
+//			mav.addObject("mapperResult", makeErrorsJson(e));
+//		}
 		
 		return mav;
 	}
@@ -84,7 +95,7 @@ public class PlaceControllerV1 extends ShardableJsonController {
 		
 		try {
 			JSONArray places = new JSONArray();
-			JSONObject place = jsonDatabase.findById("places", id);
+			JSONObject place = jsonDatabase.findById(placesCollection, id);
 			places.put(place);
 			mav.addObject("mapperResult", places.toString());
 		} catch (DbException e) {
@@ -105,7 +116,7 @@ public class PlaceControllerV1 extends ShardableJsonController {
 		ModelAndView mav = new ModelAndView("mapper-result");
 		
 		
-		if(shardNodeList.equals("none")){
+		if(true){
 			try {
 				String[] parts = loc.split("_");
 				

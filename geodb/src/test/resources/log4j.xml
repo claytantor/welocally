@@ -11,6 +11,10 @@
    
   <category name="com.welocally">
     <priority value="debug"/>
+  </category>
+  
+  <category name="org.springframework">
+    <priority value="debug"/>
   </category> 
   
    <root>

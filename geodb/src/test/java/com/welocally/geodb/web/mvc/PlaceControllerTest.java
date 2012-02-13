@@ -63,7 +63,7 @@ public class PlaceControllerTest {
 		logger.debug("testPutPlace");
 		
 		placeControllerV1.put(
-				requestJSON);		
+				requestJSON,null);		
 
 	}
 	

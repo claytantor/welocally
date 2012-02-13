@@ -6,9 +6,9 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.welocally.geodb.services.component.JsonObjectSerializer;
 import com.welocally.geodb.services.model.AjaxError;
 import com.welocally.geodb.services.model.AjaxErrors;
+import com.welocally.geodb.services.util.JsonObjectSerializer;
 
 public abstract class AbstractJsonController {
 	
