@@ -116,7 +116,7 @@ public class SolrPlaceLoader implements CommandSupport {
 				BufferedReader br = new BufferedReader(reader); 
 				String s = null; 
 				int count=0;
-				final StringWriter sw = new StringWriter();
+				StringWriter sw = new StringWriter();
 				while((s = br.readLine()) != null && count<maxRecords) { 
 					
 					JSONObject place = 
@@ -140,6 +140,8 @@ public class SolrPlaceLoader implements CommandSupport {
 			        if(count%commitEvery==0){
 			        	logger.debug("commit");
 			        	commit(sw);
+			        	sw.flush();
+			        	sw = new StringWriter();
 			        }
 			        					
 					loadMonitor.increment();
@@ -149,6 +151,7 @@ public class SolrPlaceLoader implements CommandSupport {
 				reader.close(); 
 				logger.debug("commit");
 				commit(sw);
+				sw.flush();
 				System.exit(1);
 			
 			}
