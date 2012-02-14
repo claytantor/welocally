@@ -7,7 +7,7 @@
     "command": {
         "endpoint": "http://localhost:8983/solr/update/json",
         "file": "/Users/claygraham/data/places_dump_20110628/places_dump_US.geojson",
-        "maxRecords": 100,
-        "commitEvery": 10
+        "maxRecords": 15000000,
+        "commitEvery": 1000
     }
 }

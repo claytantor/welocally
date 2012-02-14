@@ -38,19 +38,21 @@ import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
 @Component
-public class SolrPlaceLoader implements CommandSupport {
+public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	
 	public static final String DEFAULT_POST_URL = "http://localhost:8983/solr/update";
 	public static final String POST_ENCODING = "UTF-8";
 	public static final String VERSION_OF_THIS_TOOL = "1.2";
+	
+	//need to make this json
 	private static final String SOLR_OK_RESPONSE_EXCERPT = "<int name=\"status\">0</int>";
 
-	private static final String DEFAULT_COMMIT = "yes";
+	//private static final String DEFAULT_COMMIT = "yes";
 
 	private static final String DATA_MODE_FILES = "files";
 	private static final String DATA_MODE_ARGS = "args";
 	private static final String DATA_MODE_STDIN = "stdin";
-	private static final String DEFAULT_DATA_MODE = DATA_MODE_FILES;
+	//private static final String DEFAULT_DATA_MODE = DATA_MODE_FILES;
 
 	private static final Set<String> DATA_MODES = new HashSet<String>();
 	static {
@@ -99,6 +101,9 @@ public class SolrPlaceLoader implements CommandSupport {
 
 	}
 
+	/* (non-Javadoc)
+     * @see com.welocally.geodb.services.util.JsonStoreLoader#load(java.lang.String, int, int, java.lang.String)
+     */
 	public void load(String fileName, int maxRecords, int commitEvery, String endpoint) throws DbException {
 
 		info("version " + VERSION_OF_THIS_TOOL);
@@ -124,28 +129,8 @@ public class SolrPlaceLoader implements CommandSupport {
 					
 					
 					welocallyJSONUtils.updatePlaceToWelocally(place);
+					loadSingle(place, count, commitEvery, sw); 
 					
-					logger.debug("adding document:"+place.getString("_id"));
-
-					JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
-					JSONObject command = 
-						new JSONObject("{\"add\": {\"doc\":"+doc.toString()+"}}");
-					
-					ByteArrayInputStream bais = new ByteArrayInputStream(command.toString().getBytes());
-					BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
-										
-			        postData(newPlaceReader, sw);
-			        
-			        //commit only every x docs
-			        if(count%commitEvery==0){
-			        	logger.debug("commit");
-			        	commit(sw);
-			        	sw.flush();
-			        	sw = new StringWriter();
-			        }
-			        					
-					loadMonitor.increment();
-			        count++;
 					
 				} 
 				reader.close(); 
@@ -168,6 +153,34 @@ public class SolrPlaceLoader implements CommandSupport {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	/* (non-Javadoc)
+     * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
+     */
+	public void loadSingle(JSONObject place, int count, int commitEvery, StringWriter sw) throws JSONException, IOException{
+		logger.debug("adding document:"+place.getString("_id"));
+
+		JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
+		JSONObject command = 
+			new JSONObject("{\"add\": {\"doc\":"+doc.toString()+"}}");
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(command.toString().getBytes());
+		BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
+							
+        postData(newPlaceReader, sw);
+        
+        //commit only every x docs
+        if(count%commitEvery==0){
+        	logger.debug("commit");
+        	commit(sw);
+        	sw.flush();
+        	sw = new StringWriter();
+        }
+        					
+		loadMonitor.increment();
+        count++;
 		
 	}
 

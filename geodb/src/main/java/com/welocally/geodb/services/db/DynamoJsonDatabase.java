@@ -240,33 +240,5 @@ public class DynamoJsonDatabase implements JsonDatabase {
 		        + "units used, result:" + putItemResult.toString());
 	}
 
-//	private void waitForTableToBecomeAvailable(String tableName) {
-//		System.out.println("Waiting for " + tableName + " to become ACTIVE...");
-//
-//		long startTime = System.currentTimeMillis();
-//		long endTime = startTime + (10 * 60 * 1000);
-//		while (System.currentTimeMillis() < endTime) {
-//			try {
-//				Thread.sleep(1000 * 20);
-//			} catch (Exception e) {
-//			}
-//			try {
-//				DescribeTableRequest request = new DescribeTableRequest()
-//				        .withTableName(tableName);
-//				TableDescription tableDescription = dynamoDB.describeTable(
-//				        request).getTable();
-//				String tableStatus = tableDescription.getTableStatus();
-//				System.out.println("  - current state: " + tableStatus);
-//				if (tableStatus.equals(TableStatus.ACTIVE.toString()))
-//					return;
-//			} catch (AmazonServiceException ase) {
-//				if (ase.getErrorCode().equalsIgnoreCase(
-//				        "ResourceNotFoundException") == false)
-//					throw ase;
-//			}
-//		}
-//
-//		throw new RuntimeException("Table " + tableName + " never went active");
-//	}
 
 }

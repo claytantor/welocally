@@ -110,12 +110,11 @@ public class GeoSpatialTooTest {
 			writer.close(true);
 			
 			//search
-			IndexSearcher searcher = new IndexSearcher(dir, true);
+			//IndexSearcher searcher = new IndexSearcher(dir, true);
 			double testDistance = getMiles(1.0D);
 			Point p = new Point(-12.523060,131.041473);
 			JSONArray locations = 
-				spatialSearchService.find(
-						searcher, p, testDistance, "Litchfield Vet Hospital");
+				spatialSearchService.find(p, testDistance, "Litchfield Vet Hospital", 0, 25);
 			for (int i = 0; i < locations.length(); i++) {
 				JSONObject placeFound = locations.getJSONObject(i);
 				JSONObject properties = placeFound.getJSONObject("properties");

@@ -1,12 +1,13 @@
 package com.welocally.geodb.web.mvc;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.search.IndexSearcher;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,18 +30,20 @@ import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.spatial.SpatialSearchException;
 import com.welocally.geodb.services.spatial.SpatialSearchService;
+import com.welocally.geodb.services.util.JsonStoreLoader;
 
 @Controller
 @RequestMapping("/place/1_0")
-public class PlaceControllerV1 extends ShardableJsonController {
+public class PlaceControllerV1 extends AbstractJsonController {
 	
 	static Logger logger = 
 		Logger.getLogger(PlaceControllerV1.class);
 	
+	@Qualifier("solrSearchService")
 	@Autowired SpatialSearchService searchService;
 	
 	@Autowired 
-	@Qualifier("mongoJsonDatabase")
+	@Qualifier("dynamoJsonDatabase")
 	JsonDatabase jsonDatabase;
 	
 	@Autowired IdGen idGen; 
@@ -50,9 +53,10 @@ public class PlaceControllerV1 extends ShardableJsonController {
 	@Value("${placesDatabase.collectionName:places}")
 	String placesCollection;
 	
-//	@Autowired 
-//	@Qualifier("luceneMongoSpatialIndexService")
-//	SpatialIndexService spatialIndexService;
+	@Value("${userDatabase.collectionName:user}")
+	String userCollection;
+	
+	@Autowired JsonStoreLoader loader;
 	
 		
 	@RequestMapping(method = RequestMethod.PUT)
@@ -62,12 +66,23 @@ public class PlaceControllerV1 extends ShardableJsonController {
 		try {
 			JSONObject place = 
 				new JSONObject(requestJson);
-			place.put("owner", "welocally");
+			
+			String owner = "anonymous";
+			if(req.getHeader("site-key") != null)
+				owner = req.getHeader("site-key");
+			
+			place.put("owner", owner);			
+			
 			Point p = spatialConversionUtils.getJSONPoint(place);
 			String id=idGen.genPoint(p);
 			if(p != null){		
+				
 				jsonDatabase.put(place, placesCollection, id);
-				//spatialIndexService.indexPlace(place);
+				jsonDatabase.put(place, userCollection, id);
+				
+				//now add it to the index
+				loader.loadSingle(place, 1, 1, new StringWriter());
+								
 				Map<String, Object> result = new HashMap<String,Object>();
 				result.put("id", id);
 				result.put("status", "SUCCEED");
@@ -80,11 +95,10 @@ public class PlaceControllerV1 extends ShardableJsonController {
 		} catch (DbException e) {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
-		} 
-//		catch (SpatialIndexException e) {
-//			logger.error("could not index results");
-//			mav.addObject("mapperResult", makeErrorsJson(e));
-//		}
+		} catch (IOException e) {
+			logger.error("could not get results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
 		
 		return mav;
 	}
@@ -112,48 +126,40 @@ public class PlaceControllerV1 extends ShardableJsonController {
 	}
 	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView search(@RequestParam String q, @RequestParam String loc,  @RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
+	public ModelAndView search(@RequestParam String q, @RequestParam String loc,  
+			@RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
 		ModelAndView mav = new ModelAndView("mapper-result");
 		
-		
-		if(true){
-			try {
-				String[] parts = loc.split("_");
-				
-				Point p = new Point(Double.parseDouble(parts[0]),Double.parseDouble(parts[1]));
-				IndexSearcher searcher = searchService.getPlaceSearcher();
-				JSONArray results = 
-					searchService.find(searcher, p, radiusKm, q);
-				
-				mav.addObject(
-						"mapperResult", 
-						results.toString());
-						
-			} 
-			catch (SpatialSearchException e) {
-				logger.error("could not get results");
-				mav.addObject("mapperResult", makeErrorsJson(e));
-			} 
-			catch (Exception e) {
-				logger.error("could not get results");
-				mav.addObject("mapperResult", makeErrorsJson(e));
-			}	
-		} else {
-			String response = shardRequest(req).toString();
-			if(response != null && !response.isEmpty()){
-				mav.addObject(
-						"mapperResult", 
-						shardRequest(req).toString());
-			} else {
-				RuntimeException e = new RuntimeException("shards did not return result");
-				logger.error("could not get results");
-				mav.addObject("mapperResult", makeErrorsJson(e));
-			}
-				
+		try {
+			String[] parts = loc.split("_");
 			
-		}
-		
-		
+			Point p = new Point(Double.parseDouble(parts[0]),Double.parseDouble(parts[1]));
+
+			JSONArray resultIds = 
+				searchService.find(p, radiusKm, q, 0, 25);
+			JSONArray results = new JSONArray();
+			//get items from db 
+			for (int i = 0; i < resultIds.length(); i++) {
+                JSONObject id = resultIds.getJSONObject(i);
+                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("_id"));
+                if(place != null)
+                	results.put(place);
+            }
+							
+			mav.addObject(
+					"mapperResult", 
+					results.toString());
+					
+		} 
+		catch (SpatialSearchException e) {
+			logger.error("could not get results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		} 
+		catch (Exception e) {
+			logger.error("could not get results",e);
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		}	
+			
 		return mav;
 	}
 
