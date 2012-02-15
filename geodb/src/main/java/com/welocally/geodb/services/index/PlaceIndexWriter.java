@@ -1,16 +1,5 @@
 package com.welocally.geodb.services.index;
 
-import java.io.IOException;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.LockObtainFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 
 public class PlaceIndexWriter  {

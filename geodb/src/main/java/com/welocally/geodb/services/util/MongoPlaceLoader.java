@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.security.SecureRandom;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;

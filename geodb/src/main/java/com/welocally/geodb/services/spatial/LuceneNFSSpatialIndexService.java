@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
-import com.welocally.geodb.services.db.DbPage;
-import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.index.DirectoryException;
 import com.welocally.geodb.services.index.DocumentContentException;
 import com.welocally.geodb.services.index.PlaceDirectory;

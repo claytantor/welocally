@@ -1,11 +1,7 @@
 package com.welocally.geodb.services.spatial;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -17,7 +13,6 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -26,14 +21,11 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.spatial.tier.DistanceFieldComparatorSource;
 import org.apache.lucene.spatial.tier.DistanceQueryBuilder;
 import org.apache.lucene.spatial.tier.projections.CartesianTierPlotter;
-import org.apache.lucene.spatial.tier.projections.IProjector;
-import org.apache.lucene.spatial.tier.projections.SinusoidalProjector;
 import org.apache.lucene.util.Version;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.welocally.geodb.services.index.DirectoryException;

@@ -1,16 +1,10 @@
 package com.welocally.geodb.services.spatial;
 
-import java.io.IOException;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.spatial.tier.projections.CartesianTierPlotter;
-import org.apache.lucene.spatial.tier.projections.IProjector;
-import org.apache.lucene.spatial.tier.projections.SinusoidalProjector;
 import org.apache.lucene.util.NumericUtils;
 import org.json.JSONArray;
 import org.json.JSONException;

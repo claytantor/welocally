@@ -73,9 +73,13 @@ public class GeoDBUtilsApp {
 	    			    new String[] {"geodb-applicationContext.xml"});
 	    		
 	    		logger.debug("doing command:"+harness.getString("bean"));
+//	    		if(ctx.getBean(harness.getString("bean")) instanceof org.mortbay.jetty.Server){
+//	    			logger.debug("server found");
+//	    		} else {
+	    			CommandSupport beanCommand = (CommandSupport)ctx.getBean(harness.getString("bean"));
+		    		beanCommand.doCommand(harness.getJSONObject("command"));
+	    		//}
 	    		
-	    		CommandSupport beanCommand = (CommandSupport)ctx.getBean(harness.getString("bean"));
-	    		beanCommand.doCommand(harness.getJSONObject("command"));
     		
 	    	}
 	        

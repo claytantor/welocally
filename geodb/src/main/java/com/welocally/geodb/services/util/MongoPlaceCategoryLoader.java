@@ -1,7 +1,5 @@
 package com.welocally.geodb.services.util;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
