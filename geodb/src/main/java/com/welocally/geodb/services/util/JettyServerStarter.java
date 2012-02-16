@@ -1,19 +1,11 @@
 package com.welocally.geodb.services.util;
 
-import javax.servlet.ServletContext;
-
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.Context;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
@@ -35,40 +27,40 @@ public class JettyServerStarter implements CommandSupport, ApplicationContextAwa
 	@Override
     public void doCommand(JSONObject command) throws CommandException {
 
-		try {
-	        ((AbstractApplicationContext)applicationContext).registerShutdownHook();
-
-	        Server server = (Server) applicationContext.getBean("jettyServer");  
-
-	        ServletContext servletContext = null;
-
-	        for (Handler handler : server.getHandlers()) {
-	            if (handler instanceof Context) {
-	                Context context = (Context) handler;
-	                
-	                servletContext = context.getServletContext();
-	            }
-	        }
-
-	        XmlWebApplicationContext wctx = new XmlWebApplicationContext();  
-	        wctx.setParent(applicationContext);
-	        wctx.setConfigLocation("");
-	        wctx.setServletContext(servletContext);
-	        wctx.refresh();
-
-	        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wctx);  
-
-	        server.start();
-        } catch (BeansException e) {
-	       logger.error("problem with context",e);
-	       throw new CommandException(e.getMessage());
-        } catch (IllegalStateException e) {
-        	logger.error("problem with state",e);
-  	       throw new CommandException(e.getMessage());
-        } catch (Exception e) {
-        	 logger.error("general problem",e);
-  	       throw new CommandException(e.getMessage());
-        }
+//		try {
+//	        ((AbstractApplicationContext)applicationContext).registerShutdownHook();
+//
+//	        Server server = (Server) applicationContext.getBean("jettyServer");  
+//
+//	        ServletContext servletContext = null;
+//
+//	        for (Handler handler : server.getHandlers()) {
+//	            if (handler instanceof Context) {
+//	                Context context = (Context) handler;
+//	                
+//	                servletContext = context.getServletContext();
+//	            }
+//	        }
+//
+//	        XmlWebApplicationContext wctx = new XmlWebApplicationContext();  
+//	        wctx.setParent(applicationContext);
+//	        wctx.setConfigLocation("");
+//	        wctx.setServletContext(servletContext);
+//	        wctx.refresh();
+//
+//	        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wctx);  
+//
+//	        server.start();
+//        } catch (BeansException e) {
+//	       logger.error("problem with context",e);
+//	       throw new CommandException(e.getMessage());
+//        } catch (IllegalStateException e) {
+//        	logger.error("problem with state",e);
+//  	       throw new CommandException(e.getMessage());
+//        } catch (Exception e) {
+//        	 logger.error("general problem",e);
+//  	       throw new CommandException(e.getMessage());
+//        }
     }
 
 

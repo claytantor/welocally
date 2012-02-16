@@ -142,8 +142,11 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			for (int i = 0; i < resultIds.length(); i++) {
                 JSONObject id = resultIds.getJSONObject(i);
                 JSONObject place = jsonDatabase.findById(placesCollection, id.getString("_id"));
-                if(place != null)
+                
+                if(place != null){
+                	place.put("distance", id.getDouble("_dist_"));
                 	results.put(place);
+                }
             }
 							
 			mav.addObject(

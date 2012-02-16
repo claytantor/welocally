@@ -77,6 +77,7 @@ public class SolrSearchService implements SpatialSearchService {
 	}
 	
 	//wt=json&fq={!geofilt%20sfield=location}&pt=58.37587201036513,-134.58542687818408&d=5&start=0&rows=10
+	//http://ec2-174-129-45-44.compute-1.amazonaws.com:8983/solr/select/?q=Art&version=2.2&start=0&rows=10&indent=on&wt=json&fq={!geofilt%20sfield=location}&pt=38.898748,-77.037684&d=5&sort=geodist(location)%20asc&fl=_id,_dist_:geodist(location)
 	private NameValuePair[] makeQueryString(Point point, double km, String queryString, int start, int rows){
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new NameValuePair("q", queryString));
@@ -84,6 +85,8 @@ public class SolrSearchService implements SpatialSearchService {
 		pairs.add(new NameValuePair("fq", "{!geofilt sfield=location}"));
 		pairs.add(new NameValuePair("pt", point.getLat()+","+point.getLon()));
 		pairs.add(new NameValuePair("d", ""+km));
+		pairs.add(new NameValuePair("sort", "geodist(location) asc"));
+		pairs.add(new NameValuePair("fl", "_id,_dist_:geodist(location)"));
 		pairs.add(new NameValuePair("start", ""+start));
 		pairs.add(new NameValuePair("rows", ""+rows));
 		
