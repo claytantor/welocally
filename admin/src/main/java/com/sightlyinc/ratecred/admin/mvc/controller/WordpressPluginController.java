@@ -26,17 +26,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
 import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
 import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.service.PlaceManagerService;
+import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
 import com.sightlyinc.ratecred.service.PublisherService;
 import com.simplegeo.client.types.Feature;
 
 /**
- * @author sam
+ * @author clay
  * @version $Id$
  */
 @Controller
@@ -46,8 +45,8 @@ public class WordpressPluginController {
 	static Logger logger = Logger.getLogger(WordpressPluginController.class);
 
 
-	@Autowired
-	private PlaceManagerService placeManagerService;
+	//@Autowired
+	//private PlaceManagerService placeManagerService;
 	
     @Autowired
     private PublisherService publisherService;
@@ -55,8 +54,8 @@ public class WordpressPluginController {
     @Autowired
     private JsonModelProcessor jsonModelProcessor;
     
-    @Autowired
-    private YahooGeocoder yahooGeocoder;
+    //@Autowired
+    //private YahooGeocoder yahooGeocoder;
 
     @Autowired
     private GeoPlacesClient geoPlacesClient;
@@ -81,7 +80,9 @@ public class WordpressPluginController {
             // look up the selected publisher
             Publisher publisher = 
             	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBED"))
+            if(publisher != null && 
+            		publisher.getSubscriptionStatus().equals(
+            				PublisherStatus.SUBSCRIBED))
             {
             	List<Place> places = 
     				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
@@ -106,11 +107,9 @@ public class WordpressPluginController {
             	
             }
 		}
-		
-		
+				
 		return "error";
-		
-		
+	
 	}
 	
 	@RequestMapping(value="/querytest", method = RequestMethod.GET)
@@ -123,20 +122,23 @@ public class WordpressPluginController {
 			@RequestParam(value="radius",required=false) Long radius,
 			Model model)
 	{
-		logger.debug("getPlacesByQuery TEST");
 		if (publisherKey != null) {
             String[] keys = publisherKey.split("\\x2e");
 
             // look up the selected publisher
             Publisher publisher = 
             	publisherService.findByNetworkKeyAndPublisherKey(keys[0], keys[1]);
-            if(publisher != null && publisher.getSubscriptionStatus().equals("SUBSCRIBED"))
+            
+            if(publisher != null && publisher.getSubscriptionStatus().equals(
+            		PublisherStatus.SUBSCRIBED))
             {
             	List<Place> places = 
     				geoPlacesClient.findPlacesByQuery(address, query, category, radius);
+            	
             	model.addAttribute("places", places);
             	model.addAttribute("itool", new IteratorTool());
             	return "places";
+            	
             } else {
             	Map<String,String> errorMap = new HashMap<String,String>();
             	if(publisher == null){
@@ -239,9 +241,9 @@ public class WordpressPluginController {
         return modelAndView;
 	}
 
-    public void setPlaceManagerService(PlaceManagerService placeManagerService) {
-		this.placeManagerService = placeManagerService;
-	}
+//    public void setPlaceManagerService(PlaceManagerService placeManagerService) {
+//		this.placeManagerService = placeManagerService;
+//	}
 
 	public void setJsonModelProcessor(JsonModelProcessor jsonModelProcessor) {
 		this.jsonModelProcessor = jsonModelProcessor;

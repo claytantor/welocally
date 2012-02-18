@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -22,7 +24,13 @@ import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 @Table(name="publisher")
 public class Publisher extends BaseEntity {
 	
-	public enum PublisherStatus { KEY_ASSIGNED, CANCELED, REGISTERED, SUBSCRIBED }
+	public enum PublisherStatus { 
+		KEY_ASSIGNED, CANCELLED, REGISTERED, SUBSCRIBED, FAILURE, SUSPENDED ;
+		
+		public String getDisplayValue(){
+			return this.name();
+		}
+	}
 
 	@Column(name="name")
 	private String name;
@@ -46,17 +54,8 @@ public class Publisher extends BaseEntity {
     private Long serviceEndDateMillis;
     
     @Column(name="subscription_status")
-    private String subscriptionStatus;
-	
-	public String getSubscriptionStatus() {
-		return subscriptionStatus;
-	}
-	public void setSubscriptionStatus(String subscriptionStatus) {
-		this.subscriptionStatus = subscriptionStatus;
-	}
-	public void setServiceEndDateMillis(Long serviceEndDateMillis) {
-		this.serviceEndDateMillis = serviceEndDateMillis;
-	}
+    @Enumerated(EnumType.STRING)
+    private PublisherStatus subscriptionStatus;
 	
 	@ManyToOne	
 	@JoinColumn(name = "network_member_id")
@@ -148,8 +147,18 @@ public class Publisher extends BaseEntity {
     public void setServiceEndDate(Date serviceEndDate) {
         this.serviceEndDateMillis = serviceEndDate.getTime();
     }
+    
+	public void setServiceEndDateMillis(Long serviceEndDateMillis) {
+		this.serviceEndDateMillis = serviceEndDateMillis;
+	}
 
-    public boolean isServiceExpired() {
+    public PublisherStatus getSubscriptionStatus() {
+    	return subscriptionStatus;
+    }
+	public void setSubscriptionStatus(PublisherStatus subscriptionStatus) {
+    	this.subscriptionStatus = subscriptionStatus;
+    }
+	public boolean isServiceExpired() {
         return (serviceEndDateMillis == null || serviceEndDateMillis < new Date().getTime());
     }
 	public Set<Order> getOrders() {

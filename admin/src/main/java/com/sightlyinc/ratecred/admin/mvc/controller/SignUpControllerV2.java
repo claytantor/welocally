@@ -330,7 +330,7 @@ public class SignUpControllerV2 {
 
 
 	                  	publisher.setKey(key);
-	                  	publisher.setSubscriptionStatus("REGISTERED");
+	                  	publisher.setSubscriptionStatus(Publisher.PublisherStatus.REGISTERED);
 	                  		             
 	                  	publisherService.save(publisher);
 												
@@ -371,7 +371,7 @@ public class SignUpControllerV2 {
 							Contact c = new Contact();
 							c.setEmail(email);
 							c.setActive(true);
-							publisher.setSubscriptionStatus("SUBSCRIBED");
+							publisher.setSubscriptionStatus(Publisher.PublisherStatus.SUBSCRIBED);
 							if(publisher.getContacts() != null){
 								publisher.getContacts().add(c);
 							} else {
@@ -440,7 +440,7 @@ public class SignUpControllerV2 {
 			
 			publisher.setServiceEndDateMillis(serviceEndDateMillis);
 	        publisher.setJsonToken(publisherToken);
-	        publisher.setSubscriptionStatus("REGISTERED");
+	        publisher.setSubscriptionStatus(Publisher.PublisherStatus.REGISTERED);
 	        o.setOwner(publisher);   
 	        
 	        

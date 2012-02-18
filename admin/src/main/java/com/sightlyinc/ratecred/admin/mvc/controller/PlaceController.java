@@ -42,6 +42,7 @@ import com.sightlyinc.ratecred.client.geo.GeoPlacesClient;
 import com.sightlyinc.ratecred.client.geo.SimpleGeoLocationClient;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
 import com.sightlyinc.ratecred.pojo.Location;
 import com.sightlyinc.ratecred.service.PlaceManagerService;
 import com.sightlyinc.ratecred.service.PublisherService;
@@ -260,7 +261,7 @@ public class PlaceController {
 				Publisher publisher = publisherService
 						.findByNetworkKeyAndPublisherKey("welocally", siteKey);
 				if (publisher != null
-						&& "SUBSCRIBED".equals(publisher
+						&& Publisher.PublisherStatus.SUBSCRIBED.equals(publisher
 								.getSubscriptionStatus())) {
 
 					Place place = null;
@@ -628,7 +629,7 @@ public class PlaceController {
 				Publisher publisher = publisherService
 						.findByNetworkKeyAndPublisherKey("welocally", siteKey);
 				if (publisher != null
-						&& "SUBSCRIBED".equals(publisher
+						&& PublisherStatus.SUBSCRIBED.equals(publisher
 								.getSubscriptionStatus())) {
 					List<Place> places = geoPlacesClient.findPlacesByQuery(
 							address, query, category, radius);

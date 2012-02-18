@@ -247,7 +247,7 @@ public class SignUpController {
 
 
                         publisher.setKey(key);
-                        publisher.setSubscriptionStatus("KEY_ASSIGNED");
+                        publisher.setSubscriptionStatus(Publisher.PublisherStatus.KEY_ASSIGNED);
 
                         //we usta set the token here and the service end date, moving that 
                         //to the notification controller 

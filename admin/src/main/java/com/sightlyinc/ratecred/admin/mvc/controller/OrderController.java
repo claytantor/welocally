@@ -97,7 +97,7 @@ public class OrderController {
 				order.setTimeCreated(Calendar.getInstance().getTimeInMillis());
 				order.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
 				order.setChannel("WELOCALLY_ADMIN");
-				order.getOwner().setSubscriptionStatus("SUBSCRIBED");
+				order.getOwner().setSubscriptionStatus(Publisher.PublisherStatus.SUBSCRIBED);
 				
 				
 				//MOVE TO SERVICE

@@ -286,21 +286,21 @@ public class PaypalNotificationController {
 						&& txType.equals("subscr_cancel") 
 						&& publisherKey != null) {
 					
-					processSubscriptionChange( txType, "CANCELLED", publisherKey,
+					processSubscriptionChange( txType, Publisher.PublisherStatus.CANCELLED, publisherKey,
 							o, paramsBuf.toString());
 										
 				} else if(o != null 
 						&& txType.equals("subscr_failed") 
 						&& publisherKey != null) {
 					
-					processSubscriptionChange( txType, "SUBSCRIPTION FAILURE", publisherKey,
+					processSubscriptionChange( txType, Publisher.PublisherStatus.FAILURE, publisherKey,
 							o, paramsBuf.toString());
 										
 				}  else if(o != null 
 						&& txType.startsWith("recurring_payment_suspended") 
 						&& publisherKey != null) {
 					
-					processSubscriptionChange( txType, "SUSPENDED", publisherKey,
+					processSubscriptionChange( txType, Publisher.PublisherStatus.SUSPENDED, publisherKey,
 							o, paramsBuf.toString());
 					
 				}
@@ -328,7 +328,7 @@ public class PaypalNotificationController {
 		return modelAndView;
 	}
 	
-	private void processSubscriptionChange(String txType, String statusType, String publisherKey,
+	private void processSubscriptionChange(String txType, Publisher.PublisherStatus statusType, String publisherKey,
 			Order o, String body) throws BLServiceException {
 		
 		Publisher publisher = publisherService.findByPublisherKey(publisherKey);
@@ -373,7 +373,8 @@ public class PaypalNotificationController {
 			
 			publisher.setServiceEndDateMillis(serviceEndDateMillis);
 	        publisher.setJsonToken(publisherToken);
-	        publisher.setSubscriptionStatus("SUBSCRIBED");
+	        publisher.setSubscriptionStatus(Publisher.PublisherStatus.SUBSCRIBED);
+	        
 	        o.setOwner(publisher);       
 	        
 	        orderManagerService.save(o);

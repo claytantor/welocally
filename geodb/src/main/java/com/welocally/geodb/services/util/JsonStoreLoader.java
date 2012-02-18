@@ -10,10 +10,10 @@ import com.welocally.geodb.services.db.DbException;
 
 public interface JsonStoreLoader {
 
-	public abstract void load(String fileName, int maxRecords, int commitEvery,
+	public abstract void load(String fileName, Integer maxRecords, Integer commitEvery,
 	        String endpoint) throws DbException;
 
-	public abstract void loadSingle(JSONObject place, int count,
-	        int commitEvery, StringWriter sw) throws JSONException, IOException;
+	public abstract void loadSingle(JSONObject place, Integer count,
+			Integer commitEvery, StringWriter sw) throws JSONException, IOException;
 
 }

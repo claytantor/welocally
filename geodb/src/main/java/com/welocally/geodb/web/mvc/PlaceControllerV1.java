@@ -76,12 +76,14 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			Point p = spatialConversionUtils.getJSONPoint(place);
 			String id=idGen.genPoint(p);
 			if(p != null){		
-				
+				place.put("_id", id);
 				jsonDatabase.put(place, placesCollection, id);
 				jsonDatabase.put(place, userCollection, id);
-				
+				StringWriter sw = new StringWriter();
 				//now add it to the index
-				loader.loadSingle(place, 1, 1, new StringWriter());
+				loader.loadSingle(place, 1, 1, sw);
+				sw.flush();
+				sw.close();
 								
 				Map<String, Object> result = new HashMap<String,Object>();
 				result.put("id", id);

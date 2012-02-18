@@ -1,13 +1,15 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -19,16 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.noi.utility.string.StringUtils;
+import com.sightlyinc.ratecred.admin.util.CollectionUtils;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.PublisherService;
-import com.sightlyinc.ratecred.util.JavaMailer;
 
 @Controller
 @RequestMapping(value="/publisher")
@@ -64,11 +66,16 @@ public class PublisherController {
 	
 	@ModelAttribute("subscriptionStatusTypes")
     public String[] getSubscriptionStatusTypes() {
-		String[] subscriptionTypes = new String[] { "KEY_ASSIGNED",
-				"REGISTERED", "SUBSCRIBED", "CANCELLED",
-				"SUBSCRIPTION FAILURE", "SUSPENDED" };
-		return subscriptionTypes;
+		
+		List<String> subscriptionTypes = 
+			CollectionUtils.toStringList(Publisher.PublisherStatus.class);
+		
+		return (String[]) subscriptionTypes.toArray(new String[subscriptionTypes
+                .size()]);
+		
     }
+	
+	
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(Model model) {
@@ -98,7 +105,7 @@ public class PublisherController {
 				p.setMapIconUrl(form.getMapIconUrl());
 				p.setIconUrl(form.getIconUrl());
 				
-				if(!StringUtils.isEmpty(form.getSubscriptionStatus()))
+				if(form.getSubscriptionStatus()!= null)
 					p.setSubscriptionStatus(form.getSubscriptionStatus());
 				
 				UserPrincipal principal=null;
@@ -121,7 +128,7 @@ public class PublisherController {
 				String hashedPass = userPrincipalService.makeMD5Hash(form.getJsonToken());					
 				principal.setPassword(hashedPass);
 				
-				if(p.getSubscriptionStatus().equals("SUBSCRIBED"))
+				if(p.getSubscriptionStatus().equals(PublisherStatus.SUBSCRIBED))
 					userPrincipalService.activateWithRoles(principal, Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
 				else
 					userPrincipalService.deactivate(principal);

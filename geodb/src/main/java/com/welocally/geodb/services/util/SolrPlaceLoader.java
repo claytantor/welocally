@@ -17,17 +17,21 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoException;
@@ -40,7 +44,7 @@ import com.welocally.geodb.services.jmx.LoadMonitor;
 @Component
 public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	
-	public static final String DEFAULT_POST_URL = "http://localhost:8983/solr/update";
+	public static final String DEFAULT_POST_URL = "http://localhost:8983/solr/update/json";
 	public static final String POST_ENCODING = "UTF-8";
 	public static final String VERSION_OF_THIS_TOOL = "1.2";
 	
@@ -81,6 +85,18 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	@Autowired
 	@Qualifier("dynamoJsonDatabase")
 	private JsonDatabase jsonDatabase;
+	
+	@Value("${SolrPlaceLoader.endpoint:http://localhost:8983/solr/update/json}")
+	private String endpoint;
+	
+	@PostConstruct 
+	public void initEndpoint(){
+		try {
+	        solrUrl = new URL(endpoint);
+        } catch (MalformedURLException e) {
+	        logger.error("cant init search service endpoint", e);
+        }
+	}
 
 	@Override
 	public void doCommand(JSONObject command) throws CommandException {
@@ -104,7 +120,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	/* (non-Javadoc)
      * @see com.welocally.geodb.services.util.JsonStoreLoader#load(java.lang.String, int, int, java.lang.String)
      */
-	public void load(String fileName, int maxRecords, int commitEvery, String endpoint) throws DbException {
+	public void load(String fileName, Integer maxRecords, Integer commitEvery, String endpoint) throws DbException {
 
 		info("version " + VERSION_OF_THIS_TOOL);
 		
@@ -120,7 +136,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 				
 				BufferedReader br = new BufferedReader(reader); 
 				String s = null; 
-				int count=0;
+				Integer count=0;
 				StringWriter sw = new StringWriter();
 				while((s = br.readLine()) != null && count<maxRecords) { 
 					
@@ -130,7 +146,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 					
 					welocallyJSONUtils.updatePlaceToWelocally(place);
 					loadSingle(place, count, commitEvery, sw); 
-					
+					count++;
 					
 				} 
 				reader.close(); 
@@ -159,14 +175,14 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	/* (non-Javadoc)
      * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
      */
-	public void loadSingle(JSONObject place, int count, int commitEvery, StringWriter sw) throws JSONException, IOException{
+	public void loadSingle(JSONObject place, Integer count, Integer commitEvery, StringWriter sw) throws JSONException, IOException{
 		logger.debug("adding document:"+place.getString("_id"));
 
 		JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
-		JSONObject command = 
+		JSONObject solrCommand = 
 			new JSONObject("{\"add\": {\"doc\":"+doc.toString()+"}}");
 		
-		ByteArrayInputStream bais = new ByteArrayInputStream(command.toString().getBytes());
+		ByteArrayInputStream bais = new ByteArrayInputStream(solrCommand.toString().getBytes());
 		BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
 							
         postData(newPlaceReader, sw);
@@ -176,11 +192,12 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
         	logger.debug("commit");
         	commit(sw);
         	sw.flush();
+        	sw.close();
         	sw = new StringWriter();
         }
         					
 		loadMonitor.increment();
-        count++;
+		
 		
 	}
 
