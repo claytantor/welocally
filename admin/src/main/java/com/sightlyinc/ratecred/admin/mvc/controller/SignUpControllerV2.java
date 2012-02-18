@@ -54,6 +54,7 @@ import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Product;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Site;
+import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.ProductService;
@@ -61,7 +62,7 @@ import com.sightlyinc.ratecred.service.PublisherService;
 import com.sightlyinc.ratecred.util.JavaMailer;
 
 /**
- * @author sam
+ * @author clay
  * @version $Id$
  */
 @Controller
@@ -355,7 +356,8 @@ public class SignUpControllerV2 {
 							processPublisherOrder(publisher, o, requestJson);	
 						}
 						
-					} else if (publisher != null && siteToken != null && publisher.getSubscriptionStatus().equals("REGISTERED")){
+					} else if (publisher != null && siteToken != null && 
+							publisher.getSubscriptionStatus().equals(PublisherStatus.REGISTERED)){
 						if(publisher.getJsonToken().equals(siteToken)){						
 							
 							//MOVE TO SERVICE
@@ -371,6 +373,8 @@ public class SignUpControllerV2 {
 							Contact c = new Contact();
 							c.setEmail(email);
 							c.setActive(true);
+							c.setFirstName("");
+							c.setLastName("");
 							publisher.setSubscriptionStatus(Publisher.PublisherStatus.SUBSCRIBED);
 							if(publisher.getContacts() != null){
 								publisher.getContacts().add(c);
