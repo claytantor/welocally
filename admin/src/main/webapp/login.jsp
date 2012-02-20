@@ -16,8 +16,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <meta name="description" content="Login to Service Tattler" />
 
-<link rel="icon" href="http://www.servicetattler.com/favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="http://www.servicetattler.com/favicon.ico" type="image/x-icon"> 
+<link rel="shortcut icon" href="<c:url value='/images/we_16.png' />"/>  
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/ratecred.css'/>" />
 
 

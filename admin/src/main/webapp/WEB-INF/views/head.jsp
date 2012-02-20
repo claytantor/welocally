@@ -8,7 +8,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>welocally</title>
 		
-
 		<script type="text/javascript" src="<c:url value='/js/jquery-1.5.1.min.js' />"></script>
 		<script type="text/javascript" src="<c:url value='/js/jquery-ui-1.8.13.custom.min.js' />"></script>
 		<script type="text/javascript" src="<c:url value='/js/jquery-ui-timepicker-addon.js' />"></script>
@@ -25,6 +24,8 @@
 			<link rel="stylesheet" href="<c:url value='/css/blueprint/ie.css' />" type="text/css" media="screen, projection">
 		<![endif]-->
 		<link rel="stylesheet" href="<c:url value='/css/welocally.css' />" type="text/css"> 
+		
+		<link rel="shortcut icon" href="<c:url value='/images/we_16.png' />"/> 
 	
 	</head>
 
