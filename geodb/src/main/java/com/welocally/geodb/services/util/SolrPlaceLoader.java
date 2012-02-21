@@ -30,21 +30,18 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.MongoException;
 import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
-import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
 @Component
 public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	
-	public static final String DEFAULT_POST_URL = "http://localhost:8983/solr/update/json";
+	//public static final String DEFAULT_POST_URL = "http://localhost:8983/solr/update/json";
 	public static final String POST_ENCODING = "UTF-8";
 	public static final String VERSION_OF_THIS_TOOL = "1.2";
 	
@@ -82,9 +79,9 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	@Autowired LoadMonitor loadMonitor;
 	
 	
-	@Autowired
-	@Qualifier("dynamoJsonDatabase")
-	private JsonDatabase jsonDatabase;
+//	@Autowired
+//	@Qualifier("dynamoJsonDatabase")
+//	private JsonDatabase jsonDatabase;
 	
 	@Value("${SolrPlaceLoader.endpoint:http://localhost:8983/solr/update/json}")
 	private String endpoint;
@@ -92,6 +89,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	@PostConstruct 
 	public void initEndpoint(){
 		try {
+			logger.debug("setting endpoint for search service:"+endpoint);
 	        solrUrl = new URL(endpoint);
         } catch (MalformedURLException e) {
 	        logger.error("cant init search service endpoint", e);
@@ -159,8 +157,6 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		
 				
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (MongoException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -230,15 +226,15 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	  }
 	  
 	  static void warn(String msg) {
-	    logger.warn("SimplePostTool: WARNING: " + msg);
+	    logger.warn("SolrPlaceLoader: WARNING: " + msg);
 	  }
 
 	  static void info(String msg) {
-	   logger.debug("SimplePostTool: " + msg);
+	   logger.debug("SolrPlaceLoader: " + msg);
 	  }
 
 	  static void fatal(String msg) {
-	    logger.error("SimplePostTool: FATAL: " + msg);
+	    logger.error("SolrPlaceLoader: FATAL: " + msg);
 	    System.exit(1);
 	  }
 

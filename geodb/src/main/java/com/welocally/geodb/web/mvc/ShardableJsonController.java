@@ -5,9 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -17,8 +15,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.mongodb.util.JSON;
-
+@Deprecated
 public abstract class ShardableJsonController extends AbstractJsonController {
 	
 	static Logger logger = 
@@ -34,7 +31,6 @@ public abstract class ShardableJsonController extends AbstractJsonController {
 
     private ExecutorService threadExecutor;
 
-    @PostConstruct
     public void initExecutor(){
     	threadExecutor = Executors.newFixedThreadPool(requestThreads);
     }
@@ -57,16 +53,17 @@ public abstract class ShardableJsonController extends AbstractJsonController {
 			threadExecutor.execute(shardRequest);
 		}
 		
-		try {
-			ShardResponse shardedResponse = 
-				responses.poll(10, TimeUnit.SECONDS);
-			response = (JSONArray)JSON.parse(shardedResponse.getResponseJson());
-			
-		} catch (InterruptedException e) {
-			logger.error("problem getting response");
-		}
+//		try {
+//			ShardResponse shardedResponse = 
+//				responses.poll(10, TimeUnit.SECONDS);
+//			response = (JSONArray)JSON.parse(shardedResponse.getResponseJson());
+//			
+//		} catch (InterruptedException e) {
+//			logger.error("problem getting response");
+//		}
 
-		return response;
+		throw new RuntimeException("NO IMPL");
+	
 	}
 	
 	private class ShardRequest  implements Runnable{
@@ -94,36 +91,36 @@ public abstract class ShardableJsonController extends AbstractJsonController {
 		
 		@Override
 		public void run() {
-
-			try {
-
-				logger.debug(key + " - about to get something from "
-						+ method.getURI());
-				// execute the method
-				
-				httpClient.executeMethod(method);
-
-				logger.debug(key + " - get executed");
-				// get the response body as an array of bytes
-				byte[] bytes = method.getResponseBody();
-				String json = new String(bytes);
-				JSONArray array = (JSONArray)JSON.parse(json);
-				if(array.length()>0){
-					ShardResponse response = 
-						new ShardResponse(key, method.getURI().toString(), json);
-					
-					responses.put(response);
-				}
-
-				logger.debug(key + " - " + bytes.length + " bytes read");
-
-			} catch (Exception e) {
-				logger.debug(key + " - error: " + e);
-			} finally {
-				// always release the connection after we're done
-				method.releaseConnection();
-				logger.debug(key + " - connection released");
-			}
+			throw new RuntimeException("NO IMPL");
+//			try {
+//
+//				logger.debug(key + " - about to get something from "
+//						+ method.getURI());
+//				// execute the method
+//				
+//				httpClient.executeMethod(method);
+//
+//				logger.debug(key + " - get executed");
+//				// get the response body as an array of bytes
+//				byte[] bytes = method.getResponseBody();
+//				String json = new String(bytes);
+//				JSONArray array = (JSONArray)JSON.parse(json);
+//				if(array.length()>0){
+//					ShardResponse response = 
+//						new ShardResponse(key, method.getURI().toString(), json);
+//					
+//					responses.put(response);
+//				}
+//
+//				logger.debug(key + " - " + bytes.length + " bytes read");
+//
+//			} catch (Exception e) {
+//				logger.debug(key + " - error: " + e);
+//			} finally {
+//				// always release the connection after we're done
+//				method.releaseConnection();
+//				logger.debug(key + " - connection released");
+//			}
 
 		}
 

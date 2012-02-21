@@ -3,6 +3,7 @@ package com.welocally.geodb.services.db;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,41 +14,10 @@ import com.amazonaws.services.dynamodb.model.AttributeValue;
 @Component
 public class DynamoJsonObjectFactory {
 	
-	/*
-	 * {
-    "_id": "WL_5dPhlN9PsTrqBREtYhL5CO_37.807605_-122.268846@1293134755",
-    "geo_distance": 5.64487307280821,
-    "properties": {
-        "tags": [
-            "sandwich",
-            "eating"
-        ],
-        "phone": "+1 510 839 7295",
-        "classifiers": [
-            {
-                "category": "Restaurant",
-                "subcategory": "",
-                "type": "Food & Drink"
-            }
-        ],
-        "address": "435 19th St",
-        "name": "Lana's Sandwiches",
-        "province": "CA",
-        "owner": "welocally",
-        "postcode": "94612",
-        "city": "Oakland",
-        "country": "US"
-    },
-    "type": "Place",
-    "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -122.268997,
-            37.8078
-        ]
-    }
-}
-	 */
+	static Logger logger = 
+		Logger.getLogger(MongoJsonDatabase.class);
+	
+	
 	public Map<String, AttributeValue> makePlace(JSONObject placeObject, String status) throws JSONException{
 		
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();

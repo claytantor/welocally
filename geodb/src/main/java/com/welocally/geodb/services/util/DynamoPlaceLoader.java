@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.MongoException;
 import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
@@ -82,8 +81,6 @@ public class DynamoPlaceLoader implements CommandSupport {
 		
 				
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (MongoException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

@@ -26,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.mongodb.MongoException;
-
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations="classpath:geodb-applicationContext.xml")
 public class GeoSpatialTooTest {
@@ -156,8 +154,6 @@ public class GeoSpatialTooTest {
 			reader.close(); 
 				
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (MongoException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

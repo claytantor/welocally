@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.MongoException;
 import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
@@ -45,9 +44,6 @@ public class MongoCategoryLoader implements CommandSupport {
 			load(command.getString("file"), command.getString("target"), command.getInt("maxRecords")) ;
 			
 		} catch (UnknownHostException e) {
-			logger.error(e);
-			throw new CommandException(e);
-		} catch (MongoException e) {
 			logger.error(e);
 			throw new CommandException(e);
 		} catch (JSONException e) {
