@@ -39,6 +39,8 @@ import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 @Component
 public class SolrCSVWriter implements CommandSupport {
 	
@@ -120,6 +122,7 @@ public class SolrCSVWriter implements CommandSupport {
 				BufferedReader br = new BufferedReader(reader); 
 				String s = null; 
 				BufferedWriter writer = new BufferedWriter(new FileWriter(target));
+				CSVWriter csvWriter = new CSVWriter(writer);
 				writer.write("_id,search,location_0_coordinate,location_1_coordinate");
 				writer.newLine();
 				while((s = br.readLine()) != null) { 
@@ -130,22 +133,18 @@ public class SolrCSVWriter implements CommandSupport {
 					
 					welocallyJSONUtils.updatePlaceToWelocally(place);
 					JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
-					// pull fields out and write to CSV
-					writer.write(doc.getString("_id"));
-					writer.write(",");
-					writer.write(doc.getString("search"));		
-					writer.write(",");
-					writer.write(doc.getString("location_0_coordinate"));
-					writer.write(",");
-					writer.write(doc.getString("location_1_coordinate"));
-					writer.newLine();										
+					csvWriter.writeNext(new String[] {
+						doc.getString("_id"),
+						doc.getString("search"),
+						doc.getString("location_0_coordinate"),
+						doc.getString("location_1_coordinate")});
 				} 
 				reader.close(); 
 				logger.debug("commit");
-				writer.flush();			
+				csvWriter.flush();			
 			}
 
-//			System.exit(1);				
+			System.exit(0);				
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
