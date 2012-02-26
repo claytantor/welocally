@@ -9,7 +9,12 @@ public interface JsonDatabase {
 		throws DbException;
 	
 	public void put(JSONObject doc, String collectionName, String id)
-		throws DbException;
+    throws DbException;
+
+	public void delete(String collectionName, String id)
+        throws DbException;
+
+	
 	
 	public DbPage findAll(String collectionName, int pageNum) throws DbException;
 	

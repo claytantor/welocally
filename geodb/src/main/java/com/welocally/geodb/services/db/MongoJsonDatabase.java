@@ -12,6 +12,12 @@ import org.springframework.stereotype.Component;
 public class MongoJsonDatabase implements JsonDatabase {
 
 	@Override
+    public void delete(String collectionName, String id) throws DbException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("NO IMPL");
+    }
+
+    @Override
     public DbPage findAll(String collectionName, int pageNum)
             throws DbException {
 	    // TODO Auto-generated method stub

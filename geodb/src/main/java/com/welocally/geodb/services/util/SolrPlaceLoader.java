@@ -79,10 +79,6 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	@Autowired LoadMonitor loadMonitor;
 	
 	
-//	@Autowired
-//	@Qualifier("dynamoJsonDatabase")
-//	private JsonDatabase jsonDatabase;
-	
 	@Value("${SolrPlaceLoader.endpoint:http://localhost:8983/solr/update/json}")
 	private String endpoint;
 	
@@ -143,7 +139,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 					
 					
 					welocallyJSONUtils.updatePlaceToWelocally(place);
-					loadSingle(place, count, commitEvery, sw); 
+					loadSingle(place, count, commitEvery, sw);
 					count++;
 					
 				} 
@@ -196,6 +192,28 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		
 		
 	}
+	
+	
+	/* (non-Javadoc)
+     * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
+     */
+    public void deleteSingle(String id, Integer count, Integer commitEvery, StringWriter sw) throws JSONException, IOException{
+        logger.debug("removing document:"+id);
+
+        //JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
+        JSONObject solrCommand = 
+            new JSONObject("{\"delete\": {\"id\":"+id+"}}");
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream(solrCommand.toString().getBytes());
+        BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
+                            
+        postData(newPlaceReader, sw);
+        
+        commit(sw);
+        sw.flush();
+        sw.close();
+   
+    }
 
 	  /** Post all filenames provided in args, return the number of files posted*/
 	  int postFiles(String [] args,int startIndexInArgs) throws IOException {

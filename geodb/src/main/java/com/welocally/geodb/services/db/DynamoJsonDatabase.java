@@ -25,6 +25,8 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.DeleteItemRequest;
+import com.amazonaws.services.dynamodb.model.DeleteItemResult;
 import com.amazonaws.services.dynamodb.model.GetItemRequest;
 import com.amazonaws.services.dynamodb.model.GetItemResult;
 import com.amazonaws.services.dynamodb.model.Key;
@@ -148,7 +150,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 
 			GetItemResult result = dynamoDB.getItem(request);
 
-			if (result.getItem().isEmpty())
+			if (result.getItem() == null || result.getItem().isEmpty())
 				throw new DbException(Type.OBJECT_NOT_FOUND);
 			else {
 				return new JSONObject(result.getItem().get("document").getS());
@@ -163,8 +165,25 @@ public class DynamoJsonDatabase implements JsonDatabase {
 		}
 
 	}
+	
+	
 
 	@Override
+    public void delete(String collectionName, String id) throws DbException {
+	    try {
+            Key primaryKey = new Key()
+            .withHashKeyElement(new AttributeValue(id));
+            DeleteItemRequest deleteItemRequest = new DeleteItemRequest(collectionName, primaryKey);
+            DeleteItemResult result = dynamoDB.deleteItem(deleteItemRequest);
+        } catch (AmazonServiceException e) {
+            throw new DbException(Type.DB_ERROR);
+        } catch (AmazonClientException e) {
+            throw new DbException(Type.DB_ERROR);
+        }
+
+    }
+
+    @Override
 	public JSONArray findDistinct(String collectionName, String key,
 	        JSONObject query) throws DbException {
 		// TODO Auto-generated method stub
