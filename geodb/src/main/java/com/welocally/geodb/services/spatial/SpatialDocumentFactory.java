@@ -81,11 +81,6 @@ public class SpatialDocumentFactory {
 					Field.Index.NOT_ANALYZED));
 		}
 			
-//		doc.add(new Field("name", properties.getString("name"), Field.Store.YES,
-//				Field.Index.NOT_ANALYZED));
-//		
-//		doc.add(new Field("place", placeObject.toString(), Field.Store.YES,
-//				Field.Index.NOT_ANALYZED));
 		
 		doc.add(new Field("search", makeSearchablePlaceContent(properties), Field.Store.YES,
 				Field.Index.ANALYZED));
@@ -98,38 +93,6 @@ public class SpatialDocumentFactory {
 		
 	}
 	
-	/*
-{
-    "startDate": 1330934400000,
-    "location": {
-        "phoneNumber": "202-822-8808",
-        "address": "1134 19th St NW",
-        "zipCode": "20036",
-        "name": "Charmed Salon",
-        "state": "DC",
-        "longitude": -77.043657,
-        "latitude": 38.904831,
-        "city": "Washington"
-    },
-    "smallImageUrl": "http://www.signpost.com/media/BAhbB1sHOgZmSSIyMjAxMi8wMS8wNS8xNC80NC8yMi80NzYvY2hhcm1lZF9zYWxvbl9waWMuanBnBjoGRVRbCToGcDoMY29udmVydEkiEiAtc2NhbGUgNDV4NDUGOwZGMA",
-    "endDate": 1331280000000,
-    "available": 250,
-    "savings": 90,
-    "url": "http://www.signpost.com/deals/washington-dc/charmed-salon-dc/90-haircut-full-head-of-highlights-50-off/574?utm_source=welocally&utm_medium=distribution&utm_campaign=baltimore-md&utm_content=charmed-salon-dc",
-    "title": "$90 Haircut & Full Head of Highlights (50% OFF)",
-    "price": 90,
-    "_id": "WLD_7m4q0hujgpsh12fc6gr7lc_38.904831_-77.043657@1331222040",
-    "percentageDiscount": 50,
-    "details": "If you're looking to highlight your best features, why not get literal by adding a full head of highlights? Charmed Salon is offering an amazingly priced 50% off deal on a full head of highlights with haircut. Their team of talented professionals strives to exceed their customers’ expectations with each visit. Each stylist has more than 10 years of experience cutting, dyeing, and styling diverse types of hair. Conveniently located near Dupont Circle and Farragut West metro stations, each member of the team at Charmed Salon is dedicated to ensuring your complete satisfaction with your new head of highlights and haircut. And at just $90 with this deal, you'll leave Charmed Salon with a Charming new look!",
-    "signpostId": "574",
-    "value": 180,
-    "largeImageUrl": "http://www.signpost.com/media/BAhbB1sHOgZmSSIyMjAxMi8wMS8wNS8xNC80NC8yMi80NzYvY2hhcm1lZF9zYWxvbl9waWMuanBnBjoGRVRbCToGcDoMY29udmVydEkiFCAtc2NhbGUgMTkweDE5MAY7BkYw",
-    "categories": [],
-    "quantity": 1000,
-    "mediumImageUrl": "http://www.signpost.com/media/BAhbB1sHOgZmSSIyMjAxMi8wMS8wNS8xNC80NC8yMi80NzYvY2hhcm1lZF9zYWxvbl9waWMuanBnBjoGRVRbCToGcDoMY29udmVydEkiEiAtc2NhbGUgOTV4OTUGOwZGMA",
-    "sold": 5
-}
-	 */
 	public String makeSearchableDealContent(JSONObject deal) throws JSONException{
         StringBuffer buf = new StringBuffer();
         buf.append(deal.getString("title")+" ");
