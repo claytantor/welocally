@@ -6,7 +6,7 @@
     ],
     "bean": "solrDealLoader",
     "command": {
-        "endpoint": "http://ec2-23-20-107-9.compute-1.amazonaws.com:8983/solr/update/json",
+        "endpoint": "http://localhost:8983/solr/update/json",
         "file": "/Users/claygraham/data/tmp/deals.json",
         "maxRecords": 1500,
         "commitEvery": 10

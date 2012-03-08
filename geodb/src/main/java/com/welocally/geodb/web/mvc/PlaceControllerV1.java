@@ -56,8 +56,11 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	@Value("${userDatabase.collectionName:user}")
 	String userCollection;
 	
-    @Value("${SolrSearchService.place.endpoint:http://localhost:8983/solr/select/}")
+    @Value("${SolrSearchService.places.endpoint:http://localhost:8983/solr/select/}")
     private String searchEndpoint;
+    
+    @Value("${SolrPlaceLoader.places.endpoint:http://localhost:8983/solr/update/json}")
+    private String updateEndpoint;
    
 	
 	//solrDealLoader, solrPlaceLoader
@@ -87,7 +90,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 				jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE);
 				StringWriter sw = new StringWriter();
 				//now add it to the index
-				loader.loadSingle(place, 1, 1, sw);
+				loader.loadSingle(place, 1, 1, sw, updateEndpoint);
 				sw.flush();
 				sw.close();
 								
@@ -126,7 +129,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
             jsonDatabase.delete(placesCollection, id);
             StringWriter sw = new StringWriter();
             //now add it to the index
-            loader.deleteSingle(id, 1, 1, sw);
+            loader.deleteSingle(id, 1, 1, sw, updateEndpoint);
             sw.flush();
             sw.close();
             

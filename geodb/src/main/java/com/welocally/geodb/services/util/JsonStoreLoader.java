@@ -14,9 +14,9 @@ public interface JsonStoreLoader {
 	        String endpoint) throws DbException;
 
 	public abstract void loadSingle(JSONObject place, Integer count,
-			Integer commitEvery, StringWriter sw) throws JSONException, IOException;
+			Integer commitEvery, StringWriter sw,  String endpoint) throws JSONException, IOException;
 	
 	public abstract void deleteSingle(String id, Integer count,
-            Integer commitEvery, StringWriter sw) throws JSONException, IOException;
+            Integer commitEvery, StringWriter sw,  String endpoint) throws JSONException, IOException;
 
 }

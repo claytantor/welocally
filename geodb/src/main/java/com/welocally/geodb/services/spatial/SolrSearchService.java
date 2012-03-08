@@ -31,6 +31,7 @@ public class SolrSearchService implements SpatialSearchService {
 	//wt=json&fq={!geofilt%20sfield=location}&pt=58.37587201036513,-134.58542687818408&d=5
 	public JSONArray find(Point point, double km, String queryString, int start, int rows, String endpoint)
 	        throws SpatialSearchException {
+	 
 		
 		// Create an instance of HttpClient.
 	    HttpClient client = new HttpClient();
@@ -42,6 +43,8 @@ public class SolrSearchService implements SpatialSearchService {
 	    // Provide custom retry handler is necessary
 	    method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
 	    		new DefaultHttpMethodRetryHandler(3, false));
+	    
+	    logger.debug(endpoint+"?"+method.getQueryString());
 
 	    try {
 	      // Execute the method.

@@ -62,11 +62,11 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		DATA_MODES.add(DATA_MODE_STDIN);
 	}
 
-	protected URL solrUrl;
+	//protected URL solrUrl;
 
 	private class PostException extends RuntimeException {
 		PostException(String reason, Throwable cause) {
-			super(reason + " (POST URL=" + solrUrl + ")", cause);
+			super(reason + " problem with (POST)", cause);
 		}
 	}
 
@@ -78,19 +78,6 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	
 	@Autowired LoadMonitor loadMonitor;
 	
-//always pass endpoint to command	
-//	@Value("${SolrPlaceLoader.places.endpoint:http://localhost:8983/solr/update/json}")
-//	private String endpoint;
-//	
-//	@PostConstruct 
-//	public void initEndpoint(){
-//		try {
-//			logger.debug("setting endpoint for search service:"+endpoint);
-//	        solrUrl = new URL(endpoint);
-//        } catch (MalformedURLException e) {
-//	        logger.error("cant init search service endpoint", e);
-//        }
-//	}
 
 	@Override
 	public void doCommand(JSONObject command) throws CommandException {
@@ -121,7 +108,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		try {
 			logger.debug("starting load to:"+endpoint);
 			
-			solrUrl = new URL(endpoint);
+			URL solrUrl = new URL(endpoint);
 			
 			String[] files = fileName.split(",");
 			for (String file : files) {
@@ -139,13 +126,13 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 					
 					
 					welocallyJSONUtils.updatePlaceToWelocally(place);
-					loadSingle(place, count, commitEvery, sw);
+					loadSingle(place, count, commitEvery, sw, endpoint);
 					count++;
 					
 				} 
 				reader.close(); 
 				logger.debug("commit");
-				commit(sw);
+				commit(sw, solrUrl);
 				sw.flush();
 				System.exit(1);
 			
@@ -167,9 +154,11 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	/* (non-Javadoc)
      * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
      */
-	public void loadSingle(JSONObject place, Integer count, Integer commitEvery, StringWriter sw) throws JSONException, IOException{
+	public void loadSingle(JSONObject place, Integer count, Integer commitEvery, StringWriter sw, String endpoint) throws JSONException, IOException{
 		logger.debug("adding document:"+place.getString("_id"));
 
+		URL solrUrl = new URL(endpoint);
+		
 		JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
 		JSONObject solrCommand = 
 			new JSONObject("{\"add\": {\"doc\":"+doc.toString()+"}}");
@@ -177,12 +166,12 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		ByteArrayInputStream bais = new ByteArrayInputStream(solrCommand.toString().getBytes());
 		BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
 							
-        postData(newPlaceReader, sw);
+        postData(newPlaceReader, sw, solrUrl);
         
         //commit only every x docs
         if(count%commitEvery==0){
         	logger.debug("commit");
-        	commit(sw);
+        	commit(sw, solrUrl);
         	sw.flush();
         	sw.close();
         	sw = new StringWriter();
@@ -197,8 +186,10 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	/* (non-Javadoc)
      * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
      */
-    public void deleteSingle(String id, Integer count, Integer commitEvery, StringWriter sw) throws JSONException, IOException{
+    public void deleteSingle(String id, Integer count, Integer commitEvery, StringWriter sw, String endpoint) throws JSONException, IOException{
         logger.debug("removing document:"+id);
+        
+        URL solrUrl = new URL(endpoint);
 
         //JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
         JSONObject solrCommand = 
@@ -207,16 +198,16 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
         ByteArrayInputStream bais = new ByteArrayInputStream(solrCommand.toString().getBytes());
         BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
                             
-        postData(newPlaceReader, sw);
+        postData(newPlaceReader, sw, solrUrl);
         
-        commit(sw);
+        commit(sw, solrUrl);
         sw.flush();
         sw.close();
    
     }
 
 	  /** Post all filenames provided in args, return the number of files posted*/
-	  int postFiles(String [] args,int startIndexInArgs) throws IOException {
+	  int postFiles(String [] args, int startIndexInArgs, URL solrUrl) throws IOException {
 	    int filesPosted = 0;
 	    for (int j = startIndexInArgs; j < args.length; j++) {
 	      File srcFile = new File(args[j]);
@@ -224,7 +215,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	      
 	      if (srcFile.canRead()) {
 	        info("POSTing file " + srcFile.getName());
-	        postFile(srcFile, sw);
+	        postFile(srcFile, sw, solrUrl);
 	        filesPosted++;
 	        warnIfNotExpectedResponse(sw.toString(),SOLR_OK_RESPONSE_EXCERPT);
 	      } else {
@@ -260,8 +251,8 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	  /**
 	   * Does a simple commit operation 
 	   */
-	  public void commit(Writer output) throws IOException {
-	    postData(new StringReader("{\"commit\":{}}"), output);
+	  public void commit(Writer output, URL solrUrl) throws IOException {
+	    postData(new StringReader("{\"commit\":{}}"), output, solrUrl);
 	  }
 
 	  /**
@@ -269,14 +260,14 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	   * writes to response to output.
 	   * @throws UnsupportedEncodingException 
 	   */
-	  public void postFile(File file, Writer output) 
+	  public void postFile(File file, Writer output, URL solrUrl) 
 	    throws FileNotFoundException, UnsupportedEncodingException {
 
 	    // FIXME; use a real XML parser to read files, so as to support various encodings
 	    // (and we can only post well-formed XML anyway)
 	    Reader reader = new InputStreamReader(new FileInputStream(file),POST_ENCODING);
 	    try {
-	      postData(reader, output);
+	      postData(reader, output, solrUrl);
 	    } finally {
 	      try {
 	        if(reader!=null) reader.close();
@@ -290,7 +281,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	   * Reads data from the data reader and posts it to solr,
 	   * writes to the response to output
 	   */
-	  public void postData(Reader data, Writer output) {
+	  public void postData(Reader data, Writer output, URL solrUrl) {
 
 	    HttpURLConnection urlc = null;
 	    try {

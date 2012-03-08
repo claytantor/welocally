@@ -120,39 +120,42 @@ public class DealControllerV1 extends AbstractJsonController {
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ModelAndView delete(@PathVariable String id, Model m){
-        ModelAndView mav = new ModelAndView("mapper-result");
-        
-        try {
-
-            jsonDatabase.delete(dealCollection, id);
-            StringWriter sw = new StringWriter();
-            //now add it to the index
-            loader.deleteSingle(id, 1, 1, sw);
-            sw.flush();
-            sw.close();
-            
-            
-            Map<String, Object> result = new HashMap<String,Object>();
-            result.put("id", id);
-            result.put("status", "SUCCEED");
-            
-            mav.addObject("mapperResult", makeModelJson(result));
-            
-        } catch (DbException e) {
-            logger.error("could not get results");
-            if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
-            {
-                mav.addObject("mapperResult", new JSONArray().toString());
-            } else {
-                mav.addObject("mapperResult", makeErrorsJson(e));
-            }
-
-        } catch (JSONException e) {
-            mav.addObject("mapperResult", makeErrorsJson(e));
-        } catch (IOException e) {
-            mav.addObject("mapperResult", makeErrorsJson(e));
-        } 
-        return mav;
+	    
+	    throw new RuntimeException("NO IMPL");
+	    
+//        ModelAndView mav = new ModelAndView("mapper-result");
+//        
+//        try {
+//
+//            jsonDatabase.delete(dealCollection, id);
+//            StringWriter sw = new StringWriter();
+//            //now add it to the index
+//            loader.deleteSingle(id, 1, 1, sw);
+//            sw.flush();
+//            sw.close();
+//            
+//            
+//            Map<String, Object> result = new HashMap<String,Object>();
+//            result.put("id", id);
+//            result.put("status", "SUCCEED");
+//            
+//            mav.addObject("mapperResult", makeModelJson(result));
+//            
+//        } catch (DbException e) {
+//            logger.error("could not get results");
+//            if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
+//            {
+//                mav.addObject("mapperResult", new JSONArray().toString());
+//            } else {
+//                mav.addObject("mapperResult", makeErrorsJson(e));
+//            }
+//
+//        } catch (JSONException e) {
+//            mav.addObject("mapperResult", makeErrorsJson(e));
+//        } catch (IOException e) {
+//            mav.addObject("mapperResult", makeErrorsJson(e));
+//        } 
+//        return mav;
     }
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
