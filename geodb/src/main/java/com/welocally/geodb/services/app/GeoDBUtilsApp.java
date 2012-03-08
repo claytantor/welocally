@@ -70,7 +70,7 @@ public class GeoDBUtilsApp {
 	    		doLoggingConfig() ;
 	    		
 	    		ApplicationContext ctx = new ClassPathXmlApplicationContext(
-	    			    new String[] {"geodb-applicationContext.xml"});
+	    			    new String[] {"geodb-applicationContext.xml","signpost4j-context.xml"});
 	    		
 	    		logger.debug("doing command:"+harness.getString("bean"));
 //	    		if(ctx.getBean(harness.getString("bean")) instanceof org.mortbay.jetty.Server){
@@ -78,6 +78,7 @@ public class GeoDBUtilsApp {
 //	    		} else {
 	    			CommandSupport beanCommand = (CommandSupport)ctx.getBean(harness.getString("bean"));
 		    		beanCommand.doCommand(harness.getJSONObject("command"));
+		    		System.exit(0);
 	    		//}
 	    		
     		

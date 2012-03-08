@@ -92,7 +92,7 @@ public class GeoSpatialTooTest {
 			double testDistance = getMiles(1.0D);
 			Point p = new Point(-12.523060,131.041473);
 			JSONArray locations = 
-				spatialSearchService.find(p, testDistance, "Litchfield Vet Hospital", 0, 25);
+				spatialSearchService.find(p, testDistance, "Litchfield Vet Hospital", 0, 25,"http://localhost:8983/solr/select/");
 			for (int i = 0; i < locations.length(); i++) {
 				JSONObject placeFound = locations.getJSONObject(i);
 				JSONObject properties = placeFound.getJSONObject("properties");

@@ -4,17 +4,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public interface JsonDatabase {
+    
+    public enum EntityType { PLACE, CLASSIFER, DEAL };
 
 	public JSONObject findById(String collectionName, String id)
 		throws DbException;
 	
-	public void put(JSONObject doc, String collectionName, String id)
+	public void put(JSONObject doc, String collectionName, String id, EntityType type)
     throws DbException;
 
 	public void delete(String collectionName, String id)
         throws DbException;
 
-	
+	public void deleteAll(String collectionName)
+        throws DbException;
 	
 	public DbPage findAll(String collectionName, int pageNum) throws DbException;
 	

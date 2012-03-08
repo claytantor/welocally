@@ -70,7 +70,7 @@ public class DynamoPlaceLoader implements CommandSupport {
 					welocallyJSONUtils.updatePlaceToWelocally(place);
 					
 					logger.debug("adding document:"+place.getString("_id"));
-					jsonDatabase.put(place,collectionName, place.getString("_id"));
+					jsonDatabase.put(place,collectionName, place.getString("_id"), JsonDatabase.EntityType.PLACE);
 					loadMonitor.increment();
 			        count++;
 					

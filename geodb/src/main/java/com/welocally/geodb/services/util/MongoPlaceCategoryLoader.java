@@ -100,7 +100,7 @@ public class MongoPlaceCategoryLoader implements CommandSupport {
 	public String loadClassifierIntoDb(JSONObject classifier, String targetCollection) 
 	throws JSONException, DbException{
 		String id = idGen.genBasic(10);	
-		jsonDatabase.put(classifier, targetCollection, id);
+		jsonDatabase.put(classifier, targetCollection, id, JsonDatabase.EntityType.CLASSIFER);
 		return id;
 	}
 

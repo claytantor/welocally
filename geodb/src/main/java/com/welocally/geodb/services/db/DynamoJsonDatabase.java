@@ -182,6 +182,17 @@ public class DynamoJsonDatabase implements JsonDatabase {
         }
 
     }
+	
+
+    @Override
+    public void deleteAll(String collectionName) throws DbException {
+        
+        
+        // TODO Auto-generated method stub
+        throw new RuntimeException("NO IMPL");
+    }
+    
+    
 
     @Override
 	public JSONArray findDistinct(String collectionName, String key,
@@ -233,18 +244,32 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 
 	@Override
-	public void put(JSONObject doc, String collectionName, String id)
+	public void put(JSONObject doc, String collectionName, String id, EntityType type)
 	        throws DbException {
 
 		try {
-			Map<String, AttributeValue> item = null;
-			if (collectionName.equals("places.published")) {
-				putItem(dynamoJsonObjectFactory.makePlace(doc, "published"),
-				        collectionName);
-			} else if (collectionName.equals("classifiers")) {
-				putItem(dynamoJsonObjectFactory.makeClassifier(doc),
-				        collectionName);
+
+			switch(type){
+			case PLACE:{
+			    putItem(dynamoJsonObjectFactory.makePlace(doc, "published"),
+                        collectionName);
+			    break;
 			}
+            case CLASSIFER: {
+                putItem(dynamoJsonObjectFactory.makeClassifier(doc),
+                        collectionName);
+                break;
+            }
+            case DEAL: {
+                putItem(dynamoJsonObjectFactory.makeDeal(doc, "published"),
+                        collectionName);
+                break;
+            }
+			}
+            
+			
+			
+			
 		} catch (JSONException e) {
 			logger.error("cant put object to dynamo store", e);
 			throw new DbException(DbException.Type.DB_ERROR);

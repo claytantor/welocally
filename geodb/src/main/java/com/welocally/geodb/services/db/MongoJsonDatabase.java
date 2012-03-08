@@ -52,12 +52,19 @@ public class MongoJsonDatabase implements JsonDatabase {
 	    throw new RuntimeException("NO IMPL");
     }
 
-	@Override
-    public void put(JSONObject doc, String collectionName, String id)
-            throws DbException {
-	    // TODO Auto-generated method stub
-	    throw new RuntimeException("NO IMPL");
+    @Override
+    public void put(JSONObject doc, String collectionName, String id,
+            EntityType type) throws DbException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("NO IMPL");
     }
+
+    @Override
+    public void deleteAll(String collectionName) throws DbException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("NO IMPL");
+    }
+
 	
 	
 	

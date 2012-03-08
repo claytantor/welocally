@@ -39,7 +39,7 @@ public class DynamoLoader implements CommandSupport {
 		try {			
 			loadMonitor.reset();
 			load(command.getString("file"), command.getInt("maxRecords"),
-			        command.getString("collection"));
+			        command.getString("collection"), JsonDatabase.EntityType.valueOf(command.getString("type")));
 	
 		} catch (DbException e) {
 			logger.error(e);
@@ -51,7 +51,7 @@ public class DynamoLoader implements CommandSupport {
 
 	}
 
-	public void load(String fileName, int maxRecords, String collectionName) throws DbException {
+	public void load(String fileName, int maxRecords, String collectionName, JsonDatabase.EntityType type) throws DbException {
 		try {
 			logger.debug("starting load");
 			String[] files = fileName.split(",");
@@ -67,10 +67,8 @@ public class DynamoLoader implements CommandSupport {
 					JSONObject doc = 
 						new JSONObject(s);
 					
-					//welocallyJSONUtils.updatePlaceToWelocally(doc);
-					
 					logger.debug("adding document:"+doc.getString("_id"));
-					jsonDatabase.put(doc,collectionName, doc.getString("_id"));
+					jsonDatabase.put(doc,collectionName, doc.getString("_id"), type);
 					loadMonitor.increment();
 			        count++;
 					

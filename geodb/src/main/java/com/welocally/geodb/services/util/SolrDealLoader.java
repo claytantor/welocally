@@ -39,7 +39,7 @@ import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
 @Component
-public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
+public class SolrDealLoader implements CommandSupport, JsonStoreLoader {
 	
 	//public static final String DEFAULT_POST_URL = "http://localhost:8983/solr/update/json";
 	public static final String POST_ENCODING = "UTF-8";
@@ -72,30 +72,31 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 
 	
 	static Logger logger = 
-		Logger.getLogger(SolrPlaceLoader.class);
+		Logger.getLogger(SolrDealLoader.class);
 	
 	@Autowired WelocallyJSONUtils welocallyJSONUtils;
 	
 	@Autowired LoadMonitor loadMonitor;
 	
-//always pass endpoint to command	
-//	@Value("${SolrPlaceLoader.places.endpoint:http://localhost:8983/solr/update/json}")
-//	private String endpoint;
-//	
-//	@PostConstruct 
-//	public void initEndpoint(){
-//		try {
-//			logger.debug("setting endpoint for search service:"+endpoint);
-//	        solrUrl = new URL(endpoint);
-//        } catch (MalformedURLException e) {
-//	        logger.error("cant init search service endpoint", e);
-//        }
-//	}
+	
+	@Value("${SolrDealLoader.endpoint:http://localhost:8983/solr/update/json}")
+	private String endpoint;
+	
+	@PostConstruct 
+	public void initEndpoint(){
+		try {
+			logger.debug("setting endpoint for search service:"+endpoint);
+	        solrUrl = new URL(endpoint);
+        } catch (MalformedURLException e) {
+	        logger.error("cant init search service endpoint", e);
+        }
+	}
 
 	@Override
 	public void doCommand(JSONObject command) throws CommandException {
 		try {			
 			loadMonitor.reset();
+			deleteAll();
 			load(command.getString("file"), command.getInt("maxRecords"),
 					command.getInt("commitEvery"),
 					command.getString("endpoint"));
@@ -107,6 +108,9 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		} catch (JSONException e) {
 			logger.error(e);
 			throw new CommandException(e);
+        } catch (IOException e) {
+            logger.error(e);
+            throw new CommandException(e);
         }
 
 	}
@@ -136,9 +140,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 					
 					JSONObject place = 
 						new JSONObject(s);
-					
-					
-					welocallyJSONUtils.updatePlaceToWelocally(place);
+
 					loadSingle(place, count, commitEvery, sw);
 					count++;
 					
@@ -164,20 +166,48 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 		
 	}
 	
+
+    /* (non-Javadoc)
+     * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
+     */
+    public void deleteAll() throws JSONException, IOException{
+        logger.debug("deleting all documents");
+
+        
+        //<delete><query>*:*</query></delete>
+        JSONObject solrCommand = 
+            new JSONObject("{\"delete\": {\"query\":\"*:*\"}}");
+        StringWriter sw = new StringWriter();
+        ByteArrayInputStream bais = new ByteArrayInputStream(solrCommand.toString().getBytes());
+        BufferedReader newReader = new BufferedReader(new InputStreamReader(bais));
+                            
+        postData(newReader, sw);
+        
+        commit(sw);
+        sw.flush();
+        sw.close();
+              
+                            
+        loadMonitor.increment();
+        
+        
+    }
+	
+	
 	/* (non-Javadoc)
      * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
      */
-	public void loadSingle(JSONObject place, Integer count, Integer commitEvery, StringWriter sw) throws JSONException, IOException{
-		logger.debug("adding document:"+place.getString("_id"));
+	public void loadSingle(JSONObject deal, Integer count, Integer commitEvery, StringWriter sw) throws JSONException, IOException{
+		logger.debug("adding document:"+deal.getString("_id"));
 
-		JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
+		JSONObject doc = welocallyJSONUtils.makeIndexableDeal(deal);
 		JSONObject solrCommand = 
 			new JSONObject("{\"add\": {\"doc\":"+doc.toString()+"}}");
 		
 		ByteArrayInputStream bais = new ByteArrayInputStream(solrCommand.toString().getBytes());
-		BufferedReader newPlaceReader = new BufferedReader(new InputStreamReader(bais));
+		BufferedReader newReader = new BufferedReader(new InputStreamReader(bais));
 							
-        postData(newPlaceReader, sw);
+        postData(newReader, sw);
         
         //commit only every x docs
         if(count%commitEvery==0){

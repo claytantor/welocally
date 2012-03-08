@@ -23,13 +23,13 @@ public class SolrSearchService implements SpatialSearchService {
 	
 	static Logger logger = Logger.getLogger(SolrSearchService.class);
 
-	@Value("${SolrSearchService.endpoint:http://localhost:8983/solr/select/}")
-	private String endpoint;
-		
+//	@Value("${SolrSearchService.endpoint:http://localhost:8983/solr/select/}")
+//	private String endpoint;
+//		
 
 	@Override
 	//wt=json&fq={!geofilt%20sfield=location}&pt=58.37587201036513,-134.58542687818408&d=5
-	public JSONArray find(Point point, double km, String queryString, int start, int rows)
+	public JSONArray find(Point point, double km, String queryString, int start, int rows, String endpoint)
 	        throws SpatialSearchException {
 		
 		// Create an instance of HttpClient.

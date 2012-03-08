@@ -103,7 +103,7 @@ public class MongoCategoryLoader implements CommandSupport {
 				}
 			} else {
 				//over write
-				jsonDatabase.put(classifier, targetCollection, classifier.getString("_id"));
+				jsonDatabase.put(classifier, targetCollection, classifier.getString("_id"), JsonDatabase.EntityType.CLASSIFER);
 			}
 			
 	
@@ -114,7 +114,7 @@ public class MongoCategoryLoader implements CommandSupport {
 	public String loadClassifierIntoDb(JSONObject classifier, String targetCollection) 
 	throws JSONException, DbException{
 		String id = idGen.genBasic(10);	
-		jsonDatabase.put(classifier, targetCollection, id);
+		jsonDatabase.put(classifier, targetCollection, id, JsonDatabase.EntityType.CLASSIFER);
 		return id;
 	}
 

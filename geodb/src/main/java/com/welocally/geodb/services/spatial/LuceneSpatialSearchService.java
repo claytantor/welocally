@@ -32,6 +32,7 @@ import com.welocally.geodb.services.index.DirectoryException;
 import com.welocally.geodb.services.index.PlaceDirectory;
 
 @Component
+@Deprecated
 public class LuceneSpatialSearchService implements SpatialSearchService {
 
 	static Logger logger = Logger.getLogger(LuceneSpatialSearchService.class);
@@ -60,9 +61,10 @@ public class LuceneSpatialSearchService implements SpatialSearchService {
 	
 
 	@Override
-    public JSONArray find(Point point, double km, String queryString, int start, int rows)
+    public JSONArray find(Point point, double km, String queryString, int start, int rows, String endpoint)
             throws SpatialSearchException {
-	    return find(getPlaceSearcher(), point, km, queryString);
+	    //return find(getPlaceSearcher(), point, km, queryString);
+	    throw new RuntimeException("NO IMPL");
     }
 
 

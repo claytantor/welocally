@@ -33,7 +33,7 @@ public class IdGenTest {
 	public void testIdGenPlace() {
 		logger.debug("testIdGenPlace");
 		Point p = new Point(-12.4962596893, 131.045791626);
-		String id = idGen.genPoint(p);
+		String id = idGen.genPoint("WL_",p);
 		logger.debug(id);
 		//WL_2uPWew1lZQQWByErSOUo95_-12.523060_131.041473@1303236331
 		Assert.assertEquals("WL_2uPWew1lZQQWByErSOUo95_-12.523060_131.041473@1303236331".length(), id.length());

@@ -8,6 +8,7 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 		classpath:geodb-applicationContext.xml	
+		classpath:signpost4j-context.xml	
 		</param-value>
 	</context-param>
 	

@@ -33,11 +33,11 @@ import com.welocally.geodb.services.spatial.SpatialSearchService;
 import com.welocally.geodb.services.util.JsonStoreLoader;
 
 @Controller
-@RequestMapping("/place/1_0")
-public class PlaceControllerV1 extends AbstractJsonController {
+@RequestMapping("/deal/1_0")
+public class DealControllerV1 extends AbstractJsonController {
 	
 	static Logger logger = 
-		Logger.getLogger(PlaceControllerV1.class);
+		Logger.getLogger(DealControllerV1.class);
 	
 	@Qualifier("solrSearchService")
 	@Autowired SpatialSearchService searchService;
@@ -50,65 +50,66 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	
 	@Autowired SpatialConversionUtils spatialConversionUtils; 	
 	
-	@Value("${placesDatabase.collectionName:places}")
-	String placesCollection;
+	 @Value("${SolrSearchService.deals.endpoint:http://localhost:8983/solr/select/}")
+	 private String searchEndpoint;
 	
-	@Value("${userDatabase.collectionName:user}")
-	String userCollection;
+	@Value("${dealDatabase.collectionName:dev.deals.published}")
+	String dealCollection;
 	
-    @Value("${SolrSearchService.place.endpoint:http://localhost:8983/solr/select/}")
-    private String searchEndpoint;
-   
+//	@Value("${userDatabase.collectionName:user}")
+//	String userCollection;
 	
 	//solrDealLoader, solrPlaceLoader
-    @Qualifier("solrPlaceLoader")
+	@Qualifier("solrDealLoader")
 	@Autowired JsonStoreLoader loader;
 	
 		
 	@RequestMapping(method = RequestMethod.PUT)
 	public ModelAndView put(@RequestBody String requestJson, HttpServletRequest req){
-		ModelAndView mav = new ModelAndView("mapper-result");
-		
-		try {
-			JSONObject place = 
-				new JSONObject(requestJson);
-			
-			String owner = "anonymous";
-			if(req.getHeader("site-key") != null)
-				owner = req.getHeader("site-key");
-			
-			place.put("owner", owner);			
-			
-			Point p = spatialConversionUtils.getJSONPoint(place);
-			String id=idGen.genPoint("WL_",p);
-			if(p != null){		
-				place.put("_id", id);
-				jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
-				jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE);
-				StringWriter sw = new StringWriter();
-				//now add it to the index
-				loader.loadSingle(place, 1, 1, sw);
-				sw.flush();
-				sw.close();
-								
-				Map<String, Object> result = new HashMap<String,Object>();
-				result.put("id", id);
-				result.put("status", "SUCCEED");
-				
-				mav.addObject("mapperResult", makeModelJson(result));
-			}		
-		} catch (JSONException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		} catch (DbException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		} catch (IOException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
-        } 
-		
-		return mav;
+	    
+	    throw new RuntimeException("NO IMPL");
+	    
+//		ModelAndView mav = new ModelAndView("mapper-result");
+//		
+//		try {
+//			JSONObject deal = 
+//				new JSONObject(requestJson);
+//			
+//			String owner = "anonymous";
+//			if(req.getHeader("site-key") != null)
+//				owner = req.getHeader("site-key");
+//			
+//			deal.put("owner", owner);			
+//			
+//			Point p = spatialConversionUtils.getJSONPoint(deal);
+//			String id=idGen.genPoint("WL_",p);
+//			if(p != null){		
+//				deal.put("_id", id);
+//				jsonDatabase.put(deal, placesCollection, id);
+//				StringWriter sw = new StringWriter();
+//				//now add it to the index
+//				loader.loadSingle(deal, 1, 1, sw);
+//				sw.flush();
+//				sw.close();
+//								
+//				Map<String, Object> result = new HashMap<String,Object>();
+//				result.put("id", id);
+//				result.put("status", "SUCCEED");
+//				
+//				mav.addObject("mapperResult", makeModelJson(result));
+//			}		
+//		} catch (JSONException e) {
+//			logger.error("could not get results");
+//			mav.addObject("mapperResult", makeErrorsJson(e));
+//		} catch (DbException e) {
+//			logger.error("could not get results");
+//			mav.addObject("mapperResult", makeErrorsJson(e));
+//		} catch (IOException e) {
+//			logger.error("could not get results");
+//			mav.addObject("mapperResult", makeErrorsJson(e));
+//        } 
+//		
+//		return mav;
 	}
 	
 	
@@ -123,7 +124,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
         
         try {
 
-            jsonDatabase.delete(placesCollection, id);
+            jsonDatabase.delete(dealCollection, id);
             StringWriter sw = new StringWriter();
             //now add it to the index
             loader.deleteSingle(id, 1, 1, sw);
@@ -160,7 +161,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 		
 		try {
 			JSONArray places = new JSONArray();
-			JSONObject place = jsonDatabase.findById(placesCollection, id);
+			JSONObject place = jsonDatabase.findById(dealCollection, id);
 			places.put(place);
 			mav.addObject("mapperResult", places.toString());
 		} catch (DbException e) {
@@ -192,7 +193,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			//get items from db 
 			for (int i = 0; i < resultIds.length(); i++) {
                 JSONObject id = resultIds.getJSONObject(i);
-                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("_id"));
+                JSONObject place = jsonDatabase.findById(dealCollection, id.getString("_id"));
                 
                 if(place != null){
                 	place.put("distance", id.getDouble("_dist_"));

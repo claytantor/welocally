@@ -7,15 +7,19 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.welocally.geodb.services.spatial.SpatialDocumentFactory;
 
 @Component
 public class DynamoJsonObjectFactory {
 	
 	static Logger logger = 
-		Logger.getLogger(MongoJsonDatabase.class);
+		Logger.getLogger(DynamoJsonObjectFactory.class);
+	
+	@Autowired SpatialDocumentFactory spatialDocumentFactory;
 	
 	
 	public Map<String, AttributeValue> makePlace(JSONObject placeObject, String status) throws JSONException{
@@ -29,7 +33,7 @@ public class DynamoJsonObjectFactory {
 		item.put("_id", new AttributeValue(placeObject.getString("_id")));
 		item.put("lat", new AttributeValue().withN(coords.getString(1)));
 		item.put("lng", new AttributeValue().withN(coords.getString(0)));
-		item.put("search", new AttributeValue(makeSearchableContent(properties)));
+		item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchablePlaceContent(properties)));
 		item.put("status", new AttributeValue(status));
 		item.put("document", new AttributeValue(placeObject.toString()));
 		
@@ -48,34 +52,25 @@ public class DynamoJsonObjectFactory {
 		
 		return item;
 	}
-
-
 	
-	public String makeSearchableContent(JSONObject placeProperties) throws JSONException{
-		StringBuffer buf = new StringBuffer();
-		buf.append(placeProperties.getString("name")+" ");
-		
-		//classifiers
-		if(placeProperties.has("classifiers")){
-			JSONArray categories = placeProperties.getJSONArray("classifiers");
-			for (int i = 0; i < categories.length(); i++) {
-				//buf.append(tags.getString(i)+" ");
-				JSONObject cat = categories.getJSONObject(i);
-				buf.append(cat.getString("category")+" ");
-				buf.append(cat.getString("subcategory")+" ");
-				buf.append(cat.getString("type")+" ");
-			}
-		}
-		
-		//tags
-		if(placeProperties.has("tags")){
-			JSONArray tags = placeProperties.getJSONArray("tags");
-			for (int i = 0; i < tags.length(); i++) {
-				buf.append(tags.getString(i)+" ");
-			}
-		}
-		
-		return buf.toString();	
-	}
+	public Map<String, AttributeValue> makeDeal(JSONObject jsonObject, String status) throws JSONException{
+	    Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
+        
+        JSONObject location = jsonObject.getJSONObject("location");
+        
+        JSONArray coordsNew =new JSONArray();
+        coordsNew.put(new Double(location.getDouble("latitude")).toString());
+        coordsNew.put(new Double(location.getDouble("longitude")).toString());
+
+        
+        item.put("_id", new AttributeValue(jsonObject.getString("_id")));
+        item.put("lat", new AttributeValue().withN(new Double(location.getDouble("latitude")).toString()));
+        item.put("lng", new AttributeValue().withN(new Double(location.getDouble("longitude")).toString()));
+        item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchableDealContent(jsonObject)));
+        item.put("status", new AttributeValue(status));
+        item.put("document", new AttributeValue(jsonObject.toString()));
+        
+        return item;
+    }
 
 }

@@ -16,6 +16,7 @@
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
 	<context:component-scan base-package="com.welocally.geodb.services" />
+	<context:component-scan base-package="com.welocally.signpost4j" />
 	<context:annotation-config />
 	
 	<!-- new annotation driven scheduling -->	
@@ -29,6 +30,7 @@
 		<property name="locations">
 			<list>
 				<value>${geodb_core.properties}</value>
+				<value>${signpost4j.config}</value>
 			</list>			
 		</property>
 	</bean>
