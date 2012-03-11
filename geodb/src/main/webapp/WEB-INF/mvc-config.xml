@@ -122,6 +122,12 @@
 		class="org.springframework.web.servlet.view.velocity.VelocityView">
 		<property name="url" value="mapper-result-json.vm"/>
 		<property name="contentType" value="application/json"/>
+	</bean>	
+	
+	<bean id="jsonp-mapper-result-json" 
+		class="org.springframework.web.servlet.view.velocity.VelocityView">
+		<property name="url" value="jsonp-mapper-result-json.vm"/>
+		<property name="contentType" value="application/json"/>
 	</bean>	    
     
 	
