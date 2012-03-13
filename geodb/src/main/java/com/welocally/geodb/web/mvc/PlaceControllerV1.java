@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.EntityType;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.spatial.SpatialSearchException;
@@ -167,6 +168,31 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			places.put(place);
 			mav.addObject("mapperResult", places.toString());
 		} catch (DbException e) {
+			logger.error("could not get results");
+			if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
+			{
+				mav.addObject("mapperResult", new JSONArray().toString());
+			} else {
+				mav.addObject("mapperResult", makeErrorsJson(e));
+			}
+
+		} 
+		return mav;
+	}
+	
+	@RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT)
+	public ModelAndView edit(@PathVariable String id, @RequestBody String requestJson, Model m){
+		ModelAndView mav = new ModelAndView("mapper-result");
+		try {
+			JSONObject place = 
+					new JSONObject(requestJson);
+			jsonDatabase.put(place, placesCollection, id, EntityType.PLACE);
+			mav.addObject("mapperResult", "OK");
+		} catch (JSONException e) {
+			logger.error("could not get results");
+			mav.addObject("mapperResult", makeErrorsJson(e));
+		} 
+		catch (DbException e) {
 			logger.error("could not get results");
 			if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
 			{
