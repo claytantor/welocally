@@ -159,8 +159,16 @@ public class PlaceControllerV1 extends AbstractJsonController {
     }
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ModelAndView get(@PathVariable String id, Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	public ModelAndView get(@PathVariable String id, @RequestParam(required=false) String callback, Model m){
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
 		
 		try {
 			JSONArray places = new JSONArray();
