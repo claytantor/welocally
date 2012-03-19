@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -183,7 +184,16 @@ public class DealControllerV1 extends AbstractJsonController {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ModelAndView search(@RequestParam String q, @RequestParam String loc,  
 			@RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	    
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
 		
 		try {
 			String[] parts = loc.split("_");

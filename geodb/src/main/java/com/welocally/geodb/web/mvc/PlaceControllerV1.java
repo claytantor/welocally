@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -159,8 +160,16 @@ public class PlaceControllerV1 extends AbstractJsonController {
     }
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ModelAndView get(@PathVariable String id, Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	public ModelAndView get(@PathVariable String id, @RequestParam(required=false) String callback, Model m){
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
 		
 		try {
 			JSONArray places = new JSONArray();
@@ -181,8 +190,16 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	}
 	
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT)
-	public ModelAndView edit(@PathVariable String id, @RequestBody String requestJson, Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	public ModelAndView edit(@PathVariable String id, @RequestBody String requestJson, @RequestParam(required=false) String callback, Model m){
+	    ModelAndView mav = null;
+	    if(StringUtils.isEmpty(callback))
+	        mav = new ModelAndView("mapper-result");
+	    else {
+	        mav = new ModelAndView("jsonp-mapper-result");
+	        mav.addObject(
+                    "callback", 
+                    callback);
+	    }
 		try {
 			JSONObject place = 
 					new JSONObject(requestJson);
@@ -208,8 +225,18 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ModelAndView search(@RequestParam String q, @RequestParam String loc,  
 			@RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
-		ModelAndView mav = new ModelAndView("mapper-result");
 		
+	    ModelAndView mav = null;
+	    if(StringUtils.isEmpty(callback))
+	        mav = new ModelAndView("mapper-result");
+	    else {
+	        mav = new ModelAndView("jsonp-mapper-result");
+	        mav.addObject(
+                    "callback", 
+                    callback);
+	    }
+        
+	    
 		try {
 			String[] parts = loc.split("_");
 			
@@ -233,10 +260,6 @@ public class PlaceControllerV1 extends AbstractJsonController {
 					"mapperResult", 
 					results.toString());
 					
-		} 
-		catch (SpatialSearchException e) {
-			logger.error("could not get results");
-			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
 		catch (Exception e) {
 			logger.error("could not get results",e);
