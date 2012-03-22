@@ -180,6 +180,13 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-asm</artifactId>
+			<version>${org.springframework.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>				
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${org.hibernate.version}</version>
@@ -265,11 +272,6 @@
 			<version>2.1_3</version>
 		</dependency>
 		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>3.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.opensymphony.quartz</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.6.1</version>
@@ -317,7 +319,7 @@
 			<artifactId>jackson-mapper-lgpl</artifactId>
 			<version>1.7.1</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>drools</groupId>
 			<artifactId>drools-base</artifactId>
 			<version>${org.drools.version}</version>
@@ -325,6 +327,10 @@
 				<exclusion>
 					<groupId>easymock</groupId>
 					<artifactId>easymockcontainer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -338,6 +344,10 @@
 					<artifactId>easymockcontainer</artifactId>
 				</exclusion>
 			</exclusions>
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm</artifactId>
+				</exclusion>			
 		</dependency>
 		<dependency>
 			<groupId>drools</groupId>
@@ -360,7 +370,7 @@
 					<artifactId>easymockcontainer</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
