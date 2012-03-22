@@ -96,7 +96,7 @@ body{
   		</tr>
 #foreach($line in $order.orderLines)
 		<tr>
-			<td>${line.itemSku.name}</td><td>$number.integer($line.quantityOrig)</td><td>$number.currency($line.itemSku.price)</td><td>$number.currency($line.lineTotal)</td>
+			<td>${line.itemSku.name}</td><td>$number.integer($line.quantityOrig)</td><td>$number.currency($line.itemSku.price) USD</td><td>$number.currency($line.lineTotal) USD</td>
 		</tr>
 #end	
 		<tr><td colspan="4" align="right"><strong>$number.currency($order.total)</strong></td></tr>	

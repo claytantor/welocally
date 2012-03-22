@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -12,8 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.sightlyinc.ratecred.model.ProductLine.ProductLineStatus;
 
 /**
  * 
@@ -163,6 +162,7 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "product_id")
 	private Product product;
 	
+
 	
 
 	@ManyToOne
@@ -310,6 +310,12 @@ public class Order extends BaseEntity {
 		this.product = product;
 	}
 
-	
+	@Transient
+	public Date getOrderCreationDate(){
+	    return new Date(super.getTimeCreated());
+	}
+
+
+
 
 }

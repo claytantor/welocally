@@ -44,6 +44,9 @@ public class Product extends BaseEntity {
 	@Column(name = "notes",columnDefinition="TEXT")	
 	private String notes;
 	
+	@Column(name = "roles")    
+    private String roles;
+	
 	@OneToMany
 	@JoinColumn(name = "product_id")	
 	private Set<ProductLine> productItems;
@@ -119,6 +122,14 @@ public class Product extends BaseEntity {
 	public void setStatus(ProductStatus status) {
 		this.status = status;
 	}
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
 	
 }

@@ -25,7 +25,6 @@ h6 {
 }
 
 strong {  
-	color:#5a9147; 
 	text-decoration:bold;
 }
 
@@ -155,3 +154,5 @@ display:inline-block;
 #navbar ul {margin: 0; padding: 0; list-style: none; }
 #navbar ul li {margin: 5px; width: 170px; }
 #navbar ul li a{width: 170px; }
+
+

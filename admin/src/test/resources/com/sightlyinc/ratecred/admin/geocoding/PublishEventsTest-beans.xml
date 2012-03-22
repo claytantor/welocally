@@ -15,11 +15,11 @@
 	
 	
 	<!-- property placeholder -->
-	<bean
+	<!-- <bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
 			<value>classpath:sightly-rcadmin.properties</value>
 		</property>
-	</bean>
+	</bean> -->
 
 </beans>

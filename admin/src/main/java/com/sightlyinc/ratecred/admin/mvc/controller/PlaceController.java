@@ -34,6 +34,7 @@ import com.sightlyinc.ratecred.admin.geocoding.GeocoderException;
 import com.sightlyinc.ratecred.admin.geocoding.YahooGeocoder;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
+import com.sightlyinc.ratecred.admin.model.Errors;
 import com.sightlyinc.ratecred.admin.model.Feature;
 import com.sightlyinc.ratecred.admin.model.PlaceSearchResult;
 import com.sightlyinc.ratecred.admin.model.wordpress.JsonModelProcessor;
@@ -240,7 +241,7 @@ public class PlaceController {
 
 		String siteKey = null;
 		String siteToken = null;
-		AjaxErrors eajax = new AjaxErrors();
+		Errors eajax = new AjaxErrors();
 
 		JSONObject jsonObject = null;
 
@@ -347,7 +348,7 @@ public class PlaceController {
 	public ModelAndView savePlace(@RequestBody String requestJson) {
 		ModelAndView mav = new ModelAndView("add-place");
 
-		AjaxErrors eajax = new AjaxErrors();
+		Errors eajax = new AjaxErrors();
 
 		JSONObject jsonObject = null;
 
@@ -424,7 +425,7 @@ public class PlaceController {
 		logger.debug("getPlacesByQueryJson");
 		ModelAndView mav = new ModelAndView("places");
 
-		AjaxErrors eajax = new AjaxErrors();
+		Errors eajax = new AjaxErrors();
 
 		JSONObject jsonObject = null;
 
@@ -484,7 +485,7 @@ public class PlaceController {
 		logger.debug("getPlacesByQueryJson");
 		ModelAndView mav = new ModelAndView("mapper-result");
 
-		AjaxErrors eajax = new AjaxErrors();
+		Errors eajax = new AjaxErrors();
 
 		JSONObject jsonObject = null;
 
@@ -594,7 +595,7 @@ public class PlaceController {
 
 		String siteKey = null;
 		String siteToken = null;
-		AjaxErrors eajax = new AjaxErrors();
+		Errors eajax = new AjaxErrors();
 		JSONObject jsonObject = null;
 		try {
 

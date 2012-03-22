@@ -14,5 +14,7 @@ public interface OrderDao extends BaseDao<Order> {
 	public List<Order> findByPublisherKey(String publisherKey); 
 	
 	public List<Order> findByOwner(Patron towards);	
+	
+	public List<Order> findByDaysTrailing(int days); 
 
 }

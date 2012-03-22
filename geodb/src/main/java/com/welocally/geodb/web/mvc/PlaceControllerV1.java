@@ -116,6 +116,74 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	}
 	
 	
+	/**
+	 * FOR CROSS DOMAIN JSONP ADDS
+	 * 
+	 * http://localhost:8082/geodb/place/1_0/save.json?callback=jQuery16109296544857788831_1332260765859&properties%5Baddress%5D=null+null&properties%5Bcity%5D=Oakland&properties%5Bprovince%5D=CA&properties%5Bpostcode%5D=null&properties%5Bcountry%5D=US&type=Place&classifiers%5B0%5D%5Btype%5D=Food+%26+Drink&classifiers%5B0%5D%5Bcategory%5D=Restaurant&classifiers%5B0%5D%5Bsubcategory%5D=Japanese&geometry%5Btype%5D=Point&geometry%5Bcoordinates%5D%5B%5D=-122.2711137&geometry%5Bcoordinates%5D%5B%5D=37.8043637&_=1332260944730 
+	 * 
+	 * @param callback
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = "/save", method = RequestMethod.GET)
+    public ModelAndView savePlace(@RequestParam(required=false) String callback, HttpServletRequest req){
+       
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
+        try {
+            JSONObject placeQueryString =
+                new JSONObject(req.getParameterMap());
+            
+            JSONObject place = 
+                spatialConversionUtils.convertQueryStringToPlace(placeQueryString);
+            
+            String owner = "anonymous";
+            if(req.getHeader("site-key") != null)
+                owner = req.getHeader("site-key");
+            
+            place.put("owner", owner);          
+            
+            Point p = spatialConversionUtils.getJSONPoint(place);
+            String id=idGen.genPoint("WL_",p);
+            if(p != null){      
+                place.put("_id", id);
+                jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
+                jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE);
+                StringWriter sw = new StringWriter();
+                //now add it to the index
+                loader.loadSingle(place, 1, 1, sw, updateEndpoint);
+                sw.flush();
+                sw.close();
+                                
+                Map<String, Object> result = new HashMap<String,Object>();
+                result.put("id", id);
+                result.put("status", "SUCCEED");
+                
+                mav.addObject("mapperResult", makeModelJson(result));
+            }       
+        } catch (JSONException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (DbException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (IOException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
+        
+        return mav;
+    }
+	
+	
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public ModelAndView deleteById(@PathVariable String id, Model m){
 	    return delete(  id,  m);
@@ -202,8 +270,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
                     "callback", 
                     callback);
 	    }
-        
-	    
+        	    
 		try {
 			String[] parts = loc.split("_");
 			

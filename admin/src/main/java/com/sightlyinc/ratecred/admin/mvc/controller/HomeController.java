@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
+import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PublisherService;
 
 @Controller
@@ -36,7 +38,12 @@ public class HomeController {
 	@Autowired
 	PublisherService publisherService;
 	
+	@Autowired
+	OrderService orderService;
 	
+	@Value("${HomeController.order.daysTrailing:7}")
+	private Integer daysTrailing;
+		
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public String home(Model model) {
@@ -55,9 +62,10 @@ public class HomeController {
 				
 			} else if(userPrincipalService.hasUserRole(principal, "ROLE_MEMBER")) {
 				NetworkMember member =
-					networkMemberService.findMemberByUserPrincipal(principal);
-				
+					networkMemberService.findMemberByUserPrincipal(principal);				
 				model.addAttribute("member", member); 
+				model.addAttribute("orders", orderService.findByDaysTrailing(daysTrailing)); 
+				
 			}
 			
 			

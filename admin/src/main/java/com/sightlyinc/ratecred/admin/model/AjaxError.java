@@ -10,6 +10,7 @@ public class AjaxError {
 	public static int PUBLISHER_KEY_MISSING = 	101;
 	public static int SUBSCRIPTION_INVALID = 	102;
 	public static int DATA_VALIDATION_MISSING = 104;
+	public static int AUTH_ERROR = 108;
 	public static int NO_IMPL = 110;
 	
 	

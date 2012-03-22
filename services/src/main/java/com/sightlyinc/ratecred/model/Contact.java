@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -53,6 +55,11 @@ public class Contact extends BaseEntity {
 	    
 	    @Column(name = "notes",columnDefinition="TEXT")
 	    private String notes;
+	    
+	    @ManyToOne
+	    @JoinColumn(name = "publisher_id")
+	    private Publisher publisher;
+	    
 
 
 		public String getFirstName() {
@@ -150,6 +157,14 @@ public class Contact extends BaseEntity {
 		public void setNotes(String notes) {
 			this.notes = notes;
 		}
+
+        public Publisher getPublisher() {
+            return publisher;
+        }
+
+        public void setPublisher(Publisher publisher) {
+            this.publisher = publisher;
+        }
 	    
 	    
 

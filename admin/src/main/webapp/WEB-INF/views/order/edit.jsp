@@ -32,7 +32,9 @@ $(document).ready(function() {
 		<c:if test="${not empty(orderForm.id)}">edit order for ${orderForm.owner.name}</c:if>
 		<c:if test="${empty(orderForm.id)}">create order for ${orderForm.owner.name}</c:if>
 		</h2>
-		<c:url value='/order' var="orderAction"/>		
+		<c:url value='/order' var="orderAction"/>
+		<c:url value='/order/delete/${orderForm.id}' var="deleteAction"/>
+		<div class="actions" style="text-align:right"><a href="${deleteAction}">delete</a></div>		
 		<form:form modelAttribute="orderForm" action="${orderAction}" method="post">
 		  	<fieldset>		
 				<legend>Order Info</legend>
@@ -51,17 +53,30 @@ $(document).ready(function() {
 				<p>
 					<form:label	for="channel" path="channel" cssErrorClass="error">Sales Channel</form:label><br/>
 					<form:input path="channel" id="channel" class="textinput"/> <form:errors path="channel" class="error" />		
-				</p>				
+				</p>
+				<sec:authorize ifAnyGranted="ROLE_ADMIN">				
 				<p>
 					<form:label	for="product" path="product" cssErrorClass="error">Product</form:label><br/>
 					<form:select path="product.id">					
-						<form:option value="-" label="--Please Select"/>
             			<form:options items="${products}" itemValue="id" itemLabel="name"/>
 					</form:select>	
-				</p>															
-							
-																																																		
-				<div class="actions">	
+				</p>	
+				<p>
+				<c:forEach var="orderLine" items="${orderForm.orderLines}">
+				<div class="span-24 last">	
+						<div class="span-8">${orderLine.itemSku.name}</div>							
+						<div class="span-4">${orderLine.quantityOrig}</div>
+						<div class="span-4 last">$<fmt:formatNumber type="number" maxFractionDigits="3"
+				            value="${orderLine.itemSku.price}" /></div>
+				</div>     
+				</c:forEach>				
+				</p>
+				<div style="margin-bottom: 15px;">&nbsp;</div>														
+				</sec:authorize>			
+				<sec:authorize ifAnyGranted="ROLE_PUBLISHER">	
+					${product.name}
+				</sec:authorize>																																														
+				<div class="span-24 actions">	
 					<input type="submit" />
 				</div>
 			</fieldset>

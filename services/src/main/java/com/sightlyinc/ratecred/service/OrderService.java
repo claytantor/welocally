@@ -23,6 +23,8 @@ public interface OrderService extends BaseService<Order> {
 	
 	public Order findOrderByChannelAndExternalId(String channel, String externalId) 
 		throws BLServiceException;
+	
+	public List<Order> findByDaysTrailing(final int days);
 
 	
 }

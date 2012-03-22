@@ -8,7 +8,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<c:set var="pageTitle" value="Publisher View"/>
+<c:set var="pageTitle" value="Order View"/>
 <jsp:include page="../head.jsp"/>
 
 <body>
@@ -16,21 +16,15 @@
 	<div class="span-24">
 		<jsp:include page="../header.jsp"/>
 	</div>
+	<div>
+	<h2>
+		<c:url value='/publisher/${order.owner.id}' var="publisherUrl"/>
+		<a href="${publisherUrl}">${order.owner.name}</a>
+	</h2>
+	</div>
 	<div class="span-24">
-		<div class="span-24 last">
-			<h2><a href="<c:url value='/publisher/${site.publisher.id}' />">${site.publisher.name}</a> : ${site.name}</h2>
-		</div>
-		<div class="bottom-10 frame span-24 last">
-			<div class="actions span-24 last" >
-				<div class="actions span-12" style="text-align:left">
-					<h3>Site</h3>
-				</div>
-				<div class="actions span-12 last" style="text-align:right">
-					<a href="<c:url value='/site/edit/${site.id}' />" class="button">edit</a>
-					<a href="<c:url value='/site/delete/${site.id}' />" class="button">delete</a>
-				</div>				
-			</div>
-		</div>
+		<c:set var="order" scope="request" value="${order}" />	
+		<jsp:include page="../order/detail.jsp" flush="true"/>
 	</div>
 </div>
 </body>

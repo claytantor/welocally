@@ -1,5 +1,6 @@
 package com.welocally.geodb.web.mvc;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,8 +34,17 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	@Autowired IdGen idGen; 
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ModelAndView get(@PathVariable String id, Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	public ModelAndView get(@PathVariable String id, @RequestParam(required=false) String callback, Model m){
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+	        
 		try {
 			JSONObject classifier = jsonDatabase.findById("classifiers", id);
 			mav.addObject("mapperResult", classifier.toString());
@@ -47,8 +57,18 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	}
 	
 	@RequestMapping(value = "/types", method = RequestMethod.GET)
-	public ModelAndView getTypes(Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	public ModelAndView getTypes(@RequestParam(required=false) String callback, Model m){
+        
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
 		try {
 			JSONObject example = new JSONObject();
 			example.put("type", "Type");
@@ -68,11 +88,18 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	}
 	
 	@RequestMapping(value = "/categories", method = RequestMethod.GET)
-	public ModelAndView getCategories(@RequestParam String type, Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
+	public ModelAndView getCategories(@RequestParam String type, @RequestParam(required=false) String callback, Model m){
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
 		try {
-			/*JSONObject example = new JSONObject();
-			example.put("type", type);*/
 			
 			JSONArray types = jsonDatabase.findCatgories(type);
 
@@ -86,25 +113,23 @@ public class ClassifierControllerV1 extends AbstractJsonController {
 	}
 	
 	@RequestMapping(value = "/subcategories", method = RequestMethod.GET)
-	public ModelAndView getSubCategories(@RequestParam String type, @RequestParam String category, Model m){
-		ModelAndView mav = new ModelAndView("mapper-result");
-		try {
-//			JSONObject example = new JSONObject();
-//			example.put("type", type);
-//			example.put("category", category);
-			
+	public ModelAndView getSubCategories(@RequestParam String type, @RequestParam String category, @RequestParam(required=false) String callback, Model m){
+	    ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+		try {			
 			JSONArray types = jsonDatabase.findSubcatgories(type, category);
-
 			mav.addObject("mapperResult", types.toString());
-			
 		} catch (DbException e) {
 			logger.error("could not get results");
 			mav.addObject("mapperResult", makeErrorsJson(e));
 		} 
-//		catch (JSONException e) {
-//			logger.error("could not get results");
-//			mav.addObject("mapperResult", makeErrorsJson(e));
-//		} 
 		return mav;
 	}
 	

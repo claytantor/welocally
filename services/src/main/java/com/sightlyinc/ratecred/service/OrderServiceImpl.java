@@ -48,6 +48,12 @@ public class OrderServiceImpl extends AbstractTransactionalService<Order> implem
 	
 
 	@Override
+    public List<Order> findByDaysTrailing(int days) {
+        return orderDao.findByDaysTrailing(days);
+    }
+
+
+    @Override
 	public List<Order> findOrderByPublisherKey(String publisherKey) {
 		return orderDao.findByPublisherKey(publisherKey);
 	}

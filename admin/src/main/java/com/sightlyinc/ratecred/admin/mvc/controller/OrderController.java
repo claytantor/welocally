@@ -14,6 +14,7 @@ import org.apache.velocity.tools.generic.NumberTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherRegistrationGenerator;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
@@ -29,6 +31,7 @@ import com.sightlyinc.ratecred.model.Contact;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Product;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.service.OrderManager;
 import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.ProductService;
 import com.sightlyinc.ratecred.service.PublisherService;
@@ -39,6 +42,8 @@ import com.sightlyinc.ratecred.util.JavaMailer;
 public class OrderController {
 		
 	static Logger logger = Logger.getLogger(OrderController.class);
+	
+	@Autowired OrderManager orderManager;
 	
     @Autowired
     private UserPrincipalService userService;
@@ -84,51 +89,14 @@ public class OrderController {
 				order = orderService.findByPrimaryKey(form.getId());
 			
 			if(order!=null){
-				
-				
-				Product p = productService.findByPrimaryKey(form.getProduct().getId());
-				Publisher pub = publisherService.findByPrimaryKey(form.getOwner().getId());
-				orderService.setOrderProduct(order,p);
-				order.setExternalTxId(form.getExternalTxId());
-				order.setBuyerKey(form.getOwner().getKey());
-				order.setBuyerEmail(form.getBuyerEmail());
-				order.setOwner(pub);
-				order.setStatus(Order.OrderStatus.PROVISIONED);
-				order.setTimeCreated(Calendar.getInstance().getTimeInMillis());
-				order.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
-				order.setChannel("WELOCALLY_ADMIN");
-				order.getOwner().setSubscriptionStatus(Publisher.PublisherStatus.SUBSCRIBED);
-				
-				
-				//MOVE TO SERVICE
-				//activate the user
-				UserPrincipal up = userService.loadUser(order.getOwner().getKey());
-				up.setEmail(form.getBuyerEmail());
-				up.setEnabled(true);
-				up.setLocked(false);
-				up.setCredentialsExpired(false);
-				userService.saveUserPrincipal(up);
-				
-				//set the status of the publisher
-				Contact c = new Contact();
-				c.setFirstName("");
-				c.setLastName("");
-				c.setEmail(form.getBuyerEmail());
-				c.setActive(true);
-				
-				if(pub.getContacts() != null){
-					pub.getContacts().add(c);
-				} else {
-					Set<Contact> contacts = new HashSet<Contact>();
-					contacts.add(c);
-					pub.setContacts(contacts);
-				}
-
-				publisherService.save(pub);
-
-							
-				Long id = orderService.save(order);
-				return "redirect:/order/"+id.toString();
+			    
+			    Long id = orderManager.save(form, order);
+			    if(id != null)
+			        return "redirect:/order/"+id.toString();
+			    else {
+			        return "error";
+			    }
+			        
 			}
 		
 		} catch(Exception e){
@@ -140,7 +108,7 @@ public class OrderController {
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
 	public String getById(@PathVariable Long id, Model model) {
-		logger.debug("view");
+		logger.debug("detail");
 		model.addAttribute("order", orderService.findByPrimaryKey(id));
 		return "order/view";
 	}
@@ -157,15 +125,20 @@ public class OrderController {
 	@RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
 	public String delete(@PathVariable Long id, Model model) {
 		logger.debug("delete");
-		Order p = orderService.findByPrimaryKey(id);
-		Long publisherId = p.getOwner().getId();
+		Order order = orderService.findByPrimaryKey(id);
+		Long publisherId = order.getOwner().getId();
 		
-		orderService.delete(p);
+		try {
+            orderManager.deleteOrder(order);
+        } catch (BLServiceException e) {
+            logger.error("", e);
+            return "error";
+        }
 		return "redirect:/publisher/"+publisherId;
 	}
 	
 	@RequestMapping(value="/email/{id}", method=RequestMethod.GET)
-	private String email(@PathVariable Long id, Model model) 
+	public String email(@PathVariable Long id, Model model) 
 	{
 		Order o = orderService.findByPrimaryKey(id);
 				

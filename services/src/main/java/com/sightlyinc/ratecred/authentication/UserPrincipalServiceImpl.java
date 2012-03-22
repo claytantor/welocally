@@ -4,13 +4,13 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.ProviderException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.model.Publisher;
 
 @Service("userPrincipalService")
 @Transactional(readOnly = true)
@@ -107,10 +106,59 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
         }
 		
 	}
-
-
+    
+   
 
 	@Override
+    public void removeRoles(UserPrincipal entity, List<String> roleNamesToRemove)
+            throws UserPrincipalServiceException {
+	    
+	    Set<String> roleNamesOrig = new HashSet<String>();
+        Set<Role> roles = entity.getRoles();
+        for (Role role : roles) {
+            
+            //only add for save if not in list 
+            if(!roleNamesToRemove.contains(role.getRole())){
+                roleNamesOrig.add(role.getRole());
+            }          
+        }
+        
+        try {
+            saveUserPrincipalRoles(entity, new ArrayList<String>(roleNamesOrig));
+        } catch (BLServiceException e) {
+            throw new UserPrincipalServiceException("problem saving roles",e);
+        }  
+        
+    }
+
+
+
+    @Override
+    public void addRoles(UserPrincipal entity, List<String> roleNames)
+            throws UserPrincipalServiceException {
+	   
+	    
+	    Set<String> roleNamesOrig = new HashSet<String>();
+	    Set<Role> roles = entity.getRoles();
+	    for (Role role : roles) {
+	        roleNamesOrig.add(role.getRole());
+	    }
+	    
+	    for (String string : roleNames) {
+	        roleNamesOrig.add(string);
+        }
+	    
+	    try {
+            saveUserPrincipalRoles(entity, new ArrayList<String>(roleNamesOrig));
+        } catch (BLServiceException e) {
+            throw new UserPrincipalServiceException("problem saving roles",e);
+        }     
+       
+    }
+
+
+
+    @Override
 	@Transactional(readOnly = false)
 	public void deactivate(UserPrincipal entity)
 			throws UserPrincipalServiceException {

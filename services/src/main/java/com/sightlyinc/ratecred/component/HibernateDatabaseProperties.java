@@ -156,7 +156,7 @@ public class HibernateDatabaseProperties extends
 	}
 
 	@Override
-	@Value("${rating-services.HibernateDatabaseProperties.showSql}")
+	//@Value("${rating-services.HibernateDatabaseProperties.showSql:false}")
 	public void setShowSql(boolean showSql) {
 		
 		super.setShowSql(showSql);

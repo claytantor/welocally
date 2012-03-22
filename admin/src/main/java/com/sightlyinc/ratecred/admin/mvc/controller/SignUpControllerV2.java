@@ -3,19 +3,14 @@ package com.sightlyinc.ratecred.admin.mvc.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,30 +31,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.noi.utility.hibernate.GUIDGenerator;
-import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
+import com.sightlyinc.ratecred.admin.model.Errors;
 import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.admin.velocity.PublisherRegistrationGenerator;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
-import com.sightlyinc.ratecred.model.Contact;
-import com.sightlyinc.ratecred.model.NetworkMember;
-import com.sightlyinc.ratecred.model.Order;
-import com.sightlyinc.ratecred.model.Product;
 import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.model.Site;
-import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
-import com.sightlyinc.ratecred.service.NetworkMemberService;
-import com.sightlyinc.ratecred.service.OrderService;
-import com.sightlyinc.ratecred.service.ProductService;
+import com.sightlyinc.ratecred.service.OrderManager;
+import com.sightlyinc.ratecred.service.PublisherManager;
 import com.sightlyinc.ratecred.service.PublisherService;
-import com.sightlyinc.ratecred.util.JavaMailer;
 
 /**
  * @author clay
@@ -78,36 +63,19 @@ public class SignUpControllerV2 {
     @Autowired
     private PublisherService publisherService;
     
-    @Autowired
-    private ProductService productService;
     
-
     @Autowired
-    private NetworkMemberService networkMemberService;
+    private OrderManager orderManager;
     
-	@Autowired
-	private OrderService orderService;
-	
-	@Autowired
-	private ObjectMapper jacksonMapper;
+    @Autowired
+    private PublisherManager publisherManager;
+    
 	
 	@Autowired
 	JsonObjectSerializer jsonObjectSerializer;
-	
-	@Value("${paypal.callback.endpoint:https://www.sandbox.paypal.com/cgi-bin/webscr}")
-    private String paypalFormEndpoint;
-    
-	@Value("${default.product.sku:f102b14a87a1}")
-    private String freeProductSku;
-    
-    
-    
-    @Autowired
-	private JavaMailer mailer;
-    
 
 	
-	@Value("${admin.adminEmailAccountFrom:mailer@ratecred.com}")
+	@Value("${admin.adminEmailAccountFrom:mailer@welocally.com}")
 	private String adminEmailAccountFrom;
     
 
@@ -171,6 +139,61 @@ public class SignUpControllerV2 {
         return viewName;
     }
     
+    
+    @RequestMapping(value="/plugin/verify", method=RequestMethod.GET)
+    public Map<String, Object> verify(@RequestBody String requestJson, HttpServletRequest request) {
+        
+        Map<String, Object> response = new HashMap<String, Object>();
+        Errors eajax = new AjaxErrors();
+        try {
+            String key = request.getParameter("site-key");
+            String token = request.getParameter("site-token");
+            JSONObject jsonObject = new JSONObject(requestJson);
+
+            Publisher p = publisherService.findByPublisherKey(key);
+            if(p.getJsonToken().equals(token)){
+                UserPrincipal up = userService.loadUser(key);
+                Map<String,String> data = new HashMap<String,String>();
+                data.put("command", jsonObject.getString("command"));
+                response.put("mapperResult",
+                        jsonObjectSerializer.serialize(publisherManager.isAllowed(data, p, up)));
+            } else {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.AUTH_ERROR, "Problem with token match."));
+            }
+            
+        } catch (JSONException e) {
+            logger.error("problem with request", e);
+            eajax.getErrors().add(
+                    new AjaxError(AjaxError.REQ_PARSE_ERROR, "Problem parsing request."));
+        } catch (UserPrincipalServiceException e) {
+            logger.error("problem with user", e);
+            eajax.getErrors().add(
+                    new AjaxError(AjaxError.AUTH_ERROR, "Problem with user."));
+        } catch (UserNotFoundException e) {
+            logger.error("problem with user", e);
+            eajax.getErrors().add(
+                    new AjaxError(AjaxError.AUTH_ERROR, "Problem with user."));
+        } catch (IOException e) {
+            logger.error("problem serializing", e);
+            eajax.getErrors().add(
+                    new AjaxError(AjaxError.AUTH_ERROR, "Problem with serialize."));
+        }
+        
+     // if errors send them instead
+        if (eajax.getErrors().size() > 0) {
+            try {
+                response.put("mapperResult",
+                        jsonObjectSerializer.serialize(eajax));
+                //mav.setViewName("mapper-result");
+            } catch (IOException e) {
+                logger.error("cannot serialize message", e);
+            }
+        }
+
+        return response;
+    }
+    
     @RequestMapping(value="/plugin/login", method=RequestMethod.GET)
 	public String homePublisher(@RequestParam String siteKey, @RequestParam String siteToken, HttpServletRequest request, Model model) {
     	logger.debug("home");
@@ -184,7 +207,6 @@ public class SignUpControllerV2 {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		return "redirect:/home";
-
 	}
 
     @RequestMapping(value = "/plugin/key")
@@ -197,8 +219,6 @@ public class SignUpControllerV2 {
         String email = null;
         String siteUrl = null;
         String siteName = null;
-        String description = null;
-        String iconUrl = null;
 
         logger.debug("requestJson:"+requestJson);
         try {
@@ -209,8 +229,8 @@ public class SignUpControllerV2 {
             email = jsonObject.getString("siteEmail");
             siteUrl = jsonObject.getString("siteHome");
             siteName = jsonObject.getString("siteName");
-            description = jsonObject.getString("siteDescription");
-            iconUrl = jsonObject.getString("iconUrl");
+            //description = jsonObject.getString("siteDescription");
+            //iconUrl = jsonObject.getString("iconUrl");
         } catch (Exception e) {
         	logger.error("cant make request.",e);
             errors.add("Unable to parse request, please check the format of your data");
@@ -247,8 +267,7 @@ public class SignUpControllerV2 {
             	
             }
         }
-            
-            
+                       
         response.put("errors", errors);
 
         return response;
@@ -257,11 +276,9 @@ public class SignUpControllerV2 {
     @RequestMapping(value = "/plugin/register",method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> register(@RequestBody String requestJson, HttpServletRequest request) {
-    	//ModelAndView mav = new ModelAndView("mapper-result");
     	Map<String, Object> response = new HashMap<String, Object>();
-        
     	
-		AjaxErrors eajax = new AjaxErrors();
+		Errors eajax = new AjaxErrors();
     	JSONObject jsonObject = null;
     	
     	//all we do here is gen the token and send it by email
@@ -280,119 +297,23 @@ public class SignUpControllerV2 {
 	            String siteToken = null;
 	            if(!jsonObject.isNull("siteToken"))
 	              siteToken = jsonObject.getString("siteToken");
-	          
-				
-				//make the user if they dont exist
-				UserPrincipal user = userService.findByUserName(key);
-				if(user==null){
-					user = new UserPrincipal();
-                    user.setEmail(email);
-                    user.setPassword(Long.toString(System.currentTimeMillis()));
-                    user.setUsername(key);
-                    user.setEnabled(false);
-                    try {
-                        userService.saveUserPrincipal(user);
-                        // not going to worry about roles for now since user isn't going to be logging in
-                    } catch (UserPrincipalServiceException e) {
-                    	logger.error("problem with request", e);
-            			eajax.getErrors().add(
-            					new AjaxError(AjaxError.RES_GEN_ERROR, "Problem with request."));
-                    }
-				}
-								
-				if(eajax.getErrors().isEmpty()){					
-					//try to look up the publisher
-					Publisher publisher = publisherService.findByPublisherKey(key);
-					if(publisher == null){
-						
-						//make the publisher
-						publisher = new Publisher();
-						publisher.setUserPrincipal(user);
-						
-						Site s = new Site();
-						s.setName(siteName);
-						//s.setDescription(description);
-						s.setUrl(siteUrl);
-						s.setActive(true);
-						if(siteUrl.equals(request.getHeader("referer"))){
-							s.setVerified(true);
-						} else {
-							s.setVerified(false);
-						}
-						
-						Set<Site> sites = new HashSet<Site>();
-						sites.add(s);
-						publisher.setSites(sites);
-						
-						  publisher.setName(siteName);
-						  //publisher.setDescription(description);
-						  NetworkMember defaultNetworkMember = networkMemberService.getDefaultNetworkMember();
-						  publisher.setNetworkMember(defaultNetworkMember);
-
-
-	                  	publisher.setKey(key);
-	                  	publisher.setSubscriptionStatus(Publisher.PublisherStatus.REGISTERED);
-	                  		             
-	                  	publisherService.save(publisher);
-												
-						//ok go find the free product and use it to build the order
-						Product freeProduct = productService.findProductBySku(freeProductSku);
-						Order o = orderService.makeOrderFromProduct(freeProduct);
-						
-						o.setStatus(Order.OrderStatus.REGISTERED);
-						o.setBuyerEmail(jsonObject.getString("siteEmail"));
-						o.setBuyerKey(jsonObject.getString("siteKey"));				 
-						o.setExternalPayerId(jsonObject.getString("siteEmail"));
-						o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
-						o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
-						o.setChannel("SELF_SIGNUP");
-									 				 
-						//complete subscription
-						logger.debug("processing order:"+o.getExternalTxId());
-						
-						
-						if(publisher != null){
-							orderService.save(o);	
-							processPublisherOrder(publisher, o, requestJson);	
-						}
-						
-					} else if (publisher != null && siteToken != null && 
-							publisher.getSubscriptionStatus().equals(PublisherStatus.REGISTERED)){
-						if(publisher.getJsonToken().equals(siteToken)){						
-							
-							//MOVE TO SERVICE
-							//activate the user
-							UserPrincipal up = userService.loadUser(publisher.getKey());
-							up.setEmail(email);
-							up.setEnabled(true);
-							up.setLocked(false);
-							up.setCredentialsExpired(false);
-							userService.saveUserPrincipal(up);
-							
-							//set the status of the publisher
-							Contact c = new Contact();
-							c.setEmail(email);
-							c.setActive(true);
-							c.setFirstName("");
-							c.setLastName("");
-							publisher.setSubscriptionStatus(Publisher.PublisherStatus.SUBSCRIBED);
-							if(publisher.getContacts() != null){
-								publisher.getContacts().add(c);
-							} else {
-								Set<Contact> contacts = new HashSet<Contact>();
-								contacts.add(c);
-								publisher.setContacts(contacts);
-							}
-
-							publisherService.save(publisher);
-						}
-						
-					}					
-					
-					response.put("siteKey", publisher.getKey());
-					response.put("subscriptionStatus", publisher.getSubscriptionStatus());
-				}
-				
+	           
+	            Boolean verified = false;
+	            if(siteUrl.equals(request.getHeader("referer"))){
+                  verified = true;
+                } 
+	            
+	            Publisher publisher = orderManager.processPublisherRegistration(
+	                     email, 
+	                     key, 
+	                     siteToken,
+	                     siteName, 
+	                     siteUrl, 
+	                     verified,
+	                     adminEmailAccountFrom);
+	          				
+				response.put("siteKey", publisher.getKey());
+				response.put("subscriptionStatus", publisher.getSubscriptionStatus());				
 								
 			}
 		} catch (JSONException e) {
@@ -424,70 +345,6 @@ public class SignUpControllerV2 {
 		return response;
     }
     
-    private void processPublisherOrder(Publisher publisher, Order o, String params) throws BLServiceException {
-		
-		logger.debug("processPublisherOrder");
-		           
-        
-		try {
-			long serviceEndDateMillis = new Date().getTime();
-	        
-	        serviceEndDateMillis += (2592000000L*1);
-	        
-	        String publisherToken = GUIDGenerator.createId().replaceAll("-", "");
-	        
-	        //update the password to be the key
-			UserPrincipal up = userService.loadUser(publisher.getKey());
-			String hashedPass = userService.makeMD5Hash(publisherToken);					
-			up.setPassword(hashedPass);
-			userService.activateWithRoles(up, Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
-			
-			publisher.setServiceEndDateMillis(serviceEndDateMillis);
-	        publisher.setJsonToken(publisherToken);
-	        publisher.setSubscriptionStatus(Publisher.PublisherStatus.REGISTERED);
-	        o.setOwner(publisher);   
-	        
-	        
-	        orderService.save(o);
-	        
-	        //enable the user
-	        publisher.getUserPrincipal().setEnabled(true);
-	        publisherService.save(publisher);
-	        
-
-			sendOrderStatusEmail(o,params); 
-
-			
-		} catch (UserPrincipalServiceException e) {
-			logger.error("could not find user problem",e);
-		} catch (UserNotFoundException e) {
-			logger.error("cound not find user problem",e);
-		} catch(Exception e){
-			logger.error("problem",e);
-		}
-        
-        
-	}
-
-	private void sendOrderStatusEmail(Order o, String params) 
-	{
-				
-		Map model = new HashMap();
-		model.put("order", o);
-		//model.put("jsonModel",params);
-		
-		PublisherRegistrationGenerator generator = 
-			new PublisherRegistrationGenerator(model);
-			
-		mailer.sendMessage(
-				adminEmailAccountFrom, 
-				"Welocally Mailer Bot",
-				o.getBuyerEmail(), 
-				"Welocally Admin", 
-				"[Welocally Admin] Registration "+o.getOwner().getSubscriptionStatus(), 
-				generator.makeDisplayString(),
-				"text/html");		
-	}
 
     public void setUserService(UserPrincipalService userService) {
         this.userService = userService;

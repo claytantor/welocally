@@ -112,6 +112,14 @@
 				<groupId>cglib</groupId>
 			</exclusion>
 			<exclusion>
+				<artifactId>velocity</artifactId>
+				<groupId>org.apache.velocity</groupId>
+			</exclusion>
+			<exclusion>
+				<artifactId>velocity-tools</artifactId>
+				<groupId>org.apache.velocity</groupId>
+			</exclusion>						
+			<exclusion>
 				<artifactId>spring-hibernate3</artifactId>
 				<groupId>org.springframework</groupId>
 			</exclusion>
@@ -127,6 +135,7 @@
 				<artifactId>commons-collections</artifactId>
 				<groupId>commons-collections</groupId>
 			</exclusion>
+
 		</exclusions> 
 	</dependency>
 
@@ -393,6 +402,16 @@
 		<dependency>
 			<groupId>org.codemonkey.simplejavamail</groupId>
 			<artifactId>simple-java-mail</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
 			<version>2.0</version>
 		</dependency>
 
