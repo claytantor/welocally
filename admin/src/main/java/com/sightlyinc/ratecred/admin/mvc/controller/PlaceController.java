@@ -685,6 +685,11 @@ public class PlaceController {
 
 	}
 
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String edit(Model model) {
+		return "edit";
+	}
+	
 	private String makeJsonString(ObjectMapper jacksonMapper, Object serialize)
 			throws IOException {
 		StringWriter sw = new StringWriter(); // serialize

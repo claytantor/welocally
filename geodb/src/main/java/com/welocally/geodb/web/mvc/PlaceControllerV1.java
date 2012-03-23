@@ -200,6 +200,9 @@ public class PlaceControllerV1 extends AbstractJsonController {
                     "callback", 
                     callback);
 	    }
+	    mav.addObject("mapperResult", "foo");
+	    mav.addObject("foo", "bar");
+	    /*
 		try {
 			JSONObject place = 
 					new JSONObject(requestJson);
@@ -219,6 +222,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			}
 
 		} 
+		*/
 		return mav;
 	}
 	
