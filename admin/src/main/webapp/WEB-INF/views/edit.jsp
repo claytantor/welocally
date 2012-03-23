@@ -21,16 +21,17 @@
 	<h1>EDIT</h1>
 </div>
 <script>
-    urlValue = "http://localhost:8082/geodb/place/1_0/edit/123.json";
+    var urlValue = "http://localhost:8082/geodb/place/1_0/edit/123.json";
+//    var urlValue = _instance.cfg.endpoint + "/geodb/place/1_0/edit/123.json";
         $.ajax({
           type: 'POST',
           url: urlValue,
-          dataType: 'json',
-          contentType: 'application/json',
+          data: {foo: "bar"},
+          dataType: 'jsonp',
           error: function(jqXHR, textStatus, errorThrown) {
                         console.error(textStatus);
           },
-   	      success: function(){
+   	      success: function(data, textStatus, jqXHR){
     		$(this).addClass("done");
     	  }
   		});

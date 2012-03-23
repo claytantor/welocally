@@ -189,8 +189,8 @@ public class PlaceControllerV1 extends AbstractJsonController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT)
-	public ModelAndView edit(@PathVariable String id, @RequestBody String requestJson, @RequestParam(required=false) String callback, Model m){
+	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+	public ModelAndView edit(@PathVariable String id, @RequestParam(required=false) String callback, HttpServletRequest req){
 	    ModelAndView mav = null;
 	    if(StringUtils.isEmpty(callback))
 	        mav = new ModelAndView("mapper-result");
@@ -200,8 +200,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
                     "callback", 
                     callback);
 	    }
-	    mav.addObject("mapperResult", "foo");
-	    mav.addObject("foo", "bar");
+	    mav.addObject("mapperResult", "{foo1: " + id + "}");
 	    /*
 		try {
 			JSONObject place = 
