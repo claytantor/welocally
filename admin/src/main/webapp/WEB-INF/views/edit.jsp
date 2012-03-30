@@ -19,22 +19,30 @@
 		<jsp:include page="header.jsp"/>
 	</div>
 	<h1>EDIT</h1>
+	<p>Place ID: <input id="place_id"> </input></p>
+	<p><textarea id="json">
+        </textarea>
+        </p>
 </div>
 <script>
-    var urlValue = "http://localhost:8082/geodb/place/1_0/edit/123.json";
-//    var urlValue = _instance.cfg.endpoint + "/geodb/place/1_0/edit/123.json";
-        $.ajax({
-          type: 'POST',
-          url: urlValue,
+    var geodb = "http://localhost:8082/geodb/place/1_0/";
+    function fetchGeoData(id) {
+      $.ajax({
+	  type: 'POST',
+          url: geodb + id + ".json",
           data: {foo: "bar"},
           dataType: 'jsonp',
-          error: function(jqXHR, textStatus, errorThrown) {
-                        console.error(textStatus);
-          },
-   	      success: function(data, textStatus, jqXHR){
-    		$(this).addClass("done");
-    	  }
-  		});
- </script>
-</body>
+	  error: function(jqXHR, textStatus, errorThrown) {
+	      console.error(textStatus);
+	  },
+	  success: function(data, textStatus, jqXHR){
+	      obj = data[0];
+	      delete obj._id;
+	      json.value = JSON.stringify(obj, null, 4);
+	  }
+      });
+    }
+   fetchGeoData("WL_2vj8Ym5inDULSLFQ7K1kg6_32.553827_-82.873494@1294087602");
+    </script>
+  </body>
 </html>
