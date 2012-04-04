@@ -125,6 +125,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 	 * @param req
 	 * @return
 	 */
+
 	@RequestMapping(value = "/save", method = RequestMethod.GET)
     public ModelAndView savePlace(@RequestParam(required=false) String callback, HttpServletRequest req){
        
@@ -146,13 +147,25 @@ public class PlaceControllerV1 extends AbstractJsonController {
                 spatialConversionUtils.convertQueryStringToPlace(placeQueryString);
             
             String owner = "anonymous";
-            if(req.getHeader("site-key") != null)
-                owner = req.getHeader("site-key");
+            if(placeQueryString.isNull("owner")){
+                if(req.getHeader("site-key") != null)
+                    place.put("owner", owner);     
+                else
+                    place.put("owner", "anonymous");     
+            }
             
+                      
             place.put("owner", owner);          
             
             Point p = spatialConversionUtils.getJSONPoint(place);
-            String id=idGen.genPoint("WL_",p);
+            
+            if(place.isNull("_id")){
+                place.put("_id", idGen.genPoint("WL_",p));
+            }
+            
+            String id= place.getString("_id");
+            
+            
             if(p != null){      
                 place.put("_id", id);
                 jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
@@ -181,6 +194,20 @@ public class PlaceControllerV1 extends AbstractJsonController {
         } 
         
         return mav;
+    }
+	
+	/**
+     * FOR CROSS DOMAIN JSONP ADDS
+     * 
+     * http://localhost:8082/geodb/place/1_0/save.json?callback=jQuery16109296544857788831_1332260765859&properties%5Baddress%5D=null+null&properties%5Bcity%5D=Oakland&properties%5Bprovince%5D=CA&properties%5Bpostcode%5D=null&properties%5Bcountry%5D=US&type=Place&classifiers%5B0%5D%5Btype%5D=Food+%26+Drink&classifiers%5B0%5D%5Bcategory%5D=Restaurant&classifiers%5B0%5D%5Bsubcategory%5D=Japanese&geometry%5Btype%5D=Point&geometry%5Bcoordinates%5D%5B%5D=-122.2711137&geometry%5Bcoordinates%5D%5B%5D=37.8043637&_=1332260944730 
+     * 
+     * @param callback
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public ModelAndView savePlacePost(@RequestParam(required=false) String callback, HttpServletRequest req){      
+        return savePlace( callback, req);
     }
 	
 	

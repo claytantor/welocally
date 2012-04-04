@@ -163,6 +163,14 @@ converted to
                                         
             place.put("type", "Place");
             
+            if(!placeQueryString.isNull("_id")){
+                place.put("_id", ((String[])placeQueryString.get("_id"))[0].toString());
+            }
+            
+            if(!placeQueryString.isNull("owner")){
+                place.put("owner", ((String[])placeQueryString.get("owner"))[0].toString());
+            }
+            
             return place;
             
         } catch (NumberFormatException e) {

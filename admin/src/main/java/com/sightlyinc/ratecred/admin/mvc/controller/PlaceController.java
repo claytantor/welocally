@@ -82,14 +82,24 @@ public class PlaceController {
 		model.addAttribute("placeForm", new Place());
 		return "place/edit";
 	}
+	
+	@RequestMapping(value = "/edit")
+	public String editPlace(@RequestParam(value="id", required=false) String id, Model model) {
+        logger.debug("edit");
+        if(!org.apache.commons.lang.StringUtils.isEmpty(id)){
+            model.addAttribute("placeId", id);
+        }
+        return "place/edit";
+    }
+	
 
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
 	public String editPlace(@PathVariable Long id, Model model) {
 		logger.debug("edit");
 		model.addAttribute("placeForm", placeManagerService
 				.findPlaceByPrimaryKey(id));
 		return "place/edit";
-	}
+	}*/
 
 	/**
 	 * ok we are having to do some backflips because it looks like the jackson

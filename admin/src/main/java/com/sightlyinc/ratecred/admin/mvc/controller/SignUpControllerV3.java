@@ -30,12 +30,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
 import com.sightlyinc.ratecred.admin.model.Errors;
+import com.sightlyinc.ratecred.admin.model.SiteInfoModel;
 import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
@@ -52,10 +54,10 @@ import com.sightlyinc.ratecred.service.PublisherService;
  * @version $Id$
  */
 @Controller
-@RequestMapping("/signup/2_0")
-public class SignUpControllerV2 {
+@RequestMapping("/signup/3_0")
+public class SignUpControllerV3 {
 
-    private static Logger logger = Logger.getLogger(SignUpControllerV2.class);
+    private static Logger logger = Logger.getLogger(SignUpControllerV3.class);
 
     @Autowired
     private UserPrincipalService userService;
@@ -211,115 +213,184 @@ public class SignUpControllerV2 {
 	}
 
     @RequestMapping(value = "/plugin/key")
-    @ResponseBody
-    public Map<String, Object> signUpFromPluginForKey(@RequestBody String requestJson, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<String, Object>();
-        List<String> errors = new ArrayList<String>();
-
-        String key = null;
-        String email = null;
-        String siteUrl = null;
-        String siteName = null;
-
-        logger.debug("requestJson:"+requestJson);
-        try {
-            JSONObject jsonObject = new JSONObject(requestJson);
-            if(!jsonObject.isNull("siteKey"))
-            	key = jsonObject.getString("siteKey");
-            
-            email = jsonObject.getString("siteEmail");
-            siteUrl = jsonObject.getString("siteHome");
-            siteName = jsonObject.getString("siteName");
-
-        } catch (Exception e) {
-        	logger.error("cant make request.",e);
-            errors.add("Unable to parse request, please check the format of your data");
+    public ModelAndView signUpFromPluginForKey(@RequestParam(required=false) String callback, HttpServletRequest request) {
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
         }
+        
+        Map<String, Object> response = new HashMap<String, Object>();
+        Errors eajax = new AjaxErrors();
 
-        if (errors.isEmpty()) {
+        try {    
+            
+            SiteInfoModel site = transformModel(new JSONObject(request.getParameterMap()));
+                        
             // validate input
-            if (StringUtils.isBlank(siteUrl)) {
-                errors.add("Please provide the URL for your site");
+            if (StringUtils.isBlank(site.getHome())) {
+                //errors.add("Please provide the URL for your site");
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide the URL for your site."));
             }
-            if (StringUtils.isBlank(siteName)) {
-                errors.add("Please provide the name for your site");
+            
+            if (StringUtils.isBlank(site.getName())) {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide the name for your site."));
             }
-            if (StringUtils.isBlank(email)) {
-                errors.add("Please provide a real email address");
+            
+            if (StringUtils.isBlank(site.getEmail())) {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide a real email address."));
             }
 
-            if(key == null || key.isEmpty() || siteName.equals("delete")){
-            	key = UUID.randomUUID().toString();
-                key = key.substring(key.lastIndexOf('-') + 1);
-                response.put("key", key);
+            if(site.getKey() == null || site.getKey().isEmpty() || site.getName().equals("delete")){
+                String newkey = UUID.randomUUID().toString();
+                newkey = newkey.substring(newkey.lastIndexOf('-') + 1);
+                site.setKey(newkey);               
+                response.put("site", site);
                 response.put("subscriptionStatus", "KEY_ASSIGNED");               
             } else {
-            	Publisher p = publisherService.findByPublisherKey(key);
-            	if(p == null){
-            		key = UUID.randomUUID().toString();
-                    key = key.substring(key.lastIndexOf('-') + 1);
-                    response.put("key", key);
+                Publisher p = publisherService.findByPublisherKey(site.getKey());
+                if(p == null){
+                    String newkey = UUID.randomUUID().toString();
+                    newkey = newkey.substring(newkey.lastIndexOf('-') + 1);
+                    site.setKey(newkey);  
+                    response.put("site", site);
                     response.put("subscriptionStatus", "KEY_ASSIGNED");  
-            	} 
-            	else if(p!= null && (p.getOrders()==null || p.getOrders().size()==0)){
-            	    errors.add("Something is wrong with your order, please contact welocally.");
-            	}
-            	else {
-            		response.put("key", key);
-                    response.put("subscriptionStatus", p.getSubscriptionStatus());
-            	}
-            	
-            }
-        }
-                       
-        response.put("errors", errors);
+                } 
+                else if(p!= null && (p.getOrders()==null || p.getOrders().size()==0)){
 
-        return response;
+                    eajax.getErrors().add(
+                            new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Something is wrong with your order, please contact welocally."));
+                    
+                }
+                else {
+                    response.put("site", site);
+                    response.put("subscriptionStatus", p.getSubscriptionStatus()); 
+                }               
+            }      
+
+        } catch (Exception e) {
+            //errors.add("Unable to parse request, please check the format of your data");
+        	logger.error("problem with request", e);
+            eajax.getErrors().add(
+                    new AjaxError(AjaxError.REQ_PARSE_ERROR, "Problem parsing request."));
+        }
+        
+        //if errors send them       
+        try {
+            if(eajax.getErrors().size()>0){
+                mav.addObject("mapperResult", jsonObjectSerializer.serialize(eajax));
+            } else {
+                mav.addObject("mapperResult", jsonObjectSerializer.serialize(response));
+            }
+            
+            
+        } catch (IOException e) {
+            mav.addObject("mapperResult", makeErrorsJson(e));   
+        }
+   
+        return mav;
     }
     
-    @RequestMapping(value = "/plugin/register",method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> register(@RequestBody String requestJson, HttpServletRequest request) {
+    private SiteInfoModel transformModel(JSONObject jsonQueryString) throws JSONException{
+        SiteInfoModel info = new SiteInfoModel();
+        if(!jsonQueryString.isNull("siteKey")){
+            info.setKey(((String[])jsonQueryString.get("siteKey"))[0].toString());
+        }
+
+        if(!jsonQueryString.isNull("siteEmail")){
+            info.setEmail(((String[])jsonQueryString.get("siteEmail"))[0].toString());
+        }
+        
+        if(!jsonQueryString.isNull("siteHome")){
+            info.setHome(((String[])jsonQueryString.get("siteHome"))[0].toString());
+        }
+        
+        if(!jsonQueryString.isNull("siteName")){
+            info.setName(((String[])jsonQueryString.get("siteName"))[0].toString());
+        }
+        
+        if(!jsonQueryString.isNull("siteToken")){
+
+            boolean empty = StringUtils.isEmpty(((String[])jsonQueryString.get("siteToken"))[0].toString());
+            if(!((String[])jsonQueryString.get("siteToken"))[0].toString().equals("null") && !empty)
+                info.setToken(((String[])jsonQueryString.get("siteToken"))[0].toString());
+        }
+        
+        return info;
+    }
+    
+    @RequestMapping(value = "/plugin/register")
+    public ModelAndView register(@RequestParam(required=false) String callback,  HttpServletRequest request) {
+        
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
     	Map<String, Object> response = new HashMap<String, Object>();
     	
 		Errors eajax = new AjaxErrors();
-    	JSONObject jsonObject = null;
+    	
     	
     	//all we do here is gen the token and send it by email
     	try {
-    		jsonObject = new JSONObject(requestJson);
+    	    
+    	    SiteInfoModel site = transformModel(new JSONObject(request.getParameterMap()));
+    	    // validate input
+            if (StringUtils.isBlank(site.getHome())) {
+                //errors.add("Please provide the URL for your site");
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide the URL for your site."));
+            }
+            
+            if (StringUtils.isBlank(site.getName())) {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide the name for your site."));
+            }
+            
+            if (StringUtils.isBlank(site.getEmail())) {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide a real email address."));
+            }
 
-    		
-			if (jsonObject != null) {
-				String key= null;
-	            if(!jsonObject.isNull("siteKey"))
-	            	key = jsonObject.getString("siteKey");
-	            String email = jsonObject.getString("siteEmail");
-	            String siteUrl = jsonObject.getString("siteHome");
-	            String siteName = jsonObject.getString("siteName");
-	            
-	            String siteToken = null;
-	            if(!jsonObject.isNull("siteToken") && !StringUtils.isEmpty(jsonObject.getString("siteToken")))
-	              siteToken = jsonObject.getString("siteToken");
-	           
-	            Boolean verified = false;
-	            if(siteUrl.equals(request.getHeader("referer"))){
-                  verified = true;
+
+            if( eajax.getErrors().size()==0){
+                
+                Boolean verified = false;
+                if(site.getHome().equals(request.getHeader("referer"))){
+                    verified = true;
                 } 
-	            
-	            Publisher publisher = orderManager.processPublisherRegistration(
-	                     email, 
-	                     key, 
-	                     siteToken,
-	                     siteName, 
-	                     siteUrl, 
-	                     verified,
-	                     adminEmailAccountFrom);
-	          				
-				response.put("siteKey", publisher.getKey());
-				response.put("subscriptionStatus", publisher.getSubscriptionStatus());				
-								
-			}
+                
+                Publisher publisher = orderManager.processPublisherRegistration(
+                        site.getEmail(), 
+                        site.getKey(), 
+                        site.getToken(),
+                        site.getName(), 
+                        site.getHome(), 
+                        verified,
+                        adminEmailAccountFrom);
+                
+                site.setKey(publisher.getKey());
+                //site.setToken(publisher.getJsonToken());
+                response.put("site", site);
+                response.put("subscriptionStatus", publisher.getSubscriptionStatus());
+                
+            }
+
+			
+
 		} catch (JSONException e) {
 			logger.error("problem with request", e);
 			eajax.getErrors().add(
@@ -339,23 +410,36 @@ public class SignUpControllerV2 {
 									+ e.getStackTrace()[0].toString().replace(
 											".", " ")));
 		}
-
-		// if errors send them instead
-		if (eajax.getErrors().size() > 0) {
-			try {
-				response.put("mapperResult",
-						jsonObjectSerializer.serialize(eajax));
-				//mav.setViewName("mapper-result");
-			} catch (IOException e) {
-				logger.error("cannot serialize message", e);
-			}
-		}
-			
-    
-		return response;
+		 //if errors send them       
+        try {
+            if(eajax.getErrors().size()>0){
+                mav.addObject("mapperResult", jsonObjectSerializer.serialize(eajax));
+            } else {
+                mav.addObject("mapperResult", jsonObjectSerializer.serialize(response));
+            }
+            
+            
+        } catch (IOException e) {
+            mav.addObject("mapperResult", makeErrorsJson(e));   
+        }
+   
+        return mav;
     }
     
-
+    protected String makeErrorsJson(Exception e){
+        try {
+            return jsonObjectSerializer.serialize(makeErrors(e));
+        } catch (IOException e1) {
+            return "[{\"errorMessage\":\"server error\",\"errorCode\":106 }]";
+        }
+    }
+    
+    protected AjaxErrors makeErrors(Exception e){
+        AjaxErrors errors = new AjaxErrors();
+        AjaxError error = new AjaxError(AjaxError.WL_SERVER_ERROR,e.getMessage());
+        errors.getErrors().add(error);
+        return errors;
+    }
     public void setUserService(UserPrincipalService userService) {
         this.userService = userService;
     }

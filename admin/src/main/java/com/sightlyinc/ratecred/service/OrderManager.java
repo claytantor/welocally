@@ -1,5 +1,8 @@
 package com.sightlyinc.ratecred.service;
 
+import static ch.lambdaj.Lambda.filter;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.NumberTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +33,10 @@ import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Product;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Site;
-import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
 import com.sightlyinc.ratecred.util.JavaMailer;
+
+import static org.hamcrest.Matchers.*;
+import static java.util.Arrays.*;
 
 @Service
 @Transactional
@@ -67,15 +73,17 @@ public class OrderManager {
     public void deleteOrder(Order order) throws BLServiceException {
         
         try {
-            //remove roles associated with product
-            UserPrincipal up = userService.loadUser(order.getOwner().getKey());
-            //add the product roles          
-            userService.removeRoles(
-                    up, Arrays.asList(
-                            order.getProduct().getRoles().split(",")));
-            
-      
-            userService.saveUserPrincipal(up);
+            if(order.getOwner()!=null){
+                //remove roles associated with product
+                UserPrincipal up = userService.loadUser(order.getOwner().getKey());
+                //add the product roles          
+                userService.removeRoles(
+                        up, Arrays.asList(
+                                order.getProduct().getRoles().split(",")));
+                
+          
+                userService.saveUserPrincipal(up);
+            }
             
             orderService.delete(order);
         } catch (UserPrincipalServiceException e) {
@@ -191,12 +199,10 @@ public class OrderManager {
                     // not going to worry about roles for now since user isn't going to be logging in
                 } catch (UserPrincipalServiceException e) {
                     logger.error("problem with request", e);
-//                    eajax.getErrors().add(
-//                            new AjaxError(AjaxError.RES_GEN_ERROR, "Problem with request."));
                     
                     throw new BLServiceException(e);
                 }
-            }
+            } 
                             
             Publisher publisher = publisherService.findByPublisherKey(key);
             if(publisher == null){
@@ -238,8 +244,7 @@ public class OrderManager {
                                              
                 //complete subscription
                 logger.debug("processing order:"+o.getExternalTxId());
-                
-                
+                               
                 if(publisher != null){
                     orderService.save(o);   
                     processPublisherOrder(
@@ -248,12 +253,26 @@ public class OrderManager {
                             adminEmailAccountFrom); 
                 }
                 
-            } else if (publisher != null && siteToken != null && 
-                    publisher.getSubscriptionStatus().equals(PublisherStatus.REGISTERED)){
-                if(publisher.getJsonToken().equals(siteToken)){                     
+            } else if (publisher != null && !StringUtils.isEmpty(siteToken) && 
+                        publisher.getJsonToken().equals(siteToken)){   //token match
+                
+                //REGISTERED    
+                switch(publisher.getSubscriptionStatus()){
+                case REGISTERED:
+                {
                     
-                    //MOVE TO SERVICE
-                    //activate the user
+                    Site s = new Site();
+                    s.setName(siteName);
+                    s.setUrl(siteUrl+"roo");
+                    
+                    //verify that the site exists
+                    List<Site> urlSites = 
+                        filter(
+                                org.hamcrest.Matchers.hasProperty("url", org.hamcrest.Matchers.equalTo(s.getUrl())), 
+                                publisher.getSites());
+                                      
+                                     
+                    //activate the user, this is the first registration
                     UserPrincipal up = userService.loadUser(publisher.getKey());
                     up.setEmail(email);
                     up.setEnabled(true);
@@ -275,12 +294,33 @@ public class OrderManager {
                         contacts.add(c);
                         publisher.setContacts(contacts);
                     }
-
-                    publisherService.save(publisher);
+                    break;
                 }
+                case SUBSCRIBED:{
+                    /* use may be trying to add a new site to their order*/
+                    Site s = new Site();
+                    s.setName(siteName);
+                    s.setUrl(siteUrl);
+                    
+                    //only add site if thier order allows it and is not already added
+                    if(!publisher.getSites().contains(s)){
+                        for (Order o : publisher.getOrders()) {
+                            o.getOrderLines();
+                            
+                            
+                        }
+                        
+                    }
+                    
+                    
+                    break;
+                }
+                }
+                publisherService.save(publisher);
+                
             }
             
-            return publisher;
+        return publisher;
 
         } catch (UserPrincipalServiceException e) {
             throw new BLServiceException(e);
@@ -306,11 +346,12 @@ public class OrderManager {
             UserPrincipal up = userService.loadUser(publisher.getKey());
             String hashedPass = userService.makeMD5Hash(publisherToken);                    
             up.setPassword(hashedPass);
-            List<String> roles = Arrays.asList("ROLE_USER", "ROLE_PUBLISHER");
-            String[] productRoles = o.getProduct().getRoles().split(",");
-            for (int i = 0; i < productRoles.length; i++) {
-                roles.add(productRoles[i]);
-            }            
+
+            List<String> roles = new ArrayList<String>(Arrays.asList(new String[]{"ROLE_USER", "ROLE_PUBLISHER"}));
+            List<String> productRoles = Arrays.asList(o.getProduct().getRoles().split(","));
+            roles.addAll(productRoles);
+            
+            
             userService.activateWithRoles(up, roles);
             
             publisher.setServiceEndDateMillis(serviceEndDateMillis);

@@ -52,56 +52,69 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	@Value("${AWSCredentials.secretKey:bar}")
 	private String awsSecretKey;
 
-	private Evictor evictorInstance;
-	
-	private class Evictor implements Runnable{
-		
-		private DynamoJsonDatabase dbListener;
-		
-		public Evictor(DynamoJsonDatabase dbListener){
-			this.dbListener = dbListener;
-		}
-		
-		public void run() { 
-			dbListener.evict();
-			dbListener.load();
-		}
-		
-	}
+//	private Evictor evictorInstance;
+//	
+//	private class Evictor implements Runnable{
+//		
+//		private DynamoJsonDatabase dbListener;
+//		
+//		public Evictor(DynamoJsonDatabase dbListener){
+//			this.dbListener = dbListener;
+//		}
+//		
+//		public void run() { 
+//			dbListener.evict();
+//			dbListener.load();
+//		}
+//		
+//	}
 	
 	private Map<String, String[]> classifiers;
 	
-	private ScheduledExecutorService scheduler = Executors
-	        .newScheduledThreadPool(1);
-	
-	private ScheduledFuture<?> evictorHandle;
+//	private ScheduledExecutorService scheduler = Executors
+//	        .newScheduledThreadPool(1);
+//	
+//	private ScheduledFuture<?> evictorHandle;
 
-	@PostConstruct
-	private void initDynamo() {
-		
-		AWSCredentials credentials = 
-			new BasicAWSCredentials(awsUserKey, awsSecretKey);
-		
-		dynamoDB = new AmazonDynamoDBClient(credentials);
-		
-		classifiers = new HashMap<String, String[]>();
-		
-		evictorInstance = new Evictor(this);
-
-		evictorHandle = scheduler.scheduleAtFixedRate(
-				evictorInstance, 0, 24, TimeUnit.HOURS);
-		
-		scheduler.scheduleAtFixedRate(evictorInstance, 1, 12, TimeUnit.HOURS);
-	}
+//	@PostConstruct
+//	private void initDynamo() {
+//		
+//		AWSCredentials credentials = 
+//			new BasicAWSCredentials(awsUserKey, awsSecretKey);
+//		
+//		dynamoDB = new AmazonDynamoDBClient(credentials);
+//		
+//		classifiers = new HashMap<String, String[]>();
+//		
+//		evictorInstance = new Evictor(this);
+//
+//		evictorHandle = scheduler.scheduleAtFixedRate(
+//				evictorInstance, 0, 24, TimeUnit.HOURS);
+//		
+//		scheduler.scheduleAtFixedRate(evictorInstance, 1, 12, TimeUnit.HOURS);
+//	}
 	
 	public void evict(){
 		classifiers.clear();
 	}
 	
+	private AmazonDynamoDBClient getDB(){
+	    if(dynamoDB == null){
+	        AWSCredentials credentials = 
+	             new BasicAWSCredentials(awsUserKey, awsSecretKey);
+	  
+	        dynamoDB = new AmazonDynamoDBClient(credentials);
+	        
+	        
+	    }
+	    return dynamoDB;
+	}
+	
 	public synchronized void load() {
+	        
 		if(classifiers.isEmpty()){
 		 ScanRequest scanRequest = new ScanRequest("classifiers");
-	     ScanResult scanResult = dynamoDB.scan(scanRequest); 
+	     ScanResult scanResult = getDB().scan(scanRequest); 
 	     
 	     for (Map<String, AttributeValue> items : scanResult.getItems()) {
 	    	 String[] row = new String[] {
@@ -148,7 +161,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 			GetItemRequest request = new GetItemRequest().withTableName(
 			        collectionName).withKey(primaryKey);
 
-			GetItemResult result = dynamoDB.getItem(request);
+			GetItemResult result = getDB().getItem(request);
 
 			if (result.getItem() == null || result.getItem().isEmpty())
 				throw new DbException(Type.OBJECT_NOT_FOUND);
@@ -174,7 +187,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
             Key primaryKey = new Key()
             .withHashKeyElement(new AttributeValue(id));
             DeleteItemRequest deleteItemRequest = new DeleteItemRequest(collectionName, primaryKey);
-            DeleteItemResult result = dynamoDB.deleteItem(deleteItemRequest);
+            DeleteItemResult result = getDB().deleteItem(deleteItemRequest);
         } catch (AmazonServiceException e) {
             throw new DbException(Type.DB_ERROR);
         } catch (AmazonClientException e) {
@@ -279,7 +292,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 
 	private void putItem(Map<String, AttributeValue> item, String collectionName) {
 		PutItemRequest putItemRequest = new PutItemRequest(collectionName, item);
-		PutItemResult putItemResult = dynamoDB.putItem(putItemRequest);
+		PutItemResult putItemResult = getDB().putItem(putItemRequest);
 		logger.debug(putItemResult.getConsumedCapacityUnits()
 		        + "units used, result:" + putItemResult.toString());
 	}

@@ -126,36 +126,7 @@
 	               </list>
 	       </property>	
 	</bean>		
-	
-	<bean id="save-place-json" 
-		class="org.springframework.web.servlet.view.velocity.VelocityView">
-		<property name="url" value="save-place-json.vm"/>
-		<property name="contentType" value="application/json"/>
-	</bean>	
 
-	<bean id="user-list-json" 
-		class="org.springframework.web.servlet.view.velocity.VelocityView">
-		<property name="url" value="user-list-json.vm"/>
-		<property name="contentType" value="application/json"/>
-	</bean>	
-		
-    <bean id="leaders-json"
-        class="org.springframework.web.servlet.view.velocity.VelocityView">
-        <property name="url" value="leaders-json.vm"/>
-        <property name="contentType" value="application/json"/>
-    </bean>
-
-    <bean id="patron-awards-json"
-        class="org.springframework.web.servlet.view.velocity.VelocityView">
-        <property name="url" value="patron/awards-json.vm"/>
-        <property name="contentType" value="application/json"/>
-    </bean>
-
-    <bean id="add-place-json"
-        class="org.springframework.web.servlet.view.velocity.VelocityView">
-        <property name="url" value="add-place-json.vm"/>
-        <property name="contentType" value="application/json"/>
-    </bean>
     
     <bean id="mapper-result-json"
         class="org.springframework.web.servlet.view.velocity.VelocityView">
@@ -163,12 +134,11 @@
         <property name="contentType" value="application/json"/>
     </bean>
     
-    <bean id="places-json"
+    <bean id="jsonp-mapper-result-json"
         class="org.springframework.web.servlet.view.velocity.VelocityView">
-        <property name="url" value="places-json.vm"/>
+        <property name="url" value="jsonp-mapper-result-json.vm"/>
         <property name="contentType" value="application/json"/>
-    </bean>
-    
+    </bean>    
     
 	
 </beans>

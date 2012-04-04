@@ -77,7 +77,7 @@ $(document).ready(function() {
 					${product.name}
 				</sec:authorize>																																														
 				<div class="span-24 actions">	
-					<input type="submit" />
+					<input type="submit" value="Save" />
 				</div>
 			</fieldset>
 		</form:form>

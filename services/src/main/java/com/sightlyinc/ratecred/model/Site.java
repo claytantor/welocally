@@ -84,6 +84,10 @@ public class Site extends BaseEntity {
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
 	}
+    @Override
+    public boolean equals(Object obj) {
+        return (((Site)obj).getUrl().equals(this.url));
+    }
 	
 
 }

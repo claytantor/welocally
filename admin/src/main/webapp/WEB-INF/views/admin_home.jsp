@@ -7,6 +7,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <h1>${member.name}</h1>
 		<hr/>
 		<div class="bottom-10 frame span-24">		
@@ -18,6 +19,8 @@
 				<ul class="list-none actions">
 					<li class="inline-block" style="width:100px">place</li>
 					<li class="inline-block"><a href="<c:url value='/publisher/place/finder'/>">search</a></li>
+					<li class="inline-block"><a href="<c:url value=''/>">add</a></li>
+					<li class="inline-block"><a href="<c:url value='/publisher/place/edit'/>">edit</a></li>
 				</ul>
 			</div>
 			<div class="padding-5">

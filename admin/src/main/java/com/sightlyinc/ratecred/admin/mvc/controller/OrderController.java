@@ -126,7 +126,8 @@ public class OrderController {
 	public String delete(@PathVariable Long id, Model model) {
 		logger.debug("delete");
 		Order order = orderService.findByPrimaryKey(id);
-		Long publisherId = order.getOwner().getId();
+		
+		
 		
 		try {
             orderManager.deleteOrder(order);
@@ -134,7 +135,14 @@ public class OrderController {
             logger.error("", e);
             return "error";
         }
-		return "redirect:/publisher/"+publisherId;
+        
+        if(order.getOwner() != null){
+            Long publisherId = order.getOwner().getId();
+            return "redirect:/publisher/"+publisherId;
+        } else {
+            return "redirect:/home"; 
+        }
+		
 	}
 	
 	@RequestMapping(value="/email/{id}", method=RequestMethod.GET)

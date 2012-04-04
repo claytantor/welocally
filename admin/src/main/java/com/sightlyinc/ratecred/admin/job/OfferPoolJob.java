@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.sightlyinc.ratecred.service.OfferPoolService;
 
-@Component("offerPoolJob")
 public class OfferPoolJob  {
 	
 	static Logger logger = 
@@ -18,17 +17,10 @@ public class OfferPoolJob  {
 	@Autowired
 	private OfferPoolService offerPoolService;
 	
-	/**
-	 * every 2 mins
-	 * 
-	 * @throws JobExecutionException
-	 */
-	@Scheduled(fixedRate = 1200000)
+
 	public void execute() {				
 		logger.debug("[JOB] " + this.getClass().getName() +" running");
 		offerPoolService.refresh();		
 	}
-
-	
 
 }

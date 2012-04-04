@@ -9,72 +9,30 @@
 <html>
 <c:set var="pageTitle" value="Place Edit"/>
 <jsp:include page="../head.jsp"/>
+<script type="text/javascript">
+var placeEditor;
+jQuery(document).ready(function() {
+	 placeEditor = 
+		new WELOCALLY_EditPlaceWidget({  endpoint:'http://gaudi-vb',statusArea: jQuery('#wl_editplace_status'),selectedPlaceArea: jQuery('#wl_place_textarea') }).init();
+});
+
+</script>
 <body>
+
 <div class="container">
 	<div class="span-24">
 		<jsp:include page="../header.jsp"/>
 	</div>
 	<div class="span-24">
-        <h2><a href="<c:url value='/home' />">home</a> : 
-        <c:if test="${not empty(articleForm.id)}">edit place</c:if>
-        <c:if test="${empty(articleForm.id)}">create place</c:if>
-        </h2>
-
-		<c:url value='/publisher/place' var="placeAction"/>
-		<form:form modelAttribute="placeForm" action="${placeAction}" method="post">
-		  	<fieldset>		
-				<legend>Place Info</legend>
-                <form:hidden path="id" />
-                <form:hidden path="version" />
-                  <p>
-                      <form:label for="name" path="name" cssErrorClass="error">Name</form:label><br/>
-                      <form:input path="name" id="name" size="50"/> <form:errors path="name" class="error" />
-                  </p>
-                  <p>
-                      <form:label for="address" path="address" cssErrorClass="error">Address</form:label><br/>
-                      <form:input path="address" id="address" size="50"/> <form:errors path="address" class="error" />
-                  </p>
-                  <p>
-                      <form:label for="city" path="city" cssErrorClass="error">City</form:label><br/>
-                      <form:input path="city" id="city" size="50"/> <form:errors path="city" class="error" />
-                  </p>
-                  <p>
-                      <form:label for="state" path="state" cssErrorClass="error">State</form:label><br/>
-                      <form:input path="state" id="state" size="50"/> <form:errors path="state" class="error" />
-                  </p>
-                  <p>
-                      <form:label for="zip" path="zip" cssErrorClass="error">ZIP</form:label><br/>
-                      <form:input path="zip" id="zip" size="50"/> <form:errors path="zip" class="error" />
-                  </p>
-                  <p>
-                      <form:label for="latitude" path="latitude" cssErrorClass="error">Latitude</form:label><br/>
-                      <form:input path="latitude" id="latitude" size="50"/> <form:errors path="latitude" class="error" />
-                  </p>    
-                  <p>
-                      <form:label for="longitude" path="longitude" cssErrorClass="error">Longitude</form:label><br/>
-                      <form:input path="longitude" id="longitude" size="50"/> <form:errors path="longitude" class="error" />
-                  </p>                                 
-                  <p>
-                      <form:label for="url" path="url" cssErrorClass="error">URL</form:label><br/>
-                      <form:input path="url" id="url"/> <form:errors path="url" class="error" />
-                  </p>
-                  <p>
-                      <form:label for="description" path="description" cssErrorClass="error">Description</form:label><br/>
-                      <form:textarea path="description" rows="1" cols="10" /> <form:errors path="description" class="error" />
-                  </p>
-				<p>
-					<form:label	for="phone" path="phone" cssErrorClass="error">Phone</form:label><br/>
-					<form:input path="phone" id="phone" size="50"/> <form:errors path="phone" class="error" />
-				</p>															
-				<p>	
-					<input type="submit" />
-				</p>
-			</fieldset>
-		</form:form>
+		<div class="span-24 actions" id="wl_editplace_status" style="display:none"></div>
+		<div class="span-24 actions">
+			<input name="id" class="wl_field" id="wl_place_id" value="WL_ccb7ts57mct4bdeq95e917_47.810331_-122.371257@1333125750"/><a href="#" onclick="javascript:placeEditor.findPlaceById(jQuery('#wl_place_id').val()); return false;">get</a>
 		</div>
-		<div class="span-6">.</div>
+		<div class="span-24 actions">
+			<textarea name="place" class="wl_field" rows="32" id="wl_place_textarea"/></textarea>
+			<a href="#" onclick="javascript:placeEditor.savePlace(jQuery('#wl_place_textarea').val()); return false;">save</a>
+		</div>
 	</div>	
-	
 </div>
 
 </body>

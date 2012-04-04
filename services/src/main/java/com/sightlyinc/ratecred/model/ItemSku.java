@@ -14,7 +14,7 @@ import com.sightlyinc.ratecred.model.Product.ProductStatus;
 @Table(name="item_sku")
 public class ItemSku extends BaseEntity {
 	
-	public enum ItemType { SUPPORT, ADD_ON, PLUGIN, THEME, SERVICE_LEVEL, SUBSCRIPTION }
+	public enum ItemType { SUPPORT, ADD_ON, PLUGIN, THEME, SERVICE_LEVEL, SUBSCRIPTION, LICENSE }
 	
 	public enum ItemStatus { AVAILABLE, CANCELED, LIMITED, ON_ORDER }
 	

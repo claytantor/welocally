@@ -14,7 +14,7 @@ import com.sightlyinc.ratecred.model.ItemSku.ItemStatus;
 @Table(name="product_line")
 public class ProductLine extends BaseEntity {
 	
-	public enum ProductLineStatus { AVAILABLE, CANCELED, LIMITED, ON_ORDER }
+	public enum ProductLineStatus { AVAILABLE, CANCELLED, LIMITED, ON_ORDER }
 	
 	@Column(name = "quantity")
 	private Integer quantity;
