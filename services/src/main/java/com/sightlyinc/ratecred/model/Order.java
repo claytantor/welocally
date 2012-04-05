@@ -100,7 +100,7 @@ import javax.persistence.Transient;
 @Table(name="cust_order")
 public class Order extends BaseEntity {
 
-	public enum OrderStatus { SUBSCRIBED, CANCELED, REGISTERED, PROVISIONED }
+	public enum OrderStatus { SUBSCRIBED, CANCELLED, REGISTERED, PROVISIONED, EXPIRED }
 	
 	//this is the id that is used to get the voucher
 	@Column(name="external_txid")

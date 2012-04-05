@@ -44,10 +44,56 @@ ul#icons span.ui-icon {float: left; margin: 0 4px;}
 
 .align-right{ text-align:right;}
 .align-left{ text-align:left;}
+.align-center{ text-align:center;}
 
 
 
 /*------- classes */
+
+/* status */
+.wl_update { 
+	text-align:center; 
+	margin-bottom:10px; border: 1px solid #aaaaaa; 
+	background-color: #BFDFFF;
+	-webkit-border-radius: 4px;
+   	-moz-border-radius: 4px;
+   	border-radius: 4px;
+   	padding: 4px;
+   	color: #415E7A; 
+ }
+.wl_error {  
+	text-align:center; 
+	background-color: #FFBFBF;
+	margin-bottom:10px; border: 1px solid #9E2626; 
+	-webkit-border-radius: 4px;
+   	-moz-border-radius: 4px;
+   	border-radius: 4px;
+   	padding: 4px; 
+   	color: #9E2626;
+}
+.wl_warning {  
+	text-align:center; 
+	background-color: #FFF3BF; 
+	margin-bottom:10px; border: 1px solid #aaaaaa; 
+	-webkit-border-radius: 4px;
+   	-moz-border-radius: 4px;
+   	border-radius: 4px;
+   	padding: 4px; 
+   	color: #A68F2B;
+ }
+ 
+.wl_message {
+	text-align:center; 
+	margin: 5px auto;  
+	width:98%;
+	background-color: #DBDBDB;
+	margin-bottom:10px; border: 1px solid #aaaaaa; 
+	-webkit-border-radius: 4px;
+   	-moz-border-radius: 4px;
+   	border-radius: 4px;
+   	padding: 4px;  
+   	color: #444444;
+}
 
 .list-none {
 list-style-type:none;
@@ -127,6 +173,12 @@ display:inline-block;
 
 .bottom-10 { margin-bottom: 10px; }
 .bottom-5 { margin-bottom: 5px; }
+
+.left-10 { margin-left: 10px; }
+.left-5 { margin-left: 5px; }
+
+.right-10 { margin-right: 10px; }
+.right-5 { margin-right: 5px; }
 
 .border-bottom {border-bottom: 1px solid #aaaaaa;}
 

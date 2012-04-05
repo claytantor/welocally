@@ -29,6 +29,14 @@ $(document).ready(function() {
 		<c:if test="${not empty(siteForm.id)}">edit site for ${siteForm.publisher.name}</c:if>
 		<c:if test="${empty(siteForm.id)}">create site for ${siteForm.publisher.name}</c:if>
 		</h2>
+		<c:if test="${not empty error}">
+		<div class="span-24 wl_error">
+		<c:forEach var="message" items="${error.messages}">
+			<div>${message.messageText}</div>
+		</c:forEach>
+		</div>
+		</c:if>
+		
 		<c:url value='/site' var="siteAction"/>		
 		<form:form modelAttribute="siteForm" action="${siteAction}" method="post">
 		  	<fieldset>		

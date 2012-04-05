@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.hibernate.GUIDGenerator;
+import com.noi.utility.spring.service.BLMessage;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherRegistrationGenerator;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
@@ -55,8 +56,7 @@ public class OrderManager {
     
     @Autowired
     private ContactService contactService;
-    
-    
+       
     @Autowired
     private OrderService orderService;
     
@@ -68,6 +68,7 @@ public class OrderManager {
     
     @Value("${default.product.sku:f102b14a87a1}")
     private String freeProductSku;
+    
     
     
     public void deleteOrder(Order order) throws BLServiceException {
@@ -175,6 +176,52 @@ public class OrderManager {
 
     }
     
+    public void checkSiteForPublisher(
+            Publisher p,
+            String email, 
+            String key, 
+            String siteToken,
+            String siteName, 
+            String siteUrl) throws BLServiceException {
+        
+        //verify that the site exists
+        BLServiceException blexception = new BLServiceException();
+        
+        if(p== null && !StringUtils.isEmpty(siteToken)){
+            blexception.getMessages().add(new BLMessage("A token has been entered, but no publisher can be found with the key:"+key+
+                    ". Please remove your token to begin the registration process or contact welocally if you have any questions.", 1201));
+        }
+        
+        if(p!= null && !StringUtils.isEmpty(siteToken) && !p.getJsonToken().equals(siteToken)){
+            blexception.getMessages().add(new BLMessage("The site token did not match our records " +
+            		"for the publisher with key:"+key+
+                    ". Please check your token or contact welocally if you have any questions.", 1201));
+        }
+            
+        if(p!= null){
+            List<Site> urlSites = 
+                filter(org.hamcrest.Matchers.hasProperty("url", org.hamcrest.Matchers.equalTo(siteUrl)), 
+                        p.getSites());
+            if(urlSites.size() == 0){
+                blexception.getMessages().add(new BLMessage("The site:"+siteUrl+
+                        " cannot be found as a licenced site for the publisher with key:"+key+
+                        ". Please check your token or contact welocally if you have any questions.", 1201));       
+                
+            }
+            
+        }
+        
+        
+        
+        if(blexception.getMessages().size()>0){
+            throw blexception;
+        }
+        
+        
+
+        
+    }
+    
     public Publisher processPublisherRegistration(
             String email, 
             String key, 
@@ -186,7 +233,17 @@ public class OrderManager {
         
         
         try {
+            
+                               
             //make the user if they dont exist
+            if(StringUtils.isEmpty(key)){
+                BLServiceException blexception = new BLServiceException();
+                blexception.getMessages().add(new BLMessage("The key you entered was empty. " +
+                		"Please check your key or contact welocally if you have any questions.", 1201));
+                throw blexception;
+                
+            }
+            
             UserPrincipal user = userService.findByUserName(key);
             if(user==null){
                 user = new UserPrincipal();
@@ -199,12 +256,18 @@ public class OrderManager {
                     // not going to worry about roles for now since user isn't going to be logging in
                 } catch (UserPrincipalServiceException e) {
                     logger.error("problem with request", e);
+                    BLServiceException blexception = new BLServiceException();
+                    blexception.getMessages().add(new BLMessage("There was a problem finding the user with the key:"+key+
+                            ". Please check your key or contact welocally if you have any questions.", 1201));
+                    throw blexception;
                     
-                    throw new BLServiceException(e);
+                    //throw new BLServiceException(e);
                 }
             } 
-                            
+            
             Publisher publisher = publisherService.findByPublisherKey(key);
+            checkSiteForPublisher(publisher, email, key, siteToken, siteName, siteUrl);
+            
             if(publisher == null){
                 
                 //make the publisher
@@ -320,12 +383,18 @@ public class OrderManager {
                 
             }
             
-        return publisher;
+            return publisher;
 
         } catch (UserPrincipalServiceException e) {
-            throw new BLServiceException(e);
+            BLServiceException blexception = new BLServiceException();
+            blexception.getMessages().add(new BLMessage("There was a problem finding the user with the key:"+key+
+                    ". Please check your key or contact welocally if you have any questions.", 1201));
+            throw blexception;
         } catch (UserNotFoundException e) {
-            throw new BLServiceException(e);
+            BLServiceException blexception = new BLServiceException();
+            blexception.getMessages().add(new BLMessage("There was a problem finding the user with the key:"+key+
+                    ". Please check your key or contact welocally if you have any questions.", 1201));
+            throw blexception;
         }
 
     }

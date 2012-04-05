@@ -1,5 +1,6 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
+
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -7,11 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Site;
 import com.sightlyinc.ratecred.service.PublisherService;
@@ -29,7 +35,7 @@ public class SiteController {
 	@Autowired
 	private SiteService siteService;
 	
-	
+    	
 	@RequestMapping(method=RequestMethod.GET)
 	public String getCreateForm(@RequestParam Long publisherId, Model model) { 
 		Site newSite= new Site();
@@ -48,8 +54,6 @@ public class SiteController {
 				site = siteService.findByPrimaryKey(form.getId());
 			
 			if(site!=null){
-				//Publisher p = publisherService.findByPrimaryKey(form.getPublisher().getId());				
-				//site.setPublisher(p);
 				site.setPublisher(form.getPublisher());
 				site.setName(form.getName());
 				site.setActive(form.getActive());
@@ -57,12 +61,20 @@ public class SiteController {
 				site.setDescription(form.getDescription());
 				site.setNotes(form.getNotes());
 				site.setUrl(form.getUrl());
-							
-				Long id = siteService.save(site);
+				
+				
+				Long id = siteService.saveSiteWithChecks(site);
 				return "redirect:/site/"+id.toString();
 			}
 		
-		} catch(Exception e){
+		} 
+		catch (BLServiceException e) {
+            logger.debug("problem with request"+e.getMessage()); 
+            model.addAttribute("error", e);
+            model.addAttribute("siteForm",form);
+            return "site/edit";
+        }
+		catch(Exception e){
 			logger.error("", e);
 			return "error";
 		}

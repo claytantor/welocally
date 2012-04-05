@@ -29,8 +29,8 @@ $(document).ready(function() {
 	</div>
 	<div class="span-24">
 		<h2>
-		<c:if test="${not empty(orderForm.id)}">edit order for ${orderForm.owner.name}</c:if>
-		<c:if test="${empty(orderForm.id)}">create order for ${orderForm.owner.name}</c:if>
+		<c:if test="${not empty(orderForm.id)}">edit order for <a href="<c:url value='/publisher/${orderForm.owner.id}' />">${orderForm.owner.name}</a></c:if>
+		<c:if test="${empty(orderForm.id)}">create order for <a href="<c:url value='/publisher/${orderForm.owner.id}' />">${orderForm.owner.name}</a></c:if>
 		</h2>
 		<c:url value='/order' var="orderAction"/>
 		<c:url value='/order/delete/${orderForm.id}' var="deleteAction"/>
@@ -60,14 +60,18 @@ $(document).ready(function() {
 					<form:select path="product.id">					
             			<form:options items="${products}" itemValue="id" itemLabel="name"/>
 					</form:select>	
-				</p>	
+				</p>
+				<div><h2>Order Lines</h2></div>	
 				<p>
 				<c:forEach var="orderLine" items="${orderForm.orderLines}">
 				<div class="span-24 last">	
 						<div class="span-8">${orderLine.itemSku.name}</div>							
-						<div class="span-4">${orderLine.quantityOrig}</div>
-						<div class="span-4 last">$<fmt:formatNumber type="number" maxFractionDigits="3"
+						<div class="span-1 text-14 ">${orderLine.quantityOrig}</div>
+						<div class="span-3 text-14 align-right last">$<fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2"
 				            value="${orderLine.itemSku.price}" /></div>
+				            
+				        <div class="span-2 last left-10"><a href="#">delete</a></div>
+				        <div class="span-2 last left-10"><a href="#">edit</a></div>    
 				</div>     
 				</c:forEach>				
 				</p>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.dao.BaseDao;
 
 @Transactional

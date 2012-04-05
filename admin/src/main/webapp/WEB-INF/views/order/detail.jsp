@@ -30,8 +30,8 @@
 <c:forEach var="orderLine" items="${order.orderLines}">
 	<div class="span-24 last">
 		<div class="span-6">${orderLine.itemSku.name}</div>							
-		<div class="span-4">${orderLine.quantityOrig}</div>
-		<div class="span-4">$<fmt:formatNumber type="number" maxFractionDigits="3"
+		<div class="span-1 align-center">${orderLine.quantityOrig}</div>
+		<div class="span-4 align-right text-12">$<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2"
             value="${orderLine.itemSku.price}" /></div>   
    </div> 
 

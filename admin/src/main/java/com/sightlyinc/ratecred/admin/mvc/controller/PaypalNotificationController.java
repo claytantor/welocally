@@ -338,7 +338,7 @@ public class PaypalNotificationController {
 					+ publisher.getName() + " with key:"
 					+ publisher.getKey());
 			publisher.setSubscriptionStatus(statusType);
-			o.setStatus(Order.OrderStatus.CANCELED);
+			o.setStatus(Order.OrderStatus.CANCELLED);
 		}
 
 		publisherService.save(publisher);

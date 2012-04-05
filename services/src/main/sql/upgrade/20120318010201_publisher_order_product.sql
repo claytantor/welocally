@@ -115,3 +115,5 @@ VALUES
 1314673289280,
 1314673289280
 );
+
+update `cust_order` set status = 'CANCELLED' where status = 'CANCELED';

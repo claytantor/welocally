@@ -1,10 +1,8 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,11 +27,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.noi.utility.spring.service.BLMessage;
 import com.noi.utility.spring.service.BLServiceException;
-import com.noi.utility.string.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
 import com.sightlyinc.ratecred.admin.model.Errors;
@@ -80,6 +78,9 @@ public class SignUpControllerV3 {
 	
 	@Value("${admin.adminEmailAccountFrom:mailer@welocally.com}")
 	private String adminEmailAccountFrom;
+	
+	@Value("${admin.googleMapsApiKey:AIzaSyARslBu_1ENpUlhnUjiaRvlIQQUZ1Mg174}")
+    private String googleMapsApiKey;
     
 
     @ModelAttribute("signup")
@@ -248,13 +249,14 @@ public class SignUpControllerV3 {
                         new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide a real email address."));
             }
 
-            if(site.getKey() == null || site.getKey().isEmpty() || site.getName().equals("delete")){
+            if(StringUtils.isEmpty(site.getKey()) && StringUtils.isEmpty(site.getToken())){
                 String newkey = UUID.randomUUID().toString();
                 newkey = newkey.substring(newkey.lastIndexOf('-') + 1);
                 site.setKey(newkey);               
                 response.put("site", site);
                 response.put("subscriptionStatus", "KEY_ASSIGNED");               
-            } else {
+            }    
+            else {
                 Publisher p = publisherService.findByPublisherKey(site.getKey());
                 if(p == null){
                     String newkey = UUID.randomUUID().toString();
@@ -264,18 +266,41 @@ public class SignUpControllerV3 {
                     response.put("subscriptionStatus", "KEY_ASSIGNED");  
                 } 
                 else if(p!= null && (p.getOrders()==null || p.getOrders().size()==0)){
-
                     eajax.getErrors().add(
                             new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Something is wrong with your order, please contact welocally."));
                     
+                } 
+                else if(p!= null && StringUtils.isEmpty(site.getToken()) && !StringUtils.isEmpty(p.getJsonToken()) ){                  
+                    orderManager.checkSiteForPublisher(p, site.getEmail(), site.getKey(), site.getToken(), site.getName(), site.getHome());
+                    response.put("site", site);
+                    response.put("subscriptionStatus", "REGISTERED");  
+                    response.put("key1", googleMapsApiKey);
                 }
                 else {
+                    
+                    orderManager.checkSiteForPublisher(p, site.getEmail(), site.getKey(), site.getToken(), site.getName(), site.getHome());                                     
                     response.put("site", site);
                     response.put("subscriptionStatus", p.getSubscriptionStatus()); 
-                }               
+                    if(p.getSubscriptionStatus().equals(Publisher.PublisherStatus.SUBSCRIBED) ||
+                            p.getSubscriptionStatus().equals(Publisher.PublisherStatus.REGISTERED)){
+                        response.put("key1", googleMapsApiKey);
+                    } 
+                } 
+                
+
             }      
 
-        } catch (Exception e) {
+        } 
+        catch (BLServiceException e) {
+            logger.debug("problem with request"+e.getMessage()); 
+            for (BLMessage message : e.getMessages()) {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.SUBSCRIPTION_INVALID, message.getMessageText()));
+                
+            }
+            
+        }
+        catch (Exception e) {
             //errors.add("Unable to parse request, please check the format of your data");
         	logger.error("problem with request", e);
             eajax.getErrors().add(
@@ -348,6 +373,7 @@ public class SignUpControllerV3 {
     	try {
     	    
     	    SiteInfoModel site = transformModel(new JSONObject(request.getParameterMap()));
+    	    
     	    // validate input
             if (StringUtils.isBlank(site.getHome())) {
                 //errors.add("Please provide the URL for your site");
@@ -365,13 +391,21 @@ public class SignUpControllerV3 {
                         new AjaxError(AjaxError.DATA_VALIDATION_MISSING, "Please provide a real email address."));
             }
 
-
-            if( eajax.getErrors().size()==0){
+            
+            if(StringUtils.isEmpty(site.getKey()) && StringUtils.isEmpty(site.getToken())){
+                String newkey = UUID.randomUUID().toString();
+                newkey = newkey.substring(newkey.lastIndexOf('-') + 1);
+                site.setKey(newkey);               
+                response.put("site", site);
+                response.put("subscriptionStatus", "KEY_ASSIGNED");               
+            } else if( eajax.getErrors().size()==0){
                 
                 Boolean verified = false;
                 if(site.getHome().equals(request.getHeader("referer"))){
                     verified = true;
                 } 
+                
+                
                 
                 Publisher publisher = orderManager.processPublisherRegistration(
                         site.getEmail(), 
@@ -383,8 +417,10 @@ public class SignUpControllerV3 {
                         adminEmailAccountFrom);
                 
                 site.setKey(publisher.getKey());
-                //site.setToken(publisher.getJsonToken());
                 response.put("site", site);
+                if(publisher.getSubscriptionStatus().equals(Publisher.PublisherStatus.SUBSCRIBED)){
+                    response.put("key1", googleMapsApiKey);
+                }                
                 response.put("subscriptionStatus", publisher.getSubscriptionStatus());
                 
             }
@@ -397,10 +433,12 @@ public class SignUpControllerV3 {
 					new AjaxError(AjaxError.REQ_PARSE_ERROR, "Problem parsing request."));
 
 		} catch (BLServiceException e) {
-            logger.debug("business logic problem request:"+e.getMessage());
-
-            eajax.getErrors().add(
-                    new AjaxError(AjaxError.SUBSCRIPTION_INVALID,"Problem with order please contact welocally:"+e.getMessage()));
+		    logger.debug("problem with request"+e.getMessage()); 
+            for (BLMessage message : e.getMessages()) {
+                eajax.getErrors().add(
+                        new AjaxError(AjaxError.SUBSCRIPTION_INVALID, message.getMessageText()));
+                
+            }        
         }
 		catch (Exception e) {
 			logger.error("problem with request", e);

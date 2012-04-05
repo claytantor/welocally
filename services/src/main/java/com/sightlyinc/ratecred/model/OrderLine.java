@@ -36,6 +36,10 @@ public class OrderLine extends BaseEntity {
 	@ManyToOne	
 	@JoinColumn(name = "item_sku_id")
 	private ItemSku itemSku;
+	
+	@ManyToOne
+	@JoinColumn(name = "cust_order_id")
+	private Order order;
 
 	public Integer getQuantityOrig() {
 		return quantityOrig;
@@ -91,6 +95,14 @@ public class OrderLine extends BaseEntity {
 	public BigDecimal getLineTotal(){		
 		return itemSku.getPrice().multiply(new BigDecimal(this.getQuantityOrig()));
 	}
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 	
 	
 

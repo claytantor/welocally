@@ -25,11 +25,18 @@
 				<div class="actions span-12" style="text-align:left">
 					<h3>Site</h3>
 				</div>
+				
 				<div class="actions span-12 last" style="text-align:right">
 					<a href="<c:url value='/site/edit/${site.id}' />" class="button">edit</a>
 					<a href="<c:url value='/site/delete/${site.id}' />" class="button">delete</a>
-				</div>				
+				</div>	
+							
 			</div>
+			<div class="span-24 last" >
+				<div style="font-size: 1.4em;">${site.name}</div>
+				<div><a href="${site.url}" target="_new">${site.url}</a></div>
+			</div>
+			
 		</div>
 	</div>
 </div>

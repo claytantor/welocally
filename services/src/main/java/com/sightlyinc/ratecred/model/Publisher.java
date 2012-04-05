@@ -25,7 +25,7 @@ import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 public class Publisher extends BaseEntity {
 	
 	public enum PublisherStatus { 
-		KEY_ASSIGNED, CANCELLED, REGISTERED, SUBSCRIBED, FAILURE, SUSPENDED ;
+		KEY_ASSIGNED, CANCELLED, REGISTERED, SUBSCRIBED, FAILURE, SUSPENDED, DENIED ;
 		
 		public String getDisplayValue(){
 			return this.name();

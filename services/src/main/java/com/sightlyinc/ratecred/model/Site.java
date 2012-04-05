@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * 	`name` varchar(255) unsigned DEFAULT NULL,
@@ -20,12 +23,14 @@ import javax.persistence.Table;
 public class Site extends BaseEntity {
 	
 	@Column(name="name")
+	@NotEmpty
 	private String name;
 	
 	@Column(name="description",columnDefinition="TEXT")
 	private String description;
 	
 	@Column(name="url")
+	@NotEmpty
 	private String url;
 	
 	@Column(name="verified")
