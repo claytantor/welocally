@@ -7,6 +7,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <c:set var="pageTitle" value="Publisher View"/>
 <jsp:include page="../head.jsp"/>
@@ -25,11 +26,12 @@
 				<div class="actions span-12" style="text-align:left">
 					<h3>Site</h3>
 				</div>
-				
+				<sec:authorize ifAllGranted="ROLE_ADMIN">
 				<div class="actions span-12 last" style="text-align:right">
 					<a href="<c:url value='/site/edit/${site.id}' />" class="button">edit</a>
 					<a href="<c:url value='/site/delete/${site.id}' />" class="button">delete</a>
-				</div>	
+				</div>
+				</sec:authorize>
 							
 			</div>
 			<div class="span-24 last" >

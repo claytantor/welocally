@@ -73,12 +73,14 @@
 			<div class="span-12" style="text-align:left">
 				<h3>Sites</h3>
 			</div>
-			<sec:authorize ifAllGranted="ROLE_ADMIN">
+		</div>	
+		<sec:authorize ifAllGranted="ROLE_ADMIN">
+		<div class="span-24 last">
 			<div class="actions span-12 last" style="text-align:right">
 				<a href="<c:url value='/site?publisherId=${publisher.id}' />" class="button">create</a>
 			</div>
-			</sec:authorize>
 		</div>
+		</sec:authorize>
 		<div class="span-24 last">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 			<c:forEach var="site" items="${publisher.sites}">		

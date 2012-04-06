@@ -111,20 +111,23 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 	
 	public synchronized void load() {
+	    
+	    logger.debug("foo");
 	        
-		if(classifiers.isEmpty()){
-		 ScanRequest scanRequest = new ScanRequest("classifiers");
-	     ScanResult scanResult = getDB().scan(scanRequest); 
-	     
-	     for (Map<String, AttributeValue> items : scanResult.getItems()) {
-	    	 String[] row = new String[] {
-	    			 items.get("type").getS().toString(),
-	    			 items.get("category").getS().toString(),
-	    			 items.get("subcategory").getS().toString(),
-	    			 
-	    	 };
-	    	 classifiers.put(items.get("_id").getS().toString(), row);	      
-         }
+		if(classifiers == null || classifiers.isEmpty()){
+		    classifiers = new HashMap<String, String[]>();
+    		ScanRequest scanRequest = new ScanRequest("classifiers");
+    	    ScanResult scanResult = getDB().scan(scanRequest); 
+    	     
+    	    for (Map<String, AttributeValue> items : scanResult.getItems()) {
+    	    	 String[] row = new String[] {
+    	    			 items.get("type").getS().toString(),
+    	    			 items.get("category").getS().toString(),
+    	    			 items.get("subcategory").getS().toString(),
+    	    			 
+    	    	 };
+    	    	 classifiers.put(items.get("_id").getS().toString(), row);	      
+            }
 		}
 	}
 	

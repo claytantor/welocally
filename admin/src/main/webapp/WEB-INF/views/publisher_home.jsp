@@ -36,12 +36,9 @@
 <div class="area main span-18 last">
 	<div class="border-bottom bottom-10 span-18 last">
 		<h3>Publisher Info For ${publisher.name}</h3>
-		<div>Subscription Status:${publisher.subscriptionStatus}</div>
-		<div>Publisher Key:${publisher.key}</div>
-		<div>Publisher Token:${publisher.jsonToken}</div>
-		<%--<div>Site Url:${publisher.url}</div>
-		<div>Site Summary:${publisher.summary}</div>
-		<div>Subscription Status:${publisher.subscriptionStatus}</div> --%>
+		<div>Subscription Status: ${publisher.subscriptionStatus}</div>
+		<div>Publisher Key: ${publisher.key}</div>
+		<div>Publisher Token: ${publisher.jsonToken}</div>
 	</div>
 	<div class="bottom-10 span-18 last">
 		<h3>Orders</h3>
@@ -53,4 +50,20 @@
 
 		</div>
 	</div>
+	<div class="bottom-10 span-18 last">
+		<div class="span-24 last">
+			<div class="span-12" style="text-align:left">
+				<h3>Sites</h3>
+			</div>
+		</div>	
+		<div class="span-24 last">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<c:forEach var="site" items="${publisher.sites}">		
+				<c:set var="site" scope="request" value="${site}" />	
+				<jsp:include page="site/detail.jsp" flush="true"/>
+			</c:forEach>
+			</table>
+		</div>
+
+	</div>	
 </div>
