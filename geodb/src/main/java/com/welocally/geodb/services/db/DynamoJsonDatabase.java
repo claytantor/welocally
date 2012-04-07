@@ -51,48 +51,9 @@ public class DynamoJsonDatabase implements JsonDatabase {
 
 	@Value("${AWSCredentials.secretKey:bar}")
 	private String awsSecretKey;
-
-//	private Evictor evictorInstance;
-//	
-//	private class Evictor implements Runnable{
-//		
-//		private DynamoJsonDatabase dbListener;
-//		
-//		public Evictor(DynamoJsonDatabase dbListener){
-//			this.dbListener = dbListener;
-//		}
-//		
-//		public void run() { 
-//			dbListener.evict();
-//			dbListener.load();
-//		}
-//		
-//	}
 	
 	private Map<String, String[]> classifiers;
 	
-//	private ScheduledExecutorService scheduler = Executors
-//	        .newScheduledThreadPool(1);
-//	
-//	private ScheduledFuture<?> evictorHandle;
-
-//	@PostConstruct
-//	private void initDynamo() {
-//		
-//		AWSCredentials credentials = 
-//			new BasicAWSCredentials(awsUserKey, awsSecretKey);
-//		
-//		dynamoDB = new AmazonDynamoDBClient(credentials);
-//		
-//		classifiers = new HashMap<String, String[]>();
-//		
-//		evictorInstance = new Evictor(this);
-//
-//		evictorHandle = scheduler.scheduleAtFixedRate(
-//				evictorInstance, 0, 24, TimeUnit.HOURS);
-//		
-//		scheduler.scheduleAtFixedRate(evictorInstance, 1, 12, TimeUnit.HOURS);
-//	}
 	
 	public void evict(){
 		classifiers.clear();
@@ -218,6 +179,8 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 
 	public JSONArray findTypes() throws DbException {
+	    
+	    logger.debug("find types");
 		load();
 		JSONArray typesArray = new JSONArray();
 		Set<String> types = new HashSet<String>();
