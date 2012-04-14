@@ -12,6 +12,7 @@ import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.settings.ImmutableSettings
 import com.welocally.geodb.services.util.WelocallyJSONUtils
 
+import java.util.Date
 object ESLoader {
   @Component
   class Wiring
@@ -28,9 +29,33 @@ object ESLoader {
   def parseFile(filename :String) = 
     for(l <- readFile(filename)) yield new JSONObject(l)
 
-  def makePlaceIndex(place :JSONObject) = {
+  def makePlaceIndex(place :JSONObject) : JSONObject = {
     wiredBean.welocallyJSONUtils.updatePlaceToWelocally(place)
     wiredBean.welocallyJSONUtils.makeIndexablePlace(place)
+  }
+
+  def loadBatch(client :TransportClient, places:Iterable[JSONObject]) = {
+      val bulkRequest = client.prepareBulk();
+      for (place <- places) {
+        val placeIndex = makePlaceIndex(place)
+      
+        val id:String = placeIndex.get("_id").asInstanceOf[String]
+        bulkRequest.add(client.prepareIndex("geodb","place",id)
+           .setSource(XContentFactory.jsonBuilder()
+	  	.startObject()
+		.field("search", placeIndex.get("search"))
+		.startArray("location")
+		.value(placeIndex.get("location_1_coordinate").asInstanceOf[Double])
+		.value(placeIndex.get("location_0_coordinate").asInstanceOf[Double])
+		.endArray()
+		.endObject()))
+      }
+    val bulkResponse = bulkRequest.execute().actionGet();
+    println("bulkResponse = " + bulkResponse)
+    if(bulkResponse.hasFailures()) {
+        println(bulkResponse.buildFailureMessage())
+    }
+
   }
 
   def main(args: Array[String])  {
@@ -42,29 +67,14 @@ object ESLoader {
     val client = new TransportClient(settings)
         .addTransportAddress(new InetSocketTransportAddress("ec2-107-22-80-168.compute-1.amazonaws.com", 9300))
         .addTransportAddress(new InetSocketTransportAddress("ec2-184-72-135-198.compute-1.amazonaws.com", 9300))
-    val bulkRequest = client.prepareBulk();
     val parsedFile = parseFile(args(0))
-    for(i <- (0 to 10000)) {
-      val placeIndex = makePlaceIndex(parsedFile.next)
-      
-      val id:String = placeIndex.get("_id").asInstanceOf[String]
-      bulkRequest.add(client.prepareIndex("geodb","place",id)
-         .setSource(XContentFactory.jsonBuilder()
-		.startObject()
-		.field("search", placeIndex.get("search"))
-		.startArray("location")
-		.value(placeIndex.get("location_1_coordinate").asInstanceOf[Double])
-		.value(placeIndex.get("location_0_coordinate").asInstanceOf[Double])
-		.endArray()
-		.endObject()))
-//      println(i + ":" + placeIndex.get("_id") )
+    var totalLoaded = 0
+    for(batch <- parsedFile.grouped(10000))
+    { 
+      loadBatch(client, batch)
+      totalLoaded += batch.size
+      println( new Date() + " total loaded: " + totalLoaded)
     }
-    val bulkResponse = bulkRequest.execute().actionGet();
-    println("bulkResponse = " + bulkResponse)
-    if(bulkResponse.hasFailures()) {
-        println(bulkResponse.buildFailureMessage())
-    }
-
 
     client.close()
     System.exit(0)
