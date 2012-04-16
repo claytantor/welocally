@@ -51,9 +51,10 @@ object ESLoader {
 		.endObject()))
       }
     val bulkResponse = bulkRequest.execute().actionGet();
-    println("bulkResponse = " + bulkResponse)
+//    println("bulkResponse = " + bulkResponse)
     if(bulkResponse.hasFailures()) {
         println(bulkResponse.buildFailureMessage())
+        throw new Exception("ES Bulk Response failures!!");
     }
 
   }
@@ -67,13 +68,18 @@ object ESLoader {
     val client = new TransportClient(settings)
         .addTransportAddress(new InetSocketTransportAddress("ec2-107-22-80-168.compute-1.amazonaws.com", 9300))
         .addTransportAddress(new InetSocketTransportAddress("ec2-184-72-135-198.compute-1.amazonaws.com", 9300))
+        .addTransportAddress(new InetSocketTransportAddress("ec2-23-22-45-184.compute-1.amazonaws.com", 9300))
+        .addTransportAddress(new InetSocketTransportAddress("ec2-23-22-31-108.compute-1.amazonaws.com", 9300))
+
     val parsedFile = parseFile(args(0))
     var totalLoaded = 0
     for(batch <- parsedFile.grouped(10000))
     { 
       loadBatch(client, batch)
       totalLoaded += batch.size
-      println( new Date() + " total loaded: " + totalLoaded)
+      if(totalLoaded % 10000 == 0) {
+        println( new Date() + " total loaded: " + totalLoaded)
+      }	
     }
 
     client.close()
