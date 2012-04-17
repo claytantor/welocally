@@ -15,27 +15,9 @@
 
 <link rel="shortcut icon" href="<c:url value='/images/we_16.png' />"/> 
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/welocally.css'/>" />
-<style>
-body {
-font: normal 1em verdana, arial, helvetica, sans-serif;
-}
+<script type="text/javascript">
 
-#login-area{
-	margin-bottom:10px;
-	margin-top:10px;    
-	border: 1px solid #888888; 
-	background: #eeeeee; padding: 5px;
-	border-radius:3px;
-	width:auto;
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	text-align:center; 
-	width: 400px; 
-	border: 1px solid #aaa;
-}
-
-</style>
-
+</script>
 </head>
 
 <body onLoad="document.f.j_username.focus();">
@@ -45,12 +27,7 @@ font: normal 1em verdana, arial, helvetica, sans-serif;
             	<img src="<c:url value='/images/header_logo.png'/>" border="0"/>
             </div>
         </div>
-        
-        <div>
-             <div style="text-align:center; width: 400px; margin: 0 auto">
-            	<img src="<c:url value='/images/login_help.png'/>" border="0"/>
-            </div>
-        </div>
+
 
         <div id="login-area" style="text-align:center; width: 400px; margin: 0 auto">
              <c:if test="${not empty param.login_error}">
@@ -59,15 +36,18 @@ font: normal 1em verdana, arial, helvetica, sans-serif;
                     Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.
                   </font>
                 </c:if>
-            
+            	<div class="margin-10">Don't have an account yet? <a href="<c:url value='/signup/4_0'/>">Register Now</a></div>
+            	<div class="margin-10">
                 <form name="f" action="<c:url value='j_spring_security_check'/>" method="POST">
                   <input type="hidden" id="_spring_security_remember_me" name="_spring_security_remember_me" value="true">
                   <table>
-                    <tr><td align="right">User (or Publisher Key:):</td><td><input type='text' name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/></td></tr>
-                    <tr><td align="right">Password (or Publisher Token):</td><td><input type='password' name='j_password'></td></tr>
+                    <tr><td align="right">User </td><td><input type='text' name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/></td></tr>
+                    <tr><td align="right">Password </td><td><input type='password' name='j_password'></td></tr>
                     <tr><td></td><td><input name="submit" type="submit" value="Submit"><input name="reset" type="reset"></td></tr>
                   </table>
                 </form>	
+                </div>
+                <div class="margin-10">Forgot password? <a href="/reset.html">Password Reset</a></div>
         </div>
                   
                   

@@ -6,7 +6,7 @@
 	<groupId>com.welocally</groupId>
 	<artifactId>services</artifactId>
 	<name>Welocally : Services Module</name>
-	<version>0.9.4-SNAPSHOT</version>
+	<version>0.9.5-SNAPSHOT</version>
 	<description>The services tier for the welocally project. Transactional.</description>
 	<properties>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>

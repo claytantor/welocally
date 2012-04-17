@@ -4,7 +4,7 @@
 	<groupId>com.welocally</groupId>
 	<artifactId>admin</artifactId>
 	<packaging>war</packaging>
-	<version>0.9.4-SNAPSHOT</version>
+	<version>0.9.5-SNAPSHOT</version>
 	<properties>
 		<web.finalName>admin</web.finalName>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>com.welocally</groupId>
 			<artifactId>services</artifactId>
-			<version>0.9.4-SNAPSHOT</version>
+			<version>0.9.5-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>

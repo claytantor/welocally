@@ -51,8 +51,8 @@ public class WordpressPluginController {
     @Autowired
     private PublisherService publisherService;
     
-    @Autowired
-    private JsonModelProcessor jsonModelProcessor;
+//    @Autowired
+//    private JsonModelProcessor jsonModelProcessor;
     
     //@Autowired
     //private YahooGeocoder yahooGeocoder;
@@ -199,12 +199,12 @@ public class WordpressPluginController {
             if(!requestJSONObject.isNull("post")) {
             	JSONObject jsonPost = requestJSONObject.getJSONObject("post");
             	
-            	//determine if this is an event or article post
-            	if(jsonModelProcessor.isArticlePost(jsonPost)){
-            		jsonModelProcessor.saveArticleAndPlaceFromPostJson(jsonPost, publisher, wpaction);
-            	} else if(jsonModelProcessor.isEventPost(jsonPost)) {
-            		jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher, wpaction);
-            	}
+//            	//determine if this is an event or article post
+//            	if(jsonModelProcessor.isArticlePost(jsonPost)){
+//            		jsonModelProcessor.saveArticleAndPlaceFromPostJson(jsonPost, publisher, wpaction);
+//            	} else if(jsonModelProcessor.isEventPost(jsonPost)) {
+//            		jsonModelProcessor.saveEventAndPlaceFromPostJson(jsonPost, publisher, wpaction);
+//            	}
             	              
             }
         }
@@ -221,22 +221,22 @@ public class WordpressPluginController {
 		logger.debug("adding place from place chooser");
         ModelAndView modelAndView = new ModelAndView("add-feature");
         
-        try {
-			JSONObject requestJSONObject = new JSONObject(addPlaceJSON);
-			Feature f = jsonModelProcessor.saveNewPlaceAsFeatureFromPostJson(requestJSONObject);
-			StringWriter sw = new StringWriter();   // serialize
-			MappingJsonFactory jsonFactory = new MappingJsonFactory();
-			JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(sw);
-			jacksonMapper.writeValue(jsonGenerator, f);
-			sw.flush();
-			sw.close();
-			modelAndView.addObject("feature", sw.getBuffer().toString());
-
-		} catch (JSONException e) {
-			response.setStatus(500);
-		} catch (IOException e) {
-			response.setStatus(500);
-		}
+//        try {
+//			JSONObject requestJSONObject = new JSONObject(addPlaceJSON);
+//			//Feature f = jsonModelProcessor.saveNewPlaceAsFeatureFromPostJson(requestJSONObject);
+//			StringWriter sw = new StringWriter();   // serialize
+//			MappingJsonFactory jsonFactory = new MappingJsonFactory();
+//			JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(sw);
+//			jacksonMapper.writeValue(jsonGenerator, f);
+//			sw.flush();
+//			sw.close();
+//			modelAndView.addObject("feature", sw.getBuffer().toString());
+//
+//		} catch (JSONException e) {
+//			response.setStatus(500);
+//		} catch (IOException e) {
+//			response.setStatus(500);
+//		}
       
         return modelAndView;
 	}
@@ -245,9 +245,9 @@ public class WordpressPluginController {
 //		this.placeManagerService = placeManagerService;
 //	}
 
-	public void setJsonModelProcessor(JsonModelProcessor jsonModelProcessor) {
-		this.jsonModelProcessor = jsonModelProcessor;
-	}
+//	public void setJsonModelProcessor(JsonModelProcessor jsonModelProcessor) {
+//		this.jsonModelProcessor = jsonModelProcessor;
+//	}
 
 	public void setPublisherService(PublisherService publisherService) {
         this.publisherService = publisherService;

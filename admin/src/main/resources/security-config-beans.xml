@@ -10,10 +10,13 @@
 	<global-method-security secured-annotations="enabled"/>
 
 	<http auto-config="true">
+		
+    	<intercept-url pattern="/signup.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
     	<intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />        
+    	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    	<intercept-url pattern="/place/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />        
         <intercept-url pattern="/publisher/place/queryplaces.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/publisher/place/addplace.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/publisher/place/loadspreadsheet.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
