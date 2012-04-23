@@ -30,6 +30,11 @@
 			<jsp:include page="publisher_home.jsp" flush="true"/>
 		</sec:authorize>
 	</div>
+	
+	<div class="span-24">
+		<jsp:include page="footer.jsp"/>
+	</div>
+	
 </div>
 
 </body>

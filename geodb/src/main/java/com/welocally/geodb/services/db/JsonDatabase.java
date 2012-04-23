@@ -5,10 +5,13 @@ import org.json.JSONObject;
 
 public interface JsonDatabase {
     
-    public enum EntityType { PLACE, CLASSIFER, DEAL };
+    public enum EntityType { PLACE, CLASSIFER, DEAL, PUBLISHER };
 
 	public JSONObject findById(String collectionName, String id)
 		throws DbException;
+	
+	public JSONArray findPublisherPlaces(String publisherKey, String collectionName) 
+	throws DbException;
 	
 	public void put(JSONObject doc, String collectionName, String id, EntityType type)
     throws DbException;
@@ -29,5 +32,7 @@ public interface JsonDatabase {
 	
 	public DbPage findByExampleIncluding(String collectionName, int pageNumber, JSONObject example, JSONObject inclusions)
 	throws DbException;
+	
+	
 
 }

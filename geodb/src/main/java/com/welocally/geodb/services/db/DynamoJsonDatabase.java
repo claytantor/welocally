@@ -4,12 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -25,6 +19,8 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
+import com.amazonaws.services.dynamodb.model.ComparisonOperator;
+import com.amazonaws.services.dynamodb.model.Condition;
 import com.amazonaws.services.dynamodb.model.DeleteItemRequest;
 import com.amazonaws.services.dynamodb.model.DeleteItemResult;
 import com.amazonaws.services.dynamodb.model.GetItemRequest;
@@ -53,6 +49,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	private String awsSecretKey;
 	
 	private Map<String, String[]> classifiers;
+	
 	
 	
 	public void evict(){
@@ -110,6 +107,33 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	@Override
 	public DbPage findByExampleIncluding(String collectionName, int pageNumber,
 	        JSONObject example, JSONObject inclusions) throws DbException {
+	    
+	    //ignore inclusions
+	    
+	    //Scan items for movies with a year attribute greater than 1985
+        HashMap<String, Condition> scanFilter = new HashMap<String, Condition>();
+        
+        //example is equals
+        String[] names = JSONObject.getNames(example);
+        for (int i = 0; i < names.length; i++) {
+            Condition condition = new Condition()
+            .withComparisonOperator(ComparisonOperator.GT.toString())
+            .withAttributeValueList(new AttributeValue().withN("1985"));
+            
+            scanFilter.put("year", condition);
+            
+        }
+
+
+        
+        
+        
+        
+        ScanRequest scanRequest = new ScanRequest(collectionName).withScanFilter(scanFilter);
+        ScanResult scanResult = dynamoDB.scan(scanRequest);
+        logger.debug("Result: " + scanResult);
+
+	    
 		// TODO Auto-generated method stub
 		throw new RuntimeException("NO IMPL");
 	}
@@ -194,18 +218,47 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 	
 	public JSONArray findCatgories(String type) throws DbException {
-		load();
-		JSONArray oArray = new JSONArray();
-		Set<String> result = new HashSet<String>();
-		for (String[] row : classifiers.values()) {
-			if(row[0].equals(type))
-				result.add(row[1]);
-		}
-		for (String item : result) {
-			oArray.put(item);
+        load();
+        JSONArray oArray = new JSONArray();
+        Set<String> result = new HashSet<String>();
+        for (String[] row : classifiers.values()) {
+            if(row[0].equals(type))
+                result.add(row[1]);
         }
-		return oArray;
-	}
+        for (String item : result) {
+            oArray.put(item);
+        }
+        return oArray;
+    }
+    
+	public JSONArray findPublisherPlaces(String publisherKey, String collectionName) throws DbException {
+        JSONArray oArray = new JSONArray();
+        
+        ScanRequest scanRequest = new ScanRequest(collectionName);
+        Map<String,Condition> scanFilter = new HashMap<String,Condition>();
+        Condition condition = new Condition()
+        .withComparisonOperator(ComparisonOperator.EQ)
+        .withAttributeValueList(new AttributeValue().withS("publisherKey"));
+    
+        scanFilter.put("owner", condition);    
+        
+        ScanResult scanResult = getDB().scan(scanRequest); 
+         
+        for (Map<String, AttributeValue> item : scanResult.getItems()) { 
+                JSONObject place;
+                try {
+                    place = new JSONObject(item.get("document").getS());
+                    oArray.put(place);    
+                } catch (Exception e) {
+                    logger.error("problem getting place for owner:"+publisherKey);
+                }
+                
+        }
+
+        return oArray;
+    }
+    
+    
 	
 	public JSONArray findSubcatgories(String type, String category) throws DbException {
 		load();
@@ -244,6 +297,11 @@ public class DynamoJsonDatabase implements JsonDatabase {
                         collectionName);
                 break;
             }
+            case PUBLISHER: {
+                putItem(dynamoJsonObjectFactory.makePublisher(doc, "published"),
+                        collectionName);
+                break;
+            }            
 			}
             
 			

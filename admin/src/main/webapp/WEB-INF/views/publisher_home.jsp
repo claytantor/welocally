@@ -9,13 +9,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div class="area sidebar span-5">			
-	<!--  navbar -->
-	<script type="text/javascript">
-	$(function() {
-		$( "a", "#navbar" ).button();
-		$( "#button-addnote" ).click(function() { return false; });
-	});		
-	</script>
+	
 
 	<div id="navbar" class="widget">
 		<ul>
@@ -42,7 +36,7 @@
 	</div>
 	<div class="bottom-10 span-18 last">
 		<h3>Orders</h3>
-		<div class="span-24 last">
+		<div class="span-18 last">
 			<c:forEach var="order" items="${publisher.orders}" varStatus="status">
 				<c:set var="order" scope="request" value="${order}" />	
 				<jsp:include page="order/detail.jsp" flush="true"/>
@@ -51,12 +45,12 @@
 		</div>
 	</div>
 	<div class="bottom-10 span-18 last">
-		<div class="span-24 last">
+		<div class="span-18 last">
 			<div class="span-12" style="text-align:left">
 				<h3>Sites</h3>
 			</div>
 		</div>	
-		<div class="span-24 last">
+		<div class="span-18 last">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 			<c:forEach var="site" items="${publisher.sites}">		
 				<c:set var="site" scope="request" value="${site}" />	
@@ -66,4 +60,39 @@
 		</div>
 
 	</div>	
+	
+	
+	<div class="bottom-10 span-18 last">
+		<div class="span-18 last">
+			<div class="span-12" style="text-align:left">
+				<h3>My Places</h3>
+			</div>
+		</div>	
+		<div class="span-18 last">
+				<div id="search-wrapper">
+					<!--  navbar -->
+					<script type="text/javascript">
+					jQuery(function() {
+						jQuery( "a", "#navbar" ).button();
+						jQuery( "#button-addnote" ).click(function() { return false; });				
+						
+						var userPlacesMgr = new WELOCALLY_UserPlacesManager({
+							endpoint: '${config.ajaxServerEndpoint}',
+							imagePath:'<c:url value='/css/welocally-places-developer/images/marker_all_base.png' />',							
+							key: '${publisher.key}',
+							token: '${publisher.jsonToken}'
+						}).init();
+										
+					});		
+					</script>	
+				</div>
+			
+		</div>
+
+	</div>	
+	
+	
+	
+	
+	
 </div>

@@ -198,3 +198,5 @@ WELOCALLY_EditPlaceWidget.prototype.setSelectedPlace = function(selectedPlace) {
 	
 };
 
+
+

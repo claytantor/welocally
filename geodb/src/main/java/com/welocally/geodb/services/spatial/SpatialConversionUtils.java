@@ -117,7 +117,7 @@ converted to
 	 * @return
 	 */
 	
-	public JSONObject convertQueryStringToPlace(JSONObject placeQueryString){
+	public JSONObject convertQueryStringToPlace(JSONObject placeQueryString) {
 	    
 	 	   
         try {
@@ -154,12 +154,12 @@ converted to
             JSONArray classifiers = new JSONArray();
             JSONObject classifier = new JSONObject();
             
-            classifier.put("type", ((String[])placeQueryString.get("classifiers[0][type]"))[0]);
-            classifier.put("category", ((String[])placeQueryString.get("classifiers[0][category]"))[0]);
-            classifier.put("subcategory", ((String[])placeQueryString.get("classifiers[0][subcategory]"))[0]);
+            classifier.put("type", ((String[])placeQueryString.get("properties[classifiers][0][type]"))[0]);
+            classifier.put("category", ((String[])placeQueryString.get("properties[classifiers][0][category]"))[0]);
+            classifier.put("subcategory", ((String[])placeQueryString.get("properties[classifiers][0][subcategory]"))[0]);
             
             classifiers.put(classifier);
-            place.put("classifiers", classifiers);
+            properties.put("classifiers", classifiers);
                                         
             place.put("type", "Place");
             
@@ -178,7 +178,7 @@ converted to
             return null;
         } catch (JSONException e) {
             logger.error(e);
-            return null;
+            throw new RuntimeException(e);
         }
         
         
@@ -193,10 +193,12 @@ converted to
 							.parseDouble(coords.getString(0)));
 			return coord;
 		} catch (NumberFormatException e) {
-			return null;
+			throw new RuntimeException(e);
 		} catch (JSONException e) {
-			return null;
-		}
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 

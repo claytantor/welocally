@@ -18,8 +18,8 @@
 			<div class="padding-5">
 				<ul class="list-none actions">
 					<li class="inline-block" style="width:100px">place</li>
-					<li class="inline-block"><a href="<c:url value='/publisher/place/finder'/>">search</a></li>
-					<li class="inline-block"><a href="<c:url value=''/>">add</a></li>
+					<li class="inline-block"><a href="<c:url value='/place/1_0/finder'/>">finder</a></li>
+					<li class="inline-block"><a href="<c:url value='/place/1_0/add'/>">add</a></li>
 					<li class="inline-block"><a href="<c:url value='/publisher/place/edit'/>">edit</a></li>
 				</ul>
 			</div>

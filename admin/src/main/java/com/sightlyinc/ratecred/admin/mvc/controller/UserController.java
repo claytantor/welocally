@@ -137,6 +137,7 @@ public class UserController {
 					"userPrincipals", 
 					userPrincipalService.findAll());
 			return "user/list";
+			
 		} catch (BLServiceException e) {
 			model.addAttribute("error", e);
 			return "error";

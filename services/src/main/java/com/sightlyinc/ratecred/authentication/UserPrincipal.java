@@ -7,17 +7,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.userdetails.User;
 import org.springframework.security.userdetails.UserDetails;
 
 import com.sightlyinc.ratecred.model.BaseEntity;
@@ -29,6 +28,7 @@ import com.sightlyinc.ratecred.model.BaseEntity;
  * 
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown=true)
 @Table(name="user_principal")
 public class UserPrincipal extends BaseEntity implements Authentication, UserDetails {
 
@@ -176,10 +176,15 @@ public class UserPrincipal extends BaseEntity implements Authentication, UserDet
 		return password;
 	}
 
-	@Override
-	public Object getDetails() {
-		return this;
-	}
+
+    @Override
+    public Object getDetails() {
+        return new User(this.getUsername(), this.getPassword(), this
+                .getEnabled(), !this.getCredentialsExpired(), this
+                .getCredentialsExpired(), !this.getLocked(), this
+                .getAuthorities());
+
+    }
 
 	@Override
 	public Object getPrincipal() {
@@ -220,14 +225,6 @@ public class UserPrincipal extends BaseEntity implements Authentication, UserDet
 	public void setAuthenticated(Boolean authenticated) {
 		this.authenticated = authenticated;
 	}
-
-//	public Boolean getExpired() {
-//		return expired;
-//	}
-//
-//	public void setExpired(Boolean expired) {
-//		this.expired = expired;
-//	}
 
 	public Boolean getCredentialsExpired() {
 		return credentialsExpired;
@@ -274,8 +271,6 @@ public class UserPrincipal extends BaseEntity implements Authentication, UserDet
 	public boolean isEnabled() {
 		return getEnabled();
 	}
-
-
 
 	public Long getTwitterId() {
 		return twitterId;

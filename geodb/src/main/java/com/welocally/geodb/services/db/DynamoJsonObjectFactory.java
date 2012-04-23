@@ -35,6 +35,7 @@ public class DynamoJsonObjectFactory {
 		item.put("lng", new AttributeValue().withN(coords.getString(0)));
 		item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchablePlaceContent(properties)));
 		item.put("status", new AttributeValue(status));
+		item.put("owner", new AttributeValue(placeObject.getJSONObject("properties").getString("owner")));
 		item.put("document", new AttributeValue(placeObject.toString()));
 		
         return item;
@@ -70,6 +71,53 @@ public class DynamoJsonObjectFactory {
         item.put("status", new AttributeValue(status));
         item.put("document", new AttributeValue(jsonObject.toString()));
         
+        return item;
+    }
+	
+	/*
+	 * {
+    "name": "dff3794a01ef",
+    "password": "5f4dcc3b5aa765d61d8327deb882cf99",
+    "username": "dff3794a01ef",
+    "email": null,
+    "enabled": false,
+    "principal": "dff3794a01ef",
+    "userClass": null,
+    "authorities": [],
+    "accountNonExpired": true,
+    "accountNonLocked": true,
+    "credentialsNonExpired": true,
+    "details": {
+        "password": "5f4dcc3b5aa765d61d8327deb882cf99",
+        "username": "dff3794a01ef",
+        "enabled": false,
+        "authorities": [],
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "credentialsNonExpired": false
+    },
+    "credentials": "5f4dcc3b5aa765d61d8327deb882cf99",
+    "credentialsExpired": false,
+    "locked": false,
+    "twitterToken": null,
+    "authGuid": null,
+    "twitterId": null,
+    "twitterUsername": null,
+    "twitterProfileImg": null,
+    "twitterVerify": null,
+    "twitterSecret": null,
+    "id": 71,
+    "version": 0,
+    "timeCreated": 1322771497262,
+    "timeUpdated": 1322771497262
+}
+	 */
+	public Map<String, AttributeValue> makePublisher(JSONObject jsonObject, String status) throws JSONException{
+        Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
+        item.put("_id", new AttributeValue(jsonObject.getString("name")));
+        item.put("password", new AttributeValue(jsonObject.getString("password")));
+        item.put("status", new AttributeValue(status));
+        item.put("document", new AttributeValue(jsonObject.toString()));       
         return item;
     }
 

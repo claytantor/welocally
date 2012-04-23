@@ -24,7 +24,7 @@
 		<c:if test="${empty(userForm.id)}">create user</c:if>
 		</h2>
 
-		<c:url value='/admin/user' var="userAction"/>		
+		<c:url value='/signup/4_0' var="userAction"/>		
 		<form:form modelAttribute="userPrincipalForm" action="${userAction}" method="post">
 		  	<fieldset>		
 				<legend>User Info</legend>

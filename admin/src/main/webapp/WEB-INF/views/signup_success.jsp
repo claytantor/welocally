@@ -15,14 +15,13 @@
 		<jsp:include page="header.jsp"/>
 	</div>
 	<div class="span-24">
-		<h1>sign up!</h1>
-		<hr/>
-        <div class="span-12">
+		<div class="span-6"><img src="<c:url value="${imageUrl}/yay1.png"/>"></div>
+        <div class="span-18">
             <h2>You have signed up for WeLocally!</h2>
-            <div class="span-12">
+            <div class="span-18">
                 Thank you for signing up. You should receive an email with your account confirmation soon.
             </div>
-            <div class="span-12">
+            <div class="span-18">
                 <a href="<c:url value="/home"/>">Click here</a> to log in to your account.
             </div>
         </div>
