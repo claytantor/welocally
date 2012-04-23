@@ -19,13 +19,20 @@
 		Authorized
 		<div>
 		<script type="text/javascript">
+
 		var cfg = { 
 				placehoundPath: 'http://placehound.com',
 				showShare: true,
-				endpoint: 'http://gaudi.welocally.com'
-				imagePath:'http://placehound.com/images/marker_all_base.png'	
-			};
-			var addPlaceWidget = new WELOCALLY_AddPlaceWidget(cfg).init();
+				endpoint:'http://gaudi.welocally.com',	
+				imagePath:'<c:url value='/css/welocally-places-developer/images/marker_all_base.png' />',
+				overrideSelectableStyle:'',	
+				siteKey: 'oaklandly',	
+				siteToken: '1a98efca9bf3493d9724c9868fe528d0',	
+		};
+		var addPlaceWidget = new WELOCALLY_AddPlaceWidget(cfg).init();
+					
+
+		
 		</script>
 		</div>
 			

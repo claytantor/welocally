@@ -25,7 +25,7 @@ import com.sightlyinc.ratecred.service.PublisherService;
 
 @Controller
 @RequestMapping(value="/home")
-public class HomeController {
+public class HomeController extends AbstractBaseController {
 	
 	static Logger logger = Logger.getLogger(HomeController.class);
 	

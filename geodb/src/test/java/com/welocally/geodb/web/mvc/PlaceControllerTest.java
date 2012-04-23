@@ -58,14 +58,14 @@ public class PlaceControllerTest {
 
 	}
 	
-	@Test
-	public void testPutPlace() {
-		logger.debug("testPutPlace");
-		
-		placeControllerV1.put(
-				requestJSON,null);		
-
-	}
+//	@Test
+//	public void testPutPlace() {
+//		logger.debug("testPutPlace");
+//		
+//		placeControllerV1.saveJ(
+//				requestJSON,null);		
+//
+//	}
 	
 
 }

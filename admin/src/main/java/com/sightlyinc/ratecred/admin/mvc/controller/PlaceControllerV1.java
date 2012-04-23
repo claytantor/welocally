@@ -23,5 +23,16 @@ public class PlaceControllerV1 {
 	    model.addAttribute("id", id);
         return "place/iplace";
     }
+	
+	@RequestMapping(value = "/finder", method = RequestMethod.GET)
+    public String finder(Model model,HttpServletRequest request) {
+	    
+        return "place/finder";
+    }
+	
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
+    public String add(Model model,HttpServletRequest request) {       
+        return "place/edit";
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.model;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
@@ -312,7 +313,10 @@ public class Order extends BaseEntity {
 
 	@Transient
 	public Date getOrderCreationDate(){
-	    return new Date(super.getTimeCreated());
+	    if(super.getTimeCreated() == null)
+	        return new Date();
+	    else
+	        return new Date(super.getTimeCreated());
 	}
 
 

@@ -20,6 +20,12 @@ import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.JsonDatabase;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
+/**
+ * supplied with a specific region the bounding loader will
+ * load data into 
+ * @author claygraham
+ *
+ */
 @Component
 public class DynamoLoader implements CommandSupport {
 	

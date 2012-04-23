@@ -1,13 +1,6 @@
 /*
 	copyright 2012 clay graham. NO WARRANTIES PROVIDED
 */
-/* things we like */
-if (typeof String.prototype.startsWith != 'function') {
-  String.prototype.startsWith = function (str){
-    return this.indexOf(str) == 0;
-  };
-}
-
 if (!window.WELOCALLY) {
     window.WELOCALLY = {
     	env: {
@@ -36,6 +29,28 @@ if (!window.WELOCALLY) {
 		    			}
 		    		});
 		    	}
+    		}
+    	},
+    	ui: {
+    		setStatus : function(statusArea, message, type, showloading){
+    			var _instance  = this;
+    			
+    			jQuery(statusArea).html('');
+    			jQuery(statusArea).removeClass();
+    			jQuery(statusArea).addClass(type);
+    			
+    			if(showloading){
+    				jQuery(statusArea).append(showloading);
+    			}
+    			
+    			jQuery(statusArea).append('<em>'+message+'</em>');
+    			
+    			if(message != ''){
+    				jQuery(statusArea).show();
+    			} else {
+    				jQuery(statusArea).hide();
+    			}	
+    			
     		}
     	},
     	util: {
@@ -155,53 +170,7 @@ if (!window.WELOCALLY) {
 				   // Return "null" if no parameter has been found
 				   return "null";
 				   }
-			},
-			passwordTest: function( pw1, pw2 ){
-				var check = WELOCALLY.util.passwordcheck(pw1);
-				if(check != 'strong' && check != 'best')
-					return check;
-				
-				if(pw1 != '' &&  (pw1 != pw2) ){
-					return 'not match';
-				} else if(pw1 != '' &&  (pw1 == pw2) ){
-					return 'match';
-				} else if(pw1 == '' &&  (pw1 == pw2) ){
-					return 'empty';
-				}
-				
-				return 'unexpected';
-			},
-			passwordcheck: function(password)
-	        {
-	           
-	    		var result = 'unexpected';
-
-				var noofchar = /^.*(?=.{6,}).*$/;
-				var checkspace = /\s/;
-				var best = /^.*(?=.{6,})(?=.*[A-Z])(?=.*[\d])(?=.*[\W]).*$/;
-				var strong = /^[a-zA-Z\d\W_]*(?=[a-zA-Z\d\W_]{6,})(((?=[a-zA-Z\d\W_]*[A-Z])(?=[a-zA-Z\d\W_]*[\d]))|((?=[a-zA-Z\d\W_]*[A-Z])(?=[a-zA-Z\d\W_]*[\W_]))|((?=[a-zA-Z\d\W_]*[\d])(?=[a-zA-Z\d\W_]*[\W_])))[a-zA-Z\d\W_]*$/;
-				var weak = /^[a-zA-Z\d\W_]*(?=[a-zA-Z\d\W_]{6,})(?=[a-zA-Z\d\W_]*[A-Z]|[a-zA-Z\d\W_]*[\d]|[a-zA-Z\d\W_]*[\W_])[a-zA-Z\d\W_]*$/;
-				var bad = /^((^[a-z]{6,}$)|(^[A-Z]{6,}$)|(^[\d]{6,}$)|(^[\W_]{6,}$))$/;
-
-				if (true == checkspace.test(password)) {
-					result = "spaces are not allowed";
-				} else if (false == noofchar.test(password)) {
-					result = "short";
-				} else if (best.test(password)) {
-					result = "best";
-				} else if (strong.test(password)) {
-					result = "strong";
-				} else if (weak.test(password) == true
-						&& bad.test(password) == false) {
-					result = "weak";
-				} else if (bad.test(password)) {
-					result = "bad";
-				}
-				return result;
-	         }
-			
-			
-    	}  	
-    	
-    }
+			}
+    	}    	
+    };
 }

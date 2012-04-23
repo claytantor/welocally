@@ -1,8 +1,10 @@
 .wl_places_addplace{}
 
-.wl_addplace_save_button_area{ width:100%; margin-bottom:5px; text-align:center; } 
+/*.wl_addplace_save_button_area{ width:100%; margin-bottom:5px; text-align:center; } */
  
-#wl_addplace_save {
+ #wl_addplace_save {  }
+ 
+/*#wl_addplace_save {
    border-top: 1px solid #96d1f8;
    background: #65a9d7;
    background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
@@ -23,6 +25,7 @@
    text-decoration: none;
    vertical-align: middle;
    }
+   
 #wl_addplace_save:hover {
    border-top-color: #28597a;
    background: #28597a;
@@ -31,7 +34,7 @@
 #wl_addplace_save:active {
    border-top-color: #1b435e;
    background: #1b435e;
-   } 
+   } */
    
 .wl_selected_tag_add { 
 	font-family: Fixed, monospace; font-weight:bold; text-align:center; margin-top:5px; }  
@@ -54,7 +57,8 @@
 
 .wl_addplace_selected_classifiers li {
    	margin: 3px; 
-   	padding: 1.4em;
+   	font-size: 0.8em;
+   	padding: 0.4em;
 	border: 1px solid #aaaaaa; 
 	display: inline-block; 	
 	-webkit-border-radius: 4px;
