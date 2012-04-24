@@ -287,6 +287,14 @@ public class DynamoJsonDatabase implements JsonDatabase {
                         collectionName);
 			    break;
 			}
+			case USER_PLACE:{
+			    JSONObject place = doc.getJSONObject("userPlace");
+			    JSONObject data = doc.getJSONObject("userData");
+               			    
+                putItem(dynamoJsonObjectFactory.makeUserPlace(place, data, "published"),
+                        collectionName);
+                break;
+            }
             case CLASSIFER: {
                 putItem(dynamoJsonObjectFactory.makeClassifier(doc),
                         collectionName);

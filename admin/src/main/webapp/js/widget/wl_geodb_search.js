@@ -61,7 +61,7 @@ WELOCALLY_GeoDbSearch.prototype.search = function() {
 	};
 		
 	var surl = _instance.cfg.endpoint +
-		'/geodb/place/2_0/search.json?'+WELOCALLY.util.serialize(query)+"&callback=?";
+		'/geodb/place/3_0/search.json?'+WELOCALLY.util.serialize(query)+"&callback=?";
 	
 	//notify all observers
 	jQuery.each(_instance.cfg.observers, function(i,observer) {

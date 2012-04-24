@@ -61,6 +61,28 @@ public class WelocallyJSONUtils {
 		return newPlace;
 	}
 	
+	public JSONObject makeIndexableUserData(JSONObject placeObject, JSONObject userData) throws JSONException{
+        
+        JSONObject properties = placeObject.getJSONObject("properties");
+        JSONObject geom = placeObject.getJSONObject("geometry");
+        JSONArray coords = geom.getJSONArray("coordinates");
+        Point coord = 
+            new Point(
+                    Double.parseDouble(coords.getString(1)), 
+                    Double.parseDouble(coords.getString(0)));
+        JSONArray coordsNew =new JSONArray();
+        coordsNew.put(coords.getString(1));
+        coordsNew.put(coords.getString(0));
+        
+        JSONObject newPlace = new JSONObject();
+        newPlace.put("_id", placeObject.getString("_id"));
+        newPlace.put("search", spatialDocumentFactory.makeSearchableUserDataContent(properties, userData));      
+        newPlace.put("location_0_coordinate",coord.getLat());
+        newPlace.put("location_1_coordinate",coord.getLon());
+        
+        return newPlace;
+    }
+	
 	public JSONObject makeIndexableDeal(JSONObject deal) throws JSONException{
         
         JSONObject location = deal.getJSONObject("location");

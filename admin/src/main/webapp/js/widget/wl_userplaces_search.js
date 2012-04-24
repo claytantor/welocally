@@ -78,7 +78,6 @@ WELOCALLY_UserPlacesSearch.prototype.makeWrapper = function() {
 	
 };
 
-//curl -XGET --header "Content-Type: application/json" http://gaudi.welocally.com/geodb/place/2_0/publisher?key=oaklandly 
 WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	
 	
@@ -102,7 +101,7 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	}
 				
 	var surl = _instance.cfg.endpoint +
-		'/geodb/place/2_0/publisher?key=?'+_instance.cfg.key+"&callback=?";
+		"/geodb/place/3_0/userplaces.json?callback=?";
 	
 	//notify all observers
 	jQuery.each(_instance.cfg.observers, function(i,observer) {
@@ -114,8 +113,8 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 			  dataType: "json",
 			  beforeSend: function(jqXHR){
 				_instance.jqxhr = jqXHR;
-				_instance.jqxhr.setRequestHeader("publisher-key", _instance.cfg.key);
-				_instance.jqxhr.setRequestHeader("publisher-token", _instance.cfg.token);
+				_instance.jqxhr.setRequestHeader("key", _instance.cfg.key);
+				_instance.jqxhr.setRequestHeader("token", _instance.cfg.token);
 			  },
 			  success: function(data) {
 				//set to result bounds if enough results

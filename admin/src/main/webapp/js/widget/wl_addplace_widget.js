@@ -525,7 +525,7 @@ WELOCALLY_AddPlaceWidget.prototype.savePlace = function (selectedPlace) {
 	_instance.setStatus(_instance.statusArea,'Saving Place...', 'wl_message', true);
 	
 	var ajaxurl = _instance.cfg.endpoint +
-				'/geodb/place/2_0/save.json';
+				'/geodb/place/3_0/user/save.json';
 		   
 	_instance.jqxhr = jQuery.ajax({
 	  type: 'GET',		  

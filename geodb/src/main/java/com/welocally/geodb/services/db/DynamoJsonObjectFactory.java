@@ -41,6 +41,26 @@ public class DynamoJsonObjectFactory {
         return item;
 	}
 	
+	public Map<String, AttributeValue> makeUserPlace(JSONObject placeObject, JSONObject userData, String status) throws JSONException{
+        
+        Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
+        
+        JSONObject properties = placeObject.getJSONObject("properties");
+        JSONObject geom = placeObject.getJSONObject("geometry");
+        JSONArray coords = geom.getJSONArray("coordinates");
+        
+        item.put("_id", new AttributeValue(placeObject.getString("_id")));
+        item.put("lat", new AttributeValue().withN(coords.getString(1)));
+        item.put("lng", new AttributeValue().withN(coords.getString(0)));
+        item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchablePlaceContent(properties)));
+        item.put("status", new AttributeValue(status));
+        item.put("owner", new AttributeValue(placeObject.getJSONObject("properties").getString("owner")));
+        item.put("document", new AttributeValue(placeObject.toString()));
+        item.put("data", new AttributeValue(userData.toString()));
+        
+        return item;
+    }
+	
 	public Map<String, AttributeValue> makeClassifier(JSONObject jsonObject) throws JSONException{
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
 		item.put("_id", new AttributeValue(jsonObject.getString("_id")));

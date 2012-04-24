@@ -149,7 +149,7 @@ WELOCALLY_PlaceEditView.prototype.deleteHandler = function(event,ui){
 	WELOCALLY.ui.setStatus(_instance.statusArea,'Deleting Place...', 'wl_message', true);
 	
 	var ajaxurl = _instance.cfg.endpoint +
-				'/geodb/place/2_0/user/delete/'+_instance.selectedPlace._id+'.json';
+				'/geodb/place/3_0/user/delete/'+_instance.selectedPlace._id+'.json';
 		   
 	_instance.jqxhr = jQuery.ajax({
 	  type: 'GET',		  

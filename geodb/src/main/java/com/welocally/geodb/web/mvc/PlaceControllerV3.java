@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -48,28 +47,27 @@ import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.util.WelocallyJSONUtils;
 
 @Controller
-@RequestMapping("/place/es")
-public class ESPlaceController extends AbstractJsonController {
-	
-	static Logger logger = 
-		Logger.getLogger(ESPlaceController.class);
-		
-	@Autowired 
-	@Qualifier("dynamoJsonDatabase")
-	JsonDatabase jsonDatabase;
-	
-	
-	@Value("${placesDatabase.collectionName:dev.places.published}")
-	String placesCollection;
-	
-	@Value("${placesDatabase.collectionName:dev.places.review}")
+@RequestMapping("/place/3_0")
+public class PlaceControllerV3 extends AbstractJsonController {
+    
+    static Logger logger = 
+        Logger.getLogger(ESPlaceController.class);
+        
+    @Autowired 
+    @Qualifier("dynamoJsonDatabase")
+    JsonDatabase jsonDatabase;
+        
+    @Value("${placesDatabase.collectionName:dev.places.published}")
+    String placesCollection;
+    
+    @Value("${placesDatabase.collectionName:dev.places.review}")
     String placesReviewCollection;
-		    
+            
     @Value("${publisherDatabase.collectionName:dev.publishers}")
     String publisherCollection;
     
     @Value("${userDatabase.collectionName:dev.user.places}")
-    String publisherPlacesCollection;
+    String userPlacesCollection;
     
     @Value("${ElasticSearch.transportClient.server:localhost}")
     String elasticSearchTransportServer;
@@ -86,30 +84,30 @@ public class ESPlaceController extends AbstractJsonController {
     @Value("${geodb.admin.password}")
     String adminPassword;
     
-      	
-	@Autowired IdGen idGen; 
-	
-	@Autowired SpatialConversionUtils spatialConversionUtils; 
-	
-	@Autowired WelocallyJSONUtils welocallyJSONUtils;
-	
-	TransportClient transportClient = null;
-	
-	
-	@PostConstruct
-	public void initClient(){
-	    Settings settings = ImmutableSettings.settingsBuilder()
+        
+    @Autowired IdGen idGen; 
+    
+    @Autowired SpatialConversionUtils spatialConversionUtils; 
+    
+    @Autowired WelocallyJSONUtils welocallyJSONUtils;
+    
+    TransportClient transportClient = null;
+    
+    
+    @PostConstruct
+    public void initClient(){
+        Settings settings = ImmutableSettings.settingsBuilder()
            .put("cluster.name", elasticSearchTransportClusterName).build();
        transportClient = new TransportClient(settings);
        transportClient.addTransportAddress(
                new InetSocketTransportAddress(
                        elasticSearchTransportServer, 
                        elasticSearchTransportPort));
-	}
-	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ModelAndView get(@PathVariable String id, @RequestParam(required=false) String callback, Model m){
-	    ModelAndView mav = null;
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView get(@PathVariable String id, @RequestParam(required=false) String callback, Model m){
+        ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
             mav = new ModelAndView("mapper-result");
         else {
@@ -118,80 +116,80 @@ public class ESPlaceController extends AbstractJsonController {
                     "callback", 
                     callback);
         }
-		
-		try {
-			JSONArray places = new JSONArray();
-			JSONObject place = jsonDatabase.findById(placesCollection, id);
-			places.put(place);
-			mav.addObject("mapperResult", places.toString());
-		} catch (DbException e) {
-			logger.error("could not get results");
-			if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
-			{
-				mav.addObject("mapperResult", new JSONArray().toString());
-			} else {
-				mav.addObject("mapperResult", makeErrorsJson(e));
-			}
+        
+        try {
+            JSONArray places = new JSONArray();
+            JSONObject place = jsonDatabase.findById(placesCollection, id);
+            places.put(place);
+            mav.addObject("mapperResult", places.toString());
+        } catch (DbException e) {
+            logger.error("could not get results");
+            if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
+            {
+                mav.addObject("mapperResult", new JSONArray().toString());
+            } else {
+                mav.addObject("mapperResult", makeErrorsJson(e));
+            }
 
-		} 
-		return mav;
-	}
-	
-	
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView searchPublicIndex(@RequestParam String q, @RequestParam String loc,  
-			@RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
-		
-	    ModelAndView mav = null;
-	    if(StringUtils.isEmpty(callback))
-	        mav = new ModelAndView("mapper-result");
-	    else {
-	        mav = new ModelAndView("jsonp-mapper-result");
-	        mav.addObject(
+        } 
+        return mav;
+    }
+    
+    
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ModelAndView searchPublicIndex(@RequestParam String q, @RequestParam String loc,  
+            @RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
+        
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
                     "callback", 
                     callback);
-	    }
-        	    
-		try {
-			String[] parts = loc.split("_");
+        }
+                
+        try {
+            String[] parts = loc.split("_");
 
-			QueryBuilder searchQuery = filteredQuery(
-					termQuery("search", q.toLowerCase()),
-					geoDistanceFilter("location")
-					.point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]))
-					.distance(radiusKm, DistanceUnit.KILOMETERS));
-			
-			SearchResponse response = transportClient.prepareSearch("geodb").setTypes("place").
-			setQuery(searchQuery).execute().actionGet();
+            QueryBuilder searchQuery = filteredQuery(
+                    termQuery("search", q.toLowerCase()),
+                    geoDistanceFilter("location")
+                    .point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]))
+                    .distance(radiusKm, DistanceUnit.KILOMETERS));
+            
+            SearchResponse response = transportClient.prepareSearch("geodb").setTypes("place").
+            setQuery(searchQuery).execute().actionGet();
 
-			
-			JSONArray results = new JSONArray();
-			//get items from db 
-			for (SearchHit hit: response.getHits()) {
+            
+            JSONArray results = new JSONArray();
+            //get items from db 
+            for (SearchHit hit: response.getHits()) {
                 String id = hit.getId();
                 JSONObject place = jsonDatabase.findById(placesCollection, id);
                 
                 if(place != null){
-                	results.put(place);
+                    results.put(place);
                 }
             }
-							
-			mav.addObject(
-					"mapperResult", 
-					results.toString());
-					
-		} 
-		catch (Exception e) {
-			logger.error("could not get results",e);
-			mav.addObject("mapperResult", makeErrorsJson(e));
-		}	
-			
-		return mav;
-	}
-	
-	
-	
-	@RequestMapping(value = "/public/save", method = RequestMethod.PUT)
+                            
+            mav.addObject(
+                    "mapperResult", 
+                    results.toString());
+                    
+        } 
+        catch (Exception e) {
+            logger.error("could not get results",e);
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        }   
+            
+        return mav;
+    }
+    
+    
+    
+    @RequestMapping(value = "/public/save", method = RequestMethod.PUT)
     public ModelAndView savePlacePublicPut(@RequestBody String requestJson, HttpServletRequest req){  
         
         ModelAndView  mav = new ModelAndView("mapper-result");
@@ -231,7 +229,7 @@ public class ESPlaceController extends AbstractJsonController {
         return mav;
                
     }
-	
+    
     @RequestMapping(value = "/public/saveall", method = RequestMethod.PUT)
     public ModelAndView savePlacesPublicPut(@RequestBody String requestJson, HttpServletRequest req){  
         
@@ -283,86 +281,7 @@ public class ESPlaceController extends AbstractJsonController {
                
     }
     
-//  curl -XPOST localhost:9200/user52ae/place/_mapping -d '{
-//  "place": {
-//      "properties": {
-//          "location": {
-//              "type": "geo_point"
-//          },
-//          "search": {
-//              "type": "string",
-//              "store": "yes"
-//          }
-//      }
-//  }
-//  }'
-    
-    @RequestMapping(value = "/user/create", method = RequestMethod.PUT)
-    public ModelAndView createUser(@RequestBody String requestJson, HttpServletRequest req) {
-        
-        ModelAndView  mav = new ModelAndView("mapper-result");
-      
-        try {
-            
-            //right now we are going to secure this with the claytantor account
-            JSONObject  publisher =  checkPublisherKey(req); 
-            
-            if(publisher.getString("username").equals(adminUser) && 
-                    publisher.getString("password").equals(adminPassword) )
-            {
-                JSONObject user = 
-                    new JSONObject(requestJson);
-                
-                //put it in the user store
-                jsonDatabase.put(user, publisherCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER);
-                
-                String mapping = "{" +
-                    "\"place\": {" +
-                		"\"properties\":{" +
-                		    "\"location\":{ " +
-                		        "\"type\": \"geo_point\"" +
-                		      "}," +
-                		      "\"search\": {" +
-                		         "\"type\": \"string\"," +
-                		         "\"store\": \"yes\"" +
-                		        "}" +
-                		    "}" +
-                		"}" +
-                		"}";     
-                
-                CreateIndexResponse response = 
-                    transportClient.admin().indices().create( 
-                                        new CreateIndexRequest(user.getString("username")). 
-                                                mapping("place", mapping) 
-                                ).actionGet(); 
-                    
-                Map<String, Object> result = new HashMap<String,Object>();
-                result.put("acknowledged", response.acknowledged());
-                result.put("status", "SUCCEED");
-                
-                mav.addObject("mapperResult", makeModelJson(result));
-                 
-            } else {
-                throw new RuntimeException("user not authorized for this activity");
-            }
-                       
-        } catch (JSONException e) {
-            logger.error("could not get results");
-            mav.addObject("mapperResult", makeErrorsJson(e));
-        } catch (RuntimeException e) {
-            logger.error("could not get results");
-            mav.addObject("mapperResult", makeErrorsJson(e));
-        } catch (DbException e) {
-            logger.error("could not get results");
-            mav.addObject("mapperResult", makeErrorsJson(e));
-        } 
-        
-        return mav;
-   
-    }
-
-	
-	@RequestMapping(value = "/user/save", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/save", method = RequestMethod.PUT)
     public ModelAndView savePlaceUserPut(@RequestBody String requestJson, HttpServletRequest req){  
                                
         ModelAndView  mav = new ModelAndView("mapper-result");
@@ -393,8 +312,63 @@ public class ESPlaceController extends AbstractJsonController {
         
         
     }
-	
-	@RequestMapping(value = "/user/search", method = RequestMethod.GET)
+    
+    @RequestMapping(value = "/user/save", method = RequestMethod.GET)
+    public ModelAndView saveUserPlaceJSONP(@RequestParam(required=false) String callback, HttpServletRequest req){
+       
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
+        try {
+            
+            JSONObject  publisher = checkPublisherKey(req); 
+            JSONObject placeQueryString =
+                new JSONObject(req.getParameterMap());
+            
+            JSONObject place = 
+                spatialConversionUtils.convertQueryStringToPlace(placeQueryString);
+            
+            Point p = spatialConversionUtils.getJSONPoint(place);
+            
+            if(place.isNull("_id")){
+                place.put("_id", idGen.genPoint("WL_",p));
+            }
+            
+            String id= place.getString("_id");
+            
+            
+            if(p != null && publisher != null){      
+                place.put("_id", id);
+                place.getJSONObject("properties").put("owner", publisher.get("_id"));
+                savePlaceToUserStore(place, publisher, mav, req);
+            }
+                        
+                                     
+        } catch (JSONException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (DbException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (IOException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (RuntimeException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
+        
+        return mav;
+    }
+    
+    @RequestMapping(value = "/user/search", method = RequestMethod.GET)
     public ModelAndView searchUserIndex(@RequestParam String q, @RequestParam String loc,  
             @RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
         
@@ -427,7 +401,7 @@ public class ESPlaceController extends AbstractJsonController {
             //get items from db 
             for (SearchHit hit: response.getHits()) {
                 String id = hit.getId();
-                JSONObject place = jsonDatabase.findById(this.publisherPlacesCollection, id);
+                JSONObject place = jsonDatabase.findById(this.userPlacesCollection, id);
                 
                 if(place != null){
                     results.put(place);
@@ -445,9 +419,134 @@ public class ESPlaceController extends AbstractJsonController {
         }   
             
         return mav;
-    }	
-	
-//----------- private implementations ------------//	
+    }   
+ 
+    @RequestMapping(value = "/user/delete/{id}", method = RequestMethod.GET)
+    public ModelAndView deleteById(@PathVariable String id, @RequestParam(required=false) String callback, Model m, HttpServletRequest req){
+        return delete(  id, callback, m, req);
+    }
+    
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
+    public ModelAndView delete(@PathVariable String id, String callback, Model m, HttpServletRequest req){
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
+        try {
+            JSONObject publisher = checkPublisherKey(req);  
+            
+            //delete from the store
+            jsonDatabase.delete(userPlacesCollection, id);
+            
+            //delete from the index
+            
+            DeleteResponse response = 
+                transportClient.prepareDelete(publisher.getString("username"), "place", id)
+            .execute()
+            .actionGet();
+            
+                     
+            Map<String, Object> result = new HashMap<String,Object>();
+            if(!response.isNotFound())
+                result.put("id", id);
+            else 
+                result.put("notfound", response.isNotFound());
+            result.put("action", "DELETE");    
+            result.put("status", "SUCCEED");
+            
+            mav.addObject("mapperResult", makeModelJson(result));
+            
+        } catch (DbException e) {
+            logger.error("could not get results");
+            if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
+            {
+                mav.addObject("mapperResult", new JSONArray().toString());
+            } else {
+                mav.addObject("mapperResult", makeErrorsJson(e));
+            }
+
+        } catch (JSONException e) {
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
+        return mav;
+    }    
+    
+    
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ModelAndView getUserPlace(@PathVariable String id, @RequestParam(required=false) String callback, Model m, HttpServletRequest req){
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
+        try {
+            JSONObject publisher = checkPublisherKey(req);  
+            JSONArray places = new JSONArray();
+            JSONObject place = jsonDatabase.findById(userPlacesCollection, id);
+            places.put(place);
+            mav.addObject("mapperResult", places.toString());
+        } catch (DbException e) {
+            logger.error("could not get results");
+            if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
+            {
+                mav.addObject("mapperResult", new JSONArray().toString());
+            } else {
+                mav.addObject("mapperResult", makeErrorsJson(e));
+            }
+
+        } 
+        return mav;
+    }
+    
+    @RequestMapping(value = "/userplaces", method = RequestMethod.GET)
+    public ModelAndView getUserPlaces(@RequestParam(required=false) String callback, Model m, HttpServletRequest req){
+       
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+        
+        try {
+            JSONObject publisher = checkPublisherKey(req);  
+            
+            JSONArray places = jsonDatabase.findPublisherPlaces(publisher.getString("username"), userPlacesCollection);
+                       
+            mav.addObject("mapperResult", places.toString());
+            
+        } catch (DbException e) {
+            logger.error("could not get results");
+            if(e.getExceptionType() == DbException.Type.OBJECT_NOT_FOUND)
+            {
+                mav.addObject("mapperResult", new JSONArray().toString());
+            } else {
+                mav.addObject("mapperResult", makeErrorsJson(e));
+            }
+
+        } catch (JSONException e) {
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
+        
+        return mav;     
+    }
+    
+    
+//----------- private implementations ------------//    
    private void savePlacePublic(JSONObject place, ModelAndView mav, HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
        JSONObject  publisher =  checkPublisherKey(req);
                       
@@ -467,7 +566,7 @@ public class ESPlaceController extends AbstractJsonController {
             //put it in the public store
             jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
             
-         	//put it in the public index            
+            //put it in the public index            
             JSONObject placeIndex = welocallyJSONUtils.makeIndexablePlace(place);
             IndexResponse response = transportClient.prepareIndex("geodb", "place", id)
             .setSource(XContentFactory.jsonBuilder()
@@ -489,21 +588,27 @@ public class ESPlaceController extends AbstractJsonController {
             mav.addObject("mapperResult", makeModelJson(result));
         } 
     }
-	
-	/**
-	 * 
-	 * this meathod is for the use case of a user saving or updating a place in their
-	 * places. if they mark it for public it will be added to the review collection
-	 * 
-	 * @param place
-	 * @param mav
-	 * @param req
-	 * @throws DbException
-	 * @throws JSONException
-	 * @throws IOException
-	 * @throws RuntimeException
-	 */
-	private void savePlaceToUserStore(JSONObject place, JSONObject  publisher, ModelAndView mav, HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
+   
+   
+ 
+   
+   
+
+    
+    /**
+     * 
+     * this method is for the use case of a user saving or updating a place in their
+     * places. if they mark it for public it will be added to the review collection
+     * 
+     * @param place
+     * @param mav
+     * @param req
+     * @throws DbException
+     * @throws JSONException
+     * @throws IOException
+     * @throws RuntimeException
+     */
+    private void savePlaceToUserStore(JSONObject place, JSONObject  publisher, ModelAndView mav, HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
@@ -535,7 +640,7 @@ public class ESPlaceController extends AbstractJsonController {
             //make it indexable
             JSONObject userPlaceIndex = welocallyJSONUtils.makeIndexableUserData(userPlace, userData);
                        
-            jsonDatabase.put(userPlaceDataDocument, publisherPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE);
+            jsonDatabase.put(userPlaceDataDocument, userPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE);
                              
             IndexResponse response = transportClient.prepareIndex(publisher.getString("username"), "place", id)
             .setSource(XContentFactory.jsonBuilder()
@@ -557,9 +662,8 @@ public class ESPlaceController extends AbstractJsonController {
             mav.addObject("mapperResult", makeModelJson(result));
         } 
     }
-	
-	
-	private JSONObject checkPublisherKey(HttpServletRequest req){
+       
+    private JSONObject checkPublisherKey(HttpServletRequest req){
         if(req.getHeader("key") != null){   
             String publisherKey = req.getHeader("key");
                       
@@ -573,26 +677,22 @@ public class ESPlaceController extends AbstractJsonController {
             throw new RuntimeException("publisher key not found in header");
         }
     }
-	
-	
-
-    
     
 
-	public void setJsonDatabase(JsonDatabase jsonDatabase) {
-		this.jsonDatabase = jsonDatabase;
-	}
+    public void setJsonDatabase(JsonDatabase jsonDatabase) {
+        this.jsonDatabase = jsonDatabase;
+    }
 
-	public void setIdGen(IdGen idGen) {
-		this.idGen = idGen;
-	}
+    public void setIdGen(IdGen idGen) {
+        this.idGen = idGen;
+    }
 
-	public void setSpatialConversionUtils(
-			SpatialConversionUtils spatialConversionUtils) {
-		this.spatialConversionUtils = spatialConversionUtils;
-	}
-	
-	
+    public void setSpatialConversionUtils(
+            SpatialConversionUtils spatialConversionUtils) {
+        this.spatialConversionUtils = spatialConversionUtils;
+    }
+    
+    
 
 
 }

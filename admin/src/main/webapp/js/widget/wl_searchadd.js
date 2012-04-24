@@ -124,7 +124,7 @@ WELOCALLY_SearchAdd.prototype.makeWrapper = function() {
 	_instance.searcher = 
 		 new WELOCALLY_GeoDbSearch({
 		   endpoint: 'http://gaudi.welocally.com',
-		   q: "Sandwiches",
+		   q: "Sandwich",
 		   loc: [40.714353,-74.005973],
 		   radiusKm: 10.0,
 		   observers: [_instance.placesMulti]

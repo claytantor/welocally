@@ -81,7 +81,7 @@ WELOCALLY_UserPlacesManager.prototype.makeWrapper = function() {
 	jQuery(wrapper).attr('id','wl_userplacesmgr');
 	
 	//add button
-	this.commandArea = jQuery('<div id="wl_userplacesmgr_actions" class="wl_userplacesmgr_commands"><a id="wl_userplacesmgr_search_btn" href="#">search</a><a id="wl_userplacesmgr_add_btn" href="#">add</a></div>');
+	this.commandArea = jQuery('<div id="wl_userplacesmgr_actions" class="wl_userplacesmgr_commands"><a id="wl_userplacesmgr_search_btn" href="#">copy public place</a><a id="wl_userplacesmgr_add_btn" href="#">create new</a></div>');
 	jQuery(this.commandArea).find('a').button();
 	jQuery(this.commandArea).find('#wl_userplacesmgr_add_btn').bind('click' , {instance: this}, this.addPlaceHandler);  
 	jQuery(this.commandArea).find('#wl_userplacesmgr_search_btn').bind('click' , {instance: this}, this.searchPlacesHandler);  

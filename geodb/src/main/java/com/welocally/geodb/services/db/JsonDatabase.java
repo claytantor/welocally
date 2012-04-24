@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public interface JsonDatabase {
     
-    public enum EntityType { PLACE, CLASSIFER, DEAL, PUBLISHER };
+    public enum EntityType { PLACE, USER_PLACE, CLASSIFER, DEAL, PUBLISHER };
 
 	public JSONObject findById(String collectionName, String id)
 		throws DbException;

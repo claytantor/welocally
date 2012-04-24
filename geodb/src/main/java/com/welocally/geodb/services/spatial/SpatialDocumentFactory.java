@@ -130,8 +130,29 @@ public class SpatialDocumentFactory {
 			}
 		}
 		
-		return buf.toString();	
+		return buf.toString().toLowerCase().trim();	
 	}
+	
+	public String makeSearchableUserDataContent(JSONObject placeProperties, JSONObject userdata) throws JSONException{
+        StringBuffer buf = new StringBuffer();
+        buf.append(makeSearchablePlaceContent(placeProperties)+" ");
+        /*
+         * {
+         *  "data": [
+         *      {"name":"foo", "value":"bar"},
+         *      {"name":"roo", "value":"tar"}
+         *  ]
+         * }
+         * 
+         */
+        JSONArray data = userdata.getJSONArray("data");
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject nv = data.getJSONObject(i);
+            buf.append(nv.getString("value")+" ");
+        }
+        
+        return buf.toString().toLowerCase().trim();  
+    }
 		
 	private void addSpatialLcnFields(Point coord, Document document) {
 		document.add(new Field(spatialConversionUtils.LAT_FIELD, NumericUtils
