@@ -49,7 +49,7 @@ public class UserControllerV1 extends AbstractJsonController {
     @Value("${placesDatabase.collectionName:dev.places.review}")
     String placesReviewCollection;
             
-    @Value("${publisherDatabase.collectionName:dev.users}")
+    @Value("${users.collectionName:dev.users}")
     String usersCollection;
 
     @Value("${ElasticSearch.transportClient.server:localhost}")

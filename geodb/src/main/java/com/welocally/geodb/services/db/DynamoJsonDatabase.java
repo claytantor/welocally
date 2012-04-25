@@ -153,7 +153,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 			GetItemResult result = getDB().getItem(request);
 
 			if (result.getItem() == null || result.getItem().isEmpty())
-				throw new DbException(Type.OBJECT_NOT_FOUND);
+				throw new DbException(Type.OBJECT_NOT_FOUND,"collection: "+collectionName+" id:"+id);
 			else {
 				return new JSONObject(result.getItem().get("document").getS());
 			}
