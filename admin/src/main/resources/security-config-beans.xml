@@ -22,7 +22,7 @@
         <intercept-url pattern="/publisher/place/loadspreadsheet.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/widget/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <!-- <intercept-url pattern="/widget/generator" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
-        <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
+        <intercept-url pattern="/administrator/**" access="ROLE_ADMIN" />
         <intercept-url pattern="/publisher/**" access="ROLE_ADMIN,ROLE_PUBLISHER" />
         <!-- <intercept-url pattern="/widget/**" access="ROLE_ADMIN,ROLE_PUBLISHER" /> -->
         <intercept-url pattern="/home" access="ROLE_USER" />

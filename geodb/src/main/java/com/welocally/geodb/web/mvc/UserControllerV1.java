@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,12 +49,9 @@ public class UserControllerV1 extends AbstractJsonController {
     @Value("${placesDatabase.collectionName:dev.places.review}")
     String placesReviewCollection;
             
-    @Value("${publisherDatabase.collectionName:dev.publishers}")
-    String publisherCollection;
-    
-    @Value("${userDatabase.collectionName:dev.user.places}")
-    String publisherPlacesCollection;
-    
+    @Value("${publisherDatabase.collectionName:dev.users}")
+    String usersCollection;
+
     @Value("${ElasticSearch.transportClient.server:localhost}")
     String elasticSearchTransportServer;
     
@@ -89,23 +87,49 @@ public class UserControllerV1 extends AbstractJsonController {
                        elasticSearchTransportServer, 
                        elasticSearchTransportPort));
     }
-    
       
-//  curl -XPOST localhost:9200/user52ae/place/_mapping -d '{
-//  "place": {
-//      "properties": {
-//          "location": {
-//              "type": "geo_point"
-//          },
-//          "search": {
-//              "type": "string",
-//              "store": "yes"
-//          }
-//      }
-//  }
-//  }'
+    @RequestMapping(value = "/exists/{id}", method = RequestMethod.GET)
+    public ModelAndView findById(@PathVariable String id, HttpServletRequest req) {
+        
+        ModelAndView  mav = new ModelAndView("mapper-result");
+      
+        try {
+            
+            //right now we are going to secure this with the claytantor account
+            JSONObject requestUser =  checkPublisherKey(req); 
+            
+            if(requestUser.getString("username").equals(adminUser) && 
+                    requestUser.getString("password").equals(adminPassword) )
+            {
+                JSONObject user = jsonDatabase.findById(usersCollection, id);
+                
+                Map<String, Object> result = new HashMap<String,Object>();
+                result.put("id", user.get("name"));
+                result.put("status", "SUCCEED");
+                
+                mav.addObject("mapperResult", makeModelJson(result));
+                
+                                 
+            } else {
+                throw new RuntimeException("user not authorized for this activity");
+            }
+                       
+        } catch (JSONException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (RuntimeException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (DbException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
+        
+        return mav;
+   
+    }
     
-    @RequestMapping(value = "/user/create", method = RequestMethod.PUT)
+    @RequestMapping(value = "/create", method = RequestMethod.PUT)
     public ModelAndView createUser(@RequestBody String requestJson, HttpServletRequest req) {
         
         ModelAndView  mav = new ModelAndView("mapper-result");
@@ -113,42 +137,16 @@ public class UserControllerV1 extends AbstractJsonController {
         try {
             
             //right now we are going to secure this with the claytantor account
-            JSONObject  publisher =  checkPublisherKey(req); 
+            JSONObject requestUser =  checkPublisherKey(req); 
             
-            if(publisher.getString("username").equals(adminUser) && 
-                    publisher.getString("password").equals(adminPassword) )
+            if(requestUser.getString("username").equals(adminUser) && 
+                    requestUser.getString("password").equals(adminPassword) )
             {
                 JSONObject user = 
                     new JSONObject(requestJson);
                 
-                //put it in the user store
-                jsonDatabase.put(user, publisherCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER);
+                createUser( user,  mav);
                 
-                String mapping = "{" +
-                    "\"place\": {" +
-                        "\"properties\":{" +
-                            "\"location\":{ " +
-                                "\"type\": \"geo_point\"" +
-                              "}," +
-                              "\"search\": {" +
-                                 "\"type\": \"string\"," +
-                                 "\"store\": \"yes\"" +
-                                "}" +
-                            "}" +
-                        "}" +
-                        "}";     
-                
-                CreateIndexResponse response = 
-                    transportClient.admin().indices().create( 
-                                        new CreateIndexRequest(user.getString("username")). 
-                                                mapping("place", mapping) 
-                                ).actionGet(); 
-                    
-                Map<String, Object> result = new HashMap<String,Object>();
-                result.put("acknowledged", response.acknowledged());
-                result.put("status", "SUCCEED");
-                
-                mav.addObject("mapperResult", makeModelJson(result));
                  
             } else {
                 throw new RuntimeException("user not authorized for this activity");
@@ -168,14 +166,45 @@ public class UserControllerV1 extends AbstractJsonController {
         return mav;
    
     }
-
+    
+    
+    private void createUser(JSONObject user,ModelAndView  mav) throws DbException, JSONException{
+      //put it in the user store
+        jsonDatabase.put(user, usersCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER);
+        
+        String mapping = "{" +
+            "\"place\": {" +
+                "\"properties\":{" +
+                    "\"location\":{ " +
+                        "\"type\": \"geo_point\"" +
+                      "}," +
+                      "\"search\": {" +
+                         "\"type\": \"string\"," +
+                         "\"store\": \"yes\"" +
+                        "}" +
+                    "}" +
+                "}" +
+                "}";     
+        
+        CreateIndexResponse response = 
+            transportClient.admin().indices().create( 
+                                new CreateIndexRequest(user.getString("username")). 
+                                        mapping("place", mapping) 
+                        ).actionGet(); 
+            
+        Map<String, Object> result = new HashMap<String,Object>();
+        result.put("acknowledged", response.acknowledged());
+        result.put("status", "SUCCEED");
+        
+        mav.addObject("mapperResult", makeModelJson(result));
+    }
      
     private JSONObject checkPublisherKey(HttpServletRequest req){
         if(req.getHeader("key") != null){   
             String publisherKey = req.getHeader("key");
                       
             try {
-                return jsonDatabase.findById(publisherCollection, publisherKey);
+                return jsonDatabase.findById(usersCollection, publisherKey);
             } catch (Exception e) {
                throw new RuntimeException(e);
             }  

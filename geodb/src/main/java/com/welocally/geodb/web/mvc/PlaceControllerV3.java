@@ -63,10 +63,10 @@ public class PlaceControllerV3 extends AbstractJsonController {
     @Value("${placesDatabase.collectionName:dev.places.review}")
     String placesReviewCollection;
             
-    @Value("${publisherDatabase.collectionName:dev.publishers}")
-    String publisherCollection;
+    @Value("${users.collectionName:dev.users}")
+    String usersCollection;
     
-    @Value("${userDatabase.collectionName:dev.user.places}")
+    @Value("${userPlacesDatabase.collectionName:dev.places.user}")
     String userPlacesCollection;
     
     @Value("${ElasticSearch.transportClient.server:localhost}")
@@ -346,7 +346,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             
             if(p != null && publisher != null){      
                 place.put("_id", id);
-                place.getJSONObject("properties").put("owner", publisher.get("_id"));
+                place.getJSONObject("properties").put("owner", publisher.get("username"));
                 savePlaceToUserStore(place, publisher, mav, req);
             }
                         
@@ -525,7 +525,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
         try {
             JSONObject publisher = checkPublisherKey(req);  
             
-            JSONArray places = jsonDatabase.findPublisherPlaces(publisher.getString("username"), userPlacesCollection);
+            JSONArray places = jsonDatabase.findUserPlaces(publisher.getString("username"), userPlacesCollection);
                        
             mav.addObject("mapperResult", places.toString());
             
@@ -539,6 +539,8 @@ public class PlaceControllerV3 extends AbstractJsonController {
             }
 
         } catch (JSONException e) {
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (RuntimeException e) {
             mav.addObject("mapperResult", makeErrorsJson(e));
         } 
         
@@ -668,7 +670,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             String publisherKey = req.getHeader("key");
                       
             try {
-                return jsonDatabase.findById(publisherCollection, publisherKey);
+                return jsonDatabase.findById(usersCollection, publisherKey);
             } catch (Exception e) {
                throw new RuntimeException(e);
             }  

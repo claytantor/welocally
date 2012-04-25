@@ -17,6 +17,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.cloudwatch.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodb.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodb.model.AttributeValue;
 import com.amazonaws.services.dynamodb.model.ComparisonOperator;
@@ -231,18 +232,27 @@ public class DynamoJsonDatabase implements JsonDatabase {
         return oArray;
     }
     
-	public JSONArray findPublisherPlaces(String publisherKey, String collectionName) throws DbException {
+	public JSONArray findUserPlaces(String publisherKey, String collectionName) throws DbException {
         JSONArray oArray = new JSONArray();
         
         ScanRequest scanRequest = new ScanRequest(collectionName);
         Map<String,Condition> scanFilter = new HashMap<String,Condition>();
         Condition condition = new Condition()
         .withComparisonOperator(ComparisonOperator.EQ)
-        .withAttributeValueList(new AttributeValue().withS("publisherKey"));
+        .withAttributeValueList(new AttributeValue().withS(publisherKey));
     
-        scanFilter.put("owner", condition);    
+        scanFilter.put("owner", condition); 
+        scanRequest.setScanFilter(scanFilter);
         
-        ScanResult scanResult = getDB().scan(scanRequest); 
+        ScanResult scanResult;
+        try {
+            scanResult = getDB().scan(scanRequest);
+        } catch (Exception e) {
+            if(e.getMessage().equals("Requested resource not found"))
+                return oArray;
+            else 
+                throw new RuntimeException(e);
+        } 
          
         for (Map<String, AttributeValue> item : scanResult.getItems()) { 
                 JSONObject place;

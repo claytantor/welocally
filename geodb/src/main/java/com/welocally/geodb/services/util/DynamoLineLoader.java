@@ -27,10 +27,10 @@ import com.welocally.geodb.services.jmx.LoadMonitor;
  *
  */
 @Component
-public class DynamoLoader implements CommandSupport {
+public class DynamoLineLoader implements CommandSupport {
 	
 	static Logger logger = 
-		Logger.getLogger(DynamoLoader.class);
+		Logger.getLogger(DynamoLineLoader.class);
 	
 	@Autowired WelocallyJSONUtils welocallyJSONUtils;
 	

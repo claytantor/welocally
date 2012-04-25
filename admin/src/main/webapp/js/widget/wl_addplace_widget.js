@@ -544,6 +544,8 @@ WELOCALLY_AddPlaceWidget.prototype.savePlace = function (selectedPlace) {
 	  },		  
 	  success : function(data, textStatus, jqXHR) {
 		if(data != null && data.errors != null) {
+			_instance.setStatus(_instance.statusArea,'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+		} else if(data != null && data.errors != null) {
 			_instance.setStatus(_instance.statusArea,'Could not save place:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
 		} else {
 			_instance.setStatus(_instance.statusArea,'Your place has been saved!', 'wl_message', false);

@@ -25,12 +25,14 @@
 		<div class="bottom-10 frame span-24 last">
 			<div class="actions span-24 last" >
 				<div class="actions span-12" style="text-align:left">
-					<h3>Publisher</h3>
+					<h3>Publisher Info</h3>
 				</div>
-				<sec:authorize ifAllGranted="ROLE_ADMIN">
+				<sec:authorize ifAnyGranted="ROLE_ADMIN">
 				<div class="actions span-12 last" style="text-align:right">
+					provisionStatus: ${provisionStatus}
 					<a href="<c:url value='/publisher/edit/${publisher.id}' />" class="button">edit</a>
 					<a href="<c:url value='/publisher/delete/${publisher.id}' />" class="button">delete</a>
+					<a href="<c:url value='/administrator/publisher/provision/${publisher.id}' />" class="button">provision</a>
 				</div>
 				</sec:authorize>				
 			</div>

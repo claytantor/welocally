@@ -1,6 +1,7 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.lang.reflect.Method;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -9,7 +10,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sightlyinc.ratecred.admin.util.CollectionUtils;
+import com.sightlyinc.ratecred.admin.util.HttpHelperUtils;
 import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
@@ -46,6 +51,15 @@ public class PublisherController {
 	
 	@Autowired
 	private NetworkMemberService networkMemberService;
+	
+    @Autowired
+    private HttpHelperUtils httpHelperUtils;
+    
+    @Value("${geodb.endpoint:http://localhost:8082/geodb}")
+    private String geodbEnpoint;
+    
+    @Value("${geodb.provisionRequestMapping:/user/1_0/exists/}")
+    private String provisionExistsRequestMapping;
 	
 	
 	@ModelAttribute("member")
@@ -166,7 +180,46 @@ public class PublisherController {
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
 	public String getPublisherById(@PathVariable Long id, Model model) {
 		logger.debug("view");
-		model.addAttribute("publisher", publisherService.findByPrimaryKey(id));
+		
+		Publisher p = publisherService.findByPrimaryKey(id);
+		model.addAttribute("publisher", p);
+		
+		UserDetails authUser = 
+            (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		try {
+            for (int i = 0; i < authUser.getAuthorities().length; i++) {
+                if(authUser.getAuthorities()[i].equals("ROLE_ADMIN")){
+                    
+                    String url = geodbEnpoint+provisionExistsRequestMapping+p.getUserPrincipal().getUsername()+".json";
+                    
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    String wireToken = new String(md.digest(authUser.getPassword().getBytes()));		        
+                    JSONObject provisionStatus = httpHelperUtils.get(authUser.getUsername(), wireToken, url);
+                    if(provisionStatus.isNull("errors") && !provisionStatus.isNull("id")){
+                        model.addAttribute("provisionStatus", "PROVISIONED");
+                    } else {
+                        model.addAttribute("provisionStatus", "EMPTY");
+                    }
+                    
+                    
+                }            
+            };
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("", e);
+            model.addAttribute("error", e);
+            return "error";
+        } catch (JSONException e) {
+            logger.error("", e);
+            model.addAttribute("error", e);
+            return "error";
+        } catch (Exception e) {
+            logger.error("", e);
+            model.addAttribute("error", e);
+            return "error";
+        }
+			
+		
 		return "publisher/view";
 	}
 	

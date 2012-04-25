@@ -52,7 +52,7 @@ public class DynamoJsonObjectFactory {
         item.put("_id", new AttributeValue(placeObject.getString("_id")));
         item.put("lat", new AttributeValue().withN(coords.getString(1)));
         item.put("lng", new AttributeValue().withN(coords.getString(0)));
-        item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchablePlaceContent(properties)));
+        item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchableUserDataContent(properties, userData)));
         item.put("status", new AttributeValue(status));
         item.put("owner", new AttributeValue(placeObject.getJSONObject("properties").getString("owner")));
         item.put("document", new AttributeValue(placeObject.toString()));

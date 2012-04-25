@@ -68,11 +68,7 @@ public class HomeController extends AbstractBaseController {
 				
 			}
 			
-			
-			
 			Set<Role> roles = principal.getRoles();
-			
-			
 			
 			
 		} catch (UserPrincipalServiceException e) {
@@ -88,5 +84,6 @@ public class HomeController extends AbstractBaseController {
 		
 		return "home";
 	}
+	
 
 }

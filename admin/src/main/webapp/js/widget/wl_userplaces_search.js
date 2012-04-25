@@ -118,7 +118,11 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 			  },
 			  success: function(data) {
 				//set to result bounds if enough results
-				if(data != null && data.length>0){							
+				if(data != null && data.errors != null) {					
+					jQuery.each(_instance.cfg.observers, function(i,observer) {
+						observer.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+					});
+				} else if(data != null && data.length>0){							
 					//notify all observers
 					jQuery.each(_instance.cfg.observers, function(i,observer) {
 						observer.setStatus(observer.getStatusArea(), '','wl_message',false);

@@ -68,7 +68,7 @@ public class ESPlaceController extends AbstractJsonController {
     @Value("${publisherDatabase.collectionName:dev.publishers}")
     String publisherCollection;
     
-    @Value("${userDatabase.collectionName:dev.user.places}")
+    @Value("${userPlacesDatabase.collectionName:dev.places.user}")
     String publisherPlacesCollection;
     
     @Value("${ElasticSearch.transportClient.server:localhost}")

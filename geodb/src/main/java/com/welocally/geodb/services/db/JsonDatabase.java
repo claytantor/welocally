@@ -10,7 +10,7 @@ public interface JsonDatabase {
 	public JSONObject findById(String collectionName, String id)
 		throws DbException;
 	
-	public JSONArray findPublisherPlaces(String publisherKey, String collectionName) 
+	public JSONArray findUserPlaces(String publisherKey, String collectionName) 
 	throws DbException;
 	
 	public void put(JSONObject doc, String collectionName, String id, EntityType type)

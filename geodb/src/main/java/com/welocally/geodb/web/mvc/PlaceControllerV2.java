@@ -498,7 +498,7 @@ public class PlaceControllerV2 extends AbstractJsonController {
         }
         
         try {
-            JSONArray places = jsonDatabase.findPublisherPlaces(key, publisherPlacesCollection);
+            JSONArray places = jsonDatabase.findUserPlaces(key, publisherPlacesCollection);
                        
             mav.addObject("mapperResult", places.toString());
             
