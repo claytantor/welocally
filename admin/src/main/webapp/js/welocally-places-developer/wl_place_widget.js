@@ -47,6 +47,11 @@ WELOCALLY_PlaceWidget.prototype.initCfg = function(cfg) {
 		cfg.endpoint = 'https://api.welocally.com';
 	}
 	
+	// hostname (optional) - the name of the host to use
+	if (!cfg.requestPath) {
+		cfg.requestPath = '/geodb/place/1_0/';
+	}
+	
 	if (!cfg.imagePath) {
 		cfg.imagePath = 'http://placehound.com/images/marker_all_base.png';
 	}
@@ -123,25 +128,45 @@ WELOCALLY_PlaceWidget.prototype.load = function(map_canvas) {
 	
 	if(WELOCALLY.util.startsWith(_instance.cfg.id,"WL_")){			
 		var surl = _instance.cfg.endpoint +
-		'/geodb/place/1_0/'+_instance.cfg.id+'.json?callback=?';
+			_instance.cfg.requestPath+_instance.cfg.id+'.json?callback=?';
 		
 		
-		jQuery.ajax({
+		_instance.jqxhr = jQuery.ajax({
 			url: surl,
 			dataType: "json",
+			beforeSend: function(jqXHR){
+				_instance.jqxhr = jqXHR;
+				_instance.jqxhr.setRequestHeader("key", _instance.cfg.key);
+				_instance.jqxhr.setRequestHeader("token", _instance.cfg.token);
+		  	},
 			success: function(data) {
-				//_instance.map = _instance.initMapForPlace(data[0],map_canvas);
-				_instance.show(data[0]);
-				_instance.setMapEvents(_instance.map);
+				if(data != null && data.errors != null) {
+					var errorsArea = jQuery('<div></div>');
+					WELOCALLY.ui.setStatus(errorsArea, WELOCALLY.util.getErrorString(data.errors),'wl_error');
+					jQuery(_instance.wrapper).attr('class','');
+					jQuery(_instance.wrapper).html(errorsArea);
+					jQuery(_instance.wrapper).show();
+					
+				} else if(data != null && data.length>0){	
+					_instance.show(data[0]);
+					_instance.setMapEvents(_instance.map);
+					
+					var latlng = new google.maps.LatLng(
+							data[0].geometry.coordinates[1], 
+							data[0].geometry.coordinates[0]);
+					
+					//forced to refresh
+					setTimeout(function () {
+				     	_instance.refreshMap(latlng);
+				 	}, 200);
+				} else {
+					var errorsArea = jQuery('<div></div>');
+					WELOCALLY.ui.setStatus(errorsArea, 'No data was returned.','wl_update');
+					jQuery(_instance.wrapper).attr('class','');
+					jQuery(_instance.wrapper).html(errorsArea);
+					jQuery(_instance.wrapper).show();
+				}
 				
-				var latlng = new google.maps.LatLng(
-						data[0].geometry.coordinates[1], 
-						data[0].geometry.coordinates[0]);
-				
-				//forced to refresh
-				setTimeout(function () {
-			     	_instance.refreshMap(latlng);
-			 	}, 200);
 				
 			},
 			error: function() {

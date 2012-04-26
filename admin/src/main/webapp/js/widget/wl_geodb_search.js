@@ -75,7 +75,12 @@ WELOCALLY_GeoDbSearch.prototype.search = function() {
 			  success: function(data) {
 				//set to result bounds if enough results
 				if(data != null && data.errors != null) {
-					_instance.setStatus(_instance.statusArea,'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+					//notify all observers
+					jQuery.each(_instance.cfg.observers, function(i,observer) {
+						observer.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+					});
+					
+					
 				} else if(data != null && data.length>0){							
 					//notify all observers
 					jQuery.each(_instance.cfg.observers, function(i,observer) {

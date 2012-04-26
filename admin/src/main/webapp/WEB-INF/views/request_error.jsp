@@ -16,7 +16,8 @@
 <jsp:include page="head.jsp"/>
 <body>
 <div class="container">
-	<div>There was an error, ${exception.class.name}: ${exception.message}</div>
+	<div>There was an error with your request.</div>
+	<div>Make sure plugin is properly configured.</div>
 </div>
 </body>
 </html>

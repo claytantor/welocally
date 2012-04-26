@@ -16,7 +16,7 @@
 <jsp:include page="head.jsp"/>
 <body>
 <div class="container">
-	<div>There was an error, ${exception.class.name}: ${exception.message}</div>
+	<div><h1>404</h1> What you are looking for could not be found here.</div>
 </div>
 </body>
 </html>

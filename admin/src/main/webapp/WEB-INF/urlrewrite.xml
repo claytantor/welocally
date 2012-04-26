@@ -24,7 +24,8 @@
 	<rule>
 		<from>/</from>
 		<to>/do/index.html</to>
-	</rule>		
+	</rule>			
+	
 	<rule>
 		<from>/**</from>
 		<to>/do/$1</to>

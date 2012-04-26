@@ -14,15 +14,21 @@
 		<script type="text/javascript" charset="utf-8">
 		var cfg = { 
 			id:  '${id}', 
-			imagePath: 'http://placehound.com/images/marker_all_base.png',
-			endpoint:'https://api.welocally.com',	
+			imagePath:'<c:url value='/css/welocally-places-developer/images/marker_all_base.png' />',	
+			endpoint: '${config.ajaxServerEndpoint}',
+			requestPath: '/geodb/place/3_0/user/',
 			showShare: false,
+			key: '${key}',
+			token: '${token}',			
 			placehoundPath: 'http://placehound.com'
 		};			    		
 		var placeWidget = 
 			  new WELOCALLY_PlaceWidget(cfg)
 		  		.init();
-		placeWidget.loadRemote(); 	 		
+
+		placeWidget.loadRemote(); 	
+		
+		 		
 		</script>
 		</div>
 </div>

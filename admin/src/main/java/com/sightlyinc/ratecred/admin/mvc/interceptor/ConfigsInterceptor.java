@@ -6,16 +6,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.sightlyinc.ratecred.admin.model.Configuration;
 
 public class ConfigsInterceptor extends HandlerInterceptorAdapter{
  
     private static final Logger logger = Logger.getLogger(ConfigsInterceptor.class);
+    
+    @Autowired Configuration configuration;
  
     //before the actual handler will be executed
     public boolean preHandle(HttpServletRequest request, 
         HttpServletResponse response, Object handler)
         throws Exception {
+        
+        request.setAttribute("config", configuration);
  
         long startTime = System.currentTimeMillis();
         request.setAttribute("startTime", startTime);

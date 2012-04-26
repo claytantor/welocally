@@ -51,7 +51,7 @@ import com.welocally.geodb.services.util.WelocallyJSONUtils;
 public class PlaceControllerV3 extends AbstractJsonController {
     
     static Logger logger = 
-        Logger.getLogger(ESPlaceController.class);
+        Logger.getLogger(PlaceControllerV3.class);
         
     @Autowired 
     @Qualifier("dynamoJsonDatabase")
@@ -505,7 +505,12 @@ public class PlaceControllerV3 extends AbstractJsonController {
                 mav.addObject("mapperResult", makeErrorsJson(e));
             }
 
+        } catch (Exception e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+
         } 
+        
         return mav;
     }
     

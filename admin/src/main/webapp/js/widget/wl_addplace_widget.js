@@ -18,14 +18,14 @@ function WELOCALLY_AddPlaceWidget (cfg) {
 	
 	this.init = function() {
 							
-		initCfg(cfg);
+		var error = this.initCfg(cfg);
 		
 		// Get current script object
 		var script = jQuery('SCRIPT');
 		script = script[script.length - 1];
 		
 		if(error){
-			this.setStatus(this.statusArea, error,'wl_error',false);
+			jQuery(script).parent().before('<div class="error">Error during configiration: '+error[0]+'</div>');
 		} else {
 			// Build Widget
 			this.wrapper = this.makeWrapper();	

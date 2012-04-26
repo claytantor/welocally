@@ -18,7 +18,7 @@ function WELOCALLY_PlaceEditView (cfg) {
 		script = script[script.length - 1];
 				
 		if(errors){
-			this.setStatus(this.statusArea, error,'wl_error',false);
+			jQuery(script).parent().before('<div class="wl_error">Error during configiration: '+error[0]+'</div>');
 		} else {
 			// Build Widget
 			this.wrapper = this.makeWrapper();	
