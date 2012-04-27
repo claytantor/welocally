@@ -39,6 +39,8 @@ public class ConfigsInterceptor extends HandlerInterceptorAdapter{
         
         request.setAttribute("facebookRedirect", redirect);
         
+        request.setAttribute("iframeTrackerCode", configuration.getIframeTrackerCode());
+        
         
         
         return true;

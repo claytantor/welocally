@@ -8,6 +8,10 @@ public class Configuration {
     
     @Value("${applicationConfiguration.ajaxServerEndpoint}")
     private String ajaxServerEndpoint;
+    
+    
+    @Value("${applicationConfiguration.iframeTrackerCode:UA-25543611-2}")
+    private String iframeTrackerCode;
 
     public String getAjaxServerEndpoint() {
         return ajaxServerEndpoint;
@@ -16,7 +20,15 @@ public class Configuration {
     public void setAjaxServerEndpoint(String ajaxServerEndpoint) {
         this.ajaxServerEndpoint = ajaxServerEndpoint;
     }
+
+    public String getIframeTrackerCode() {
+        return iframeTrackerCode;
+    }
+
+    public void setIframeTrackerCode(String iframeTrackerCode) {
+        this.iframeTrackerCode = iframeTrackerCode;
+    }
     
-    
+
 
 }

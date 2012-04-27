@@ -14,12 +14,13 @@ function WELOCALLY_GeoDbSearch (cfg) {
 			error = "Please provide configuration for the widget";
 			cfg = {};
 		}
-		
-		
-		// summary (optional) - the summary of the article
-		// hostname (optional) - the name of the host to use
+				
 		if (!cfg.endpoint) {
 			cfg.endpoint = 'https://api.welocally.com';
+		}
+		
+		if (!cfg.requestPath) {
+			cfg.requestPath = '/geodb/place/1_0/search.json';
 		}
 				
 		if (!cfg.zoom) {
@@ -61,7 +62,7 @@ WELOCALLY_GeoDbSearch.prototype.search = function() {
 	};
 		
 	var surl = _instance.cfg.endpoint +
-		'/geodb/place/3_0/search.json?'+WELOCALLY.util.serialize(query)+"&callback=?";
+		_instance.cfg.requestPath+'?'+WELOCALLY.util.serialize(query)+"&callback=?";
 	
 	//notify all observers
 	jQuery.each(_instance.cfg.observers, function(i,observer) {

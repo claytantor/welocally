@@ -31,7 +31,7 @@ body{
 }
 
 .otitle {
-	width: 100px;
+	width: 150px;
 }
 </style>
 <body>
@@ -56,13 +56,12 @@ body{
 	<div class="ptext"><h4>$!{order.owner.subscriptionStatus}</h4></div>
 </div>
 </div>
-<div><a href="$!{activationUrl}">Click Here To Activate Your Account</a></div>
 <div>&nbsp;</div>
 <div class="padding-bottom-10">
 	<div class="htitle">Order</div>
 	<table width="100%">
 		<tr>
-			<td class="otitle">total:</td><td><strong>$number.currency($order.total)</strong></td>
+			<td width="150" class="otitle">total:</td><td><strong>$number.currency($order.total)</strong></td>
 		</tr>
 		<tr>
 			<td class="otitle">name:</td><td>$!{order.product.name}</td>
@@ -96,7 +95,7 @@ body{
 			<td>${line.itemSku.name}</td><td>$number.integer($line.quantityOrig)</td><td>$number.currency($line.itemSku.price) USD</td><td>$number.currency($line.lineTotal) USD</td>
 		</tr>
 #end	
-		<tr><td colspan="4" align="right"><strong>$number.currency($order.total)</strong></td></tr>	
+		<tr><td colspan="4" align="right"><strong>Your Total: $number.currency($order.total)</strong></td></tr>	
 	</table>
 	</div>
 </div>

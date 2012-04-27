@@ -1,7 +1,5 @@
 package com.sightlyinc.ratecred.authentication;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.ProviderException;
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.spring.service.BLServiceException;
+import com.sightlyinc.ratecred.util.DigestUtils;
 
 @Service("userPrincipalService")
 @Transactional(readOnly = true)
@@ -40,6 +39,8 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
     
     @Autowired
 	private RoleDao roleDao;
+    
+    @Autowired DigestUtils digestUtils;
 	
 	static Logger logger = Logger.getLogger(UserPrincipalServiceImpl.class);
 	
@@ -53,13 +54,16 @@ public class UserPrincipalServiceImpl implements UserDetailsService, UserPrincip
 	
 	@Override
 	public String makeMD5Hash(String unhashed) throws NoSuchAlgorithmException {
-		MessageDigest messageDigest = MessageDigest.getInstance("MD5");  
-		messageDigest.update(unhashed.getBytes(),0, unhashed.length());  
-		String hashedPass = new BigInteger(1,messageDigest.digest()).toString(16);  
-		if (hashedPass.length() < 32) {
-		   hashedPass = "0" + hashedPass; 
-		}
-		return hashedPass;
+
+//		MessageDigest messageDigest = MessageDigest.getInstance("MD5");  
+//		messageDigest.update(unhashed.getBytes(),0, unhashed.length());  
+//		String hashedPass = new BigInteger(1,messageDigest.digest()).toString(16);  
+//		if (hashedPass.length() < 32) {
+//		   hashedPass = "0" + hashedPass; 
+//		}
+//		return hashedPass;
+	    
+	    return digestUtils.makeMD5Hash(unhashed);
 	}
 
 

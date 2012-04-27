@@ -1,55 +1,35 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
-import javax.persistence.Version;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.AuthenticationProvider;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.ui.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.noi.utility.spring.service.BLMessage;
-import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
-import com.sightlyinc.ratecred.admin.model.Errors;
 import com.sightlyinc.ratecred.admin.model.PublisherSignupForm;
-import com.sightlyinc.ratecred.admin.model.SiteInfoModel;
-import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
 import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
-import com.sightlyinc.ratecred.model.Publisher;
-import com.sightlyinc.ratecred.service.OrderManager;
-import com.sightlyinc.ratecred.service.PublisherManager;
-import com.sightlyinc.ratecred.service.PublisherService;
+import com.sightlyinc.ratecred.model.Site;
+import com.sightlyinc.ratecred.service.OrderManagerV2;
+import com.sightlyinc.ratecred.service.SiteService;
 
 /**
  * @author clay
@@ -65,15 +45,17 @@ public class SignUpControllerV4 {
     private UserPrincipalService userService;
     
 
-    @Autowired
-    private PublisherService publisherService;
+//    @Autowired
+//    private PublisherService publisherService;
+    
+    @Autowired SiteService siteService;
     
     
     @Autowired
-    private OrderManager orderManager;
+    private OrderManagerV2 orderManager;
     
-    @Autowired
-    private PublisherManager publisherManager;
+//    @Autowired
+//    private PublisherManager publisherManager;
     
 	
 	@Autowired
@@ -82,9 +64,6 @@ public class SignUpControllerV4 {
 	
 	@Value("${admin.adminEmailAccountFrom:mailer@welocally.com}")
 	private String adminEmailAccountFrom;
-	
-	@Value("${admin.googleMapsApiKey:AIzaSyARslBu_1ENpUlhnUjiaRvlIQQUZ1Mg174}")
-    private String googleMapsApiKey;
     
 
     @ModelAttribute("publisherSignupForm")
@@ -139,6 +118,16 @@ public class SignUpControllerV4 {
             
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "passwordRequired", "Please provide a password");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "siteName", "siteNameRequired", "Please provide a Site Name");
+            if (!errors.hasErrors()) {
+
+                    List<Site> sites = siteService.findBySiteUrl(form.getSiteUrl());
+                    if(sites != null && sites.size()>0){
+                        errors.rejectValue("siteUrl", "siteRejected", "That site URL has already been taken.");
+                    }
+
+            }
+            
+            
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "siteUrl", "siteUrlRequired", "Please provide a valid Site Url");
             
             if (!form.getTermsAgree()) {
@@ -157,29 +146,29 @@ public class SignUpControllerV4 {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String postSignUpForm(@Valid PublisherSignupForm publisherSignupForm, BindingResult errors) {
+    public String postSignUpForm(@Valid PublisherSignupForm publisherSignupForm, BindingResult errors, Model m) {
+        
+        logger.debug("signup form submitted");
+        
         String viewName = "signup";
                
         ValidationUtils.invokeValidator(new SignupValidator(), publisherSignupForm, errors);
         
         // password requirements?
         if (!errors.hasErrors()) {
-            
-            
-            String token = UUID.randomUUID().toString();
-            token = token.replaceAll("-", "token");
-            
+                      
             try {
                 orderManager.processPublisherRegistration(
                         publisherSignupForm.getEmail(), 
                         publisherSignupForm.getUsername(),
-                        null, 
+                        publisherSignupForm.getPassword(),                       
                         publisherSignupForm.getSiteName(),
                         publisherSignupForm.getSiteUrl(), 
                         false,
                         adminEmailAccountFrom);
+                m.addAttribute("activationEmail", publisherSignupForm.getEmail());
+                viewName = "activate_success";
                 
-                viewName = "signup_success";
             } catch (Exception e) {
                 errors.rejectValue("username", "usernameRejected", "Problem creating user, try again.");
                 logger.debug("error creating user",e);
@@ -192,12 +181,26 @@ public class SignUpControllerV4 {
     }
     
     @RequestMapping(value="/activate", method=RequestMethod.GET)
-    public Map<String, Object> activate(@RequestParam String id, HttpServletRequest request) {
+    public String activate(
+            @RequestParam("u") String username,
+            @RequestParam("siteName") String siteName,
+            @RequestParam("siteUrl") String siteUrl,
+            @RequestParam("token") String token, 
+            HttpServletRequest request) {
+               
+        try {
+            orderManager.processActivation(
+                    username, 
+                    siteName, 
+                    siteUrl, 
+                    token,
+                    adminEmailAccountFrom);
+        } catch (Exception e) {
+            return "error";
+        }
         
         
-        
-        
-        return null;
+        return "signup_success";
     }
     
     

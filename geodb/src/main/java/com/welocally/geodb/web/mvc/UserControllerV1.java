@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -186,15 +187,26 @@ public class UserControllerV1 extends AbstractJsonController {
                 "}" +
                 "}";     
         
-        CreateIndexResponse response = 
-            transportClient.admin().indices().create( 
+        Map<String, Object> result = new HashMap<String,Object>();
+        CreateIndexResponse response=null;
+        try {
+            response = transportClient.admin().indices().create( 
                                 new CreateIndexRequest(user.getString("username")). 
                                         mapping("place", mapping) 
-                        ).actionGet(); 
+                        ).actionGet();
+            result.put("acknowledged", response.acknowledged());
+            result.put("status", "SUCCEED");
             
-        Map<String, Object> result = new HashMap<String,Object>();
-        result.put("acknowledged", response.acknowledged());
-        result.put("status", "SUCCEED");
+        } catch (ElasticSearchException e) {
+            
+            logger.error("problem with create index", e);
+            result.put("message", e.getMessage());
+            result.put("acknowledged", false);
+            result.put("status", "FAIL");
+        } 
+            
+        
+        
         
         mav.addObject("mapperResult", makeModelJson(result));
     }

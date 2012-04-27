@@ -22,12 +22,12 @@ public class ExtensionAwareBeanNameViewResolver extends BeanNameViewResolver
 	public View resolveViewName(String viewName, Locale locale)
 			throws BeansException {
 
-		logger.debug("extension:" + extension + " view:" + viewName);
+		//logger.debug("extension:" + extension + " view:" + viewName);
 
 		ApplicationContext context = getApplicationContext();
 
 		String fullViewName = viewName + "-" + extension;
-		logger.debug("looking for view bean:" + fullViewName);
+		//logger.debug("looking for view bean:" + fullViewName);
 		if (!context.containsBean(fullViewName)) {
 			// Allow for ViewResolver chaining.
 			return null;

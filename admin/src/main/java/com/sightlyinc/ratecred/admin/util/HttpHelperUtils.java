@@ -21,24 +21,24 @@ import com.sightlyinc.ratecred.admin.mvc.controller.AdminActivityController;
 @Component
 public class HttpHelperUtils {
     
-    static Logger logger = Logger.getLogger(AdminActivityController.class);
+    static Logger logger = Logger.getLogger(HttpHelperUtils.class);
 
     public void put(JSONObject doc, String key, String token, String url) throws JSONException{
         HttpClient httpclient = new HttpClient();
         httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
-        //String url = "http://localhost:9200/place/"+doc.getString("id");
         PutMethod put = new PutMethod(url);
         put.setRequestHeader("key", key);
         put.setRequestHeader("token", token);
                
-        RequestEntity placeRequest = new ByteArrayRequestEntity(doc.toString().getBytes(),"application/json; charset=UTF-8");
+        RequestEntity placeRequest = 
+            new ByteArrayRequestEntity(doc.toString().getBytes(),"application/json; charset=UTF-8");
 
         put.setRequestEntity(placeRequest);
         
         try{
             int result = httpclient.executeMethod(put);
             
-            logger.debug("Response status code: " + result+" Response body: "+put.getResponseBodyAsString());
+            logger.debug("url:"+url+" Response status code: " + result+" Response body: "+put.getResponseBodyAsString());
             
         } catch (HttpException he) {
             logger.error("Http error connecting to '" + url + "'");
@@ -50,16 +50,15 @@ public class HttpHelperUtils {
         
     }
     
-    public JSONObject get(String key, String token, String url) throws Exception {
+    public JSONObject get(String url, String key, String token) throws IOException, JSONException  {
         HttpClient httpclient = new HttpClient();
         httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
-        //String url = "http://localhost:9200/place/"+doc.getString("id");
+
         GetMethod get = new GetMethod(url);
         get.setRequestHeader("key", key);
         get.setRequestHeader("token", token);
                
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         
         try {
             
@@ -78,8 +77,10 @@ public class HttpHelperUtils {
                 return new JSONObject(result);
                 
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error("Http error connecting to '" + url + "'");
+            throw e;
+        } catch (JSONException e) {
             throw e;
         } finally {
             get.releaseConnection();

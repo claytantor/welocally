@@ -48,12 +48,12 @@ public class SiteServiceImpl extends AbstractTransactionalService<Site>
 	}
 
     @Override
-	public Site findBySiteUrl(String siteUrl) {
-    	throw new RuntimeException("NO IMPL");
+	public List<Site> findBySiteUrl(String siteUrl) {
+       return siteDao.findByUrl(siteUrl);
 	}
 
 	@Override
-    public Site findByName(String name) {
+    public List<Site>  findByName(String name) {
     	throw new RuntimeException("NO IMPL");
     }
   

@@ -1,10 +1,8 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
-import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -34,8 +32,10 @@ import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
+import com.sightlyinc.ratecred.service.GeodbProvisionManager;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.sightlyinc.ratecred.service.GeodbProvisionManager.GeodbProvisionStatus;
 
 @Controller
 @RequestMapping(value="/publisher")
@@ -55,11 +55,13 @@ public class PublisherController {
     @Autowired
     private HttpHelperUtils httpHelperUtils;
     
-    @Value("${geodb.endpoint:http://localhost:8082/geodb}")
-    private String geodbEnpoint;
+    @Autowired GeodbProvisionManager geodbProvisionManager;
     
-    @Value("${geodb.provisionRequestMapping:/user/1_0/exists/}")
-    private String provisionExistsRequestMapping;
+//    @Value("${geodb.endpoint:http://localhost:8082/geodb}")
+//    private String geodbEnpoint;
+//    
+//    @Value("${geodb.provisionRequestMapping:/user/1_0/exists/}")
+//    private String provisionExistsRequestMapping;
 	
 	
 	@ModelAttribute("member")
@@ -126,8 +128,9 @@ public class PublisherController {
 				try {
 					principal = userPrincipalService.loadUser(p.getKey());
 					//exists
-					principal.setPassword(form.getJsonToken());
-					userPrincipalService.saveUserPrincipal(principal);
+					throw new RuntimeException("DONT WANT THIS TO HAPPEN");
+					//principal.setPassword(form.getJsonToken());
+					//userPrincipalService.saveUserPrincipal(principal);
 				} catch (UserNotFoundException e) {
 					//create the principal if missing
 					//update the password to be the key
@@ -187,21 +190,15 @@ public class PublisherController {
 		UserDetails authUser = 
             (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
+		
 		try {
             for (int i = 0; i < authUser.getAuthorities().length; i++) {
                 if(authUser.getAuthorities()[i].equals("ROLE_ADMIN")){
                     
-                    String url = geodbEnpoint+provisionExistsRequestMapping+p.getUserPrincipal().getUsername()+".json";
-                    
-                    MessageDigest md = MessageDigest.getInstance("MD5");
-                    String wireToken = new String(md.digest(authUser.getPassword().getBytes()));		        
-                    JSONObject provisionStatus = httpHelperUtils.get(authUser.getUsername(), wireToken, url);
-                    if(provisionStatus.isNull("errors") && !provisionStatus.isNull("id")){
-                        model.addAttribute("provisionStatus", "PROVISIONED");
-                    } else {
-                        model.addAttribute("provisionStatus", "EMPTY");
-                    }
-                    
+                    GeodbProvisionStatus status = geodbProvisionManager.status(p.getUserPrincipal(), 
+                            authUser.getUsername(), 
+                            authUser.getPassword());
+                    model.addAttribute("provisionStatus", status.toString());
                     
                 }            
             };

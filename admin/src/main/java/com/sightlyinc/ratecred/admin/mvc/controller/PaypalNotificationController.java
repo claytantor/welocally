@@ -367,8 +367,8 @@ public class PaypalNotificationController {
 	        
 	        //update the password to be the key
 			UserPrincipal up = userService.loadUser(publisher.getKey());
-			String hashedPass = userService.makeMD5Hash(publisherToken);					
-			up.setPassword(hashedPass);
+//			String hashedPass = userService.makeMD5Hash(publisherToken);					
+//			up.setPassword(hashedPass);
 			userService.activateWithRoles(up, Arrays.asList("ROLE_USER", "ROLE_PUBLISHER"));
 			
 			publisher.setServiceEndDateMillis(serviceEndDateMillis);

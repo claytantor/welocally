@@ -44,40 +44,42 @@ public class UserController {
 		return "user/edit";
 	}
 
+	@Deprecated
 	@RequestMapping(method = RequestMethod.POST)
 	public String create(@Valid UserPrincipalForm form, BindingResult result,
 			Model model) {
-		logger.debug("got post action");
-
-		try {
-			UserPrincipal up = form.getEntity();
-			if(form.getId() != null)
-				up = userPrincipalService.findUserByPrimaryKey(form.getId());
-			
-			
-			//PUT THIS IN BL
-			//dont do anything if the user did not set roles
-			if(form.getRoleNames() != null) {
-				userPrincipalService.saveUserPrincipalRoles(up, form.getRoleNames());
-			} 		
-			
-			//make sure user is enabled
-			up.setEnabled(form.getEnabled());
-			//why do I have to do this!
-			up.setCredentialsExpired(form.getCredentialsExpired());
-			up.setLocked(form.getLocked());
-			up.setPassword(form.getPassword());
-			
-			Long id = userPrincipalService.saveUserPrincipal(up);
-
-			return "redirect:/admin/user/" + id.toString();
-		} catch (UserPrincipalServiceException e) {
-			model.addAttribute("error", e);
-			return "error";
-		} catch (BLServiceException e) {
-			model.addAttribute("error", e);
-			return "error";
-		}
+//		logger.debug("got post action");
+//
+//		try {
+//			UserPrincipal up = form.getEntity();
+//			if(form.getId() != null)
+//				up = userPrincipalService.findUserByPrimaryKey(form.getId());
+//			
+//			
+//			//PUT THIS IN BL
+//			//dont do anything if the user did not set roles
+//			if(form.getRoleNames() != null) {
+//				userPrincipalService.saveUserPrincipalRoles(up, form.getRoleNames());
+//			} 		
+//			
+//			//make sure user is enabled
+//			up.setEnabled(form.getEnabled());
+//			//why do I have to do this!
+//			up.setCredentialsExpired(form.getCredentialsExpired());
+//			up.setLocked(form.getLocked());
+//			up.setPassword(form.getPassword());
+//			
+//			Long id = userPrincipalService.saveUserPrincipal(up);
+//
+//			return "redirect:/admin/user/" + id.toString();
+//		} catch (UserPrincipalServiceException e) {
+//			model.addAttribute("error", e);
+//			return "error";
+//		} catch (BLServiceException e) {
+//			model.addAttribute("error", e);
+//			return "error";
+//		}
+	    throw new RuntimeException("DEPRECATED");
 
 	}
 
