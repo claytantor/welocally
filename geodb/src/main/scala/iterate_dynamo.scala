@@ -4,6 +4,7 @@
  */
 
 import Stream._;
+import collection.JavaConversions._
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
