@@ -48,10 +48,11 @@ object DynamoConnection {
     dynamoDB.scan(sr)
   }
 
-  def streamTable(table:String, start:Option[Key]) : Stream[Object] = {
+  def streamTable(table:String, start:Option[Key]) : Stream[java.util.Map[String,AttributeValue]] = {
       val result = doScan(table,start,10)
       val lastKey = Some(result.getLastEvaluatedKey())
-      (result.getItems() toStream) append streamTable(table,lastKey)
+      val items : java.util.List[java.util.Map[String,AttributeValue]] = result.getItems()
+      (items toStream) append streamTable(table,lastKey)
   }
 }
 
