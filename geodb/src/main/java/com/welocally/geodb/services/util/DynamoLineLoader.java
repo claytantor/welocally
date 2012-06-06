@@ -18,6 +18,7 @@ import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
 /**
@@ -74,7 +75,7 @@ public class DynamoLineLoader implements CommandSupport {
 						new JSONObject(s);
 					
 					logger.debug("adding document:"+doc.getString("_id"));
-					jsonDatabase.put(doc,collectionName, doc.getString("_id"), type);
+					jsonDatabase.put(doc,collectionName, doc.getString("_id"), type, StatusType.PUBLISHED);
 					loadMonitor.increment();
 			        count++;
 					

@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.util.WelocallyJSONUtils;
 
@@ -171,7 +172,7 @@ public class UserControllerV1 extends AbstractJsonController {
     
     private void createUser(JSONObject user,ModelAndView  mav) throws DbException, JSONException{
       //put it in the user store
-        jsonDatabase.put(user, usersCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER);
+        jsonDatabase.put(user, usersCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER, StatusType.PUBLISHED);
         
         String mapping = "{" +
             "\"place\": {" +

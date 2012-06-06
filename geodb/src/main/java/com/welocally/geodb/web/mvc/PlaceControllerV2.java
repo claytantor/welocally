@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.spatial.SpatialSearchService;
@@ -180,10 +181,10 @@ public class PlaceControllerV2 extends AbstractJsonController {
         if(p != null && publisher != null){      
             place.put("_id", id);
             place.getJSONObject("properties").put("owner", "welocally");   
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
+            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             JSONObject userPlace = new JSONObject(place.toString());
             userPlace.getJSONObject("properties").put("owner", publisher.get("_id"));            
-            jsonDatabase.put(userPlace, publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE);
+            jsonDatabase.put(userPlace, publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             StringWriter sw = new StringWriter();
             //now add it to the index
             loader.loadSingle(place, 1, 1, sw, updateEndpoint);
@@ -282,7 +283,7 @@ public class PlaceControllerV2 extends AbstractJsonController {
         if(p != null && publisher != null){      
             place.put("_id", id);
             place.getJSONObject("properties").put("owner", "welocally");   
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
+            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
 //            JSONObject userPlace = new JSONObject(place.toString());
 //            userPlace.getJSONObject("properties").put("owner", publisher.get("_id"));            
 //            jsonDatabase.put(userPlace, publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE);
@@ -498,7 +499,7 @@ public class PlaceControllerV2 extends AbstractJsonController {
         }
         
         try {
-            JSONArray places = jsonDatabase.findUserPlaces(key, publisherPlacesCollection);
+            JSONArray places = jsonDatabase.findUserPlaces(key, publisherPlacesCollection, "published");
                        
             mav.addObject("mapperResult", places.toString());
             

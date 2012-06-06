@@ -89,12 +89,13 @@
 		  <plugin>
 		    <groupId>org.scala-tools</groupId>
 		    <artifactId>maven-scala-plugin</artifactId>
+		    <version>2.15.2</version>
 		    <executions>
 		      <execution>
-                        <goals>
+              <goals>
 			  <goal>compile</goal>
 			  <goal>testCompile</goal>
-                        </goals>
+              </goals>
 		      </execution>
 		    </executions>
 		  </plugin>		  		      
@@ -348,6 +349,11 @@
 		  <groupId>org.elasticsearch</groupId>
 		  <artifactId>elasticsearch</artifactId>
 		  <version>0.19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
 		</dependency>
 
 	      </dependencies>

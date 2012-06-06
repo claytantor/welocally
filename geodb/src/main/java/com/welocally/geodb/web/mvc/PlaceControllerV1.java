@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.spatial.SpatialSearchException;
@@ -87,8 +88,8 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			String id=idGen.genPoint("WL_",p);
 			if(p != null){		
 				place.put("_id", id);
-				jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
-				jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE);
+				jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
+				jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
 				StringWriter sw = new StringWriter();
 				//now add it to the index
 				loader.loadSingle(place, 1, 1, sw, updateEndpoint);
@@ -168,8 +169,8 @@ public class PlaceControllerV1 extends AbstractJsonController {
             
             if(p != null){      
                 place.put("_id", id);
-                jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
-                jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE);
+                jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
+                jsonDatabase.put(place, userCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
                 StringWriter sw = new StringWriter();
                 //now add it to the index
                 loader.loadSingle(place, 1, 1, sw, updateEndpoint);

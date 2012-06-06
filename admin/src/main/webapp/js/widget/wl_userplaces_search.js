@@ -86,7 +86,7 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	
 	if(!_instance.cfg.key){
 		jQuery.each(_instance.cfg.observers, function(i,observer) {
-			observer.setStatus(observer.getStatusArea(), 'Publisher key not set','wl_error',true);
+			WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Publisher key not set','wl_error',true);
 		});	
 		
 		return false;
@@ -94,7 +94,7 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	
 	if(!_instance.cfg.token){
 		jQuery.each(_instance.cfg.observers, function(i,observer) {
-			observer.setStatus(observer.getStatusArea(), 'Publisher token not set','wl_error',true);
+			WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Publisher token not set','wl_error',true);
 		});	
 		
 		return false;
@@ -105,7 +105,7 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	
 	//notify all observers
 	jQuery.each(_instance.cfg.observers, function(i,observer) {
-		observer.setStatus(observer.getStatusArea(), 'Finding places','wl_update',true);
+		WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Finding places','wl_update',true);
 	});	
 						
 	_instance.jqxhr = jQuery.ajax({
@@ -120,18 +120,18 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 				//set to result bounds if enough results
 				if(data != null && data.errors != null) {					
 					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						observer.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+						WELOCALLY.ui.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
 					});
 				} else if(data != null && data.length>0){							
 					//notify all observers
 					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						observer.setStatus(observer.getStatusArea(), '','wl_message',false);
+						WELOCALLY.ui.setStatus(observer.getStatusArea(), '','wl_message',false);
 						observer.setPlaces(data);
 					});
 					
 				} else {
 					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						observer.setStatus(observer.getStatusArea(), 'No results were found matching your search.','wl_warning',false);						
+						WELOCALLY.ui.setStatus(observer.getStatusArea(), 'No results were found matching your search.','wl_warning',false);						
 					});	
 					
 				}														

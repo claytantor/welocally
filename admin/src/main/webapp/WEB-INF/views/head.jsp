@@ -11,22 +11,25 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<script src="https://maps.google.com/maps/api/js?key=AIzaSyACXX0_pKBA6L0Z2ajyIvh5Bi8h9crGVlg&sensor=true&language=en"
 	  		type="text/javascript"></script>
-	  		
+	
 	  	<!-- welocally-developer scripts  -->	
 		<script src="<c:url value='/js/welocally-places-developer/wl_base.js' />" type="text/javascript"></script>   
 		<script src="<c:url value='/js/welocally-places-developer/wl_place_widget.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/welocally-places-developer/wl_places_multi_widget.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/welocally-places-developer/wl_infobox.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/welocally-places-developer/wl_geodb_search.js' />" type="text/javascript"></script>
 			
 		<script src="<c:url value='/js/widget/wl_dealfinder_widget.js' />" type="text/javascript"></script> 
 		<script src="<c:url value='/js/widget/wl_placefinder_widget.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/widget/wl_place_selection_listener.js' />" type="text/javascript"></script>
-		<script src="<c:url value='/js/widget/wl_addplace_widget.js' />" type="text/javascript"></script>
-		<script src="<c:url value='/js/widget/wl_geodb_search.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/widget/wl_addplace_widget.js' />" type="text/javascript"></script>		
 		<script src="<c:url value='/js/widget/wl_userplaces_search.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/widget/wl_place_edit_view.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/widget/wl_searchadd.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/widget/wl_userplacesmgr.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/widget/wl_userplaces_ui.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/widget/wl_placesgrid.js' />" type="text/javascript"></script>
+		
 		
 		<script type="text/javascript" src="<c:url value='/js/jquery-ui-1.8.13.custom.min.js' />"></script>
 		
@@ -34,6 +37,8 @@
 		
 		<!--  -->
 		<link type="text/css" href="<c:url value='/css/custom-theme/jquery-ui-1.8.13.custom.css' />" rel="stylesheet" media="screen" />
+		
+
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700|Carme|Fjord+One' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="<c:url value='/css/blueprint/screen.css' />" type="text/css" media="screen, projection">
 		<link rel="stylesheet" href="<c:url value='/css/blueprint/print.css' />" type="text/css" media="print">

@@ -12,27 +12,32 @@ function WELOCALLY_SearchAdd (cfg) {
 	
 	this.init = function() {
 							
-		var errors = initCfg(cfg);
+		var errors = this.initCfg(cfg);
 		
 		// Get current script object
-		var script = jQuery('SCRIPT');
-		script = script[script.length - 1];
+		var placeBefore = jQuery('SCRIPT');
+		placeBefore = placeBefore[placeBefore.length - 1];
+		
+		if(cfg.placeBefore){
+			placeBefore = cfg.placeBefore;
+		} 
+		
 		
 		if(errors){
-			jQuery(script)
+			jQuery(placeBefore)
 			 .parent()
 			 .before('<div class="error">Problem with the configuration: '+errors[0]+'</div>');
 		} else {
 			// Build Widget
 			this.wrapper = this.makeWrapper();	
-			jQuery(script).parent().before(this.wrapper);		
+			jQuery(placeBefore).parent().before(this.wrapper);		
 		}
 		
 		return this;
 					
 	};
 	
-}
+};
 
 WELOCALLY_SearchAdd.prototype.initCfg = function(cfg) {
 	
@@ -92,47 +97,33 @@ WELOCALLY_SearchAdd.prototype.makeWrapper = function() {
 	jQuery(_instance.saveButton).css('display','none');	
 	jQuery(_instance.saveButton).find('a').button();
 	jQuery(wrapper).append(_instance.saveButton);
-		
-	//selected place
-	//used for the place display when selected (observed)
+	
+	
 	var placeSelected = new WELOCALLY_PlaceWidget();
-	
-	//setup the selected area   
-	placeSelected.initCfg({
-		imagePath: 'images/marker_all_base.png',
-		hidePlaceSectionMap: true,
-	});
-	
-	//multi places
-	_instance.placesMulti = 
-		 new WELOCALLY_PlacesMultiWidget();
-	
-	//setup the multi
-	_instance.placesMulti.initCfg({
-		id: 'wl_search_add_1',
-		overrideSelectableStyle: 'margin: 2px; padding: 2px; float: left; width: 120px; height: 85px; font-size: 0.8em;',
-		hidePlaceSectionMap: true,
-		imagePath: 'images/marker_all_base.png',
-		observers:[placeSelected, _instance]
-	});
-	
-	jQuery(wrapper).append(_instance.placesMulti.makeWrapper());
-	
-	_instance.placesMulti.getSelectedArea()
-	  .append(placeSelected.makeWrapper());
-	
-	_instance.searcher = 
-		 new WELOCALLY_GeoDbSearch({
-		   endpoint: 'http://gaudi.welocally.com',
-		   q: "Sandwich",
-		   loc: [40.714353,-74.005973],
-		   radiusKm: 10.0,
-		   observers: [_instance.placesMulti]
-		 }).init();	
-	
-	_instance.searcher.search();	
-	jQuery(wrapper).find('#wl_places_mutli_selectable').find('li').css('width','200px');
-	
+    var cfg = { 
+			id:'finder_1',
+			endpoint: _instance.cfg.endpoint,
+			searchPlacesRequestPath: '/geodb/place/3_0/search.json',
+			showLetters: true,
+			showShare: true,		
+	    	showSelection: true,
+	    	parent: _instance,
+			hidePlaceSectionMap: true,
+			imagePath: 'images/marker_all_base.png',
+			observers:[placeSelected, _instance]	    					
+    };
+    
+    _instance.placesFinder = 
+		  new WELOCALLY_PlaceFinderWidget();
+    
+    _instance.placesFinder.initCfg(cfg);
+    
+    //setup the selected area   
+    placeSelected.initCfg(cfg);
+      
+    jQuery(wrapper).append(_instance.placesFinder.makeWrapper());
+    _instance.placesFinder.getSelectedArea().append(placeSelected.makeWrapper());
+    
 	
 	_instance.wrapper = wrapper;
 
@@ -144,7 +135,6 @@ WELOCALLY_SearchAdd.prototype.search = function() {
 	_instance.searcher.search();	
 };
 
-//for place selectors
 WELOCALLY_SearchAdd.prototype.show = function(selectedPlace) {	
 	var _instance = this;
 	jQuery(_instance.saveButton).show();
@@ -154,18 +144,24 @@ WELOCALLY_SearchAdd.prototype.show = function(selectedPlace) {
 WELOCALLY_SearchAdd.prototype.addToMyPlacesHandler = function(event,ui) {
 	var _instance = event.data.instance;
 	var place = event.data.place;
-	
-	//the adder
+
+//	//the adder
 	var adder = new WELOCALLY_AddPlaceWidget();
 	adder.initCfg({
 		endpoint: _instance.cfg.endpoint,						
 		key: _instance.cfg.key,
-		token: _instance.cfg.token,
+		token: _instance.cfg.token
 	});
 	adder.savePlace(place);
 	
 };
 
+WELOCALLY_PlacesMultiWidget.prototype.triggerResize = function(){
+	var _instance = this;
+	
+	_instance.placesFinder.triggerResize();
+	
+};
 
 
 

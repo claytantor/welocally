@@ -6,14 +6,16 @@ import org.json.JSONObject;
 public interface JsonDatabase {
     
     public enum EntityType { PLACE, USER_PLACE, CLASSIFER, DEAL, PUBLISHER };
+    
+    public enum StatusType { PUBLISHED, INCOMPLETE, REVIEW };
 
 	public JSONObject findById(String collectionName, String id)
 		throws DbException;
 	
-	public JSONArray findUserPlaces(String publisherKey, String collectionName) 
+	public JSONArray findUserPlaces(String publisherKey, String collectionName, String status) 
 	throws DbException;
 	
-	public void put(JSONObject doc, String collectionName, String id, EntityType type)
+	public void put(JSONObject doc, String collectionName, String id, EntityType type, StatusType status)
     throws DbException;
 
 	public void delete(String collectionName, String id)

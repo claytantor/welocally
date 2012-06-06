@@ -20,6 +20,7 @@ import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
 /**
@@ -78,7 +79,7 @@ public class DynamoArrayLoader implements CommandSupport {
 				JSONArray docs = new JSONArray(sw.toString());
 				for (int i = 0; i < docs.length(); i++) {
                     JSONObject doc = docs.getJSONObject(i);
-                    jsonDatabase.put(doc,collectionName, doc.getString("_id"), type);
+                    jsonDatabase.put(doc,collectionName, doc.getString("_id"), type, StatusType.PUBLISHED);
                     loadMonitor.increment();
                    count++;
                 }

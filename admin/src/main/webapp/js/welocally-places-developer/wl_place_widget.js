@@ -10,8 +10,7 @@ function WELOCALLY_PlaceWidget (cfg) {
 	this.map_canvas;
 	this.map;
 	this.placehoundPath;
-	this.imagePath;
-	
+	this.imagePath;	
 	
 	this.init = function() {
 		
@@ -80,33 +79,38 @@ WELOCALLY_PlaceWidget.prototype.initCfg = function(cfg) {
 };
 
 
-WELOCALLY_PlaceWidget.prototype.makeWrapper = function() {
+WELOCALLY_PlaceWidget.prototype.makeWrapper = function() { 
 	// Build Widget
 	var _instance = this;
 	
 	// Build Widget
-	this.wrapper = jQuery('<div></div>');
-	jQuery(this.wrapper).css('display','none');			
-	jQuery(this.wrapper).attr('class','welocally_place_widget');
-	jQuery(this.wrapper).attr('id','welocally_place_widget_'+_instance.cfg.id);
+	var wrapper = jQuery('<div></div>');
+	jQuery(wrapper).css('display','none');			
+	jQuery(wrapper).attr('class','welocally_place_widget');
+	jQuery(wrapper).attr('id','welocally_place_widget_'+_instance.cfg.id);
+	
+	//status area
+	this.statusArea = jQuery('<div class="wl_place_status"></div>');
+	jQuery(wrapper).append(this.statusArea);
 	
 	
 	//google maps does not like jquery instances
 	this.map_canvas = document.createElement('DIV');
 	jQuery(this.map_canvas).css('display','none');	
     jQuery(this.map_canvas).attr('class','wl_places_place_map_canvas');
-	jQuery(this.map_canvas).attr("id","wl_place_map_canvas_widget_"+_instance.cfg.id);	
+	jQuery(this.map_canvas).attr("id","wl_place_map_canvas_widget_"+_instance.cfg.id);
+	jQuery(wrapper).append(this.map_canvas);
+	
+	
+	this.wrapper = wrapper; 
 	
 	return this.wrapper;
 	
 };
 
 
-WELOCALLY_PlaceWidget.prototype.loadRemote = function() {
-	this.load(this.map_canvas);
-};
 
-WELOCALLY_PlaceWidget.prototype.loadLocal = function(placeJson) {
+WELOCALLY_PlaceWidget.prototype.load = function(placeJson) {
 	var _instance = this;
 	_instance.map = _instance.initMapForPlace(placeJson,_instance.map_canvas);
 	_instance.show(placeJson);
@@ -122,59 +126,6 @@ WELOCALLY_PlaceWidget.prototype.loadLocal = function(placeJson) {
  	}, 200);
 	
 };
-
-WELOCALLY_PlaceWidget.prototype.load = function(map_canvas) {
-	var _instance = this;
-	
-	if(WELOCALLY.util.startsWith(_instance.cfg.id,"WL_")){			
-		var surl = _instance.cfg.endpoint +
-			_instance.cfg.requestPath+_instance.cfg.id+'.json?callback=?';
-		
-		
-		_instance.jqxhr = jQuery.ajax({
-			url: surl,
-			dataType: "json",
-			beforeSend: function(jqXHR){
-				_instance.jqxhr = jqXHR;
-				_instance.jqxhr.setRequestHeader("key", _instance.cfg.key);
-				_instance.jqxhr.setRequestHeader("token", _instance.cfg.token);
-		  	},
-			success: function(data) {
-				if(data != null && data.errors != null) {
-					var errorsArea = jQuery('<div></div>');
-					WELOCALLY.ui.setStatus(errorsArea, WELOCALLY.util.getErrorString(data.errors),'wl_error');
-					jQuery(_instance.wrapper).attr('class','');
-					jQuery(_instance.wrapper).html(errorsArea);
-					jQuery(_instance.wrapper).show();
-					
-				} else if(data != null && data.length>0){	
-					_instance.show(data[0]);
-					_instance.setMapEvents(_instance.map);
-					
-					var latlng = new google.maps.LatLng(
-							data[0].geometry.coordinates[1], 
-							data[0].geometry.coordinates[0]);
-					
-					//forced to refresh
-					setTimeout(function () {
-				     	_instance.refreshMap(latlng);
-				 	}, 200);
-				} else {
-					var errorsArea = jQuery('<div></div>');
-					WELOCALLY.ui.setStatus(errorsArea, 'No data was returned.','wl_update');
-					jQuery(_instance.wrapper).attr('class','');
-					jQuery(_instance.wrapper).html(errorsArea);
-					jQuery(_instance.wrapper).show();
-				}
-				
-				
-			},
-			error: function() {
-			}
-		});
-	}		
-};	
-
 
 WELOCALLY_PlaceWidget.prototype.initMapForPlace = function(place, map_canvas) {
 	
@@ -322,39 +273,7 @@ WELOCALLY_PlaceWidget.prototype.makePlaceContent = function(selectedPlace, cfg) 
 	if(!cfg.showShare){
 		jQuery(embed).hide();
 	}
-	
-	//tag
-	//we wont make a permalink or tag unless an id is available for the place
-	if(selectedPlace._id)
-	{
-		//share link
-		var shareToggle = jQuery('<div class="wl_places_place_share_link"></div>');
-		var shareLink = jQuery('<a href="#" target="_new">Share</a>');
-		jQuery(shareLink).click(function() {
-			jQuery(embed).toggle();
-			return false;
-		});
-		jQuery(shareToggle).append(shareLink);
-		jQuery(links).append(shareToggle);
-		
-		var wlSelectedTagArea = jQuery('<div id="wl_place_widget_tag" class="wl_places_place_tag"></div>');	
-		var title = jQuery('<div class="wl_place_title">Use this tag to share with <a href="http://welocally.com/?page_id=2" target="_new">Welocally Places</a> for <a href="http://wordpress.org/extend/plugins/welocally-places/" target="_new">WordPress</a></div>');
-		jQuery(wlSelectedTagArea).append(title);
-		
-		//the tag
-		var tag = '[welocally id="'+selectedPlace._id+'" /]';
-		var inputAreaTag = jQuery('<input/>');
-		jQuery(inputAreaTag).val(tag);	
-		jQuery(wlSelectedTagArea).append(inputAreaTag);
-		
-		jQuery(embed).append(wlSelectedTagArea); 
-		
-		//placehound permalink
-		jQuery(embed).append('<div class="wl_place_title"><a target="_new" href="'+_instance.cfg.placehoundPath+'/place.html?id='+selectedPlace._id+'">Place Permalink</a></div>');		
-		
-		jQuery(placeWrapper).append(embed); 
 
-	}
 	
 	jQuery(placeWrapper).append(links);
 		
@@ -382,4 +301,11 @@ WELOCALLY_PlaceWidget.prototype.refreshMap = function(searchLocation) {
 		
 	});
 	
+};
+
+
+//use map status area
+WELOCALLY_PlaceWidget.prototype.getStatusArea = function (){
+	var _instance = this;
+	return _instance.statusArea;
 };

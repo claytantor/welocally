@@ -375,7 +375,7 @@ WELOCALLY_PlacesMultiWidget.prototype.makeItemContents = function (item, i, show
 	jQuery(wrapper)
 		.append(jQuery('<div class="selectable_address">'+
 			item.properties.address+' '+item.properties.city+' '+item.properties.province+'</div>'));
-	if(item.distance){
+	if(item.distance && !_instance.cfg.hideDistance ){
 		jQuery(wrapper)
 		.append(jQuery('<div class="selectable_distance">'+
 				item.distance.toFixed(2)+'km </div>'));
@@ -700,7 +700,19 @@ WELOCALLY_PlacesMultiWidget.prototype.getStatusArea = function (){
 	return _instance.mapStatus;
 };
 
+WELOCALLY_PlacesMultiWidget.prototype.triggerResize = function(){
+	
+	var _instance = this;
+	
+	google.maps.event.trigger(_instance.map, 'resize');
+		
+};
 
+//for place selectors
+WELOCALLY_PlacesMultiWidget.prototype.show = function(selectedPlace) {	
+	jQuery( this.results ).trigger( "observerselected", {instance: this, type:observer, place:selectedPlace}, this.selectedItemHandler);
+	
+};
 
 
 
