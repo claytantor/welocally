@@ -3,14 +3,14 @@
 */
 
 function WELOCALLY_PlaceFinderWidget (cfg) {
-	this._cfg;
-	this._geocoder;	
-	this._searchLocation;
-	this._ajaxStatus;
-	this._locationField;
-	this._searchField;
-	this._multiPlacesWidget;
-	this._selectedPlace = {
+	this.cfg;
+	this.geocoder;	
+	this.searchLocation;
+	this.statusArea;
+	this.locationField;
+	this.searchField;
+	this.multiPlacesWidget;
+	this.selectedPlace = {
 			properties: {},
 			type: "Place",
 			classifiers: [
@@ -28,107 +28,174 @@ function WELOCALLY_PlaceFinderWidget (cfg) {
 	
 	this.init = function() {
 		
-		var _instance = this;
+		var errors = this.initCfg(cfg);
 		
-		if(!cfg.endpoint){
-			cfg.endpoint='https://api.welocally.com';
-		}
-		
-		if(!cfg.imagePath){
-			cfg.imagePath = 'http://placehound.com/images/marker_all_base.png';
-		}
-		
-		
-		if(!cfg.radius){
-			cfg.radius=20;
-		}
-		
-		this._cfg = cfg;
-		
-		this._geocoder = new google.maps.Geocoder();
-		
-		this._searchLocation = 
-			new google.maps.LatLng(); 					
-			
-		 // Get current script object
-	    var script = jQuery('SCRIPT');
-	    script = script[script.length - 1]; 
-	    
-	    //wrapper
-	    var wrapper = jQuery('<div class="wl_placefinder_wrapper"></div>');
-							
-		//status
-		this._ajaxStatus = 
-			jQuery('<div></div>');
-	    jQuery(this._ajaxStatus).css('display','none');
-	    jQuery(wrapper).append(this._ajaxStatus);
-	    
-	    //location field
-	    this._locationField =
-			jQuery('<input type="text" name="location"/>');
-	    jQuery(wrapper).append('<div class="wl_field_description">Enter a location to search such as "New York NY". You can even provide a full address for more refined searches.</div>');
-	    jQuery(this._locationField).attr('class','wl_widget_field wl_placefinder_search_field');
-	    jQuery(this._locationField).bind('change' , {instance: this}, this.locationFieldInputHandler);   
-	    
-	    
-	    jQuery(wrapper).append(this._locationField);
-		
-		//search field
-	    this._searchField =
-			jQuery('<input type="text" name="search" id="wl_finder_search_field"/>');
-		jQuery(wrapper).append('<div class="wl_field_description">Enter what you are searching for, this can be a type of place like "Restaurant", what they sell like "Pizza", or the name of the place like "Seward Park".</div>');       
-		jQuery(this._searchField).attr('class','wl_widget_field wl_placefinder_search_field');
-		jQuery(this._searchField).bind('change' , {instance: this}, this.searchHandler);  
-			
-		jQuery(wrapper).append(this._searchField);
-		
-		//bind focus
-		jQuery(this._locationField).keypress(function(e){
-	        if ( e.which == 13 ){
-	        	jQuery(this._locationField).trigger('change' , {instance: this}, this.locationFieldInputHandler);
-	        	jQuery('#wl_finder_search_field').focus();
-	        	return false;
-	        }
-	    });
-		
-		jQuery(this._searchField).keypress(function(e){
-	        if ( e.which == 13 ){
-	        	jQuery(this._searchField).trigger('change' , {instance: _instance}, this.searchHandler);
-	        	jQuery('#wl_finder_search_button').focus();
-	        	return false;
-	        }
-	    });
-		
-		
+		// Get current script object
+		var script = jQuery('SCRIPT');
+		script = script[script.length - 1];
 				
-		var buttonDiv = jQuery('<div></div>').attr('class','wl_finder_search_button_area'); 	
-		var fetchButton = jQuery('<button id="wl_finder_search_button">Search</div>');
+		if(errors){
+			 var statusArea = jQuery("<div></div>");
+			 WELOCALLY.ui.setStatus(statusArea, errors[0],'wl_error',false);
+			 jQuery(script).parent().before(statusArea);
+		} else {
+			// Build Widget
+			this.wrapper = this.makeWrapper();	
+			jQuery(script).parent().before(this.wrapper);
 		
-		jQuery(fetchButton).attr('class','wl_finder_search');
-		jQuery(fetchButton).bind('click' , {instance: this}, this.searchHandler);
-		jQuery(buttonDiv).append(fetchButton); 
-		jQuery(wrapper).append(buttonDiv);  
-		
-		//now the mutli place component
-		this._multiPlacesWidget = 
-			new WELOCALLY_PlacesMultiWidget().initCfg(cfg);
-		
-		
-		//the component wrapper
-		jQuery(wrapper).append(this._multiPlacesWidget.makeWrapper());
-		
-		jQuery(script).parent().before(wrapper);
-		
-		if(this._cfg.defaultLocation){
-			jQuery(this._locationField).val(this._cfg.defaultLocation);
-			jQuery(this._locationField).trigger('change' , {instance: _instance}, this.locationFieldInputHandler); 
 		}
 		
-	
 		return this;
 		
 	};
 		
+}
+
+
+WELOCALLY_PlaceFinderWidget.prototype.initCfg = function(cfg) {
+	var errors = [];
+	if (!cfg) {
+		errors.push('Please provide a configuration');
+	}
+	
+	
+	if (!cfg.id) {
+		cfg.id = "wl_placefinder_"+WELOCALLY.util.keyGenerator();
+	}
+	
+	// summary (optional) - the summary of the article
+	// hostname (optional) - the name of the host to use
+	if (!cfg.endpoint) {
+		cfg.endpoint = 'http://stage.welocally.com';
+	}
+	
+	if (!cfg.imagePath) {
+		cfg.imagePath = 'http://placehound.com/images/marker_all_base.png';
+	}
+	
+	if (!cfg.zoom) {
+		cfg.zoom = 16;
+	}
+	
+	if(!cfg.radius){
+		cfg.radius=20;
+	}
+	
+	
+	if (!cfg.location) {
+		cfg.location = new google.maps.LatLng(
+		38.548165, 
+		-96.064453);
+	}
+	
+	if (!cfg.showShare) {
+		cfg.showShare = false;
+	}
+	
+	if (!cfg.siteKey || !cfg.siteToken) {
+		error = "Please include your site key and token in the configuration to add a places.";
+	}
+	
+	this.geocoder = new google.maps.Geocoder();
+	
+	this.searchLocation = 
+		new google.maps.LatLng(); 	
+	
+	if(errors.length>0)
+		return errors;
+	
+	this.cfg = cfg;
+}
+
+WELOCALLY_PlaceFinderWidget.prototype.makeWrapper = function() {
+	// Build Widget
+	var _instance = this;
+	
+	var wrapper = jQuery('<div class="wl_placefinder_wrapper"></div>');
+	
+	_instance.statusArea = jQuery('<div class="wl_place_edit_view_status"></div>');
+	jQuery(wrapper).append(this.statusArea);
+						
+	//status
+	_instance.statusArea = 
+		jQuery('<div></div>');
+    jQuery(this.statusArea).css('display','none');
+    jQuery(wrapper).append(this.statusArea);
+    
+    //location field
+    _instance.locationField =
+		jQuery('<input type="text" name="location"/>');
+    jQuery(wrapper).append('<div class="wl_field_description">Enter a location to search such as "New York NY". You can even provide a full address for more refined searches.</div>');
+    jQuery(this.locationField).attr('class','wl_widget_field wl_placefinder_search_field');
+    jQuery(this.locationField).bind('change' , {instance: this}, this.locationFieldInputHandler);   
+    
+    
+    jQuery(wrapper).append(this.locationField);
+	
+	//search field
+    this.searchField =
+		jQuery('<input type="text" name="search" id="wl_finder_search_field"/>');
+	jQuery(wrapper).append('<div class="wl_field_description">Enter what you are searching for, this can be a type of place like "Restaurant", what they sell like "Pizza", or the name of the place like "Seward Park".</div>');       
+	jQuery(this.searchField).attr('class','wl_widget_field wl_placefinder_search_field');
+	jQuery(this.searchField).bind('change' , {instance: this}, this.searchHandler);  
+		
+	jQuery(wrapper).append(this.searchField);
+	
+	//bind focus
+	jQuery(this.locationField).keypress(function(e){
+        if ( e.which == 13 ){
+        	jQuery(this.locationField).trigger('change' , {instance: this}, this.locationFieldInputHandler);
+        	jQuery('#wl_finder_search_field').focus();
+        	return false;
+        }
+    });
+	
+	jQuery(this.searchField).keypress(function(e){
+        if ( e.which == 13 ){
+        	jQuery(this.searchField).trigger('change' , {instance: _instance}, this.searchHandler);
+        	jQuery('#wl_finder_search_button').focus();
+        	return false;
+        }
+    });
+	
+	
+			
+	var buttonDiv = jQuery('<div></div>').attr('class','wl_finder_search_button_area'); 	
+	var fetchButton = jQuery('<button id="wl_finder_search_button">Search</div>');
+	
+	jQuery(fetchButton).attr('class','wl_finder_search');
+	jQuery(fetchButton).bind('click' , {instance: this}, this.searchHandler);
+	jQuery(buttonDiv).append(fetchButton); 
+	jQuery(wrapper).append(buttonDiv);  
+	
+
+	
+	//now the mutli place component
+	_instance.multiPlacesWidget = 
+		new WELOCALLY_PlacesMultiWidget();
+	
+	
+	_instance.multiPlacesWidget.initCfg({
+		id: 'wl_search_add_multi_1',
+		hidePlaceSectionMap: true,
+		imagePath: 'images/marker_all_base.png',
+		observers:_instance.cfg.observers
+	});
+		
+	//the component wrapper
+	jQuery(wrapper).append(_instance.multiPlacesWidget.makeWrapper());
+	
+	//the selector
+	_instance.cfg.placeSelector.initCfg(cfg);
+	placesMulti.getSelectedArea().append(_instance.cfg.placeSelector.makeWrapper());
+			
+	if(_instance.cfg.defaultLocation){
+		jQuery(this.locationField).val(_instance.cfg.defaultLocation);
+		jQuery(this.locationField).trigger('change' , {instance: _instance}, this.locationFieldInputHandler); 
+	}
+	
+	return wrapper;
+	
 }
 
 WELOCALLY_PlaceFinderWidget.prototype.locationFieldInputHandler = function(event) {
@@ -138,79 +205,84 @@ WELOCALLY_PlaceFinderWidget.prototype.locationFieldInputHandler = function(event
 	var addressValue = jQuery(this).val();
 	
 	if(addressValue){
-		_instance.setStatus(_instance._ajaxStatus, 'Geocoding','wl_update',true);
+		_instance.setStatus(_instance.statusArea, 'Geocoding','wl_update',true);
 		
 		jQuery(_instance._selectedSection).hide();
 		
-		_instance._geocoder.geocode( { 'address': addressValue}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK &&  _instance.validGeocodeForSearch(results[0])) {
+		_instance.geocoder.geocode( { 'address': addressValue}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK &&  _instance.validGeocodeForSearch(results[0])) {			
 			
-			
-				jQuery(_instance._locationField).val(results[0].formatted_address);
+				jQuery(_instance.locationField).val(results[0].formatted_address);
 				_instance._formattedAddress = results[0].formatted_address;
 				
 					
 				//set the model
-				_instance._selectedPlace.properties.address = 
+				_instance.selectedPlace.properties.address = 
 					_instance.getShortNameForType("street_number", results[0].address_components)+' '+
 					_instance.getShortNameForType("route", results[0].address_components);
 				
-				_instance._selectedPlace.properties.city = 
+				_instance.selectedPlace.properties.city = 
 					_instance.getShortNameForType("locality", results[0].address_components);
 				
-				_instance._selectedPlace.properties.province = 
+				_instance.selectedPlace.properties.province = 
 					_instance.getShortNameForType("administrative_area_level_1", results[0].address_components);
 		
-				_instance._selectedPlace.properties.postcode = 
+				_instance.selectedPlace.properties.postcode = 
 					_instance.getShortNameForType("postal_code", results[0].address_components);
 				
-				_instance._selectedPlace.properties.country = 
+				_instance.selectedPlace.properties.country = 
 					_instance.getShortNameForType("country", results[0].address_components);
 				
-				_instance._selectedPlace.geometry.coordinates = [];
-				_instance._selectedPlace.geometry.coordinates.push(results[0].geometry.location.lng());
-				_instance._selectedPlace.geometry.coordinates.push(results[0].geometry.location.lat());
+				_instance.selectedPlace.geometry.coordinates = [];
+				_instance.selectedPlace.geometry.coordinates.push(results[0].geometry.location.lng());
+				_instance.selectedPlace.geometry.coordinates.push(results[0].geometry.location.lat());
 				
-				_instance._searchLocation = 
+				_instance.searchLocation = 
 					new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
 							
 				//setup the map
-				var sl = _instance._searchLocation;
-				_instance._multiPlacesWidget._map.setCenter(sl);
+				//if map ist initted the do so
+				if(!_instance.multiPlacesWidget.map){
+					_instance.multiPlacesWidget.initMap(_instance.multiPlacesWidget.map_canvas)
+				}
 				
-				var pm = _instance._multiPlacesWidget._placeMarkers;
+								
+				var sl = _instance.searchLocation;
+				_instance.multiPlacesWidget.map.setCenter(sl);
+				
+				var pm = _instance.multiPlacesWidget.placeMarkers;
 				
 				//set the zoom
 				if(results[0].address_components.length<=5){
-					_instance._multiPlacesWidget._map.setZoom(14);						
+					_instance.multiPlacesWidget.map.setZoom(14);						
 					
 				} else {
-					_instance._multiPlacesWidget._map.setZoom(16);
+					_instance.multiPlacesWidget.map.setZoom(16);
 				}		
 
 				//reset overlays
-				_instance._multiPlacesWidget.resetOverlays(
+				_instance.multiPlacesWidget.resetOverlays(
 					sl,
 					pm); 
 
-				_instance.setStatus(_instance._ajaxStatus, '','wl_message',true);
+				_instance.setStatus(_instance.statusArea, '','wl_message',true);
 				
-				if(_instance._searchField.val()){
-					jQuery(_instance._searchField).trigger('change');
+				if(_instance.searchField.val()){
+					jQuery(_instance.searchField).trigger('change');
 				}
 								
-				jQuery( _instance._multiPlacesWidget._map_canvas).show();
+				jQuery( _instance.multiPlacesWidget.map_canvas).show();
 				
-				_instance._multiPlacesWidget.refreshMap(_instance._searchLocation);
+				_instance.multiPlacesWidget.refreshMap(_instance.searchLocation);
 				
 							
 				
 			} else {
-				_instance.setStatus(_instance._ajaxStatus, 'Could not geocode:'+status,'wl_warning',false);
+				_instance.setStatus(_instance.statusArea, 'Could not geocode:'+status,'wl_warning',false);
 			} 
 		});
 	} else {
-		_instance.setStatus(_instance._ajaxStatus, 'Please choose a location to start your search.','wl_warning',false);
+		_instance.setStatus(_instance.statusArea, 'Please choose a location to start your search.','wl_warning',false);
 	}
 	
 	
@@ -228,56 +300,36 @@ WELOCALLY_PlaceFinderWidget.prototype.searchHandler = function(event) {
 
 	jQuery(_instance._selectedSection).hide();
 	
-	if(_instance._selectedPlace.geometry.coordinates[1] && _instance._selectedPlace.geometry.coordinates[0]){
+	if(_instance.selectedPlace.geometry.coordinates[1] && _instance.selectedPlace.geometry.coordinates[0]){
 		
-		if(!_instance._locationField) {
+		if(!_instance.locationField) {
 			_instance._formattedAddress = results[0].formatted_address;
 		}
 		
-		var searchValue = WELOCALLY.util.replaceAll(jQuery(_instance._searchField).val(),' ','+');
-
-		var query = {
-			q: searchValue,
-			loc: _instance._selectedPlace.geometry.coordinates[1]+'_'+_instance._selectedPlace.geometry.coordinates[0],
-			radiusKm: _instance._multiPlacesWidget.getMapRadius(_instance._multiPlacesWidget._map)
-		};
+		var searchValue = WELOCALLY.util.replaceAll(jQuery(_instance.searchField).val(),' ','+');
 		
-		var surl = _instance._cfg.endpoint +
-			'/geodb/place/1_0/search.json?'+WELOCALLY.util.serialize(query)+"&callback=?";
+		//_instance.setStatus(_instance.statusArea, 'Finding places','wl_update',true);
+		jQuery(_instance.multiPlacesWidget.results).hide();
 		
-		_instance.setStatus(_instance._ajaxStatus, 'Finding places','wl_update',true);
-		jQuery(_instance._multiPlacesWidget._results).hide();
+		_instance.multiPlacesWidget.resetOverlays(
+					_instance.searchLocation,
+					_instance.multiPlacesWidget.placeMarkers);
+				
+		_instance.searcher = 
+			 new WELOCALLY_GeoDbSearch({
+			   endpoint: _instance.cfg.endpoint,
+			   requestPath: _instance.cfg.searchPlacesRequestPath,
+			   q: searchValue,
+			   loc: [_instance.selectedPlace.geometry.coordinates[1],_instance.selectedPlace.geometry.coordinates[0]],
+			   radiusKm: _instance.multiPlacesWidget.getMapRadius(_instance.multiPlacesWidget.map),
+			   observers: [_instance.multiPlacesWidget]
+			 }).init();	
 		
-		_instance._multiPlacesWidget.resetOverlays(
-					_instance._searchLocation,
-					_instance._multiPlacesWidget._placeMarkers);
-			
-		jQuery.ajax({
-				  url: surl,
-				  dataType: "json",
-				  success: function(data) {
-					//set to result bounds if enough results
-					if(data != null && data.length>0){						
-						_instance.setStatus(_instance._ajaxStatus, '','wl_message',false);
-						_instance._multiPlacesWidget.setPlaces(data);						
-					} else {
-						
-						_instance.setStatus(_instance._ajaxStatus, 'No results were found matching your search.','wl_warning',false);						
-						_instance._multiPlacesWidget.refreshMap(_instance._searchLocation);
-					}
-					
-
-					var listener = google.maps.event.addListener(_instance._multiPlacesWidget._map, "idle", function() { 						
-						if (_instance._multiPlacesWidget._map.getZoom() > 17) _instance._multiPlacesWidget._map.setZoom(17); 
-						google.maps.event.removeListener(listener); 
-					});
-															
-				}
-		});
-	
+		_instance.searcher.search();
+		
 	
 	} else {
-		_instance.setStatus(_instance._ajaxStatus, 'Please choose a location for search.','wl_warning',false);
+		_instance.setStatus(_instance.statusArea, 'Please choose a location for search.','wl_warning',false);
 	}
 	
 	return false;
@@ -285,8 +337,8 @@ WELOCALLY_PlaceFinderWidget.prototype.searchHandler = function(event) {
 };
 
 
-WELOCALLY_PlaceFinderWidget.prototype.getSelectedSection = function() { 
-	return this._multiPlacesWidget._selectedSection;
+WELOCALLY_PlaceFinderWidget.prototype.getSelectedArea = function() { 
+	return this.multiPlacesWidget.getSelectedArea();
 };
 
 WELOCALLY_PlaceFinderWidget.prototype.setStatus = function(statusArea, message, type, showloading){
@@ -299,7 +351,7 @@ WELOCALLY_PlaceFinderWidget.prototype.setStatus = function(statusArea, message, 
 	//need a solution for this
 	if(showloading){
 //		jQuery(statusArea).append('<div><img class="wl_ajax_loading" src="'+
-//				_instance._cfg.imagePath+'/ajax-loader.gif"/></div>');
+//				_instance.cfg.imagePath+'/ajax-loader.gif"/></div>');
 	}
 	
 	jQuery(statusArea).append('<em>'+message+'</em>');
@@ -320,7 +372,6 @@ WELOCALLY_PlaceFinderWidget.prototype.validGeocodeForSearch = function (geocode)
 };
 
 
-
 WELOCALLY_PlaceFinderWidget.prototype.hasType = function(type_name, address_components){
 	for (componentIndex in address_components) {
 		var component = address_components[componentIndex];
@@ -337,4 +388,11 @@ WELOCALLY_PlaceFinderWidget.prototype.getShortNameForType = function(type_name, 
 			return address_components[componentIndex].short_name;
 	}
 	return null;	
+};
+
+WELOCALLY_PlaceFinderWidget.prototype.triggerResize = function(){
+	var _instance = this;
+	
+	_instance.multiPlacesWidget.triggerResize();
+	
 };

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 
 @Controller
 @RequestMapping("/publisher/1_0")
@@ -52,7 +53,7 @@ public class PublisherControllerV1 extends AbstractJsonController {
                 String id = publisher.getString("name");
                 publisher.put("_id", id);
                 jsonDatabase.put(publisher, publisherCollection, id,
-                        JsonDatabase.EntityType.PUBLISHER);  
+                        JsonDatabase.EntityType.PUBLISHER, StatusType.PUBLISHED);  
                 
                 Map<String, Object> result = new HashMap<String,Object>();
                 result.put("id", id);

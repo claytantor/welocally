@@ -43,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.util.WelocallyJSONUtils;
@@ -314,7 +315,7 @@ public class ESPlaceController extends AbstractJsonController {
                     new JSONObject(requestJson);
                 
                 //put it in the user store
-                jsonDatabase.put(user, publisherCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER);
+                jsonDatabase.put(user, publisherCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER, StatusType.PUBLISHED);
                 
                 String mapping = "{" +
                     "\"place\": {" +
@@ -465,7 +466,7 @@ public class ESPlaceController extends AbstractJsonController {
             place.getJSONObject("properties").put("owner", "welocally");  
             
             //put it in the public store
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
+            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             
          	//put it in the public index            
             JSONObject placeIndex = welocallyJSONUtils.makeIndexablePlace(place);
@@ -518,7 +519,7 @@ public class ESPlaceController extends AbstractJsonController {
             //we need something that will see
             if(!place.isNull("public") && place.getBoolean("public")){
                 place.getJSONObject("properties").put("owner", "welocally");   
-                jsonDatabase.put(place, placesReviewCollection, id, JsonDatabase.EntityType.PLACE);
+                jsonDatabase.put(place, placesReviewCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             }
             
             //make a compound document
@@ -535,7 +536,7 @@ public class ESPlaceController extends AbstractJsonController {
             //make it indexable
             JSONObject userPlaceIndex = welocallyJSONUtils.makeIndexableUserData(userPlace, userData);
                        
-            jsonDatabase.put(userPlaceDataDocument, publisherPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE);
+            jsonDatabase.put(userPlaceDataDocument, publisherPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE, StatusType.PUBLISHED);
                              
             IndexResponse response = transportClient.prepareIndex(publisher.getString("username"), "place", id)
             .setSource(XContentFactory.jsonBuilder()

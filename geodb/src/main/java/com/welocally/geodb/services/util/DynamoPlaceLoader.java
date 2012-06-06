@@ -18,6 +18,7 @@ import com.welocally.geodb.services.app.CommandException;
 import com.welocally.geodb.services.app.CommandSupport;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.jmx.LoadMonitor;
 
 @Component
@@ -70,7 +71,7 @@ public class DynamoPlaceLoader implements CommandSupport {
 					welocallyJSONUtils.updatePlaceToWelocally(place);
 					
 					logger.debug("adding document:"+place.getString("_id"));
-					jsonDatabase.put(place,collectionName, place.getString("_id"), JsonDatabase.EntityType.PLACE);
+					jsonDatabase.put(place,collectionName, place.getString("_id"), JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
 					loadMonitor.increment();
 			        count++;
 					

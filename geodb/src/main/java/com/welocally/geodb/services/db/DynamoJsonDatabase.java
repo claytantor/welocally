@@ -125,11 +125,6 @@ public class DynamoJsonDatabase implements JsonDatabase {
             
         }
 
-
-        
-        
-        
-        
         ScanRequest scanRequest = new ScanRequest(collectionName).withScanFilter(scanFilter);
         ScanResult scanResult = dynamoDB.scan(scanRequest);
         logger.debug("Result: " + scanResult);
@@ -232,16 +227,21 @@ public class DynamoJsonDatabase implements JsonDatabase {
         return oArray;
     }
     
-	public JSONArray findUserPlaces(String publisherKey, String collectionName) throws DbException {
+	public JSONArray findUserPlaces(String publisherKey, String collectionName, String status) throws DbException {
         JSONArray oArray = new JSONArray();
         
         ScanRequest scanRequest = new ScanRequest(collectionName);
         Map<String,Condition> scanFilter = new HashMap<String,Condition>();
-        Condition condition = new Condition()
+        Condition conditionOwner = new Condition()
         .withComparisonOperator(ComparisonOperator.EQ)
         .withAttributeValueList(new AttributeValue().withS(publisherKey));
+        
+        Condition conditionStatus = new Condition()
+        .withComparisonOperator(ComparisonOperator.EQ)
+        .withAttributeValueList(new AttributeValue().withS(status));        
     
-        scanFilter.put("owner", condition); 
+        scanFilter.put("owner", conditionOwner); 
+        scanFilter.put("status", conditionStatus); 
         scanRequest.setScanFilter(scanFilter);
         
         ScanResult scanResult;
@@ -286,14 +286,14 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 
 	@Override
-	public void put(JSONObject doc, String collectionName, String id, EntityType type)
+	public void put(JSONObject doc, String collectionName, String id, EntityType type, StatusType status)
 	        throws DbException {
 
 		try {
 
 			switch(type){
 			case PLACE:{
-			    putItem(dynamoJsonObjectFactory.makePlace(doc, "published"),
+			    putItem(dynamoJsonObjectFactory.makePlace(doc, status.toString().toLowerCase()),
                         collectionName);
 			    break;
 			}
@@ -301,7 +301,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 			    JSONObject place = doc.getJSONObject("userPlace");
 			    JSONObject data = doc.getJSONObject("userData");
                			    
-                putItem(dynamoJsonObjectFactory.makeUserPlace(place, data, "published"),
+                putItem(dynamoJsonObjectFactory.makeUserPlace(place, data, status.toString().toLowerCase()),
                         collectionName);
                 break;
             }
@@ -311,12 +311,12 @@ public class DynamoJsonDatabase implements JsonDatabase {
                 break;
             }
             case DEAL: {
-                putItem(dynamoJsonObjectFactory.makeDeal(doc, "published"),
+                putItem(dynamoJsonObjectFactory.makeDeal(doc, status.toString().toLowerCase()),
                         collectionName);
                 break;
             }
             case PUBLISHER: {
-                putItem(dynamoJsonObjectFactory.makePublisher(doc, "published"),
+                putItem(dynamoJsonObjectFactory.makePublisher(doc, status.toString().toLowerCase()),
                         collectionName);
                 break;
             }            

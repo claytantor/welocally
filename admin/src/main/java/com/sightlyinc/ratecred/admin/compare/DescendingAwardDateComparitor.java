@@ -13,7 +13,7 @@ import com.sightlyinc.ratecred.model.Award;
  *
  */
 public class DescendingAwardDateComparitor implements Comparator<Award>{
-	
+
 	static Logger logger = Logger.getLogger(DescendingAwardDateComparitor.class);
 
 	@Override

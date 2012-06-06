@@ -42,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.welocally.geodb.services.db.DbException;
 import com.welocally.geodb.services.db.IdGen;
 import com.welocally.geodb.services.db.JsonDatabase;
+import com.welocally.geodb.services.db.JsonDatabase.StatusType;
 import com.welocally.geodb.services.spatial.Point;
 import com.welocally.geodb.services.spatial.SpatialConversionUtils;
 import com.welocally.geodb.services.util.WelocallyJSONUtils;
@@ -237,6 +238,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
               
         try {
             
+
             //right now we are going to secure this with the claytantor account
             JSONObject  admin =  checkPublisherKey(req);        
             
@@ -282,17 +284,24 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/user/save", method = RequestMethod.PUT)
-    public ModelAndView savePlaceUserPut(@RequestBody String requestJson, HttpServletRequest req){  
+    public ModelAndView savePlaceUserPut( @RequestParam (value="status", required=false) String status, @RequestBody String requestJson, HttpServletRequest req){  
                                
         ModelAndView  mav = new ModelAndView("mapper-result");
               
         try {
+            
+            StatusType statusEnum = StatusType.PUBLISHED;
+            if(!StringUtils.isEmpty(status)){
+                statusEnum = StatusType.valueOf(status);
+            }
+            
+            
             JSONObject  publisher = checkPublisherKey(req);  
             
             JSONObject place = 
                 new JSONObject(requestJson);
             
-            savePlaceToUserStore(place, publisher, mav, req);
+            savePlaceToUserStore(place, publisher, statusEnum, mav, req);
             
         } catch (JSONException e) {
             logger.error("could not get results");
@@ -314,7 +323,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/user/save", method = RequestMethod.GET)
-    public ModelAndView saveUserPlaceJSONP(@RequestParam(required=false) String callback, HttpServletRequest req){
+    public ModelAndView saveUserPlaceJSONP(@RequestParam (value="status", required=false) String status,@RequestParam(required=false) String callback, HttpServletRequest req){
        
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
@@ -327,6 +336,12 @@ public class PlaceControllerV3 extends AbstractJsonController {
         }
         
         try {
+                       
+            StatusType statusEnum = StatusType.PUBLISHED;
+            if(!StringUtils.isEmpty(status)){
+                statusEnum = StatusType.valueOf(status);
+            }
+            
             
             JSONObject  publisher = checkPublisherKey(req); 
             JSONObject placeQueryString =
@@ -347,7 +362,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             if(p != null && publisher != null){      
                 place.put("_id", id);
                 place.getJSONObject("properties").put("owner", publisher.get("username"));
-                savePlaceToUserStore(place, publisher, mav, req);
+                savePlaceToUserStore(place, publisher, statusEnum, mav, req);
             }
                         
                                      
@@ -530,7 +545,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
         try {
             JSONObject publisher = checkPublisherKey(req);  
             
-            JSONArray places = jsonDatabase.findUserPlaces(publisher.getString("username"), userPlacesCollection);
+            JSONArray places = jsonDatabase.findUserPlaces(publisher.getString("username"), userPlacesCollection, "published");
                        
             mav.addObject("mapperResult", places.toString());
             
@@ -571,7 +586,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             place.getJSONObject("properties").put("owner", "welocally");  
             
             //put it in the public store
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE);
+            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             
             //put it in the public index            
             JSONObject placeIndex = welocallyJSONUtils.makeIndexablePlace(place);
@@ -615,7 +630,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
      * @throws IOException
      * @throws RuntimeException
      */
-    private void savePlaceToUserStore(JSONObject place, JSONObject  publisher, ModelAndView mav, HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
+    private void savePlaceToUserStore(JSONObject place, JSONObject  publisher, StatusType status, ModelAndView mav, HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
@@ -630,7 +645,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             //we need something that will see
             if(!place.isNull("public") && place.getBoolean("public")){
                 place.getJSONObject("properties").put("owner", "welocally");   
-                jsonDatabase.put(place, placesReviewCollection, id, JsonDatabase.EntityType.PLACE);
+                jsonDatabase.put(place, placesReviewCollection, id, JsonDatabase.EntityType.PLACE, status);
             }
             
             //make a compound document
@@ -647,7 +662,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             //make it indexable
             JSONObject userPlaceIndex = welocallyJSONUtils.makeIndexableUserData(userPlace, userData);
                        
-            jsonDatabase.put(userPlaceDataDocument, userPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE);
+            jsonDatabase.put(userPlaceDataDocument, userPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE, StatusType.PUBLISHED);
                              
             IndexResponse response = transportClient.prepareIndex(publisher.getString("username"), "place", id)
             .setSource(XContentFactory.jsonBuilder()

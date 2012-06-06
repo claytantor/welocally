@@ -177,7 +177,7 @@ if (!window.WELOCALLY) {
 /*
 	copyright 2012 welocally. NO WARRANTIES PROVIDED
 */
-function WELOCALLY_GeoDbSearch (cfg) {		
+function WELOCALLY_GoogleDocsLoad (cfg) {		
 	
 	this.cfg;
 	this.jqxhr;
@@ -185,18 +185,144 @@ function WELOCALLY_GeoDbSearch (cfg) {
 		
 	this.init = function() {
 		
-		var error;
+		var error = [];
 		if (!cfg) {
-			error = "Please provide configuration for the widget";
+			error.push("Please provide configuration for the widget");
 			cfg = {};
 		}
-				
-		if (!cfg.endpoint) {
-			cfg.endpoint = 'https://api.welocally.com';
+		
+		if (!cfg.key) {
+			error.push("A key is required to open a spreadsheet.");
 		}
 		
-		if (!cfg.requestPath) {
-			cfg.requestPath = '/geodb/place/1_0/search.json';
+		if (!cfg.row) {
+			error.push("Please specify the row for the place.");
+		}
+				
+		this.cfg = cfg;
+				
+		return this;
+		
+	};
+	
+}
+
+
+WELOCALLY_GoogleDocsLoad.prototype.load = function() {
+	
+	//requires event data has the search instance
+	var _instance = this;
+		
+	var surl = 'https://spreadsheets.google.com/feeds/cells/'+_instance.cfg.key
+		+'/default/public/basic?alt=json-in-script&callback=?';
+	
+	//notify all observers
+	jQuery.each(_instance.cfg.observers, function(i,observer) {
+		WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Finding places','wl_update',true);
+	});	
+		
+	jQuery.ajax({
+		  url: surl,
+		  dataType: "jsonp",
+		  success: function(data) {
+			//set to result bounds if enough results
+			if(data != null && data.errors != null) {
+				//notify all observers
+				jQuery.each(_instance.cfg.observers, function(i,observer) {
+					WELOCALLY.ui.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+				});
+				
+				
+			} else if(data != null && data.feed.entry.length>0){			
+				var places = [];
+				var row = 0;
+				var currentPlace = null;
+								
+				jQuery.each(data.feed.entry, function(i,entry) {
+					
+					var rownum = eval(entry.title.$t.substring(1, entry.title.$t.length));
+					if(rownum==_instance.cfg.row){	 
+						if((/A/).test(entry.title.$t)){
+							if(currentPlace != null)
+								places.push(currentPlace);
+							currentPlace = {};
+							currentPlace.properties = {};
+							currentPlace.properties.classifiers = [];
+							currentPlace.properties.classifiers[0] = {};
+							currentPlace.geometry = {};
+							currentPlace.geometry.type = 'Point';
+							currentPlace.geometry.coordinates = [];							
+							currentPlace.properties.name = entry.content.$t;							
+						} else if((/B/).test(entry.title.$t)){
+							currentPlace.properties.address = entry.content.$t;							
+						} else if((/C/).test(entry.title.$t)){
+							currentPlace.properties.city = entry.content.$t;						
+						} else if((/D/).test(entry.title.$t)){
+							currentPlace.properties.province = entry.content.$t;						
+						} else if((/E/).test(entry.title.$t)){
+							currentPlace.properties.postcode = entry.content.$t;							
+						} else if((/F/).test(entry.title.$t)){
+							currentPlace.properties.country = entry.content.$t;						
+						} else if((/G/).test(entry.title.$t)){
+							currentPlace.properties.website = entry.content.$t;						
+						} else if((/H/).test(entry.title.$t)){
+							currentPlace.properties.phone = entry.content.$t;							
+						} else if((/I/).test(entry.title.$t)){
+							currentPlace.properties.classifiers[0].type = entry.content.$t;						
+						} else if((/J/).test(entry.title.$t)){
+							currentPlace.properties.classifiers[0].category = entry.content.$t;						
+						} else if((/K/).test(entry.title.$t)){
+							currentPlace.properties.classifiers[0].subcategory = entry.content.$t;							
+						} else if((/L/).test(entry.title.$t)){
+							currentPlace.geometry.coordinates[1] = entry.content.$t;					
+						} else if((/M/).test(entry.title.$t)){
+							currentPlace.geometry.coordinates[0] = entry.content.$t;		
+						} 
+					}					
+				});
+									
+				//notify all observers
+				jQuery.each(_instance.cfg.observers, function(i,observer) {					
+					WELOCALLY.ui.setStatus(observer.getStatusArea(), '','wl_message',false);
+					if(currentPlace != null)
+						observer.load(currentPlace);
+				});
+				
+			} else {
+			
+				jQuery.each(_instance.cfg.observers, function(i,observer) {
+					WELOCALLY.ui.setStatus(observer.getStatusArea(), 'No results were found matching your search.','wl_warning',false);						
+				});	
+				
+			}														
+		}
+	});
+	
+
+	
+	
+	return false;
+
+};
+/*
+	copyright 2012 welocally. NO WARRANTIES PROVIDED
+*/
+function WELOCALLY_GoogleDocsSearch (cfg) {		
+	
+	this.cfg;
+	this.jqxhr;
+	this.observers;
+		
+	this.init = function() {
+		
+		var error = [];
+		if (!cfg) {
+			error.push("Please provide configuration for the widget");
+			cfg = {};
+		}
+		
+		if (!cfg.key) {
+			error.push("A key is required to open a spreadsheet.");
 		}
 				
 		if (!cfg.zoom) {
@@ -212,10 +338,6 @@ function WELOCALLY_GeoDbSearch (cfg) {
 		if (!cfg.showShare) {
 			cfg.showShare = false;
 		}
-		
-		if (!cfg.siteKey || !cfg.siteToken) {
-			error = "Please include your site key and token in the configuration to add a places.";
-		}
 					
 		this.cfg = cfg;
 				
@@ -226,54 +348,99 @@ function WELOCALLY_GeoDbSearch (cfg) {
 }
 
 
-WELOCALLY_GeoDbSearch.prototype.search = function() {
+WELOCALLY_GoogleDocsSearch.prototype.search = function() {
 	
 	//requires event data has the search instance
 	var _instance = this;
 		
-	var query = {
-		q: _instance.cfg.q,
-		loc: _instance.cfg.loc[0]+'_'+_instance.cfg.loc[1],
-		radiusKm: _instance.cfg.radiusKm
-	};
-		
-	var surl = _instance.cfg.endpoint +
-		_instance.cfg.requestPath+'?'+WELOCALLY.util.serialize(query)+"&callback=?";
+	var surl = 'https://spreadsheets.google.com/feeds/cells/'+_instance.cfg.key
+		+'/default/public/basic?alt=json-in-script&callback=?';
 	
 	//notify all observers
 	jQuery.each(_instance.cfg.observers, function(i,observer) {
 		observer.setStatus(observer.getStatusArea(), 'Finding places','wl_update',true);
 	});	
-	
-					
+		
 	jQuery.ajax({
-			  url: surl,
-			  dataType: "json",
-			  success: function(data) {
-				//set to result bounds if enough results
-				if(data != null && data.errors != null) {
-					//notify all observers
-					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						observer.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
-					});
-					
-					
-				} else if(data != null && data.length>0){							
-					//notify all observers
-					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						observer.setStatus(observer.getStatusArea(), '','wl_message',false);
-						observer.setPlaces(data);
-					});
-					
-				} else {
+		  url: surl,
+		  dataType: "jsonp",
+		  success: function(data) {
+			//set to result bounds if enough results
+			if(data != null && data.errors != null) {
+				//notify all observers
+				jQuery.each(_instance.cfg.observers, function(i,observer) {
+					observer.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
+				});
 				
-					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						observer.setStatus(observer.getStatusArea(), 'No results were found matching your search.','wl_warning',false);						
-					});	
+				
+			} else if(data != null && data.feed.entry.length>0){			
+				var places = [];
+				var row = 0;
+				var currentPlace = null;
+								
+				jQuery.each(data.feed.entry, function(i,entry) {
 					
-				}														
-			}
+					var rownum = eval(entry.title.$t.substring(1, entry.title.$t.length));
+					if(rownum>1){	
+						if((/A/).test(entry.title.$t)){
+							if(currentPlace != null)
+								places.push(currentPlace);
+							currentPlace = {};
+							currentPlace.properties = {};
+							currentPlace.properties.classifiers = [];
+							currentPlace.properties.classifiers[0] = {};
+							currentPlace.geometry = {};
+							currentPlace.geometry.type = 'Point';
+							currentPlace.geometry.coordinates = [];							
+							currentPlace.properties.name = entry.content.$t;							
+						} else if((/B/).test(entry.title.$t)){
+							currentPlace.properties.address = entry.content.$t;							
+						} else if((/C/).test(entry.title.$t)){
+							currentPlace.properties.city = entry.content.$t;						
+						} else if((/D/).test(entry.title.$t)){
+							currentPlace.properties.province = entry.content.$t;						
+						} else if((/E/).test(entry.title.$t)){
+							currentPlace.properties.postcode = entry.content.$t;							
+						} else if((/F/).test(entry.title.$t)){
+							currentPlace.properties.country = entry.content.$t;						
+						} else if((/G/).test(entry.title.$t)){
+							currentPlace.properties.website = entry.content.$t;						
+						} else if((/H/).test(entry.title.$t)){
+							currentPlace.properties.phone = entry.content.$t;							
+						} else if((/I/).test(entry.title.$t)){
+							currentPlace.properties.classifiers[0].type = entry.content.$t;						
+						} else if((/J/).test(entry.title.$t)){
+							currentPlace.properties.classifiers[0].category = entry.content.$t;						
+						} else if((/K/).test(entry.title.$t)){
+							currentPlace.properties.classifiers[0].subcategory = entry.content.$t;							
+						} else if((/L/).test(entry.title.$t)){
+							currentPlace.geometry.coordinates[1] = entry.content.$t;					
+						} else if((/M/).test(entry.title.$t)){
+							currentPlace.geometry.coordinates[0] = entry.content.$t;		
+						} 
+					}					
+				});
+				
+				if(currentPlace != null)
+					places.push(currentPlace);
+					
+				//notify all observers
+				jQuery.each(_instance.cfg.observers, function(i,observer) {
+					observer.setStatus(observer.getStatusArea(), '','wl_message',false);
+					observer.setPlaces(places);
+				});
+				
+			} else {
+			
+				jQuery.each(_instance.cfg.observers, function(i,observer) {
+					observer.setStatus(observer.getStatusArea(), 'No results were found matching your search.','wl_warning',false);						
+				});	
+				
+			}														
+		}
 	});
+	
+
 	
 	
 	return false;
@@ -1058,8 +1225,7 @@ function WELOCALLY_PlaceWidget (cfg) {
 	this.map_canvas;
 	this.map;
 	this.placehoundPath;
-	this.imagePath;
-	
+	this.imagePath;	
 	
 	this.init = function() {
 		
@@ -1128,33 +1294,38 @@ WELOCALLY_PlaceWidget.prototype.initCfg = function(cfg) {
 };
 
 
-WELOCALLY_PlaceWidget.prototype.makeWrapper = function() {
+WELOCALLY_PlaceWidget.prototype.makeWrapper = function() { 
 	// Build Widget
 	var _instance = this;
 	
 	// Build Widget
-	this.wrapper = jQuery('<div></div>');
-	jQuery(this.wrapper).css('display','none');			
-	jQuery(this.wrapper).attr('class','welocally_place_widget');
-	jQuery(this.wrapper).attr('id','welocally_place_widget_'+_instance.cfg.id);
+	var wrapper = jQuery('<div></div>');
+	jQuery(wrapper).css('display','none');			
+	jQuery(wrapper).attr('class','welocally_place_widget');
+	jQuery(wrapper).attr('id','welocally_place_widget_'+_instance.cfg.id);
+	
+	//status area
+	this.statusArea = jQuery('<div class="wl_place_status"></div>');
+	jQuery(wrapper).append(this.statusArea);
 	
 	
 	//google maps does not like jquery instances
 	this.map_canvas = document.createElement('DIV');
 	jQuery(this.map_canvas).css('display','none');	
     jQuery(this.map_canvas).attr('class','wl_places_place_map_canvas');
-	jQuery(this.map_canvas).attr("id","wl_place_map_canvas_widget_"+_instance.cfg.id);	
+	jQuery(this.map_canvas).attr("id","wl_place_map_canvas_widget_"+_instance.cfg.id);
+	jQuery(wrapper).append(this.map_canvas);
+	
+	
+	this.wrapper = wrapper; 
 	
 	return this.wrapper;
 	
 };
 
 
-WELOCALLY_PlaceWidget.prototype.loadRemote = function() {
-	this.load(this.map_canvas);
-};
 
-WELOCALLY_PlaceWidget.prototype.loadLocal = function(placeJson) {
+WELOCALLY_PlaceWidget.prototype.load = function(placeJson) {
 	var _instance = this;
 	_instance.map = _instance.initMapForPlace(placeJson,_instance.map_canvas);
 	_instance.show(placeJson);
@@ -1170,59 +1341,6 @@ WELOCALLY_PlaceWidget.prototype.loadLocal = function(placeJson) {
  	}, 200);
 	
 };
-
-WELOCALLY_PlaceWidget.prototype.load = function(map_canvas) {
-	var _instance = this;
-	
-	if(WELOCALLY.util.startsWith(_instance.cfg.id,"WL_")){			
-		var surl = _instance.cfg.endpoint +
-			_instance.cfg.requestPath+_instance.cfg.id+'.json?callback=?';
-		
-		
-		_instance.jqxhr = jQuery.ajax({
-			url: surl,
-			dataType: "json",
-			beforeSend: function(jqXHR){
-				_instance.jqxhr = jqXHR;
-				_instance.jqxhr.setRequestHeader("key", _instance.cfg.key);
-				_instance.jqxhr.setRequestHeader("token", _instance.cfg.token);
-		  	},
-			success: function(data) {
-				if(data != null && data.errors != null) {
-					var errorsArea = jQuery('<div></div>');
-					WELOCALLY.ui.setStatus(errorsArea, WELOCALLY.util.getErrorString(data.errors),'wl_error');
-					jQuery(_instance.wrapper).attr('class','');
-					jQuery(_instance.wrapper).html(errorsArea);
-					jQuery(_instance.wrapper).show();
-					
-				} else if(data != null && data.length>0){	
-					_instance.show(data[0]);
-					_instance.setMapEvents(_instance.map);
-					
-					var latlng = new google.maps.LatLng(
-							data[0].geometry.coordinates[1], 
-							data[0].geometry.coordinates[0]);
-					
-					//forced to refresh
-					setTimeout(function () {
-				     	_instance.refreshMap(latlng);
-				 	}, 200);
-				} else {
-					var errorsArea = jQuery('<div></div>');
-					WELOCALLY.ui.setStatus(errorsArea, 'No data was returned.','wl_update');
-					jQuery(_instance.wrapper).attr('class','');
-					jQuery(_instance.wrapper).html(errorsArea);
-					jQuery(_instance.wrapper).show();
-				}
-				
-				
-			},
-			error: function() {
-			}
-		});
-	}		
-};	
-
 
 WELOCALLY_PlaceWidget.prototype.initMapForPlace = function(place, map_canvas) {
 	
@@ -1370,39 +1488,7 @@ WELOCALLY_PlaceWidget.prototype.makePlaceContent = function(selectedPlace, cfg) 
 	if(!cfg.showShare){
 		jQuery(embed).hide();
 	}
-	
-	//tag
-	//we wont make a permalink or tag unless an id is available for the place
-	if(selectedPlace._id)
-	{
-		//share link
-		var shareToggle = jQuery('<div class="wl_places_place_share_link"></div>');
-		var shareLink = jQuery('<a href="#" target="_new">Share</a>');
-		jQuery(shareLink).click(function() {
-			jQuery(embed).toggle();
-			return false;
-		});
-		jQuery(shareToggle).append(shareLink);
-		jQuery(links).append(shareToggle);
-		
-		var wlSelectedTagArea = jQuery('<div id="wl_place_widget_tag" class="wl_places_place_tag"></div>');	
-		var title = jQuery('<div class="wl_place_title">Use this tag to share with <a href="http://welocally.com/?page_id=2" target="_new">Welocally Places</a> for <a href="http://wordpress.org/extend/plugins/welocally-places/" target="_new">WordPress</a></div>');
-		jQuery(wlSelectedTagArea).append(title);
-		
-		//the tag
-		var tag = '[welocally id="'+selectedPlace._id+'" /]';
-		var inputAreaTag = jQuery('<input/>');
-		jQuery(inputAreaTag).val(tag);	
-		jQuery(wlSelectedTagArea).append(inputAreaTag);
-		
-		jQuery(embed).append(wlSelectedTagArea); 
-		
-		//placehound permalink
-		jQuery(embed).append('<div class="wl_place_title"><a target="_new" href="'+_instance.cfg.placehoundPath+'/place.html?id='+selectedPlace._id+'">Place Permalink</a></div>');		
-		
-		jQuery(placeWrapper).append(embed); 
 
-	}
 	
 	jQuery(placeWrapper).append(links);
 		
@@ -1430,6 +1516,13 @@ WELOCALLY_PlaceWidget.prototype.refreshMap = function(searchLocation) {
 		
 	});
 	
+};
+
+
+//use map status area
+WELOCALLY_PlaceWidget.prototype.getStatusArea = function (){
+	var _instance = this;
+	return _instance.statusArea;
 };/*
 	copyright 2012 welocally. NO WARRANTIES PROVIDED
 */
@@ -1807,7 +1900,7 @@ WELOCALLY_PlacesMultiWidget.prototype.makeItemContents = function (item, i, show
 	jQuery(wrapper)
 		.append(jQuery('<div class="selectable_address">'+
 			item.properties.address+' '+item.properties.city+' '+item.properties.province+'</div>'));
-	if(item.distance){
+	if(item.distance && !_instance.cfg.hideDistance ){
 		jQuery(wrapper)
 		.append(jQuery('<div class="selectable_distance">'+
 				item.distance.toFixed(2)+'km </div>'));
@@ -2132,7 +2225,19 @@ WELOCALLY_PlacesMultiWidget.prototype.getStatusArea = function (){
 	return _instance.mapStatus;
 };
 
+WELOCALLY_PlacesMultiWidget.prototype.triggerResize = function(){
+	
+	var _instance = this;
+	
+	google.maps.event.trigger(_instance.map, 'resize');
+		
+};
 
+//for place selectors
+WELOCALLY_PlacesMultiWidget.prototype.show = function(selectedPlace) {	
+	jQuery( this.results ).trigger( "observerselected", {instance: this, type:observer, place:selectedPlace}, this.selectedItemHandler);
+	
+};
 
 
 

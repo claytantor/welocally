@@ -333,7 +333,6 @@ ul#icons span.ui-icon {
 
 .area {
 	border: 1px solid #888888;
-	padding: 5px;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -353,12 +352,12 @@ ul#icons span.ui-icon {
 }
 
 #navbar ul li {
-	margin: 5px;
-	width: 170px;
+	width: 96%;
+	margin: 3px auto;
 }
 
 #navbar ul li a {
-	width: 170px;
+	width: 100%;
 }
 
 .wl_form input {
@@ -390,3 +389,14 @@ ul#icons span.ui-icon {
 
 /* temp for components */
 .wl_searchadd_buttons_area{ margin-bottom: 5px; }
+
+.inline{ display: inline; }
+.inline-100{ display: inline-block; width: 100px }
+.inline-200{ display: inline-block; width: 200px }
+.inline-300{ display: inline-block; width: 300px }
+.inline-400{ display: inline-block; width: 400px }
+.inline-500{ display: inline-block; width: 500px }
+.inline-600{ display: inline-block; width: 600px }
+
+.ui-widget-content{ font-size: 1.0em; font-family: 'Carme', verdana, arial, helvetica, sans-serif; }
+
