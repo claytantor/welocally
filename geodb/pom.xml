@@ -4,7 +4,7 @@
 	<groupId>com.welocally.geodb</groupId>
 	<artifactId>geodb</artifactId>
 	<version>0.9.4-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>geodb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
