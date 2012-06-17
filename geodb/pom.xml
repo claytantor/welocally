@@ -4,7 +4,7 @@
 	<groupId>com.welocally.geodb</groupId>
 	<artifactId>geodb</artifactId>
 	<version>0.9.4-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>geodb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -355,8 +355,35 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-
-	      </dependencies>
+	    <dependency>
+	        <groupId>org.mortbay.jetty</groupId>
+	        <artifactId>jetty</artifactId>
+	        <version>6.1H.22</version>
+	        <type>jar</type>
+	        <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.mortbay.jetty</groupId>
+	        <artifactId>jetty-util</artifactId>
+	        <version>6.1H.22</version>
+	        <type>jar</type>
+	        <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.mortbay.jetty</groupId>
+	        <artifactId>jetty-plus</artifactId>
+	        <version>6.1H.22</version>
+	        <type>jar</type>
+	        <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.mortbay.jetty</groupId>
+	        <artifactId>jetty-annotations</artifactId>
+	        <version>6.1H.22</version>
+	        <type>jar</type>
+	        <scope>provided</scope>
+	    </dependency>
+	</dependencies>
     <repositories>
         <repository>
             <id>akka.repository</id>
