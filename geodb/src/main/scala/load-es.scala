@@ -86,3 +86,9 @@ object ESLoader {
     System.exit(0)
   }
 }
+
+object HelloWorld {
+  def main(args: Array[String])  {
+      println("Hi from Scala!");
+  }
+}
