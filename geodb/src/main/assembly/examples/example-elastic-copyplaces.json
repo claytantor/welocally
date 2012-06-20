@@ -1,0 +1,15 @@
+{
+    "properties": [
+        "log4j.config=/Users/claygraham/data/projects/configs/log4j.xml",
+        "geodb_core.properties=file:///Users/claygraham/data/projects/configs/geodb_core.properties",
+        "signpost4j.config=file:///Users/claygraham/data/projects/signpost4j/src/test/resources/example_signpost4j.properties"
+    ],
+    "bean": "elasticSearchPlaceCopy",
+    "command": {
+    	"sourceUrls": [
+    		"https://api.welocally.com/geodb/place/3_0/search.json?action=get_places&q=Restaurant&loc=37.8261015_-122.20913330000002&radiusKm=20"
+    	],
+    	"targetCollection":"dev.places.published",
+    	"targetIndex":"http://localhost:9200/place/"   	
+    }
+}

@@ -1,5 +1,9 @@
 package com.welocally.geodb.services.util;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,5 +103,25 @@ public class WelocallyJSONUtils {
         
         return newDeal;
     }
+	
+//	/*
+//	 * for non json object array conversion such a sstring, int, float
+//	 */
+//	public List<?> toList(JSONArray array) throws JSONException, InstantiationException, IllegalAccessException{
+//	    List<?> target = new ArrayList();
+//	    for (int i = 0; i < array.length(); i++) {
+//            JSONObject o = array.getJSONObject(i);
+//            Class clazz = o.getClass();
+//            
+//            ParameterizedType parameterizedType = 
+//                (ParameterizedType)clazz.getGenericSuperclass();
+//            parameterizedType.equals(String.class);
+//            
+//            if(clazz.newInstance() instanceof String) {
+//                
+//            }
+//        }
+//	    return target;
+//	}
 
 }

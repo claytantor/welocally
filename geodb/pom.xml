@@ -27,8 +27,6 @@
 	  <url>s3://1h8amwp9wtkkhvmv5782.maven/releases/snapshot</url>
 	 </snapshotRepository>
 	</distributionManagement>		
-	
-	
 	<profiles>	
 		<profile>
 		  <id>war</id>

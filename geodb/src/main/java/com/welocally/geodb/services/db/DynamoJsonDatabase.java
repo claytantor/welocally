@@ -49,9 +49,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	@Value("${AWSCredentials.secretKey:bar}")
 	private String awsSecretKey;
 	
-	private Map<String, String[]> classifiers;
-	
-	
+	private Map<String, String[]> classifiers;	
 	
 	public void evict(){
 		classifiers.clear();

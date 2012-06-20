@@ -148,7 +148,13 @@ if (!window.WELOCALLY) {
 			},
 			startsWith: function(sourceString, startsWith) {
 				  return sourceString.indexOf(startsWith) == 0;
-			},
+			},			
+			urlify: function(text) {
+			    var urlRegex = /(https?:\/\/[^\s]+)/g;
+			    return text.replace(urlRegex, function(url) {
+			        return '<a href="' + url + '">' + url + '</a>';
+			    });
+			},			
 			getParameter: function ( queryString, parameterName ) {
 				   // Add "=" to the parameter name (i.e. parameterName=value)
 				   var parameterName = parameterName + "=";
