@@ -16,7 +16,7 @@ import org.springframework.web.context.ContextLoaderListener;
  *
  */
 public class EmbeddedServer {
-	private static final int DEFAULT_HTTP_PORT = 8082;
+	private static final String DEFAULT_HTTP_PORT = "8082";
 	private static final String WAR_LOCATION = "src/main/webapp";
 	private static Logger logger = Logger.getLogger(EmbeddedServer.class);
 
@@ -41,8 +41,9 @@ public class EmbeddedServer {
  
 		InitialContext ctx = new InitialContext();
 		ctx.createSubcontext("java:comp");
- 
-		Server server = new Server(DEFAULT_HTTP_PORT);
+
+		int http_port = Integer.valueOf(System.getProperty("com.ratecred.geodb.http_port", DEFAULT_HTTP_PORT));
+		Server server = new Server(http_port);
 		WebAppContext webapp = new WebAppContext();
 		webapp.setConfigurationClasses(__dftConfigurationClasses);
  
