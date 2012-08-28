@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.sightlyinc.ratecred.admin.util.HttpHelperUtils;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
+import com.welocally.admin.security.UserPrincipal;
 
 @Component
 public class GeodbProvisionManager {

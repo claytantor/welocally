@@ -309,8 +309,7 @@ WELOCALLY_PlaceWidget.prototype.show = function(selectedPlace) {
 WELOCALLY_PlaceWidget.prototype.refreshMap = function(searchLocation) {
 	var _instance = this;
 	google.maps.event.trigger(_instance.map, 'resize');
-	
-	
+		
 	var listener = google.maps.event.addListener(_instance.map, "tilesloaded", function() {
 
 		_instance.map.setCenter(searchLocation);

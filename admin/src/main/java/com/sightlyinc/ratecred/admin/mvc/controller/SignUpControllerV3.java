@@ -8,16 +8,12 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.AuthenticationProvider;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.ui.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,21 +27,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.noi.utility.spring.service.BLMessage;
 import com.noi.utility.spring.service.BLServiceException;
-import org.apache.commons.lang.StringUtils;
 import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
 import com.sightlyinc.ratecred.admin.model.Errors;
 import com.sightlyinc.ratecred.admin.model.SiteInfoModel;
 import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.OrderManager;
 import com.sightlyinc.ratecred.service.PublisherManager;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 /**
  * @author clay
@@ -159,8 +154,8 @@ public class SignUpControllerV3 {
                 UserPrincipal up = userService.loadUser(key);
                 Map<String,String> data = new HashMap<String,String>();
                 data.put("command", jsonObject.getString("command"));
-                response.put("mapperResult",
-                        jsonObjectSerializer.serialize(publisherManager.isAllowed(data, p, up)));
+//                response.put("mapperResult",
+//                        jsonObjectSerializer.serialize(publisherManager.isAllowed(data, p, up)));
             } else {
                 eajax.getErrors().add(
                         new AjaxError(AjaxError.AUTH_ERROR, "Problem with token match."));
@@ -178,11 +173,7 @@ public class SignUpControllerV3 {
             logger.error("problem with user", e);
             eajax.getErrors().add(
                     new AjaxError(AjaxError.AUTH_ERROR, "Problem with user."));
-        } catch (IOException e) {
-            logger.error("problem serializing", e);
-            eajax.getErrors().add(
-                    new AjaxError(AjaxError.AUTH_ERROR, "Problem with serialize."));
-        }
+        } 
         
      // if errors send them instead
         if (eajax.getErrors().size() > 0) {
@@ -202,13 +193,13 @@ public class SignUpControllerV3 {
 	public String homePublisher(@RequestParam String siteKey, @RequestParam String siteToken, HttpServletRequest request, Model model) {
     	logger.debug("home");
 		
-			
-		// Must be called from request filtered by Spring Security, otherwise SecurityContextHolder is not updated
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(siteKey, siteToken);
-        token.setDetails(new WebAuthenticationDetails(request));
-        Authentication authentication = ((AuthenticationProvider)userService).authenticate(token);
-        logger.debug("Logging in with [{}]"+ authentication.getPrincipal());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+//			
+//		// Must be called from request filtered by Spring Security, otherwise SecurityContextHolder is not updated
+//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(siteKey, siteToken);
+//        token.setDetails(new WebAuthenticationDetails(request));
+//        Authentication authentication = ((AuthenticationProvider)userService).authenticate(token);
+//        logger.debug("Logging in with [{}]"+ authentication.getPrincipal());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		return "redirect:/home";
 	}

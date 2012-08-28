@@ -84,9 +84,12 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	//requires event data has the search instance
 	var _instance = this;
 	
+	
+	
 	if(!_instance.cfg.key){
 		jQuery.each(_instance.cfg.observers, function(i,observer) {
-			WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Publisher key not set','wl_error',true);
+			var statusArea = jQuery(observer).find('#wl_status');
+			WELOCALLY.ui.setStatus(statusArea, 'Publisher key not set','wl_error',true);
 		});	
 		
 		return false;
@@ -94,47 +97,41 @@ WELOCALLY_UserPlacesSearch.prototype.search = function() {
 	
 	if(!_instance.cfg.token){
 		jQuery.each(_instance.cfg.observers, function(i,observer) {
-			WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Publisher token not set','wl_error',true);
+			var statusArea = jQuery(observer).find('#wl_status');
+			WELOCALLY.ui.setStatus(statusArea, 'Publisher token not set','wl_error',true);
 		});	
 		
 		return false;
 	}
 				
 	var surl = _instance.cfg.endpoint +
-		"/geodb/place/3_0/userplaces.json?callback=?";
+		'/geodb/place/3_0/userplaces.json?key='+_instance.cfg.key+'&token='+_instance.cfg.token+'&callback=?';
 	
 	//notify all observers
 	jQuery.each(_instance.cfg.observers, function(i,observer) {
-		WELOCALLY.ui.setStatus(observer.getStatusArea(), 'Finding places','wl_update',true);
+		var statusArea = jQuery(observer).find('#wl_status');
+		WELOCALLY.ui.setStatus(statusArea, 'Finding places','wl_update',true);
 	});	
-						
+
 	_instance.jqxhr = jQuery.ajax({
 			  url: surl,
 			  dataType: "json",
-			  beforeSend: function(jqXHR){
-				_instance.jqxhr = jqXHR;
-				_instance.jqxhr.setRequestHeader("key", _instance.cfg.key);
-				_instance.jqxhr.setRequestHeader("token", _instance.cfg.token);
-			  },
 			  success: function(data) {
 				//set to result bounds if enough results
 				if(data != null && data.errors != null) {					
 					jQuery.each(_instance.cfg.observers, function(i,observer) {
 						WELOCALLY.ui.setStatus(observer.getStatusArea(),'ERROR:'+WELOCALLY.util.getErrorString(data.errors), 'wl_error', false);
 					});
-				} else if(data != null && data.length>0){							
+				} else if(data != null && data.errors == null ){							
 					//notify all observers
 					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						WELOCALLY.ui.setStatus(observer.getStatusArea(), '','wl_message',false);
-						observer.setPlaces(data);
+						var statusArea = jQuery(observer).find('#wl_status');
+						WELOCALLY.ui.setStatus(statusArea, '','wl_message',false);
+						jQuery(observer).setPlaces(data, _instance.cfg);
 					});
 					
-				} else {
-					jQuery.each(_instance.cfg.observers, function(i,observer) {
-						WELOCALLY.ui.setStatus(observer.getStatusArea(), 'No results were found matching your search.','wl_warning',false);						
-					});	
-					
-				}														
+				} 
+													
 			}
 	});
 	

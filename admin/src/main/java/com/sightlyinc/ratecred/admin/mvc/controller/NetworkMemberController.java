@@ -14,15 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.noi.utility.spring.service.BLServiceException;
-import com.sightlyinc.ratecred.authentication.Role;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
-import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.welocally.admin.security.Role;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
 
 @Controller
 @RequestMapping(value="/admin/member")

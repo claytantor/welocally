@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.Offer;
-import com.sightlyinc.ratecred.model.Order;
 
 @Repository("offerDao")
 public class OfferDaoDefaultImpl 

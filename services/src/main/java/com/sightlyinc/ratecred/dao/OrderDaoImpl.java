@@ -12,10 +12,8 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import com.sightlyinc.ratecred.model.Compliment;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Patron;
-import com.sightlyinc.ratecred.model.Place;
 
 @Repository("orderDao")
 public class OrderDaoImpl 

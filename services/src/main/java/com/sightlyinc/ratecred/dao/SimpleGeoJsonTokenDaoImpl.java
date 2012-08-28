@@ -1,11 +1,12 @@
 package com.sightlyinc.ratecred.dao;
 
-import com.sightlyinc.ratecred.model.SimpleGeoJsonToken;
+import java.util.Date;
+import java.util.List;
+
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.List;
+import com.sightlyinc.ratecred.model.SimpleGeoJsonToken;
 
 /**
  * @author sam

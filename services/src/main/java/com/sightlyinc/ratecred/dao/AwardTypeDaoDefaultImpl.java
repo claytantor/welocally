@@ -8,12 +8,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Business;
 
 @Repository("awardTypeDao")
 public class AwardTypeDaoDefaultImpl 

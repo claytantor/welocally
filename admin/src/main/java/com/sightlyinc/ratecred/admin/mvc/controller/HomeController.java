@@ -5,23 +5,23 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.sightlyinc.ratecred.authentication.Role;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.welocally.admin.security.Role;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 @Controller
 @RequestMapping(value="/home")
@@ -62,9 +62,11 @@ public class HomeController extends AbstractBaseController {
 				
 			} else if(userPrincipalService.hasUserRole(principal, "ROLE_MEMBER")) {
 				NetworkMember member =
-					networkMemberService.findMemberByUserPrincipal(principal);				
+					null;			
 				model.addAttribute("member", member); 
-				model.addAttribute("orders", orderService.findByDaysTrailing(daysTrailing)); 
+				model.addAttribute("orders", orderService.findByDaysTrailing(daysTrailing));
+				
+				throw new RuntimeException("NO IMPL");
 				
 			}
 			

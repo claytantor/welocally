@@ -7,11 +7,30 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<html>
-<c:set var="pageTitle" value="Publisher List"/>
-<jsp:include page="../head.jsp"/>
-<body>
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="publisher_list" width="100%">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Status</th>
+				<th>Created</th>
+			</tr>
+		</thead>
+		<tbody>
 
+		<c:forEach var="publisher" items="${publishers}">
+    		<tr>
+    			<td class="wl_row">${publisher.id}</td>
+    			<td class="wl_row">${publisher.name}</td>
+    			<td class="wl_row">${publisher.subscriptionStatus}</td>
+    			<td class="wl_row">${publisher.timeCreated}</td>
+    		</tr>
+		</c:forEach>
+		</tbody>
+	</table>
+
+<%
+/*
 <div class="container">
 	<div class="span-24">
 		<jsp:include page="../header.jsp"/>
@@ -36,7 +55,5 @@
 			</c:forEach>
 		</div>	
 	</div>
-</div>
-
-</body>
-</html>
+</div> */
+%>

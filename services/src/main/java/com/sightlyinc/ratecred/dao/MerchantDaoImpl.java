@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.Merchant;
 import com.sightlyinc.ratecred.model.NetworkMember;
-import com.sightlyinc.ratecred.model.Place;
 
 /**
  * Class javadoc comment here...

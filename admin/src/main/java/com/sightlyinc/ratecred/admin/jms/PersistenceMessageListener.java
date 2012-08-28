@@ -11,8 +11,6 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import com.sightlyinc.ratecred.service.ArticleService;
-import com.sightlyinc.ratecred.service.EventService;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -37,6 +35,8 @@ import com.sightlyinc.ratecred.model.Event;
 import com.sightlyinc.ratecred.model.Merchant;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
+import com.sightlyinc.ratecred.service.ArticleService;
+import com.sightlyinc.ratecred.service.EventService;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Geometry;
 import com.simplegeo.client.types.Layer;
@@ -78,7 +78,7 @@ public class PersistenceMessageListener implements MessageListener,GeoStoragePer
 		
 	@PostConstruct
 	public void postConstruct() {
-		logger.debug("listener is created");
+		logger.debug("listener is created damn");
 		client = SimpleGeoStorageClient.getInstance();	
 		client.getHttpClient().setToken(ratecredConsumerKey, ratecredConsumerSecret);
 	}

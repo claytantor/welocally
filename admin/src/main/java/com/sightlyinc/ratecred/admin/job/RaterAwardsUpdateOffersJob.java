@@ -1,14 +1,9 @@
 package com.sightlyinc.ratecred.admin.job;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.jms.JMSException;
-
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.sightlyinc.ratecred.admin.jms.UpdateAwardOfferMessageProducer;
-import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 

@@ -1,12 +1,12 @@
 package com.sightlyinc.ratecred.admin.velocity;
 
-import com.noi.utility.web.UrlUtils;
-import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
-
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
+
+import com.noi.utility.web.UrlUtils;
+import com.sightlyinc.ratecred.model.Award;
+import com.sightlyinc.ratecred.model.Offer;
 
 public class AwardTool {
 	

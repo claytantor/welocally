@@ -20,10 +20,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
-import com.sightlyinc.ratecred.service.PatronManagerService;
 import com.sightlyinc.ratecred.service.RatingManagerService;
 
 
@@ -39,7 +37,7 @@ public class SaveNewAwardMessageListener implements MessageListener {
 	
 	private RatingManagerService ratingManagerService;
 
-	private PatronManagerService patronManagerService;
+	//private PatronManagerService patronManagerService;
 
 	private AwardManagerService awardManagerService;
 	
@@ -82,11 +80,11 @@ public class SaveNewAwardMessageListener implements MessageListener {
             		new Long(userData.get("awardTypeId").toString());
             	
             	AwardType awardType = awardManagerService.findAwardTypeByPrimaryKey(awardTypePk);
-            	Patron r = patronManagerService.findPatronByPrimaryKey(raterPk);
+            	//Patron r = patronManagerService.findPatronByPrimaryKey(raterPk);
             	Award award = (Award)userData.get("award");
             	
             	//null offer will automatically target
-            	raterAwardsService.saveNewAward(award, awardType, r, null);
+            	//raterAwardsService.saveNewAward(award, awardType, r, null);
             	
             }
         	
@@ -139,9 +137,6 @@ public class SaveNewAwardMessageListener implements MessageListener {
 	}
 
 
-	public void setPatronManagerService(PatronManagerService patronManagerService) {
-		this.patronManagerService = patronManagerService;
-	}
-    
+
     
 }

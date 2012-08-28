@@ -24,12 +24,12 @@ import com.sightlyinc.ratecred.admin.model.AjaxError;
 import com.sightlyinc.ratecred.admin.model.AjaxErrors;
 import com.sightlyinc.ratecred.admin.model.PublisherSignupForm;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.Site;
 import com.sightlyinc.ratecred.service.OrderManagerV2;
 import com.sightlyinc.ratecred.service.SiteService;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 /**
  * @author clay

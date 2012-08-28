@@ -35,22 +35,22 @@ strong {
 }
 
 a:link {
-	color: #5a5a5a;
+	color: #000;
 	text-decoration: underline;
 }
 
 a:visited {
-	color: #888888;
+	color: #444;
 	text-decoration: underline;
 }
 
 a:hover {
-	color: #7c7c7c;
+	color: #4a4;
 	text-decoration: underline;
 }
 
 a:active {
-	color: #5a9147;
+	color: #6f6;
 	text-decoration: underline;
 }
 
@@ -399,4 +399,44 @@ ul#icons span.ui-icon {
 .inline-600{ display: inline-block; width: 600px }
 
 .ui-widget-content{ font-size: 1.0em; font-family: 'Carme', verdana, arial, helvetica, sans-serif; }
+
+.wl_table_buttons { 
+	width: 903px;
+    margin-bottom: 2px;
+	border: 1px solid #aaaaaa;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 4px;
+	background-color: #f2f2f2 }
+	
+.wl_dialog_header {
+	width: 100%;
+    margin-bottom: 10px;
+	border: 1px solid #aaaaaa;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 4px;
+	background-color: #f2f2f2;
+	font-weight: bold;
+}
+
+.wl_loading{ width: 100%; text-align: center;}
+
+.wl_dialog_form{ width: 100%; }
+
+
+#wl_dialog_form input[type="text"] {  width: 100%; }
+
+#wl_addplace textarea{ 
+	border: 1px solid #aaaaaa;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 4px;
+}
+
+
+
 

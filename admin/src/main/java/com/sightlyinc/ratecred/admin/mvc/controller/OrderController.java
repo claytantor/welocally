@@ -1,11 +1,8 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -14,7 +11,6 @@ import org.apache.velocity.tools.generic.NumberTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherRegistrationGenerator;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.model.Contact;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Product;
 import com.sightlyinc.ratecred.model.Publisher;
@@ -36,6 +29,7 @@ import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.ProductService;
 import com.sightlyinc.ratecred.service.PublisherService;
 import com.sightlyinc.ratecred.util.JavaMailer;
+import com.welocally.admin.security.UserPrincipalService;
 
 @Controller
 @RequestMapping(value="/order")

@@ -323,7 +323,11 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/user/save", method = RequestMethod.GET)
-    public ModelAndView saveUserPlaceJSONP(@RequestParam (value="status", required=false) String status,@RequestParam(required=false) String callback, HttpServletRequest req){
+    public ModelAndView saveUserPlaceJSONP(
+            @RequestParam (value="key", required=true) String key, 
+            @RequestParam (value="token", required=true) String token, 
+            @RequestParam (value="status", required=false) String status,
+            @RequestParam(required=false) String callback, HttpServletRequest req){
        
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
@@ -343,7 +347,9 @@ public class PlaceControllerV3 extends AbstractJsonController {
             }
             
             
-            JSONObject  publisher = checkPublisherKey(req); 
+            JSONObject  publisher = jsonDatabase.findById(usersCollection, key);
+            
+            
             JSONObject placeQueryString =
                 new JSONObject(req.getParameterMap());
             
@@ -530,7 +536,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/userplaces", method = RequestMethod.GET)
-    public ModelAndView getUserPlaces(@RequestParam(required=false) String callback, Model m, HttpServletRequest req){
+    public ModelAndView getUserPlaces(@RequestParam String key, @RequestParam String token, @RequestParam(required=false) String callback, Model m, HttpServletRequest req){
        
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
@@ -543,7 +549,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
         }
         
         try {
-            JSONObject publisher = checkPublisherKey(req);  
+            JSONObject publisher = checkPublisherKeyParam(key, token);  
             
             JSONArray places = jsonDatabase.findUserPlaces(publisher.getString("username"), userPlacesCollection, "published");
                        
@@ -691,6 +697,21 @@ public class PlaceControllerV3 extends AbstractJsonController {
                       
             try {
                 return jsonDatabase.findById(usersCollection, publisherKey);
+            } catch (Exception e) {
+               throw new RuntimeException(e);
+            }  
+                                       
+        } else {  
+            throw new RuntimeException("publisher key not found in header");
+        }
+    }
+    
+    private JSONObject checkPublisherKeyParam(String key, String token){
+        if(key != null){   
+            //String publisherKey = req.getHeader("key");
+                      
+            try {
+                return jsonDatabase.findById(usersCollection, key);
             } catch (Exception e) {
                throw new RuntimeException(e);
             }  

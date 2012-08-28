@@ -28,11 +28,27 @@ jQuery(document).ready(function() {
 				
         <div class="span-6 last">
         	<div><a href="${facebookRedirect}">login with facebook</a></div>
+        	<div>
+
+		        Please enter your Google Apps domain to log in.<br/>
+		
+		        <form action="<c:url value="/openid"/>" method="get">
+		            <div class="field">
+		                <label for="domain_field">Google Apps Domain</label><input id="domain_field" type="text" name="hd"/>
+		            </div>
+		            <div class="field">
+		                <input type="submit" value="Log in">
+		            </div>
+		        </form>
+     	
+        	</div>
     		<div class="actions span-6">
 	    		<a href="<c:url value='/home' />" class="button">login</a><a href="<c:url value='/signup/4_0' />" class="button">register</a>
 		    </div>
 		    
         </div>
+        
+               
         </c:if>
 		</sec:authorize>	
 

@@ -1,19 +1,17 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,17 +23,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sightlyinc.ratecred.admin.util.CollectionUtils;
 import com.sightlyinc.ratecred.admin.util.HttpHelperUtils;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Publisher.PublisherStatus;
 import com.sightlyinc.ratecred.service.GeodbProvisionManager;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.PublisherService;
-import com.sightlyinc.ratecred.service.GeodbProvisionManager.GeodbProvisionStatus;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 @Controller
 @RequestMapping(value="/publisher")
@@ -70,7 +67,8 @@ public class PublisherController {
 			(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
 		try {			
 			UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
-			return networkMemberService.findMemberByUserPrincipal(principal);		
+			//return networkMemberService.findMemberByUserPrincipal(principal);	
+			throw new RuntimeException("NO IMPL");
 		} catch (UserPrincipalServiceException e) {
 			logger.error("", e);
 			return null;
@@ -136,10 +134,7 @@ public class PublisherController {
 					//update the password to be the key
 					principal = new UserPrincipal();
 					principal.setUsername(p.getKey());
-				} catch (org.springframework.security.userdetails.UsernameNotFoundException e){
-					principal = new UserPrincipal();
-					principal.setUsername(p.getKey());
-				}
+				} 
 
 				
 				String hashedPass = userPrincipalService.makeMD5Hash(form.getJsonToken());					
@@ -154,12 +149,13 @@ public class PublisherController {
 				UserDetails adminDetails = 
 				(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
 				UserPrincipal networkPrincipal = userPrincipalService.loadUser(adminDetails.getUsername());
-				NetworkMember member = networkMemberService.findMemberByUserPrincipal(networkPrincipal);
-				p.setNetworkMember(member);
-				
-							
-				Long id = publisherService.save(p);
-				return "redirect:/publisher/"+id.toString();
+				//NetworkMember member = networkMemberService.findMemberByUserPrincipal(networkPrincipal);
+//				p.setNetworkMember(member);
+//				
+//							
+//				Long id = publisherService.save(p);
+//				return "redirect:/publisher/"+id.toString();
+				throw new RuntimeException("NO IMPL");
 				
 			} else {
 				model.addAttribute("publisher", p);
@@ -192,25 +188,29 @@ public class PublisherController {
 		
 		
 		try {
-            for (int i = 0; i < authUser.getAuthorities().length; i++) {
-                if(authUser.getAuthorities()[i].equals("ROLE_ADMIN")){
+            for (int i = 0; i < authUser.getAuthorities().size(); i++) {
+                GrantedAuthority auth = new ArrayList<GrantedAuthority>(authUser.getAuthorities()).get(i);
+                if(auth.toString().equals("ROLE_ADMIN")){
                     
-                    GeodbProvisionStatus status = geodbProvisionManager.status(p.getUserPrincipal(), 
-                            authUser.getUsername(), 
-                            authUser.getPassword());
-                    model.addAttribute("provisionStatus", status.toString());
+//                    GeodbProvisionStatus status = geodbProvisionManager.status(p.getUserPrincipal(), 
+//                            authUser.getUsername(), 
+//                            authUser.getPassword());
+                    //model.addAttribute("provisionStatus", status.toString());
+                    throw new RuntimeException("NO IMPL");
                     
                 }            
             };
-        } catch (NoSuchAlgorithmException e) {
-            logger.error("", e);
-            model.addAttribute("error", e);
-            return "error";
-        } catch (JSONException e) {
-            logger.error("", e);
-            model.addAttribute("error", e);
-            return "error";
-        } catch (Exception e) {
+        } 
+//		catch (NoSuchAlgorithmException e) {
+//            logger.error("", e);
+//            model.addAttribute("error", e);
+//            return "error";
+//        } catch (JSONException e) {
+//            logger.error("", e);
+//            model.addAttribute("error", e);
+//            return "error";
+//        } 
+        catch (Exception e) {
             logger.error("", e);
             model.addAttribute("error", e);
             return "error";
@@ -242,23 +242,25 @@ public class PublisherController {
 	public String getList(Model model) {
 		logger.debug("list");
 		//see if the user is a member
-		UserDetails details = 
-			(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		try {
+//		UserDetails details = 
+//			(UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		//try {
 			
-			UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
-			model.addAttribute("publishers", publisherService.findByUserPrincipal(principal));
+			//UserPrincipal principal = userPrincipalService.loadUser(details.getUsername());
+			//model.addAttribute("publishers", publisherService.findByUserPrincipal(principal));
+			List<Publisher> all = publisherService.findAll();
+			model.addAttribute("publishers", all);
 			return "publisher/list";
 			
-		} catch (UserPrincipalServiceException e) {
-			logger.error("", e);
-			model.addAttribute("error", e);
-			return "error";
-		} catch (UserNotFoundException e) {
-			logger.error("", e);
-			model.addAttribute("error", e);
-			return "error";
-		}
+//		} catch (UserPrincipalServiceException e) {
+//			logger.error("", e);
+//			model.addAttribute("error", e);
+//			return "error";
+//		} catch (UserNotFoundException e) {
+//			logger.error("", e);
+//			model.addAttribute("error", e);
+//			return "error";
+//		}
 		
 	}
 

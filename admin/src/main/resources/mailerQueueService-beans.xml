@@ -10,17 +10,16 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.1.xsd">
 
-	<bean id="mailerQueueService" 
-		class="com.noi.utility.mail.JavamailMailerQueueService" init-method="initService">
-		<property name="smtpHostname"><value>${MailerQueueService.smtpHostname}</value></property>
-		<property name="smtpPort"><value>${MailerQueueService.smtpPort}</value></property>	
-		<property name="smtpUsername"><value>${MailerQueueService.smtpUsername}</value></property>	
-		<property name="smtpPassword"><value>${MailerQueueService.smtpPassword}</value></property>		
-		<property name="numberThreads"><value>${MailerQueueService.numberThreads}</value></property>	
-		<property name="sslProvider"><value>${MailerQueueService.sslProvider}</value></property>	
-		<property name="securityType"><value>${MailerQueueService.securityType}</value></property>	
-
-	</bean>
+<!--	<bean id="mailerQueueService" -->
+<!--		class="com.noi.utility.mail.JavamailMailerQueueService" init-method="initService">-->
+<!--		<property name="smtpHostname"><value>${MailerQueueService.smtpHostname}</value></property>-->
+<!--		<property name="smtpPort"><value>${MailerQueueService.smtpPort}</value></property>	-->
+<!--		<property name="smtpUsername"><value>${MailerQueueService.smtpUsername}</value></property>	-->
+<!--		<property name="smtpPassword"><value>${MailerQueueService.smtpPassword}</value></property>		-->
+<!--		<property name="numberThreads"><value>${MailerQueueService.numberThreads}</value></property>	-->
+<!--		<property name="sslProvider"><value>${MailerQueueService.sslProvider}</value></property>	-->
+<!--		<property name="securityType"><value>${MailerQueueService.securityType}</value></property>	-->
+<!--	</bean>-->
 
 
 	

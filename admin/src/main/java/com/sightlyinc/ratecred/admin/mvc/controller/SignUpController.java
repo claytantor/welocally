@@ -16,11 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.AuthenticationProvider;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.ui.WebAuthenticationDetails;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,9 +34,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noi.utility.string.StringUtils;
 import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.Publisher;
@@ -44,6 +41,9 @@ import com.sightlyinc.ratecred.model.Site;
 import com.sightlyinc.ratecred.service.NetworkMemberService;
 import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 /**
  * @author sam
@@ -221,7 +221,7 @@ public class SignUpController {
                     Publisher publisher = publisherService.findBySiteUrl(siteUrl);
                     if (publisher == null) {
                         publisher = new Publisher();
-                        publisher.setUserPrincipal(user);
+                        //publisher.setUserPrincipal(user);
                         
                         publisher.setIconUrl(iconUrl);
                         

@@ -1,8 +1,9 @@
 package com.sightlyinc.ratecred.dao;
 
-import com.sightlyinc.ratecred.model.Event;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+
+import com.sightlyinc.ratecred.model.Event;
 
 /**
  * Class javadoc comment here...

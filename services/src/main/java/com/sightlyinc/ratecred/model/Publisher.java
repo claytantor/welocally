@@ -16,7 +16,6 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 
 @PersistenceObservable
@@ -71,10 +70,10 @@ public class Publisher extends BaseEntity {
 	public Set<Contact> contacts;
 
 
-    @OneToOne
-    @JoinColumn(name="user_principal_id")
-    @JsonIgnore
-    private UserPrincipal userPrincipal;
+//    @OneToOne
+//    @JoinColumn(name="user_principal_id")
+//    @JsonIgnore
+//    private UserPrincipal userPrincipal;
 
 
 	@OneToMany
@@ -116,13 +115,13 @@ public class Publisher extends BaseEntity {
 		this.mapIconUrl = mapIconUrl;
 	}
 
-    public UserPrincipal getUserPrincipal() {
-        return userPrincipal;
-    }
-
-    public void setUserPrincipal(UserPrincipal userPrincipal) {
-        this.userPrincipal = userPrincipal;
-    }
+//    public UserPrincipal getUserPrincipal() {
+//        return userPrincipal;
+//    }
+//
+//    public void setUserPrincipal(UserPrincipal userPrincipal) {
+//        this.userPrincipal = userPrincipal;
+//    }
 
     public String getJsonToken() {
         return jsonToken;

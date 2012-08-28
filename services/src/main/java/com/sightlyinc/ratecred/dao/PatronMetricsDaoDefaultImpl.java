@@ -10,10 +10,10 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PatronMetrics;
-import org.springframework.stereotype.Repository;
 
 @Repository("personMetricsDao")
 public class PatronMetricsDaoDefaultImpl extends AbstractDao<PatronMetrics> implements PatronMetricsDao {

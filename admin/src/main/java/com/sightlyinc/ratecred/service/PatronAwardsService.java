@@ -5,8 +5,8 @@ import com.sightlyinc.ratecred.admin.model.RaterAwards;
 import com.sightlyinc.ratecred.admin.model.TargetModel;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.model.Award;
-import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.AwardType;
+import com.sightlyinc.ratecred.model.Offer;
 import com.sightlyinc.ratecred.model.Patron;
 
 public interface PatronAwardsService {

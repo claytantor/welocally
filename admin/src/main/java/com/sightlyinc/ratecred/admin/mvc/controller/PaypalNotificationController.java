@@ -30,10 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherOrderGenerator;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.Order;
 import com.sightlyinc.ratecred.model.PaymentNotification;
 import com.sightlyinc.ratecred.model.Publisher;
@@ -41,6 +37,10 @@ import com.sightlyinc.ratecred.service.OrderService;
 import com.sightlyinc.ratecred.service.PaymentNotificationService;
 import com.sightlyinc.ratecred.service.PublisherService;
 import com.sightlyinc.ratecred.util.JavaMailer;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 /**
  * @author sam
@@ -380,7 +380,7 @@ public class PaypalNotificationController {
 	        orderManagerService.save(o);
 	        
 	        //enable the user
-	        publisher.getUserPrincipal().setEnabled(true);
+	        //publisher.getUserPrincipal().setEnabled(true);
 	        publisherService.save(publisher);
 	        
 

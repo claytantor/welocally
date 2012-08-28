@@ -1,42 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-    xmlns:beans="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-	http://www.springframework.org/schema/security
-	http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/security 
+   http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-	<global-method-security secured-annotations="enabled"/>
+	<!-- This is where we configure Spring-Security  -->
+	<security:http auto-config="true" use-expressions="true"
+		access-denied-page="/denied.html">
 
-	<http auto-config="true">
-		
-    	<intercept-url pattern="/signup.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    	<intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    	<intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    	<intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    	<intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    	<intercept-url pattern="/place/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />        
-        <intercept-url pattern="/publisher/place/queryplaces.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/publisher/place/addplace.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/publisher/place/loadspreadsheet.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/widget/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <!-- <intercept-url pattern="/widget/generator" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
-        <intercept-url pattern="/administrator/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/publisher/**" access="ROLE_ADMIN,ROLE_PUBLISHER" />
-        <!-- <intercept-url pattern="/widget/**" access="ROLE_ADMIN,ROLE_PUBLISHER" /> -->
-        <intercept-url pattern="/home" access="ROLE_USER" />
-        <form-login login-page="/login.html" authentication-failure-url="/login.html?login_error=1" />
-        <logout logout-url="/logout" logout-success-url="/index.html" />
-	</http>
+		<security:intercept-url pattern="/login" access="permitAll" />
+		<security:intercept-url pattern="/index.html" access="permitAll" />
+		<security:intercept-url pattern="/" access="permitAll" />
+    	<security:intercept-url pattern="/images/**" access="permitAll" />
+    	<security:intercept-url pattern="/css/**" access="permitAll" />
+    	<security:intercept-url pattern="/js/**" access="permitAll" />
+		<security:intercept-url pattern="/user/**" access="hasRole('ROLE_USER')" />
+			
+		<security:openid-login
+		   	login-page="/login"
+			authentication-failure-url="/login?error=true"
+			default-target-url="/home"	/>
+    	
+		<security:logout invalidate-session="true"
+			logout-success-url="/login" logout-url="/logout" />
 
-    <authentication-provider user-service-ref="userPrincipalService">
-    	<password-encoder hash="md5"/>
-<!--
-        <password-encoder hash="md5"/>
-        <user-service>
-            <user name="clay" password="c361dad4b598b51a80b501668e988387" authorities="ROLE_ADMIN" />
-	    </user-service>
--->
-	</authentication-provider>
-</beans:beans>
+	</security:http>
+
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			user-service-ref="userPrincipalService">
+			<security:password-encoder hash="md5" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>
+

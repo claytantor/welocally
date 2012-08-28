@@ -11,7 +11,6 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.Product;
-import com.sightlyinc.ratecred.model.Publisher;
 
 @Repository
 public class ProductDaoImpl 

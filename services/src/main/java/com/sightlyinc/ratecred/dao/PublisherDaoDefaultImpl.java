@@ -1,6 +1,9 @@
 
 package com.sightlyinc.ratecred.dao;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -11,11 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.model.Publisher;
-
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * how the publisher gets data another shot
@@ -105,10 +104,6 @@ extends AbstractDao<Publisher>
 
     @Override
     public List<Publisher> findBySiteNameLike(final String name) {
-//        return (List<Publisher>) getCurrentSession()
-//            .createCriteria(this.getPersistentClass())
-//            .add(Restrictions.ilike("name", '%' + name + '%'))
-//            .list();
     	return (List<Publisher>)getHibernateTemplateOverride().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 			throws HibernateException, SQLException 
@@ -129,11 +124,10 @@ extends AbstractDao<Publisher>
     	
     }
     
-	@Override
-	public List<Publisher> findByUserPrincipal(UserPrincipal up) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public List<Publisher> findByUserPrincipal(UserPrincipal up) {
+//		return null;
+//	}
 
     @Override
     public Publisher findBySiteUrl(final String siteUrl) {
@@ -165,4 +159,14 @@ extends AbstractDao<Publisher>
         criteria.addOrder(Order.asc("name"));
         return (List<Publisher>) criteria.list();
     }
+
+    @Override
+    public List<Publisher> findAll() {
+       Query q = super.getCurrentSession().createQuery("select pub from "+Publisher.class.getName()+
+                    " as pub order by pub.timeCreated desc");
+       return q.list();
+    }
+    
+    
+    
 }

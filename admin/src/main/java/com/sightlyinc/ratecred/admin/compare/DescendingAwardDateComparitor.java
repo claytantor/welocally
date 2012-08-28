@@ -4,7 +4,6 @@ import java.util.Comparator;
 
 import org.apache.log4j.Logger;
 
-import com.sightlyinc.ratecred.admin.model.PlaceRatingEvaluator;
 import com.sightlyinc.ratecred.model.Award;
 
 /**

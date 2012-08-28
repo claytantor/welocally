@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context 
+	  http://www.springframework.org/schema/context/spring-context-3.0.xsd
+      http://www.springframework.org/schema/tx 
+      http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+      
+    <context:component-scan base-package="com.welocally.admin" />
+	<context:annotation-config />
+
+     <bean id="sessionFactory" autowire="byName"
+        class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="annotatedClasses">
+            <list>				
+				<value>com.welocally.admin.security.UserPrincipal</value>
+				<value>com.welocally.admin.security.Role</value>
+				<value>com.welocally.admin.domain.Index</value>
+            </list>
+        </property>   
+		<property name="hibernateProperties">
+			<props>
+        		<!-- properties chopped for space -->
+        		<prop key="hibernate.dialect">${admin.LocalDS.HibernateDatabaseProperties.dialect}</prop>
+       			<prop key="hibernate.connection.driver_class">${admin.LocalDS.HibernateDatabaseProperties.driverClass}</prop>
+       			<prop key="hibernate.connection.url">${admin.LocalDS.HibernateDatabaseProperties.url}</prop>
+       			<prop key="hibernate.connection.username">${admin.LocalDS.HibernateDatabaseProperties.username}</prop>
+       			<prop key="hibernate.connection.password">${admin.LocalDS.HibernateDatabaseProperties.password}</prop>
+     		 </props>
+		</property>	 
+		<property name="dataSource">
+			<ref bean="DBCPLocalDS"/>
+		</property>	
+    </bean>
+
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" autowire="byName" />
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" />	
+		</tx:attributes>
+	</tx:advice>
+	
+    <tx:annotation-driven />
+    
+    <bean id="DBCPLocalDS" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>${admin.LocalDS.HibernateDatabaseProperties.driverClass}</value>
+		</property>
+		<property name="url">
+			<value>${admin.LocalDS.HibernateDatabaseProperties.url}</value>
+		</property>
+		<property name="username">
+			<value>${admin.LocalDS.HibernateDatabaseProperties.username}</value>
+		</property>
+		<property name="password">
+			<value>${admin.LocalDS.HibernateDatabaseProperties.password}</value>
+		</property>
+		<property name="initialSize">
+			<value>${admin.LocalDS.HibernateDatabaseProperties.poolSizeMin}</value>
+		</property>
+		<property name="maxActive">
+			<value>${admin.LocalDS.HibernateDatabaseProperties.poolSizeMax}</value>
+		</property>						
+	</bean>	
+
+</beans>

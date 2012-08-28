@@ -524,16 +524,13 @@ WELOCALLY_AddPlaceWidget.prototype.savePlace = function (selectedPlace) {
 	
 	_instance.setStatus(_instance.statusArea,'Saving Place...', 'wl_message', true);
 	
-	var req = {
-		action: 'save_place',
-		place: selectedPlace
-	};
+	
 	
 	_instance.jqxhr = jQuery.ajax({
 	  type: 'POST',		  
-	  url: ajaxurl,
-	  data: req,
+	  url: _instance.cfg.endpoint+'/geodb/place/3_0/user/save?key='+_instance.cfg.key+'&token='+_instance.cfg.token,
 	  dataType : 'jsonp',
+	  data: selectedPlace,
 	  beforeSend: function(jqXHR){
 		_instance.jqxhr = jqXHR;
 		_instance.jqxhr.setRequestHeader("key", _instance.cfg.key);

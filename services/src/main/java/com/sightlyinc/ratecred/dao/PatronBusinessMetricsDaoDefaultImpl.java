@@ -12,11 +12,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.sightlyinc.ratecred.model.Business;
 import com.sightlyinc.ratecred.model.BusinessLocation;
 import com.sightlyinc.ratecred.pojo.PatronBusinessMetrics;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class PatronBusinessMetricsDaoDefaultImpl

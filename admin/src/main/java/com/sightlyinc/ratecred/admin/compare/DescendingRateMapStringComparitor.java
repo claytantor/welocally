@@ -1,7 +1,6 @@
 package com.sightlyinc.ratecred.admin.compare;
 
 import java.util.Comparator;
-import java.util.Map;
 
 public class DescendingRateMapStringComparitor implements Comparator<String>{
 

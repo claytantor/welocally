@@ -15,11 +15,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.AuthenticationProvider;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.ui.WebAuthenticationDetails;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,14 +38,14 @@ import com.sightlyinc.ratecred.admin.model.AjaxErrors;
 import com.sightlyinc.ratecred.admin.model.Errors;
 import com.sightlyinc.ratecred.admin.model.UserPrincipalForm;
 import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.OrderManager;
 import com.sightlyinc.ratecred.service.PublisherManager;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 /**
  * @author clay
@@ -156,8 +156,8 @@ public class SignUpControllerV2 {
                 UserPrincipal up = userService.loadUser(key);
                 Map<String,String> data = new HashMap<String,String>();
                 data.put("command", jsonObject.getString("command"));
-                response.put("mapperResult",
-                        jsonObjectSerializer.serialize(publisherManager.isAllowed(data, p, up)));
+//                response.put("mapperResult",
+//                        jsonObjectSerializer.serialize(publisherManager.isAllowed(data, p, up)));
             } else {
                 eajax.getErrors().add(
                         new AjaxError(AjaxError.AUTH_ERROR, "Problem with token match."));
@@ -175,11 +175,7 @@ public class SignUpControllerV2 {
             logger.error("problem with user", e);
             eajax.getErrors().add(
                     new AjaxError(AjaxError.AUTH_ERROR, "Problem with user."));
-        } catch (IOException e) {
-            logger.error("problem serializing", e);
-            eajax.getErrors().add(
-                    new AjaxError(AjaxError.AUTH_ERROR, "Problem with serialize."));
-        }
+        } 
         
      // if errors send them instead
         if (eajax.getErrors().size() > 0) {

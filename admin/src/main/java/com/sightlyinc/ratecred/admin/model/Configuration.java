@@ -10,6 +10,10 @@ public class Configuration {
     private String ajaxServerEndpoint;
     
     
+    @Value("${geodb.endpoint}")
+    private String geodbEndpoint;
+    
+     
     @Value("${applicationConfiguration.iframeTrackerCode:UA-25543611-2}")
     private String iframeTrackerCode;
 
@@ -27,6 +31,14 @@ public class Configuration {
 
     public void setIframeTrackerCode(String iframeTrackerCode) {
         this.iframeTrackerCode = iframeTrackerCode;
+    }
+
+    public String getGeodbEndpoint() {
+        return geodbEndpoint;
+    }
+
+    public void setGeodbEndpoint(String geodbEndpoint) {
+        this.geodbEndpoint = geodbEndpoint;
     }
     
 

@@ -16,8 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-import com.sightlyinc.ratecred.admin.mvc.controller.AdminActivityController;
-
 @Component
 public class HttpHelperUtils {
     

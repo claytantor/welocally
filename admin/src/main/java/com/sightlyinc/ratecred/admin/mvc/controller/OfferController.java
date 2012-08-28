@@ -35,8 +35,6 @@ import com.sightlyinc.ratecred.admin.model.Article;
 import com.sightlyinc.ratecred.admin.model.TargetModel;
 import com.sightlyinc.ratecred.client.offers.OfferOld;
 import com.sightlyinc.ratecred.pojo.Location;
-import com.sightlyinc.ratecred.service.AwardManagerService;
-import com.sightlyinc.ratecred.service.OfferPoolService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
 import com.simplegeo.client.SimpleGeoStorageClient;
 import com.simplegeo.client.types.Record;
@@ -60,9 +58,9 @@ public class OfferController {
 //	@Autowired
 //	private AwardManagerService awardManagerService;
 	
-	@Autowired
-	PatronAwardsService raterAwardsService;
-	
+//	@Autowired
+//	PatronAwardsService raterAwardsService;
+//	
 	@Value("${simpleGeo.rateCredOAuth.appConsumerKey}")
 	private String authConsumerKey;
 	
@@ -109,66 +107,66 @@ public class OfferController {
 			@RequestParam(value="referrerId",required=true) String referrerId,
 			Model model) throws BLServiceException {		
 		
-		TargetModel tmodel = new TargetModel();
-		//tmodel.setCity(city);
-		//tmodel.setState(state);
-		if(!StringUtils.isEmpty(keywords)) {
-			List<String> keywordsList = Arrays.asList(keywords.split(","));	
-			tmodel.setKeywords(keywordsList);
-		}
-		
-		try {
-			
-			OfferOld offer = raterAwardsService.targetOfferByTargetingModel(tmodel);
-			model.addAttribute("offer", offer);
-			model.addAttribute("css", css);
-			
-			//find the center and points
-			//map bounds
-			List<GeoPoint> points = new ArrayList<GeoPoint>();
-
-			for (Location location : offer.getAdvertiser().getLocations()) {
-				points.add(new GeoPoint(
-						location.getLat(), location.getLng()));
-			}
-			
-			if(points.size()>0)
-			{
-				GeoPointBounds bounds = MapUtils.computeBounds(points);
-				model.addAttribute("mapCenter", MapUtils.computeCenter(bounds));	
-				model.addAttribute("mapBounds", bounds);	
-			}
-			
-			
-			//ok if the url is not in the cache then 
-			//send a article write to the queue, use the URL as the 
-			//primary key
-			
-			if(articleWrittenCache.get(url) == null) {
-				Article a = new Article();
-				a.setAddress1(address1);
-				a.setKeywords(keywords);
-				a.setReferrerId(referrerId);
-				a.setTeaser(teaser);
-				a.setTitle(title);
-				a.setUrl(url);
-				saveArticleLocationMessageProducer.generateMessage(a);
-				
-			}
-			
-			
-		} catch (BLServiceException e) {
-			logger.error("problem targeting", e);
-			throw e;
-		} catch (JsonGenerationException e) {
-			logger.error("problem saving article location to storage", e);
-		} catch (JsonMappingException e) {
-			logger.error("problem saving article location to storage", e);
-		} catch (JMSException e) {
-			logger.error("problem saving article location to storage", e);
-		} catch (IOException e) {
-			logger.error("problem saving article location to storage", e);
-		}
+//		TargetModel tmodel = new TargetModel();
+//		//tmodel.setCity(city);
+//		//tmodel.setState(state);
+//		if(!StringUtils.isEmpty(keywords)) {
+//			List<String> keywordsList = Arrays.asList(keywords.split(","));	
+//			tmodel.setKeywords(keywordsList);
+//		}
+//		
+//		try {
+//			
+//			OfferOld offer = raterAwardsService.targetOfferByTargetingModel(tmodel);
+//			model.addAttribute("offer", offer);
+//			model.addAttribute("css", css);
+//			
+//			//find the center and points
+//			//map bounds
+//			List<GeoPoint> points = new ArrayList<GeoPoint>();
+//
+//			for (Location location : offer.getAdvertiser().getLocations()) {
+//				points.add(new GeoPoint(
+//						location.getLat(), location.getLng()));
+//			}
+//			
+//			if(points.size()>0)
+//			{
+//				GeoPointBounds bounds = MapUtils.computeBounds(points);
+//				model.addAttribute("mapCenter", MapUtils.computeCenter(bounds));	
+//				model.addAttribute("mapBounds", bounds);	
+//			}
+//			
+//			
+//			//ok if the url is not in the cache then 
+//			//send a article write to the queue, use the URL as the 
+//			//primary key
+//			
+//			if(articleWrittenCache.get(url) == null) {
+//				Article a = new Article();
+//				a.setAddress1(address1);
+//				a.setKeywords(keywords);
+//				a.setReferrerId(referrerId);
+//				a.setTeaser(teaser);
+//				a.setTitle(title);
+//				a.setUrl(url);
+//				saveArticleLocationMessageProducer.generateMessage(a);
+//				
+//			}
+//			
+//			
+//		} catch (BLServiceException e) {
+//			logger.error("problem targeting", e);
+//			throw e;
+//		} catch (JsonGenerationException e) {
+//			logger.error("problem saving article location to storage", e);
+//		} catch (JsonMappingException e) {
+//			logger.error("problem saving article location to storage", e);
+//		} catch (JMSException e) {
+//			logger.error("problem saving article location to storage", e);
+//		} catch (IOException e) {
+//			logger.error("problem saving article location to storage", e);
+//		}
 		
 		if(StringUtils.isEmpty(view))
 			return "offer";

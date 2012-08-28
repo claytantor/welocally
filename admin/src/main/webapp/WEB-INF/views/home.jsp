@@ -1,41 +1,21 @@
-<%@ page 
-	contentType="text/html; charset=iso-8859-1" 
-	language="java" 
-	import="javax.servlet.jsp.*" 
-	errorPage="" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<c:set var="pageTitle" value="Home"/>
-<jsp:include page="head.jsp"/>
-
-<body>
-<div class="container">
-	<div class="span-24">
-		<jsp:include page="header.jsp"/>
-	</div>
-	<div class="span-24">
-		<sec:authorize ifAllGranted="ROLE_ADMIN,ROLE_MEMBER">
-			<c:set var="member" scope="request" value="${member}" />	
-			<c:set var="orders" scope="request" value="${orders}" />	
-			<jsp:include page="admin_home.jsp" flush="true"/>
-		</sec:authorize>	
-		
-		<sec:authorize ifAnyGranted="ROLE_PUBLISHER">
-			<c:set var="publisher" scope="request" value="${publisher}" />	
-			<jsp:include page="publisher_home.jsp" flush="true"/>
-		</sec:authorize>
-	</div>
-	
-	<div class="span-24">
-		<jsp:include page="footer.jsp"/>
-	</div>
-	
-</div>
-
-</body>
+  <head>
+  	<title>Hello</title>
+  	<script type="text/javascript">
+  	function spreadsheet(){
+  		oForm = document.forms[0];
+  	  	window.location = '<c:url value="/user/spreadsheet"/>'+'?key='+oForm.elements["key"].value;
+  	    return false;
+  	} 	
+  	</script>
+  </head>
+  <body>
+    <h1>Hello <c:out value="${user.username}"/></h1>
+    <form>
+    	<input type="text" name="key" id="key" value="0Avb_MOw4lfVndGt6TWYxWFp2bXM0TFlVNi1lejdZQUE" size="60" style="width:600px;"></input>
+  	</form> 
+  	<div><a href="javascript:spreadsheet();">view spreadsheet feed</a></div>
+   </body>
 </html>

@@ -24,10 +24,6 @@ import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.spring.service.BLMessage;
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.admin.velocity.PublisherRegistrationGenerator;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.Contact;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Order;
@@ -35,9 +31,10 @@ import com.sightlyinc.ratecred.model.Product;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Site;
 import com.sightlyinc.ratecred.util.JavaMailer;
-
-import static org.hamcrest.Matchers.*;
-import static java.util.Arrays.*;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 @Service
 @Transactional
@@ -272,7 +269,7 @@ public class OrderManager {
                 
                 //make the publisher
                 publisher = new Publisher();
-                publisher.setUserPrincipal(user);
+                //publisher.setUserPrincipal(user);
                 
                 Site s = new Site();
                 s.setName(siteName);
@@ -432,7 +429,7 @@ public class OrderManager {
             orderService.save(o);
             
             //enable the user
-            publisher.getUserPrincipal().setEnabled(true);
+            //publisher.getUserPrincipal().setEnabled(true);
             publisherService.save(publisher);
             
 
@@ -471,4 +468,5 @@ public class OrderManager {
                 "text/html");       
     }   
     
+
 }

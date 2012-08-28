@@ -8,19 +8,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 		/WEB-INF/dispatcher-servlet.xml,
-		classpath:applicationSessionFactory-beans.xml,
-		classpath:awardManagerService-beans.xml,
-		classpath:businessManagerService-beans.xml,
-		classpath:checkinService-beans.xml,
-		classpath:hibernateProperties-beans.xml,
-		classpath:jacksonObjectMapper-beans.xml,
-		classpath:localDataSource-beans.xml,
-		classpath:orderManagerService-beans.xml,
-		classpath:placeManagerService-beans.xml,
-		classpath:placeSearchEngine-beans.xml,
-		classpath:ratingManagerService-beans.xml,
-		classpath:ratingSearchEngine-beans.xml,
-        classpath*:**/*beans.xml,			
+		classpath:security-config-beans.xml,
+		classpath:admin-beans.xml,
 		</param-value>
 	</context-param>
 	
@@ -29,11 +18,8 @@
 			org.springframework.web.context.ContextLoaderListener
 		</listener-class>
 	</listener>
-
-
 	
 
-	
 	<filter>
 		<filter-name>hibernateFilter</filter-name>
 		<filter-class>
@@ -73,16 +59,11 @@
 	</filter-mapping>
 	
 	
-
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>
 		<servlet-class>
 			org.springframework.web.servlet.DispatcherServlet
-		</servlet-class>	
-        <init-param>
-            <param-name>namespace</param-name>
-            <param-value>mvc-config</param-value>
-        </init-param>	    	
+		</servlet-class>	   	
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
@@ -98,10 +79,10 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
     
-    <error-page>
-		<error-code>404</error-code>
-		<location>/WEB-INF/views/404.jsp</location>
-  	</error-page>
+<!--    <error-page>-->
+<!--		<error-code>404</error-code>-->
+<!--		<location>/WEB-INF/views/404.jsp</location>-->
+<!--  	</error-page>-->
     
 	
 

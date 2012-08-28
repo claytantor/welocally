@@ -2,13 +2,7 @@ package com.sightlyinc.ratecred.service;
 
 import static ch.lambdaj.Lambda.filter;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,36 +10,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.NumberTool;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.noi.utility.hibernate.GUIDGenerator;
 import com.noi.utility.spring.service.BLMessage;
 import com.noi.utility.spring.service.BLServiceException;
-import com.noi.utility.web.UrlUtils;
-import com.sightlyinc.ratecred.admin.util.HttpHelperUtils;
-import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
 import com.sightlyinc.ratecred.admin.velocity.PublisherRegistrationGenerator;
 import com.sightlyinc.ratecred.admin.velocity.UserActivationGenerator;
-import com.sightlyinc.ratecred.authentication.UserNotFoundException;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
-import com.sightlyinc.ratecred.authentication.UserPrincipalServiceException;
 import com.sightlyinc.ratecred.model.Contact;
 import com.sightlyinc.ratecred.model.NetworkMember;
 import com.sightlyinc.ratecred.model.Order;
@@ -54,6 +35,10 @@ import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.model.Site;
 import com.sightlyinc.ratecred.util.DigestUtils;
 import com.sightlyinc.ratecred.util.JavaMailer;
+import com.welocally.admin.security.UserNotFoundException;
+import com.welocally.admin.security.UserPrincipal;
+import com.welocally.admin.security.UserPrincipalService;
+import com.welocally.admin.security.UserPrincipalServiceException;
 
 @Service
 @Transactional
@@ -270,7 +255,7 @@ public class OrderManagerV2 {
               if(publisher == null){
                 //make the publisher
                 publisher = new Publisher();
-                publisher.setUserPrincipal(user);
+                //publisher.setUserPrincipal(user);
                 
                 Site s = new Site();
                 s.setName(siteName);
@@ -291,7 +276,6 @@ public class OrderManagerV2 {
                                  
                 publisherService.save(publisher);
                 
-
                                         
                 //ok go find the free product and use it to build the order
                 Product freeProduct = productService.findProductBySku(freeProductSku);
@@ -303,8 +287,7 @@ public class OrderManagerV2 {
                 o.setTimeCreated(Calendar.getInstance().getTimeInMillis());
                 o.setTimeUpdated(Calendar.getInstance().getTimeInMillis());
                 o.setChannel("SELF_SIGNUP");
-                
-                
+                             
                                              
                 //complete subscription
                 logger.debug("processing order:"+o.getExternalTxId());
@@ -319,8 +302,8 @@ public class OrderManagerV2 {
                 
                 //provision
                 
-                UserPrincipal up = publisher.getUserPrincipal();
-                geodbProvisionManager.provision(up,adminUser,adminPassword);
+                //UserPrincipal up = publisher.getUserPrincipal();
+                //geodbProvisionManager.provision(up,adminUser,adminPassword);
                   
                   
                   
@@ -345,19 +328,19 @@ public class OrderManagerV2 {
             throw blexception;
         } 
 
-        catch (NoSuchAlgorithmException e) {
-            BLServiceException blexception = new BLServiceException();
-            blexception.getMessages().add(new BLMessage("Problem provisioning user:"+username, 1208));
-            throw blexception;
-        } catch (JSONException e) {
-            BLServiceException blexception = new BLServiceException();
-            blexception.getMessages().add(new BLMessage("Problem provisioning user:"+username, 1209));
-            throw blexception;
-        } catch (IOException e) {
-            BLServiceException blexception = new BLServiceException();
-            blexception.getMessages().add(new BLMessage("Problem provisioning user:"+username, 1210));
-            throw blexception;
-        }
+//        catch (NoSuchAlgorithmException e) {
+//            BLServiceException blexception = new BLServiceException();
+//            blexception.getMessages().add(new BLMessage("Problem provisioning user:"+username, 1208));
+//            throw blexception;
+//        } catch (JSONException e) {
+//            BLServiceException blexception = new BLServiceException();
+//            blexception.getMessages().add(new BLMessage("Problem provisioning user:"+username, 1209));
+//            throw blexception;
+//        } catch (IOException e) {
+//            BLServiceException blexception = new BLServiceException();
+//            blexception.getMessages().add(new BLMessage("Problem provisioning user:"+username, 1210));
+//            throw blexception;
+//        }
         
         return null;
         
@@ -479,7 +462,7 @@ public class OrderManagerV2 {
             orderService.save(o);
             
             //enable the user
-            publisher.getUserPrincipal().setEnabled(true);
+            //publisher.getUserPrincipal().setEnabled(true);
             publisherService.save(publisher);
                    
             

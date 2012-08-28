@@ -11,21 +11,12 @@ import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.hibernate.FlushMode;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.noi.utility.spring.service.BLServiceException;
 import com.sightlyinc.ratecred.model.Award;
 import com.sightlyinc.ratecred.model.AwardType;
-import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.service.AwardManagerService;
 import com.sightlyinc.ratecred.service.PatronAwardsService;
-import com.sightlyinc.ratecred.service.PatronManagerService;
-import com.sightlyinc.ratecred.service.RatingManagerService;
 
 
 
@@ -41,7 +32,7 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
 	
 	//private RatingManagerService ratingManagerService;
 
-	private PatronManagerService patronManagerService;
+	//private PatronManagerService patronManagerService;
 
 	private AwardManagerService awardManagerService;
 	
@@ -90,13 +81,13 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
             		new Long(userData.get("raterId").toString());
             	
             	AwardType awardType = awardManagerService.findAwardTypeByPrimaryKey(awardTypePk);
-            	Patron r = patronManagerService.findPatronByPrimaryKey(raterPk);            	
+            	//Patron r = patronManagerService.findPatronByPrimaryKey(raterPk);            	
             	Map<String,Object> awardModel = (Map<String,Object>)userData.get("award");
             	Award award = awardManagerService.findAwardByPrimaryKey(new Long(awardModel.get("id").toString()));
             
             	//really should fire working memory rules against rater that has expired 
             	//awards APPROACH DOES NOT SCALE WELL
-            	raterAwardsService.saveUpdateAwardOffer(award, awardType, r);
+            	//raterAwardsService.saveUpdateAwardOffer(award, awardType, r);
             	
             }
         	
@@ -128,13 +119,6 @@ public class UpdateAwardOfferMessageListener implements MessageListener {
 
 	public void setRaterAwardsService(PatronAwardsService raterAwardsService) {
 		this.raterAwardsService = raterAwardsService;
-	}
-
-
-
-
-	public void setPatronManagerService(PatronManagerService patronManagerService) {
-		this.patronManagerService = patronManagerService;
 	}
 
 

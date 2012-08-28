@@ -1,0 +1,175 @@
+{
+    "version": "1.0",
+    "encoding": "UTF-8",
+    "feed": {
+        "xmlns": "http://www.w3.org/2005/Atom",
+        "xmlns$openSearch": "http://a9.com/-/spec/opensearchrss/1.0/",
+        "xmlns$gs": "http://schemas.google.com/spreadsheets/2006",
+        "id": {
+            "$t": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full"
+        },
+        "updated": {
+            "$t": "2012-08-19T04:10:29.781Z"
+        },
+        "category": [
+            {
+                "scheme": "http://schemas.google.com/spreadsheets/2006",
+                "term": "http://schemas.google.com/spreadsheets/2006#worksheet"
+            }
+        ],
+        "title": {
+            "type": "text",
+            "$t": "nyc_tailors"
+        },
+        "link": [
+            {
+                "rel": "alternate",
+                "type": "text/html",
+                "href": "https://spreadsheets.google.com/ccc?key=0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE"
+            },
+            {
+                "rel": "http://schemas.google.com/g/2005#feed",
+                "type": "application/atom+xml",
+                "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full"
+            },
+            {
+                "rel": "http://schemas.google.com/g/2005#post",
+                "type": "application/atom+xml",
+                "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full"
+            },
+            {
+                "rel": "self",
+                "type": "application/atom+xml",
+                "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full?alt=json"
+            }
+        ],
+        "author": [
+            {
+                "name": {
+                    "$t": "clay"
+                },
+                "email": {
+                    "$t": "clay@welocally.com"
+                }
+            }
+        ],
+        "openSearch$totalResults": {
+            "$t": "2"
+        },
+        "openSearch$startIndex": {
+            "$t": "1"
+        },
+        "entry": [
+            {
+                "id": {
+                    "$t": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full/od6"
+                },
+                "updated": {
+                    "$t": "2012-08-19T04:10:12.338Z"
+                },
+                "category": [
+                    {
+                        "scheme": "http://schemas.google.com/spreadsheets/2006",
+                        "term": "http://schemas.google.com/spreadsheets/2006#worksheet"
+                    }
+                ],
+                "title": {
+                    "type": "text",
+                    "$t": "tailors1"
+                },
+                "content": {
+                    "type": "text",
+                    "$t": "tailors1"
+                },
+                "link": [
+                    {
+                        "rel": "http://schemas.google.com/spreadsheets/2006#listfeed",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/list/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/od6/private/full"
+                    },
+                    {
+                        "rel": "http://schemas.google.com/spreadsheets/2006#cellsfeed",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/cells/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/od6/private/full"
+                    },
+                    {
+                        "rel": "http://schemas.google.com/visualization/2008#visualizationApi",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/tq?key=0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE&sheet=od6"
+                    },
+                    {
+                        "rel": "self",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full/od6"
+                    },
+                    {
+                        "rel": "edit",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full/od6/d8vwzk7osw"
+                    }
+                ],
+                "gs$rowCount": {
+                    "$t": "26"
+                },
+                "gs$colCount": {
+                    "$t": "13"
+                }
+            },
+            {
+                "id": {
+                    "$t": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full/od7"
+                },
+                "updated": {
+                    "$t": "2012-08-19T04:10:29.781Z"
+                },
+                "category": [
+                    {
+                        "scheme": "http://schemas.google.com/spreadsheets/2006",
+                        "term": "http://schemas.google.com/spreadsheets/2006#worksheet"
+                    }
+                ],
+                "title": {
+                    "type": "text",
+                    "$t": "tailors2"
+                },
+                "content": {
+                    "type": "text",
+                    "$t": "tailors2"
+                },
+                "link": [
+                    {
+                        "rel": "http://schemas.google.com/spreadsheets/2006#listfeed",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/list/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/od7/private/full"
+                    },
+                    {
+                        "rel": "http://schemas.google.com/spreadsheets/2006#cellsfeed",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/cells/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/od7/private/full"
+                    },
+                    {
+                        "rel": "http://schemas.google.com/visualization/2008#visualizationApi",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/tq?key=0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE&sheet=od7"
+                    },
+                    {
+                        "rel": "self",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full/od7"
+                    },
+                    {
+                        "rel": "edit",
+                        "type": "application/atom+xml",
+                        "href": "https://spreadsheets.google.com/feeds/worksheets/0Avb_MOw4lfVndDh2S0ZhTFdYa0Y3Qk9uNEhHZnFYVUE/private/full/od7/d8vwzuljwo"
+                    }
+                ],
+                "gs$rowCount": {
+                    "$t": "26"
+                },
+                "gs$colCount": {
+                    "$t": "13"
+                }
+            }
+        ]
+    }
+}

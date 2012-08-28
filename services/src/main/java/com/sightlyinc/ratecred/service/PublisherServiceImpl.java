@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
 import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.dao.ContactDao;
 import com.sightlyinc.ratecred.dao.PublisherDao;
@@ -53,10 +52,10 @@ public class PublisherServiceImpl extends AbstractTransactionalService<Publisher
 	}
 
 
-	@Override
-	public List<Publisher> findByUserPrincipal(UserPrincipal up) {
-		return publisherDao.findByUserPrincipal(up);
-	}
+//	@Override
+//	public List<Publisher> findByUserPrincipal(UserPrincipal up) {
+//		return publisherDao.findByUserPrincipal(up);
+//	}
 
     @Override
     public Publisher findBySiteUrl(String siteUrl) {

@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.sightlyinc.ratecred.authentication.Role;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
+import com.welocally.admin.security.Role;
+import com.welocally.admin.security.UserPrincipal;
 
 
 
@@ -40,7 +40,7 @@ public class PublisherSignupForm  {
 		this.entity = new UserPrincipal();
 	}
 	
-	public PublisherSignupForm(com.sightlyinc.ratecred.authentication.UserPrincipal userPrincipal) {
+	public PublisherSignupForm(com.welocally.admin.security.UserPrincipal userPrincipal) {
 		this.entity = userPrincipal;
 	}
 

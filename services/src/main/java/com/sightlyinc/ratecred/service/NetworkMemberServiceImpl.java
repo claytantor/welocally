@@ -3,7 +3,7 @@ package com.sightlyinc.ratecred.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
+
 import com.sightlyinc.ratecred.dao.BaseDao;
 import com.sightlyinc.ratecred.dao.NetworkMemberDao;
 import com.sightlyinc.ratecred.dao.PublisherDao;
@@ -43,10 +43,10 @@ public class NetworkMemberServiceImpl extends AbstractTransactionalService<Netwo
 		return member.getId();
 	}
 
-	@Override
-	public NetworkMember findMemberByUserPrincipal(UserPrincipal up) {
-		return networkMemberDao.findByUserPrincipal(up);
-	}
+//	@Override
+//	public NetworkMember findMemberByUserPrincipal(UserPrincipal up) {
+//		return networkMemberDao.findByUserPrincipal(up);
+//	}
 	
 
 }

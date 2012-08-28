@@ -2,7 +2,6 @@ package com.sightlyinc.ratecred.dao;
 
 import java.util.List;
 
-import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.PaymentNotification;
 
 public interface PaymentNotificationDao extends BaseDao<PaymentNotification> {

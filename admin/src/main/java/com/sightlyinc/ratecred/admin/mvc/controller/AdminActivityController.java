@@ -1,17 +1,15 @@
 package com.sightlyinc.ratecred.admin.mvc.controller;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,13 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.sightlyinc.ratecred.admin.util.HttpHelperUtils;
-import com.sightlyinc.ratecred.admin.util.JsonObjectSerializer;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.authentication.UserPrincipalService;
 import com.sightlyinc.ratecred.model.Publisher;
 import com.sightlyinc.ratecred.service.GeodbProvisionManager;
 import com.sightlyinc.ratecred.service.PublisherService;
+import com.welocally.admin.security.UserPrincipal;
 
 /**
  * special activities restricted to an admin
@@ -62,12 +57,12 @@ public class AdminActivityController {
 	    	    
 	    try {
 	        Publisher p = publisherService.findByPrimaryKey(id);
-            UserPrincipal up = p.getUserPrincipal();
+            UserPrincipal up = null;
  
             //only allow admins to provision
             UserDetails admin = getAdminUser();
-            for (int i = 0; i < admin.getAuthorities().length; i++) {
-                GrantedAuthority auth = admin.getAuthorities()[i];
+            for (int i = 0; i < admin.getAuthorities().size(); i++) {
+                GrantedAuthority auth = new ArrayList<GrantedAuthority>(admin.getAuthorities()).get(i);
                 if(auth.getAuthority().equals("ROLE_ADMIN")){
                     geodbProvisionManager.provision(up, admin.getUsername(), admin.getPassword());
                 }
@@ -90,8 +85,8 @@ public class AdminActivityController {
             model.addAttribute("error", e);
             return "error";
         }
-	    
-	    return "redirect:/publisher/"+id;
+	    throw new RuntimeException("NO IMPL");
+	    //return "redirect:/publisher/"+id;
     }
 
 	

@@ -1,11 +1,9 @@
 package com.sightlyinc.ratecred.dao;
 
-import java.util.List;
-
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
-import com.sightlyinc.ratecred.model.Article;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+
+import com.sightlyinc.ratecred.model.Article;
 
 /**
  * Class javadoc comment here...

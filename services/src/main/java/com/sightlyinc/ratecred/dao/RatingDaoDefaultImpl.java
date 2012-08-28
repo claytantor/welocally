@@ -14,11 +14,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
-import com.sightlyinc.ratecred.model.Patron;
 import com.sightlyinc.ratecred.model.Place;
 import com.sightlyinc.ratecred.model.Rating;
 

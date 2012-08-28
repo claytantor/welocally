@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
+
 import com.sightlyinc.ratecred.interceptor.PersistenceObservable;
 
 
@@ -83,10 +83,10 @@ public class NetworkMember extends BaseEntity {
 	private Set<Merchant> merchants;
 
 	
-	@OneToOne
-	@JoinColumn(name="user_principal_id")
-	@JsonIgnore
-	private UserPrincipal userPrincipal;
+//	@OneToOne
+//	@JoinColumn(name="user_principal_id")
+//	@JsonIgnore
+//	private UserPrincipal userPrincipal;
 	
 
 
@@ -135,15 +135,15 @@ public class NetworkMember extends BaseEntity {
 		this.paypalEmail = paypalEmail;
 	}
 
-	@JsonIgnore
-	public UserPrincipal getUserPrincipal() {
-		return userPrincipal;
-	}
-
-	@JsonIgnore
-	public void setUserPrincipal(UserPrincipal userPrincipal) {
-		this.userPrincipal = userPrincipal;
-	}
+//	@JsonIgnore
+//	public UserPrincipal getUserPrincipal() {
+//		return userPrincipal;
+//	}
+//
+//	@JsonIgnore
+//	public void setUserPrincipal(UserPrincipal userPrincipal) {
+//		this.userPrincipal = userPrincipal;
+//	}
 
 	@JsonIgnore
 	public Set<Publisher> getPublishers() {

@@ -1,20 +1,14 @@
 package com.sightlyinc.ratecred.admin.model;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Transient;
-
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
 
-import com.sightlyinc.ratecred.authentication.Role;
-import com.sightlyinc.ratecred.authentication.UserPrincipal;
+import com.welocally.admin.security.Role;
+import com.welocally.admin.security.UserPrincipal;
 
 
 
@@ -32,7 +26,7 @@ public class UserPrincipalForm  {
 		this.entity = new UserPrincipal();
 	}
 	
-	public UserPrincipalForm(com.sightlyinc.ratecred.authentication.UserPrincipal userPrincipal) {
+	public UserPrincipalForm(com.welocally.admin.security.UserPrincipal userPrincipal) {
 		this.entity = userPrincipal;
 	}
 

@@ -11,8 +11,12 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<script src="https://maps.google.com/maps/api/js?key=AIzaSyACXX0_pKBA6L0Z2ajyIvh5Bi8h9crGVlg&sensor=true&language=en"
 	  		type="text/javascript"></script>
+	  	<script src="<c:url value='/js/welocally-places-developer/wl_base.js' />" type="text/javascript"></script>
+	  	<script src="<c:url value='/js/welocally-places-developer/wl_place_widget.js' />" type="text/javascript"></script>
 	
 	  	<!-- welocally-developer scripts  -->	
+<%	
+/*
 		<script src="<c:url value='/js/welocally-places-developer/wl_base.js' />" type="text/javascript"></script>   
 		<script src="<c:url value='/js/welocally-places-developer/wl_place_widget.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/welocally-places-developer/wl_places_multi_widget.js' />" type="text/javascript"></script>
@@ -29,16 +33,25 @@
 		<script src="<c:url value='/js/widget/wl_userplacesmgr.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/widget/wl_userplaces_ui.js' />" type="text/javascript"></script>
 		<script src="<c:url value='/js/widget/wl_placesgrid.js' />" type="text/javascript"></script>
+*/		
+		 %>	
 		
 		
+			
+		<script src="<c:url value='/js/mustache.js' />" type="text/javascript"></script> 
 		<script type="text/javascript" src="<c:url value='/js/jquery-ui-1.8.13.custom.min.js' />"></script>
+		<script src="<c:url value='/js/jquery.dataTables.min.js' />" type="text/javascript"></script>	
 		
-		<script type="text/javascript" src="<c:url value='/js/welocally.js' />"></script>
-		
-		<!--  -->
-		<link type="text/css" href="<c:url value='/css/custom-theme/jquery-ui-1.8.13.custom.css' />" rel="stylesheet" media="screen" />
+		<script src="<c:url value='/js/welocally-places-developer/wl_base.js' />" type="text/javascript"></script> 
+		<script src="<c:url value='/js/widget/wl_userplaces_search.js' />" type="text/javascript"></script> 
+		<script src="<c:url value='/js/widget/wl_addplace_widget.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/welocally.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/jquery.wlAdmin.js' />" type="text/javascript"></script>
+		<script src="<c:url value='/js/welocally.adminEventHandler.js' />" type="text/javascript"></script>		
+		<script src="<c:url value='/js/jquery.wlGeodb.js' />" type="text/javascript"></script>
 		
 
+<!--		<link type="text/css" href="<c:url value='/css/custom-theme/jquery-ui-1.8.13.custom.css' />" rel="stylesheet" media="screen" />-->
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700|Carme|Fjord+One' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="<c:url value='/css/blueprint/screen.css' />" type="text/css" media="screen, projection">
 		<link rel="stylesheet" href="<c:url value='/css/blueprint/print.css' />" type="text/css" media="print">
@@ -55,7 +68,22 @@
 		<link rel="stylesheet" href="<c:url value='/css/admin/wl_places_addplace.css' />" type="text/css">
 		<link rel="stylesheet" href="<c:url value='/css/admin/wl_userplacesmgr.css' />" type="text/css">
 		
-		<link rel="stylesheet" href="<c:url value='/css/welocally.css' />" type="text/css"> 
+		<style type="text/css" title="currentStyle">
+			@import "<c:url value='/css/dataTables/welocally_page.css' />";
+			@import "<c:url value='/css/dataTables/welocally_table_jui.css' />";
+			@import "<c:url value='/css/custom-theme/jquery-ui-1.8.13.custom.css' />";
+			@import "<c:url value='/css/welocally.css' />";
+			/*
+			 * Override styles needed due to the mix of three different CSS sources! For proper examples
+			 * please see the themes example in the 'Examples' section of this site
+			 */
+			.dataTables_info { padding-top: 0; }
+			.dataTables_paginate { padding-top: 0; }
+			.css_right { float: right; }
+			#example_wrapper .fg-toolbar { font-size: 0.8em }
+			#theme_links span { float: left; padding: 2px 10px; }
+		</style>
+		 
 		
 		<link rel="shortcut icon" href="<c:url value='/images/we_16.png' />"/> 
 		

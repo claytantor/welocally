@@ -75,6 +75,16 @@ if (!window.WELOCALLY) {
 				}
 				return str.join("&");
 			},
+    		hashCode: function(val){
+    		    var hash = 0;
+    		    if (val.length == 0) return hash;
+    		    for (i = 0; i < val.length; i++) {
+    		        char = val.charCodeAt(i);
+    		        hash = ((hash<<5)-hash)+char;
+    		        hash = hash & hash; 
+    		    }
+    		    return hash;
+    		},				
 			trim: function (str) { 
 	    			return WELOCALLY.util.ltrim(WELOCALLY.util.rtrim(str), ' '); 
 			}, 

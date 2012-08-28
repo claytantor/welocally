@@ -41,8 +41,7 @@ public class ConfigsInterceptor extends HandlerInterceptorAdapter{
         
         request.setAttribute("iframeTrackerCode", configuration.getIframeTrackerCode());
         
-        
-        
+               
         return true;
     }
  

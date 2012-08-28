@@ -6,10 +6,15 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.status.IndexStatus;
+import org.elasticsearch.action.admin.indices.status.IndicesStatusRequest;
+import org.elasticsearch.action.admin.indices.status.IndicesStatusResponse;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.welocally.geodb.services.db.DbException;
@@ -89,32 +95,46 @@ public class UserControllerV1 extends AbstractJsonController {
                        elasticSearchTransportServer, 
                        elasticSearchTransportPort));
     }
+    
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public ModelAndView getAll(@PathVariable String id, HttpServletRequest req) {        
+        return null;
+    }
       
     @RequestMapping(value = "/exists/{id}", method = RequestMethod.GET)
-    public ModelAndView findById(@PathVariable String id, HttpServletRequest req) {
+    public ModelAndView existsById(@PathVariable String id, HttpServletRequest req) {
         
         ModelAndView  mav = new ModelAndView("mapper-result");
       
         try {
+
+            //this should be a configurable intercpetor
+//            //right now we are going to secure this with the claytantor account
+//            JSONObject requestUser =  checkPublisherKey(req); 
+//            
+//            if(requestUser.getString("username").equals(adminUser) && 
+//                    requestUser.getString("password").equals(adminPassword) )
+//            {
+//                JSONObject user = jsonDatabase.findById(usersCollection, id);
+//                
+//                Map<String, Object> result = new HashMap<String,Object>();
+//                result.put("id", user.get("name"));
+//                result.put("status", "SUCCEED");
+//                
+//                mav.addObject("mapperResult", makeModelJson(result));
+//                
+//                                 
+//            } else {
+//                throw new RuntimeException("user not authorized for this activity");
+//            }
             
-            //right now we are going to secure this with the claytantor account
-            JSONObject requestUser =  checkPublisherKey(req); 
-            
-            if(requestUser.getString("username").equals(adminUser) && 
-                    requestUser.getString("password").equals(adminPassword) )
-            {
-                JSONObject user = jsonDatabase.findById(usersCollection, id);
-                
-                Map<String, Object> result = new HashMap<String,Object>();
-                result.put("id", user.get("name"));
-                result.put("status", "SUCCEED");
-                
-                mav.addObject("mapperResult", makeModelJson(result));
-                
-                                 
-            } else {
-                throw new RuntimeException("user not authorized for this activity");
-            }
+          JSONObject user = jsonDatabase.findById(usersCollection, id);
+          
+          Map<String, Object> result = new HashMap<String,Object>();
+          result.put("id", user.get("name"));
+          result.put("status", "SUCCEED");
+          
+          mav.addObject("mapperResult", makeModelJson(result));           
                        
         } catch (JSONException e) {
             logger.error("could not get results");
@@ -130,6 +150,84 @@ public class UserControllerV1 extends AbstractJsonController {
         return mav;
    
     }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView getById(@PathVariable String id, @RequestParam(required=false) String callback, HttpServletRequest req) {
+        
+        ModelAndView mav = null;
+        if(StringUtils.isEmpty(callback))
+            mav = new ModelAndView("mapper-result");
+        else {
+            mav = new ModelAndView("jsonp-mapper-result");
+            mav.addObject(
+                    "callback", 
+                    callback);
+        }
+      
+        try {
+            
+//            //right now we are going to secure this with the claytantor account
+//            JSONObject requestUser =  checkPublisherKey(req); 
+//            
+//            if(requestUser.getString("username").equals(adminUser) && 
+//                    requestUser.getString("password").equals(adminPassword) )
+//            {
+                JSONObject user = jsonDatabase.findById(usersCollection, id);                         
+                mav.addObject("mapperResult", user);
+                JSONObject status = getIndexStatus(id);
+                if(status == null){
+                    status = new JSONObject();
+                    status.put("exists", false);
+                }
+                user.put("indexStatus", status);
+
+                                            
+//            } else {
+//                throw new RuntimeException("user not authorized for this activity");
+//            }
+                       
+        } 
+//        catch (JSONException e) {
+//            logger.error("could not get results");
+//            mav.addObject("mapperResult", makeErrorsJson(e));
+//        } 
+        catch (RuntimeException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (DbException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } catch (JSONException e) {
+            logger.error("could not get results");
+            mav.addObject("mapperResult", makeErrorsJson(e));
+        } 
+        
+        return mav;
+   
+    }
+    
+    private JSONObject getIndexStatus(String indexName) {
+
+ 
+        try {
+            IndicesStatusRequest indicesStatusRequest = new IndicesStatusRequest(indexName);
+            IndicesStatusResponse resp = 
+                transportClient.admin().indices().status(indicesStatusRequest).actionGet();
+            
+            JSONObject response = new JSONObject();
+            IndexStatus status = resp.index(indexName);
+            response.put("exists", true);
+            response.put("documents", status.getDocs().getNumDocs());
+            response.put("deleted", status.getDocs().getDeletedDocs());
+            response.put("max", status.getDocs().getMaxDoc());
+            response.put("storeSize", status.getStoreSize().getBytes());
+            return response;
+                    
+        } catch(Exception e) {
+            return null;
+        }
+    }
+
     
     @RequestMapping(value = "/create", method = RequestMethod.PUT)
     public ModelAndView createUser(@RequestBody String requestJson, HttpServletRequest req) {
